@@ -1,0 +1,38 @@
+{% extends "gameplay/layout.html" %}
+{% block content2 %}
+
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+
+<br><br><br><br>
+<form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    <table id="infrastructure_table">
+        <tr>
+            <th>Name</th>
+            <th>Currently Have</th>
+            <th>To Be Built</th>
+            <th>Under Construction</th>
+        </tr>
+        <tr>
+            <td>Total Land</td>
+            <td>{{ county.total_land }}</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+        {% for building in county.buildings.values() %}
+        <tr>
+            <td>{{ building.name }}</td>
+            <td>{{ building.amount }}</td>
+            <td>{{ form[building.name] }}</td>
+            <td>{{ building.pending }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>Available Land to Build On: {{ county.available_land }}
+    <br>Workers Required to Maintain Buildings: {{ county.get_maintenance_workers() }}
+    <button type="submit">Build</button>
+</form>
+
+{% endblock %}

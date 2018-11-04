@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content1 %}
+
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+
+<div style="border:solid;width:150px;height:500px;float:left;margin-right:50px;padding-top:25px;">
+    <ul style="text-align:center;">
+        <li><a href="{{ url_for('overview') }}">Overview</a></li>
+        <li><a href="{{ url_for('infrastructure') }}">Infrastructure</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        <li><br><br><br></li>
+    </ul>
+</div>
+
+{% block content2 %}
+{% endblock %}
+
+{% endblock %}

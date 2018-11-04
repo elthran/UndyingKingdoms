@@ -1,0 +1,32 @@
+{% extends "gameplay/layout.html" %}
+{% block content2 %}
+
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+
+<ul>
+    <li>Name: {{ user.name }}</li>
+    <li>Kingdom: {{ kingdom.name }}</li>
+    <li>County: {{ county.name }}</li>
+    <li>Race: {{ county.race }}</li>
+    <li>Title: {{ county.title }}</li>
+    <li>Coffers: {{ county.coffers }} gold</li>
+    <li>Population: {{ county.population }}</li>
+    <li>Happiness: {{ county.happiness }}</li>
+    <li>Hunger: {{ county.hunger }}</li>
+    <li>Land: {{ county.total_land }}</li>
+    <li>Weather: {{ county.weather }}</li>
+</ul>
+<ul>
+    {% for event in notifications %}
+    {{ event.title }}: {{ event.content }}
+    {% endfor %}
+</ul>
+<br>
+<form method="POST" accept-charset="UTF-8" role="form">
+            {{ form.csrf_token }}
+            <button type="submit">End Day</button>
+        </form>
+
+{% endblock %}
