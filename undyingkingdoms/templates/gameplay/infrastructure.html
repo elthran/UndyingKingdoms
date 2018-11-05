@@ -14,24 +14,30 @@
             <th>Currently Have</th>
             <th>To Be Built</th>
             <th>Under Construction</th>
+            <th>Production Cost to Build</th>
+            <th>Workers Employed</th>
         </tr>
-        <tr>
+        <tr style="border:2px solid;">
             <td>Total Land</td>
             <td>{{ county.total_land }}</td>
             <td>-</td>
             <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         {% for building in county.buildings.values() %}
         <tr>
-            <td>{{ building.name }}</td>
+            <td>{{ building.name.title() }}</td>
             <td>{{ building.amount }}</td>
             <td>{{ form[building.name] }}</td>
             <td>{{ building.pending }}</td>
+            <td>{{ building.cost }}</td>
+            <td>{{ building.maintenance * building.amount }}</td>
         </tr>
         {% endfor %}
     </table>
-    <br>Available Land to Build On: {{ county.available_land }}
-    <br>Workers Required to Maintain Buildings: {{ county.get_maintenance_workers() }}
+    <br>Available Land: {{ county.available_land }}
+    <br>You have {{ county.get_available_workers() }} workers generating {{ county.get_production()|int }} production each day.
     <button type="submit">Build</button>
 </form>
 

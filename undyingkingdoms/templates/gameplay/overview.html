@@ -12,7 +12,12 @@
     <li>Race: {{ county.race }}</li>
     <li>Title: {{ county.title }}</li>
     <li>Coffers: {{ county.coffers }} gold</li>
-    <li>Population: {{ county.population }}</li>
+    <li>Population: {{ county.population }} (Yesterday ->
+        <font color="red">{{ county.deaths }} deaths,
+            {{ county.emigration }} emigration,</font>
+        <font color="green">{{ county.immigration }} immigration,
+            {{ county.births }} births</font>)
+    </li>
     <li>Happiness: {{ county.happiness }}</li>
     <li>Hunger: {{ county.hunger }}</li>
     <li>Land: {{ county.total_land }}</li>
@@ -25,8 +30,8 @@
 </ul>
 <br>
 <form method="POST" accept-charset="UTF-8" role="form">
-            {{ form.csrf_token }}
-            <button type="submit">End Day</button>
-        </form>
+    {{ form.csrf_token }}
+    <button type="submit">End Day</button>
+</form>
 
 {% endblock %}

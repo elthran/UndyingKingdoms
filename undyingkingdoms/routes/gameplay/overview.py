@@ -8,11 +8,6 @@ from undyingkingdoms.models.forms.login import Testing
 @login_required
 @app.route('/gameplay/overview', methods=['GET', 'POST'])
 def overview():
-    for county in County.query.filter_by().all():
-        notifications = county.change_day()
-        for notification in notifications:
-            db.session.add(notification)
-        db.session.commit()
     form = Testing(request.form)
     if form.validate_on_submit():
         for county in County.query.filter_by().all():

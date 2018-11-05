@@ -9,7 +9,7 @@ def home():
         user = User("elthran", "jacobbrunner@gmail.com", "star")
         db.session.add(user)
         db.session.commit()
-        kingdom = Kingdom("Kingdom1")
+        kingdom = Kingdom()
         db.session.add(kingdom)
         db.session.commit()
         county = County("County1", user.id, kingdom.id)

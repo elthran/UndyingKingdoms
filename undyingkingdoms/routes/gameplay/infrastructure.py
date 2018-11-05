@@ -11,7 +11,8 @@ from undyingkingdoms.static.metadata import all_buildings
 def infrastructure():
     form = InfrastructureForm()
     if form.validate_on_submit():
-        for name in all_buildings:
+        # This needs to not validate if the sum(data) in the form exceeds available land
+        for name, amount, cost, maintenance, description in all_buildings:
             if form.data[name] > 0:
                 current_user.county.buildings[name].pending += form.data[name]
         db.session.commit()

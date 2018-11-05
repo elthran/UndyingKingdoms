@@ -9,5 +9,5 @@ class InfrastructureForm(FlaskForm):
     pass
 
 
-for name in all_buildings:
+for name, amount, cost, maintenance, description in all_buildings:
     setattr(InfrastructureForm, name, IntegerField(name.title(), validators=[NumberRange(min=0, max=None)], default=0))

@@ -1,0 +1,37 @@
+{% extends "gameplay/layout.html" %}
+{% block content2 %}
+
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+
+<br><br><br><br>
+<form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    <table id="infrastructure_table">
+        <tr>
+            <th>Name</th>
+            <th>Standing Army</th>
+            <th>Train</th>
+            <th>Currently In Training</th>
+        </tr>
+        <tr>
+            <td>Total Soldiers</td>
+            <td>{{ county.get_army_size() }}</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+        {% for army in county.armies.values() %}
+        <tr>
+            <td>{{ army.name.title() }}</td>
+            <td>{{ army.amount }}</td>
+            <td>{{ form[army.name] }}</td>
+            <td>{{ army.pending }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    Available workers for training: {{ county.get_available_workers() }}
+    <button type="submit">Build</button>
+</form>
+
+{% endblock %}

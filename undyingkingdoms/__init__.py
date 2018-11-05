@@ -75,7 +75,11 @@ import undyingkingdoms.routes.index.login
 import undyingkingdoms.routes.index.logout
 
 import undyingkingdoms.routes.gameplay.overview
+import undyingkingdoms.routes.gameplay.economy
 import undyingkingdoms.routes.gameplay.infrastructure
+import undyingkingdoms.routes.gameplay.military
+import undyingkingdoms.routes.gameplay.kingdom
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -83,7 +87,6 @@ login_manager.login_view = "login"
 
 # Build the tables in database, if the database exists.
 # Otherwise build using mysql: CREATE DATABASE IF NOT EXISTS booking CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-# This will create the database file using SQLAlchemy
 
 db.drop_all()
 db.create_all()
