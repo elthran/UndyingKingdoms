@@ -18,3 +18,4 @@ def infrastructure():
         db.session.commit()
         return redirect(url_for('infrastructure'))
     return render_template('gameplay/infrastructure.html', form=form)
+
