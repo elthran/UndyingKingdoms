@@ -61,7 +61,7 @@ class County(GameState):
 
         self.buildings = {name: Building(name, amount, cost, maintenance, description)
                           for name, amount, cost, maintenance, description in all_buildings}
-        self.armies = {name: Army(name, attack, amount, defence, health)
+        self.armies = {name: Army(name, amount, attack, defence, health)
                        for name, amount, attack, defence, health in all_armies}
 
     @property
@@ -109,6 +109,27 @@ class County(GameState):
         if self.title == 'Goblin':
             modifier['Racial Bonus'] = 0.15
         return sum(modifier.values())
+
+    def get_offensive_strength(self):
+        strength = 0
+        for unit in self.armies.values():
+            strength += (unit.attack * unit.amount)
+        return strength
+
+    def get_defensive_strength(self):
+        strength = 0
+        for unit in self.armies.values():
+            strength += (unit.defence * unit.amount)
+        return strength
+
+    def battle_results(self, enemy):
+        if self.get_offensive_strength() > enemy.get_defensive_strength():
+            land_gained = int(enemy.total_land * 0.1)
+            self.total_land += land_gained
+            enemy.total_land -= land_gained
+            return "You were victorious! You gained {} acres.".format(land_gained)
+        else:
+            return "failure"
 
     def change_day(self):
         self.collect_taxes()

@@ -7,7 +7,7 @@ from undyingkingdoms.static.metadata import all_armies
 
 
 @login_required
-@app.route('/gameplay/military', methods=['GET', 'POST'])
+@app.route('/gameplay/military/', methods=['GET', 'POST'])
 def military():
     form = MilitaryForm()
     if form.validate_on_submit():

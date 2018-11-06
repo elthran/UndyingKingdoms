@@ -7,6 +7,6 @@ from undyingkingdoms.static.metadata import all_buildings
 
 
 @login_required
-@app.route('/gameplay/kingdom', methods=['GET', 'POST'])
+@app.route('/gameplay/kingdom/', methods=['GET', 'POST'])
 def kingdom():
     return render_template('gameplay/kingdom.html')

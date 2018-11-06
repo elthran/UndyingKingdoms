@@ -1,12 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField
+from wtforms import IntegerField, HiddenField, Form
 from wtforms.validators import NumberRange
 
 from undyingkingdoms.static.metadata import all_buildings
 
 
 class InfrastructureForm(FlaskForm):
-    # current_land = hidden_field
+    #summed_value = HiddenField("summed_value")
     pass
 
 

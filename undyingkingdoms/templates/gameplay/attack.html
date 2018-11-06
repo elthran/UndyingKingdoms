@@ -1,0 +1,18 @@
+{% extends "gameplay/layout.html" %}
+{% block content2 %}
+
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+
+<form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    <ul>
+    {% for army in county.armies.values() %}
+        <li>{{ army.name }}: {{ form[army.name] }}</li>
+        {% endfor %}
+        </ul>
+        <button type="submit">Attack</button>
+</form>
+
+{% endblock %}

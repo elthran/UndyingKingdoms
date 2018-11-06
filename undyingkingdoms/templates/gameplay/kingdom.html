@@ -2,8 +2,8 @@
 {% block content2 %}
 
 {% set user = current_user %}
-{% set county = current_user.county %}
-{% set kingdom = county.kingdom %}
+{% set my_county = current_user.county %}
+{% set kingdom = my_county.kingdom %}
 
 <div style="width:100%;text-align:center;">
     <button style="float:left;width:100px;" disabled>Left</button>
@@ -14,7 +14,9 @@
 <ul>
     {% for county in kingdom.counties %}
     <li>{{ county.name }} led by the infamous {{ county.user.name }} with {{ county.total_land }} acres of land
-        <li><br></li>
+        {% if my_county.name != county.name %}<a href="{{ url_for('attack', county_id=county.id) }}">[attack]</a></li>
+    {% endif %}
+    <li><br></li>
     {% endfor %}
 </ul>
 

@@ -7,6 +7,6 @@ from undyingkingdoms.static.metadata import all_buildings
 
 
 @login_required
-@app.route('/gameplay/economy', methods=['GET', 'POST'])
+@app.route('/gameplay/economy/', methods=['GET', 'POST'])
 def economy():
     return render_template('gameplay/economy.html')

@@ -6,7 +6,7 @@ from undyingkingdoms.models.forms.login import Testing
 
 
 @login_required
-@app.route('/gameplay/overview', methods=['GET', 'POST'])
+@app.route('/gameplay/overview/', methods=['GET', 'POST'])
 def overview():
     form = Testing(request.form)
     if form.validate_on_submit():
