@@ -10,9 +10,11 @@ class Kingdom(GameState):
     counties = db.relationship('County', backref='kingdom')
 
     def __init__(self):
-        # This should randomly choose one from kingdom_names but without choosing one that has been used.
-        # Right now it will crash the database if two kingdoms are chosen with duplicate names.
-        self.name = choice(kingdom_names)
+        used_names = set([kingdom.name for kingdom in Kingdom.query.all()])
+        try:
+            self.name = choice(list(set(kingdom_names)-used_names))
+        except IndexError:
+            raise Exception("Add more kingdoms")
 
     def __repr__(self):
         return '<Kingdom %r (%r)>' % (self.name, self.id)

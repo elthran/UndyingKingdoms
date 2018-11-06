@@ -6,6 +6,7 @@ from undyingkingdoms.static.metadata import all_buildings
 
 
 class InfrastructureForm(FlaskForm):
+    # current_land = hidden_field
     pass
 
 

@@ -12,7 +12,6 @@ from undyingkingdoms.models.forms.login import LoginForm
 def login():
     form = LoginForm()
     if current_user.is_authenticated:
-        # If user is already logged in, don't record anything. Just send them to overview page.
         return redirect(url_for('overview'))
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
