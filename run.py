@@ -8,10 +8,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.d:
-        # Should pull password from private_mysql_config.cnf
-        # if [Warning] World-writable config file ... is ignored
-        # run in bash $ `chmod 400 private_mysql_config.py`
-        # private_config.py needs a `DATABASE_NAME = "booking"`
         os.system('mysql --defaults-file=private_mysql_config.cnf -e "DROP DATABASE IF EXISTS {name};"'.format(
             name=private_config.DATABASE_NAME))
         print("Database deleted!")

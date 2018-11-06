@@ -8,7 +8,6 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 <body>
-{# <!-- Below is flask error code handling --> #}
 {% macro render_field(field, placeholder=None) %}
 <div>
     {% set css_class = 'form-control ' + kwargs.pop('class', '') %}
@@ -40,7 +39,6 @@
     </ul>
 </div>
 {% endif %}
-{# <!-- End of flask error code handling --> #}
 
 {% block content1 %}
 {% endblock %}

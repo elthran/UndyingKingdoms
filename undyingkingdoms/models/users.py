@@ -11,10 +11,9 @@ class User(GameState):
     phone = db.Column(db.Integer)
     county = db.relationship('County', backref='user', uselist=False)
 
-    # Used for login_manager
-    is_authenticated = db.Column(db.Boolean)  # They have filled in all required fields
-    is_active = db.Column(db.Boolean)  # Account activated and not currently suspended
-    is_anonymous = db.Column(db.Boolean)  # If account is anonymous
+    is_authenticated = db.Column(db.Boolean)
+    is_active = db.Column(db.Boolean)
+    is_anonymous = db.Column(db.Boolean)
 
     def __init__(self, name, email, password):
         self.name = name
@@ -28,7 +27,6 @@ class User(GameState):
     def password(self):
         raise AttributeError('Password is not a readable attribute. Only password_hash is stored.')
 
-    # Custom property setter
     def set_password_hash(self, password):
         self.password_hash = generate_password_hash(password)
 
