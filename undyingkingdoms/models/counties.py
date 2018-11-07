@@ -61,8 +61,15 @@ class County(GameState):
 
         self.buildings = {name: Building(name, amount, cost, maintenance, description)
                           for name, amount, cost, maintenance, description in all_buildings}
-        self.armies = {name: Army(name, amount, attack, defence, health)
-                       for name, amount, attack, defence, health in all_armies}
+
+        if self.race == 'Dwarf':
+            self.armies = {'peasant': Army('peasant', 'miner', 100, 1, 1, 1),
+                           'footman': Army('footman', 'axeman', 25, 3, 2, 3),
+                           'archer': Army('archer', 'rifleman', 25, 1, 3, 2),
+                           'knight': Army('knight', 'berserker', 100, 1, 1, 1)}
+        else:
+            self.armies = {name: Army(name, base_class, amount, attack, defence, health)
+                           for name, base_class, amount, attack, defence, health in all_armies}
 
     @property
     def available_land(self):
@@ -110,9 +117,10 @@ class County(GameState):
             modifier['Racial Bonus'] = 0.15
         return sum(modifier.values())
 
-    def get_offensive_strength(self):
+    def get_offensive_strength(self, army):
         strength = 0
         for unit in self.armies.values():
+            print(unit, army)
             strength += (unit.attack * unit.amount)
         return strength
 
@@ -122,14 +130,17 @@ class County(GameState):
             strength += (unit.defence * unit.amount)
         return strength
 
-    def battle_results(self, enemy):
-        if self.get_offensive_strength() > enemy.get_defensive_strength():
+    def battle_results(self, army, enemy):
+        offense = self.get_offensive_strength(army)
+        defence = enemy.get_defensive_strength()
+        if offense > defence:
             land_gained = int(enemy.total_land * 0.1)
             self.total_land += land_gained
             enemy.total_land -= land_gained
-            return "You were victorious! You gained {} acres.".format(land_gained)
+            return "You had {} power versus the enemies {} power. You were victorious! You gained {} acres.".format(
+                offense, defence, land_gained)
         else:
-            return "failure"
+            return "You had {} power versus the enemies {} power. You failed".format(offense, defence)
 
     def change_day(self):
         self.collect_taxes()

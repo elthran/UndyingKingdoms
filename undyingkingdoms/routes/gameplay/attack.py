@@ -19,5 +19,5 @@ def attack(county_id):
                 army[name] = form.data[name]
         results = current_user.county.battle_results(army, enemy)
         db.session.commit()
-        return redirect(url_for('attack_results', results=results))
+        return render_template('gameplay/attack_results.html', results=results)
     return render_template('gameplay/attack.html', enemy=enemy, results="None", form=form)

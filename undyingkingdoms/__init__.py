@@ -1,4 +1,6 @@
 import socket
+import time
+
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
@@ -64,7 +66,9 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 
 db.drop_all()
+time.sleep(1)
 db.create_all()
+time.sleep(1)
 
 
 @login_manager.user_loader
