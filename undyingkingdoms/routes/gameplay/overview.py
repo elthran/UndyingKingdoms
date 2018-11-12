@@ -1,5 +1,6 @@
-from flask import render_template, request
+from flask import render_template, request, url_for, redirect
 from flask_login import login_required, current_user
+
 from undyingkingdoms import app, db
 from undyingkingdoms.models import County, Notification, DailyActiveUserEvent
 from undyingkingdoms.models.forms.login import Testing
@@ -23,4 +24,6 @@ def overview():
     for notification in Notification.query.filter_by(county_id=current_user.county.id).all():
         db.session.delete(notification)
         db.session.commit()
+    if not current_user.county:
+        return redirect(url_for('initialize'))
     return render_template('gameplay/overview.html', form=form, notifications=notifications)

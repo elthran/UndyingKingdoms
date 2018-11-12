@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content1 %}
+<form method="POST" accept-charset="UTF-8" role="form">
+    <!-- LoginForm -->
+    {{ form.csrf_token }}
+    {{ render_field(form.username, placeholder="Your Username", autofocus="") }}
+    {{ render_field(form.email, placeholder="Your Email Address") }}
+    {{ render_field(form.password, placeholder="Password") }}
+    {{ render_field(form.confirmation, placeholder="Retype password") }}
+    <input type="checkbox" name="remember" value="1"> Remember Me
+    <br><a role="button" href="/">Already have an account? Login here.</a>
+    <br><br>
+    <button type="submit">Create Account</button>
+</form>
+{% endblock %}

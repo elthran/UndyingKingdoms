@@ -51,7 +51,9 @@ from undyingkingdoms.models.users import User
 
 import undyingkingdoms.routes.index.home
 import undyingkingdoms.routes.index.login
+import undyingkingdoms.routes.index.register
 import undyingkingdoms.routes.index.logout
+import undyingkingdoms.routes.index.initialize
 
 import undyingkingdoms.routes.gameplay.overview
 import undyingkingdoms.routes.gameplay.economy

@@ -8,6 +8,5 @@ class LoginForm(FlaskForm):
     email = StringField('Email Address', validators=[Email(), DataRequired(message='Forgot your email address?')])
     password = PasswordField('Password', validators=[DataRequired(message='Must provide a password.')])
 
-
 class Testing(FlaskForm):
     pass

@@ -12,6 +12,7 @@ class County(GameState):
     buildings_workers_required = {"unusable": 0, "houses": 0, "farms": 3}
 
     name = db.Column(db.String(128), nullable=False)
+    leader = db.Column(db.String(128))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
     total_land = db.Column(db.Integer)
@@ -40,9 +41,10 @@ class County(GameState):
                              collection_class=attribute_mapped_collection('base'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
 
-    def __init__(self, name, user_id, kingdom_id, race):
+    def __init__(self, name, leader, user_id, kingdom_id, race):
 
         self.name = name
+        self.leader = leader
         self.user_id = user_id
         self.kingdom_id = kingdom_id
         self.race = race
