@@ -19,7 +19,7 @@ class County(GameState):
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
     total_land = db.Column(db.Integer)
     race = db.Column(db.String(32))
-    tax_rate = db.Column(db.Integer)
+    tax = db.Column(db.Integer)
     gold = db.Column(db.Integer)
     wood = db.Column(db.Integer)
     iron = db.Column(db.Integer)
@@ -56,7 +56,7 @@ class County(GameState):
         self.total_land = 150
         self.hunger = 75
         self.happiness = 75
-        self.tax_rate = 5
+        self.tax = 5
         self.gold = 1000
         self.wood = 100
         self.iron = 25
@@ -158,7 +158,7 @@ class County(GameState):
         return []
 
     def get_gold_income(self):
-        return (self.population * (self.tax_rate / 100)) + self.production
+        return (self.population * (self.tax / 100)) + self.production
 
     def get_wood_income(self):
         mills = [building.amount for building in self.buildings.values() if building.name == 'mills']
@@ -172,19 +172,24 @@ class County(GameState):
         self.gold += self.get_gold_income()
         self.wood += self.get_wood_income()
         self.iron += self.get_iron_income()
-        self.happiness = min(self.happiness + 7 - self.tax_rate, 100)
+        self.happiness = min(self.happiness + 7 - self.tax, 100)
 
     def produce_pending_buildings(self):
         """
         Gets a list of all buildings which can be built today. Builds it. Then recalls function.
         """
         queue = [building for building in self.buildings.values()
-                 if building.pending > 0 and building.cost <= self.production]
+                 if building.pending > 0
+                 and building.production <= self.production
+                 and building.gold <= self.gold
+                 and building.wood <= self.wood]
         if queue and self.production > 0:
             building = choice(queue)
             building.pending -= 1
             building.amount += 1
-            self.production -= building.cost
+            self.production -= building.production
+            self.gold -= building.gold
+            self.wood -= building.wood
             self.produce_pending_buildings()
 
     def produce_pending_armies(self):
@@ -208,13 +213,13 @@ class County(GameState):
 
     def update_population(self):
         self.deaths = self.population * uniform(0.01, 0.03)  # Deaths
-        self.emigration = randint(100, 120) - self.happiness
+        self.emigration = randint(100, 125) - self.happiness
         self.births = self.buildings['houses'].amount * 1 * self.get_population_modifier()
-        self.immigration = randint(25, 75)
+        self.immigration = randint(15, 50)
         self.population += (self.births + self.immigration) - (self.deaths + self.emigration)
 
     def get_production(self):
-        return (self.get_production_modifier() * self.get_available_workers()) // 10
+        return (self.get_production_modifier() * self.get_available_workers()) // 3
 
     def __repr__(self):
         return '<County %r (%r)>' % (self.name, self.id)

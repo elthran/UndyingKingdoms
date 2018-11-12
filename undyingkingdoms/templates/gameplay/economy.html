@@ -5,11 +5,15 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
+<form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
 <ul>
-    <li>Gold: {{ county.gold }} (+ {{ county.get_gold_income()|int }} per turn)</li>
-    <li>Wood: {{ county.wood }} (+ {{ county.get_wood_income()|int }} per turn)</li>
-    <li>Iron: {{ county.iron }} (+ {{ county.get_iron_income()|int }} per turn)</li>
+    <li>Gold: {{ county.gold }} (+ {{ county.get_gold_income()|int }} per day)</li>
+    <li>Wood: {{ county.wood }} (+ {{ county.get_wood_income()|int }} per day)</li>
+    <li>Iron: {{ county.iron }} (+ {{ county.get_iron_income()|int }} per day)</li>
+    <li>Tax rate: {{ form.tax }}% (+{{ county.get_gold_income()|int }} gold per day) (Currently at: {{ county.tax }}%)</li>
 </ul>
+    <br><button type="submit">Build</button><br>
 
 
 {% endblock %}

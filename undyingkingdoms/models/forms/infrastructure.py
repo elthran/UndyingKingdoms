@@ -4,7 +4,7 @@ from wtforms.validators import NumberRange
 
 
 class InfrastructureForm(FlaskForm):
-    house = IntegerField('house', validators=[NumberRange(min=0, max=None)], default=0)
-    field = IntegerField('field', validators=[NumberRange(min=0, max=None)], default=0)
-    mill = IntegerField('mill', validators=[NumberRange(min=0, max=None)], default=0)
-    mine = IntegerField('mine', validators=[NumberRange(min=0, max=None)], default=0)
+    houses = IntegerField('houses', validators=[NumberRange(min=0, max=None)], default=0)
+    fields = IntegerField('fields', validators=[NumberRange(min=0, max=None)], default=0)
+    mills = IntegerField('mills', validators=[NumberRange(min=0, max=None)], default=0)
+    mines = IntegerField('mines', validators=[NumberRange(min=0, max=None)], default=0)

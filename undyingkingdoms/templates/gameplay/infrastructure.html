@@ -6,26 +6,21 @@
 {% set kingdom = county.kingdom %}
 
 <br><br><br><br>
+<h2>Total Land: {{ county.total_land }}</h2>
+<h2>Available Land: {{ county.available_land }}</h2>
+<h2>Gold: {{ county.gold }}</h2>
+<h2>Wood: {{ county.wood }}</h2><br>
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
     <table id="infrastructure_table">
         <tr>
-            <th>Name</th>
+            <th style="width:150px;">Name</th>
             <th>Currently Have</th>
             <th>To Be Built</th>
             <th>Under Construction</th>
-            <th>Production Cost to Build</th>
-            <th>Workers Employed</th>
+            <th style="width:125px;">Cost</th>
+            <th style="width:150px;">Workers Employed</th>
             <th>Description</th>
-        </tr>
-        <tr style="border:2px solid;">
-            <td>Total Land</td>
-            <td>{{ county.total_land }}</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>0</td>
-            <td>-</td>
         </tr>
         {% for building in county.buildings.values() %}
         <tr>
@@ -33,15 +28,23 @@
             <td>{{ building.amount }}</td>
             <td>{{ form[building.base] }}</td>
             <td>{{ building.pending }}</td>
-            <td>{{ building.cost }}</td>
-            <td>{{ building.labour * building.amount }}</td>
+            <td>
+                {% if building.production %}{{ building.production }}<img class="resource_icons" src="/static/images/prod_icon.jpg">{% endif %}
+                {% if building.gold %}{{ building.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif %}
+                {% if building.wood %}{{ building.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif %}
+            </td>
+            <td>{{ building.labour }} each ({{ building.labour * building.amount }} total)</td>
             <td>{{ building.description }}</td>
         </tr>
         {% endfor %}
     </table>
-    <br>Available Land: {{ county.available_land }}
-    <br>You have {{ county.get_available_workers() }} workers generating {{ county.get_production()|int }} production each day.
-    <button type="submit">Build</button>
+    <br><button type="submit">Build</button><br>
+    You have {{ county.get_available_workers() }} available workers generating a total of {{ county.get_production()|int }}
+    <img class="resource_icons" src="/static/images/prod_icon.jpg"> each day. Any excess <img class="resource_icons" src="/static/images/prod_icon.jpg">
+    will be converted into gold at the end of each day.
 </form>
+
+<br>
+Each day your kingdom will randomly produce pending buildings until you can not produce any more.
 
 {% endblock %}

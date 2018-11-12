@@ -12,7 +12,7 @@ class Building(GameState):
     labour = db.Column(db.Integer)
     gold = db.Column(db.Integer)
     wood = db.Column(db.Integer)
-    maintenance = db.Column(db.Integer)
+    description = db.Column(db.String(128))
 
     def __init__(self, base, name, amount, production, labour, gold, wood, description):
         self.base = base
