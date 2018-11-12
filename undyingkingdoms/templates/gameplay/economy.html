@@ -5,5 +5,11 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
+<ul>
+    <li>Gold: {{ county.gold }} (+ {{ county.get_gold_income()|int }} per turn)</li>
+    <li>Wood: {{ county.wood }} (+ {{ county.get_wood_income()|int }} per turn)</li>
+    <li>Iron: {{ county.iron }} (+ {{ county.get_iron_income()|int }} per turn)</li>
+</ul>
+
 
 {% endblock %}

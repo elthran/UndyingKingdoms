@@ -4,7 +4,8 @@ from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.bases import GameState, db
 from random import choice, uniform, randint
 from sqlalchemy.orm.collections import attribute_mapped_collection
-from undyingkingdoms.static.metadata import all_buildings, all_armies
+from undyingkingdoms.static.metadata import all_buildings, all_armies, dwarf_armies, human_armies, dwarf_buildings, \
+    human_buildings
 
 
 class County(GameState):
@@ -13,6 +14,7 @@ class County(GameState):
 
     name = db.Column(db.String(128), nullable=False)
     leader = db.Column(db.String(128))
+    gender = db.Column(db.String(16))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
     total_land = db.Column(db.Integer)
@@ -35,19 +37,20 @@ class County(GameState):
     emigration = db.Column(db.Integer)
 
     buildings = db.relationship("Building",
-                                collection_class=attribute_mapped_collection('name'),
+                                collection_class=attribute_mapped_collection('base'),
                                 cascade="all, delete, delete-orphan", passive_deletes=True)
     armies = db.relationship("Army",
                              collection_class=attribute_mapped_collection('base'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
 
-    def __init__(self, name, leader, user_id, kingdom_id, race):
+    def __init__(self, name, leader, user_id, kingdom_id, race, gender):
 
         self.name = name
         self.leader = leader
         self.user_id = user_id
         self.kingdom_id = kingdom_id
         self.race = race
+        self.gender = gender
         self.title = 'Engineer'
         self.population = 500
         self.total_land = 150
@@ -65,101 +68,12 @@ class County(GameState):
         self.immigration = 0
         self.emigration = 0
 
-        self.buildings = {name: Building(name, amount, cost, maintenance, description)
-                          for name, amount, cost, maintenance, description in all_buildings}
-
         if self.race == 'Dwarf':
-            self.armies = {'peasant': Army(base='peasant',
-                                           name='miners',
-                                           amount=100,
-                                           training=25,
-                                           gold=1,
-                                           iron=1,
-                                           wood=1,
-                                           attack=2,
-                                           defence=1,
-                                           health=2,
-                                           description='Miners deal extra damage.'),
-                           'soldier': Army(base='soldier',
-                                           name='axemen',
-                                           amount=15,
-                                           training=10,
-                                           gold=3,
-                                           iron=1,
-                                           wood=1,
-                                           attack=2,
-                                           defence=2,
-                                           health=3,
-                                           description='Axemen are well-rounded soldiers.'),
-                           'archer': Army(base='archer',
-                                          name='crossbowmen',
-                                          amount=15,
-                                          training=15,
-                                          gold=3,
-                                          iron=1,
-                                          wood=1,
-                                          attack=1,
-                                          defence=3,
-                                          health=3,
-                                          description='Crossbowmen can be trained more quickly than other archers.'),
-                           'elite': Army(base='elite',
-                                         name='greybeards',
-                                         amount=0,
-                                         training=5,
-                                         gold=10,
-                                         iron=2,
-                                         wood=1,
-                                         attack=6,
-                                         defence=5,
-                                         health=5,
-                                         description='Greybeards are capable of defending, as well as attacking.')
-                           }
+            self.buildings = dwarf_buildings
+            self.armies = dwarf_armies
         elif self.race == 'Human':
-            self.armies = {'peasant': Army(base='peasant',
-                                           name='men-at-arms',
-                                           amount=100,
-                                           training=50,
-                                           gold=1,
-                                           iron=0,
-                                           wood=1,
-                                           attack=1,
-                                           defence=1,
-                                           health=1,
-                                           description='Men-at-arms can be trained extremely quickly.'),
-                           'soldier': Army(base='soldier',
-                                           name='footmen',
-                                           amount=15,
-                                           training=10,
-                                           gold=4,
-                                           iron=2,
-                                           wood=0,
-                                           attack=3,
-                                           defence=2,
-                                           health=2,
-                                           description='Footmen are strong attackers.'),
-                           'archer': Army(base='archer',
-                                          name='bowmen',
-                                          amount=15,
-                                          training=10,
-                                          gold=2,
-                                          iron=0,
-                                          wood=3,
-                                          attack=1,
-                                          defence=3,
-                                          health=2,
-                                          description='Bowmen are great at defending.'),
-                           'elite': Army(base='elite',
-                                         name='knights',
-                                         amount=0,
-                                         training=5,
-                                         gold=15,
-                                         iron=5,
-                                         wood=1,
-                                         attack=8,
-                                         defence=3,
-                                         health=7,
-                                         description='Knights are one of the best attackers.')
-                           }
+            self.buildings = human_buildings
+            self.armies = human_armies
 
     @property
     def available_land(self):
@@ -177,7 +91,7 @@ class County(GameState):
         """
         Returns the population who are maintaining current buildings.
         """
-        return sum((building.maintenance * building.amount) for building in self.buildings.values())
+        return sum((building.labour * building.amount) for building in self.buildings.values())
 
     def get_available_workers(self):
         """
@@ -243,9 +157,21 @@ class County(GameState):
             return [Notification(self.id, 'Weather Warning', 'Stormy weather has damaged your crops.')]
         return []
 
+    def get_gold_income(self):
+        return (self.population * (self.tax_rate / 100)) + self.production
+
+    def get_wood_income(self):
+        mills = [building.amount for building in self.buildings.values() if building.name == 'mills']
+        return sum(mills) * 1
+
+    def get_iron_income(self):
+        mines = [building.amount for building in self.buildings.values() if building.name == 'mines']
+        return sum(mines) * 1
+
     def collect_taxes(self):
-        self.gold += self.population * (self.tax_rate / 100)
-        self.gold += self.production  # Any unused production is collected as income
+        self.gold += self.get_gold_income()
+        self.wood += self.get_wood_income()
+        self.iron += self.get_iron_income()
         self.happiness = min(self.happiness + 7 - self.tax_rate, 100)
 
     def produce_pending_buildings(self):

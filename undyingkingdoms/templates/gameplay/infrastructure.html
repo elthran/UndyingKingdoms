@@ -16,6 +16,7 @@
             <th>Under Construction</th>
             <th>Production Cost to Build</th>
             <th>Workers Employed</th>
+            <th>Description</th>
         </tr>
         <tr style="border:2px solid;">
             <td>Total Land</td>
@@ -24,15 +25,17 @@
             <td>-</td>
             <td>-</td>
             <td>0</td>
+            <td>-</td>
         </tr>
         {% for building in county.buildings.values() %}
         <tr>
             <td>{{ building.name.title() }}</td>
             <td>{{ building.amount }}</td>
-            <td>{{ form[building.name] }}</td>
+            <td>{{ form[building.base] }}</td>
             <td>{{ building.pending }}</td>
             <td>{{ building.cost }}</td>
-            <td>{{ building.maintenance * building.amount }}</td>
+            <td>{{ building.labour * building.amount }}</td>
+            <td>{{ building.description }}</td>
         </tr>
         {% endfor %}
     </table>

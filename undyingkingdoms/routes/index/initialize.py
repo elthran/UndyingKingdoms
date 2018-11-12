@@ -13,9 +13,17 @@ from undyingkingdoms.models.forms.register import RegisterForm
 
 @app.route('/initialize/', methods=['GET', 'POST'])
 def initialize():
+    genders = ["----", "Female", "Male"]
+    races = ["----", "Dwarf", "Human"]
     form = InitializeForm()
+    form.gender.choices = [(i, genders[i]) for i in range(len(genders))]
+    form.race.choices = [(i, races[i]) for i in range(len(races))]
     if form.validate_on_submit():
-        county = County(form.county.data, form.leader.data, current_user.id, 1, form.race.data)
+        county = County(form.county.data,
+                        form.leader.data,
+                        current_user.id, 1,
+                        races[form.race.data],
+                        genders[form.gender.data])
         db.session.add(county)
         db.session.commit()
         return redirect(url_for('overview'))
