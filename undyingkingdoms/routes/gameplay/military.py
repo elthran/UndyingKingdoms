@@ -11,9 +11,9 @@ from undyingkingdoms.static.metadata import all_armies
 def military():
     form = MilitaryForm()
     if form.validate_on_submit():
-        for name, amount, attack, defence, health in all_armies:
-            if form.data[name] > 0:
-                current_user.county.armies[name].pending += form.data[name]
+        for army in all_armies:
+            if form.data[army] > 0:
+                current_user.county.armies[army].pending += form.data[army]
         db.session.commit()
         return redirect(url_for('military'))
     return render_template('gameplay/military.html', form=form)

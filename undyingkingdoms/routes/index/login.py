@@ -17,9 +17,10 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)
-            authentication_event = AuthenticationEvent(user_id=user.id, activity="login")
-            if not authentication_event.validity:
-                authentication_event = GameEvent(activity="invalid_login")
+            user.session_id += 1
+            authentication_event = AuthenticationEvent(user_id=user.id,
+                                                       activity="login",
+                                                       session_id=user.session_id)
             db.session.add(authentication_event)
             db.session.commit()
             return redirect(url_for('overview'))

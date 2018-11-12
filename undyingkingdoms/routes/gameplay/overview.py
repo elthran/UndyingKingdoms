@@ -1,7 +1,7 @@
 from flask import render_template, request
 from flask_login import login_required, current_user
 from undyingkingdoms import app, db
-from undyingkingdoms.models import County, Notification
+from undyingkingdoms.models import County, Notification, DailyActiveUserEvent
 from undyingkingdoms.models.forms.login import Testing
 
 
@@ -11,6 +11,10 @@ def overview():
     form = Testing(request.form)
     if form.validate_on_submit():
         for county in County.query.filter_by().all():
+            county_dau = DailyActiveUserEvent(user_id=county.user_id)
+            if county_dau.validate():
+                db.session.add(county_dau)
+                db.session.commit()
             notifications = county.change_day()
             for notification in notifications:
                 db.session.add(notification)

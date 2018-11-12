@@ -17,3 +17,7 @@ h1 {
     border: 1px dotted;
 }
 
+.resource_icons {
+    height: 20px;
+    width: 20px;
+}

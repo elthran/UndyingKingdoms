@@ -11,6 +11,8 @@ class User(GameState):
     phone = db.Column(db.Integer)
     county = db.relationship('County', backref='user', uselist=False)
 
+    session_id = db.Column(db.Integer)
+
     is_authenticated = db.Column(db.Boolean)
     is_active = db.Column(db.Boolean)
     is_anonymous = db.Column(db.Boolean)
@@ -19,6 +21,7 @@ class User(GameState):
         self.name = name
         self.email = email
         self.set_password_hash(password)
+        self.session_id = 0
         self.is_authenticated = True
         self.is_active = True
         self.is_anonymous = False

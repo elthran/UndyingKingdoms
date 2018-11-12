@@ -5,5 +5,7 @@ from .armies import Army
 from .kingdoms import Kingdom
 from .analytics import AuthenticationEvent
 from .notifications import Notification
+from .achievements import Achievement
+from .dau import DailyActiveUserEvent
 
 

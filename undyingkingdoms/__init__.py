@@ -1,3 +1,4 @@
+import os
 import socket
 import time
 
@@ -60,15 +61,16 @@ import undyingkingdoms.routes.gameplay.kingdom
 import undyingkingdoms.routes.gameplay.attack
 import undyingkingdoms.routes.gameplay.attack_results
 
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
-db.drop_all()
-time.sleep(1)
-db.create_all()
-time.sleep(1)
+if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+    # Only runs once. If it's a debug relaunch, it won't run
+    db.drop_all()
+    db.create_all()
+    print("Rebuilding database")
+print("Game ready")
 
 
 @login_manager.user_loader

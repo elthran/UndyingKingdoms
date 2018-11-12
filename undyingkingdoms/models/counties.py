@@ -17,7 +17,9 @@ class County(GameState):
     total_land = db.Column(db.Integer)
     race = db.Column(db.String(32))
     tax_rate = db.Column(db.Integer)
-    coffers = db.Column(db.Integer)
+    gold = db.Column(db.Integer)
+    wood = db.Column(db.Integer)
+    iron = db.Column(db.Integer)
     happiness = db.Column(db.Integer)  # Out of 100
     population = db.Column(db.Integer)
     hunger = db.Column(db.Integer)  # Out of 100
@@ -33,24 +35,26 @@ class County(GameState):
 
     buildings = db.relationship("Building",
                                 collection_class=attribute_mapped_collection('name'),
-                                cascade="all, delete-orphan")
+                                cascade="all, delete, delete-orphan", passive_deletes=True)
     armies = db.relationship("Army",
-                             collection_class=attribute_mapped_collection('name'),
-                             cascade="all, delete-orphan")
+                             collection_class=attribute_mapped_collection('base'),
+                             cascade="all, delete, delete-orphan", passive_deletes=True)
 
-    def __init__(self, name, user_id, kingdom_id):
+    def __init__(self, name, user_id, kingdom_id, race):
 
         self.name = name
         self.user_id = user_id
         self.kingdom_id = kingdom_id
-        self.race = 'Dwarf'
+        self.race = race
         self.title = 'Engineer'
         self.population = 500
         self.total_land = 150
         self.hunger = 75
         self.happiness = 75
         self.tax_rate = 5
-        self.coffers = 1000
+        self.gold = 1000
+        self.wood = 100
+        self.iron = 25
         self.production = 0  # How many buildings you can build per day
         self.weather = choice(self.weather_choices)
 
@@ -63,13 +67,97 @@ class County(GameState):
                           for name, amount, cost, maintenance, description in all_buildings}
 
         if self.race == 'Dwarf':
-            self.armies = {'peasant': Army('peasant', 'miner', 100, 1, 1, 1),
-                           'footman': Army('footman', 'axeman', 25, 3, 2, 3),
-                           'archer': Army('archer', 'rifleman', 25, 1, 3, 2),
-                           'knight': Army('knight', 'berserker', 100, 1, 1, 1)}
-        else:
-            self.armies = {name: Army(name, base_class, amount, attack, defence, health)
-                           for name, base_class, amount, attack, defence, health in all_armies}
+            self.armies = {'peasant': Army(base='peasant',
+                                           name='miners',
+                                           amount=100,
+                                           training=25,
+                                           gold=1,
+                                           iron=1,
+                                           wood=1,
+                                           attack=2,
+                                           defence=1,
+                                           health=2,
+                                           description='Miners deal extra damage.'),
+                           'soldier': Army(base='soldier',
+                                           name='axemen',
+                                           amount=15,
+                                           training=10,
+                                           gold=3,
+                                           iron=1,
+                                           wood=1,
+                                           attack=2,
+                                           defence=2,
+                                           health=3,
+                                           description='Axemen are well-rounded soldiers.'),
+                           'archer': Army(base='archer',
+                                          name='crossbowmen',
+                                          amount=15,
+                                          training=15,
+                                          gold=3,
+                                          iron=1,
+                                          wood=1,
+                                          attack=1,
+                                          defence=3,
+                                          health=3,
+                                          description='Crossbowmen can be trained more quickly than other archers.'),
+                           'elite': Army(base='elite',
+                                         name='greybeards',
+                                         amount=0,
+                                         training=5,
+                                         gold=10,
+                                         iron=2,
+                                         wood=1,
+                                         attack=6,
+                                         defence=5,
+                                         health=5,
+                                         description='Greybeards are capable of defending, as well as attacking.')
+                           }
+        elif self.race == 'Human':
+            self.armies = {'peasant': Army(base='peasant',
+                                           name='men-at-arms',
+                                           amount=100,
+                                           training=50,
+                                           gold=1,
+                                           iron=0,
+                                           wood=1,
+                                           attack=1,
+                                           defence=1,
+                                           health=1,
+                                           description='Men-at-arms can be trained extremely quickly.'),
+                           'soldier': Army(base='soldier',
+                                           name='footmen',
+                                           amount=15,
+                                           training=10,
+                                           gold=4,
+                                           iron=2,
+                                           wood=0,
+                                           attack=3,
+                                           defence=2,
+                                           health=2,
+                                           description='Footmen are strong attackers.'),
+                           'archer': Army(base='archer',
+                                          name='bowmen',
+                                          amount=15,
+                                          training=10,
+                                          gold=2,
+                                          iron=0,
+                                          wood=3,
+                                          attack=1,
+                                          defence=3,
+                                          health=2,
+                                          description='Bowmen are great at defending.'),
+                           'elite': Army(base='elite',
+                                         name='knights',
+                                         amount=0,
+                                         training=5,
+                                         gold=15,
+                                         iron=5,
+                                         wood=1,
+                                         attack=8,
+                                         defence=3,
+                                         health=7,
+                                         description='Knights are one of the best attackers.')
+                           }
 
     @property
     def available_land(self):
@@ -120,19 +208,19 @@ class County(GameState):
     def get_offensive_strength(self, army):
         strength = 0
         for unit in self.armies.values():
-            print(unit, army)
-            strength += (unit.attack * unit.amount)
+            strength += army[unit.base] * unit.attack
         return strength
 
     def get_defensive_strength(self):
         strength = 0
         for unit in self.armies.values():
-            strength += (unit.defence * unit.amount)
+            strength += unit.amount * unit.defence
         return strength
 
     def battle_results(self, army, enemy):
         offense = self.get_offensive_strength(army)
         defence = enemy.get_defensive_strength()
+        print(offense, defence)
         if offense > defence:
             land_gained = int(enemy.total_land * 0.1)
             self.total_land += land_gained
@@ -146,6 +234,7 @@ class County(GameState):
         self.collect_taxes()
         self.production = self.get_production()
         self.produce_pending_buildings()
+        self.produce_pending_armies()
         self.update_weather()
         self.update_population()
         if self.weather == 'stormy':
@@ -153,8 +242,8 @@ class County(GameState):
         return []
 
     def collect_taxes(self):
-        self.coffers += self.population * (self.tax_rate / 100)
-        self.coffers += self.production  # Any unused production is collected as income
+        self.gold += self.population * (self.tax_rate / 100)
+        self.gold += self.production  # Any unused production is collected as income
         self.happiness = min(self.happiness + 7 - self.tax_rate, 100)
 
     def produce_pending_buildings(self):
@@ -169,6 +258,22 @@ class County(GameState):
             building.amount += 1
             self.production -= building.cost
             self.produce_pending_buildings()
+
+    def produce_pending_armies(self):
+        """
+        Chooses each unit that can be produced. Chooses each one and loops through the maximum amount.
+        Keeps building one until you can't or don't want to, then breaks the loop.
+        """
+        for unit in self.armies.values():
+            for i in range(unit.training):
+                if unit.pending > 0 and unit.gold <= self.gold and unit.wood <= self.wood and unit.iron <= self.iron:
+                    self.gold -= unit.gold
+                    self.wood -= unit.wood
+                    self.iron -= unit.iron
+                    unit.pending -= 1
+                    unit.amount += 1
+                else:
+                    break
 
     def update_weather(self):
         self.weather = choice(self.weather_choices)

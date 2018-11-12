@@ -6,6 +6,12 @@
 {% set kingdom = county.kingdom %}
 
 <br><br><br><br>
+<ul>
+        <li>Available population: {{ county.get_available_workers() }}</li>
+        <li>Gold: {{ county.gold }}</li>
+        <li>Iron: {{ county.iron }}</li>
+        <li>Wood: {{ county.wood }}</li>
+    </ul>
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
     <table id="infrastructure_table">
@@ -13,24 +19,54 @@
             <th>Name</th>
             <th>Standing Army</th>
             <th>Train</th>
+            <th style="width:125px;">Cost</th>
             <th>Currently In Training</th>
+            <th>Attack</th>
+            <th>Defence</th>
+            <th>Health</th>
+            <th>Description</th>
         </tr>
         <tr>
-            <td>Total Soldiers</td>
-            <td>{{ county.get_army_size() }}</td>
-            <td>-</td>
-            <td>-</td>
+            <td> </td>
+            <td> </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         {% for army in county.armies.values() %}
         <tr>
             <td>{{ army.name.title() }}</td>
             <td>{{ army.amount }}</td>
-            <td>{{ form[army.name] }}</td>
+            <td>{{ form[army.base] }}</td>
+            <td>
+                {% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif %}
+                {% if army.wood %}{{ army.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif %}
+                {% if army.iron %}{{ army.iron }}<img class="resource_icons" src="/static/images/iron_icon.jpg">{% endif %}
+                {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
+            </td>
             <td>{{ army.pending }}</td>
+            <td>{{ army.attack }}</td>
+            <td>{{ army.defence }}</td>
+            <td>{{ army.health }}</td>
+            <td>{{ army.description }}</td>
         </tr>
         {% endfor %}
+        <tr>
+            <td>Total</td>
+            <td>{{ county.get_army_size() }}</td>
+            <td>-</td>
+            <td>-</td>
+            <td></td>
+            <td>-</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
     </table>
-    Available workers for training: {{ county.get_available_workers() }}
     <button type="submit">Build</button>
 </form>
 

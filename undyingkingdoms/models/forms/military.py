@@ -2,12 +2,11 @@ from flask_wtf import FlaskForm
 from wtforms import IntegerField
 from wtforms.validators import NumberRange
 
-from undyingkingdoms.static.metadata import all_armies
-
 
 class MilitaryForm(FlaskForm):
-    pass
+    peasant = IntegerField('peasant', validators=[NumberRange(min=0, max=None)], default=0)
+    archer = IntegerField('archer', validators=[NumberRange(min=0, max=None)], default=0)
+    soldier = IntegerField('soldier', validators=[NumberRange(min=0, max=None)], default=0)
+    elite = IntegerField('elite', validators=[NumberRange(min=0, max=None)], default=0)
 
 
-for name, amount, attack, defence, health in all_armies:
-    setattr(MilitaryForm, name, IntegerField(name.title(), validators=[NumberRange(min=0, max=None)], default=0))
