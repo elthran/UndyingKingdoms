@@ -8,6 +8,7 @@ class Kingdom(GameState):
 
     name = db.Column(db.String(128), nullable=False, unique=True)
     counties = db.relationship('County', backref='kingdom')
+    age = db.Column(db.Integer)
 
     def __init__(self):
         used_names = set([kingdom.name for kingdom in Kingdom.query.all()])
@@ -15,6 +16,7 @@ class Kingdom(GameState):
             self.name = choice(list(set(kingdom_names)-used_names))
         except IndexError:
             raise Exception("Add more kingdoms")
+        self.age = 0
 
     def __repr__(self):
         return '<Kingdom %r (%r)>' % (self.name, self.id)

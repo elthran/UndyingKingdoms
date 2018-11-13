@@ -61,7 +61,6 @@ import undyingkingdoms.routes.gameplay.infrastructure
 import undyingkingdoms.routes.gameplay.military
 import undyingkingdoms.routes.gameplay.kingdom
 import undyingkingdoms.routes.gameplay.attack
-import undyingkingdoms.routes.gameplay.attack_results
 
 login_manager = LoginManager()
 login_manager.init_app(app)

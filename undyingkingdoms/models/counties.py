@@ -139,16 +139,26 @@ class County(GameState):
             strength += unit.amount * unit.defence
         return strength
 
+    def get_casualties(self, army):
+        casualties = 0
+        for unit in self.armies.values():
+            if army[unit.base] > 0:
+                dead = randint(army[unit.base] // 10, army[unit.base] // 5)
+                unit.amount -= dead
+                casualties += dead
+        return casualties
+
     def battle_results(self, army, enemy):
         offense = self.get_offensive_strength(army)
         defence = enemy.get_defensive_strength()
+        offence_casaulties = self.get_casualties(army)
         print(offense, defence)
         if offense > defence:
             land_gained = int(enemy.total_land * 0.1)
             self.total_land += land_gained
             enemy.total_land -= land_gained
-            return "You had {} power versus the enemies {} power. You were victorious! You gained {} acres.".format(
-                offense, defence, land_gained)
+            return "You had {} power versus the enemies {} power. You were victorious! You gained {} acres but lost" \
+                   " {} troops.".format(offense, defence, land_gained, offence_casaulties)
         else:
             return "You had {} power versus the enemies {} power. You failed".format(offense, defence)
 

@@ -26,8 +26,9 @@ def overview():
             notifications = county.change_day()
             for notification in notifications:
                 db.session.add(notification)
-            db.session.commit()
-            time_keeper.total_land = (time_keeper.total_land + 1) % 24
+        time_keeper.total_land = (time_keeper.total_land + 1) % 24
+        time_keeper.kingdom.age += 1
+        db.session.commit()
     notifications = current_user.county.notifications
     for notification in Notification.query.filter_by(county_id=current_user.county.id).all():
         db.session.delete(notification)
