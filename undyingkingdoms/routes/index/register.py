@@ -4,8 +4,6 @@ from flask_login import login_user
 
 from undyingkingdoms import app, User, db
 from undyingkingdoms.models.analytics import AuthenticationEvent
-from undyingkingdoms.models.bases import GameEvent
-from undyingkingdoms.models.forms.login import LoginForm
 from undyingkingdoms.models.forms.register import RegisterForm
 
 

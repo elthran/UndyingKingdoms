@@ -1,6 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, SelectField
-from wtforms.validators import NumberRange
+from wtforms import SelectField
 
 
 class EconomyForm(FlaskForm):

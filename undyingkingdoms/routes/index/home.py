@@ -1,3 +1,5 @@
+import datetime
+
 from flask import url_for, redirect
 from undyingkingdoms import app, db
 from undyingkingdoms.models import User, County, Kingdom
@@ -16,10 +18,11 @@ def home():
         county = County("County1", "John", user.id, kingdom.id, 'Dwarf', 'Male')
         db.session.add(county)
         db.session.commit()
-        user2 = User("AI - #1", "xxx", "xxx")
+        user2 = User("timekeeper", "xxx", "xxx")
         db.session.add(user2)
         db.session.commit()
-        county2 = County("AI - County 1", "Mr. AI", user2.id, kingdom.id, 'Human', 'Female')
+        county2 = County("Time Warp", "The Timekeeper", user2.id, kingdom.id, 'Human', 'Female')
+        county2.total_land = datetime.datetime.now().hour
         db.session.add(county2)
         db.session.commit()
     else:

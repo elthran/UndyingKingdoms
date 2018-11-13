@@ -1,16 +1,23 @@
-from flask import render_template, request, url_for, redirect
+import datetime
+
+from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
 
 from undyingkingdoms import app, db
 from undyingkingdoms.models import County, Notification, DailyActiveUserEvent
-from undyingkingdoms.models.forms.login import Testing
 
 
 @login_required
 @app.route('/gameplay/overview/', methods=['GET', 'POST'])
 def overview():
-    form = Testing(request.form)
-    if form.validate_on_submit():
+    if not current_user.county:
+        return redirect(url_for('initialize'))
+    """
+    Below is temporary hourly progression clock
+    """
+    time_keeper = County.query.filter_by(name="Time Warp").first()
+    now = datetime.datetime.now().hour
+    while now != time_keeper.total_land:
         for county in County.query.filter_by().all():
             county_dau = DailyActiveUserEvent(user_id=county.user_id)
             if county_dau.validate():
@@ -20,10 +27,12 @@ def overview():
             for notification in notifications:
                 db.session.add(notification)
             db.session.commit()
+            time_keeper.total_land = (time_keeper.total_land + 1) % 24
     notifications = current_user.county.notifications
     for notification in Notification.query.filter_by(county_id=current_user.county.id).all():
         db.session.delete(notification)
         db.session.commit()
-    if not current_user.county:
-        return redirect(url_for('initialize'))
-    return render_template('gameplay/overview.html', form=form, notifications=notifications)
+    '''
+    End of weird clock code
+    '''
+    return render_template('gameplay/overview.html', notifications=notifications)

@@ -3,8 +3,6 @@ from flask_login import login_required, current_user
 
 from undyingkingdoms import app, db
 from undyingkingdoms.models.forms.economy import EconomyForm
-from undyingkingdoms.models.forms.infrastructure import InfrastructureForm
-from undyingkingdoms.static.metadata import all_buildings
 
 
 @login_required

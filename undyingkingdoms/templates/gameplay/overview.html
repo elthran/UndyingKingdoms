@@ -28,10 +28,5 @@
     {{ event.title }}: {{ event.content }}
     {% endfor %}
 </ul>
-<br>
-<form method="POST" accept-charset="UTF-8" role="form">
-    {{ form.csrf_token }}
-    <button type="submit">End Day</button>
-</form>
 
 {% endblock %}

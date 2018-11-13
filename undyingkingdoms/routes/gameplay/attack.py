@@ -1,11 +1,9 @@
-from flask import render_template, url_for, redirect
+from flask import render_template
 from flask_login import login_required, current_user
 
 from undyingkingdoms import app, db
 from undyingkingdoms.models import County
-from undyingkingdoms.models.forms.attack import AttackForm
 from undyingkingdoms.models.forms.military import MilitaryForm
-from undyingkingdoms.static.metadata import all_armies
 
 
 @login_required

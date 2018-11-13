@@ -1,12 +1,12 @@
 import os
 import socket
-import time
 
 from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
-from flask_wtf.csrf import CSRFProtect
 from flask_json import FlaskJSON
 from flask_mail import Mail
+from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
+
 import private_config
 
 UPLOAD_FOLDER = 'undyingkingdoms/static/uploads/'

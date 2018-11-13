@@ -1,10 +1,16 @@
-from undyingkingdoms.models.armies import Army
-from undyingkingdoms.models.buildings import Building
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.bases import GameState, db
 from random import choice, uniform, randint
 from sqlalchemy.orm.collections import attribute_mapped_collection
-from undyingkingdoms.static.metadata import all_buildings, all_armies, dwarf_armies, human_armies, dwarf_buildings, \
+from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
+    human_buildings
+from random import choice, uniform, randint
+
+from sqlalchemy.orm.collections import attribute_mapped_collection
+
+from undyingkingdoms.models.bases import GameState, db
+from undyingkingdoms.models.notifications import Notification
+from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
     human_buildings
 
 
