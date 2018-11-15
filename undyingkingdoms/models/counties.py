@@ -1,9 +1,3 @@
-from undyingkingdoms.models.notifications import Notification
-from undyingkingdoms.models.bases import GameState, db
-from random import choice, uniform, randint
-from sqlalchemy.orm.collections import attribute_mapped_collection
-from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
-    human_buildings
 from random import choice, uniform, randint
 
 from sqlalchemy.orm.collections import attribute_mapped_collection
@@ -12,6 +6,8 @@ from undyingkingdoms.models.bases import GameState, db
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
     human_buildings
+
+from copy import deepcopy
 
 
 class County(GameState):
@@ -20,11 +16,11 @@ class County(GameState):
 
     name = db.Column(db.String(128), nullable=False)
     leader = db.Column(db.String(128))
-    gender = db.Column(db.String(16))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
     total_land = db.Column(db.Integer)
     race = db.Column(db.String(32))
+    gender = db.Column(db.String(16))
     tax = db.Column(db.Integer)
     gold = db.Column(db.Integer)
     wood = db.Column(db.Integer)
@@ -75,11 +71,16 @@ class County(GameState):
         self.emigration = 0
 
         if self.race == 'Dwarf':
-            self.buildings = dwarf_buildings
-            self.armies = dwarf_armies
+            buildings = deepcopy(dwarf_buildings)
+            armies = deepcopy(dwarf_armies)
         elif self.race == 'Human':
-            self.buildings = human_buildings
-            self.armies = human_armies
+            buildings = deepcopy(human_buildings)
+            armies = deepcopy(human_armies)
+        else:
+            print("UNKNOWN")
+
+        self.buildings = buildings
+        self.armies = armies
 
     @property
     def available_land(self):
