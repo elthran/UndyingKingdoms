@@ -10,3 +10,6 @@ class AttackForm(FlaskForm):
     archer = SelectField('archer', coerce=int)
     soldier = SelectField('soldier', coerce=int)
     elite = SelectField('elite', coerce=int)
+
+class TempGameAdvance(FlaskForm):
+    pass

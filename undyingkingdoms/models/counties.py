@@ -104,7 +104,7 @@ class County(GameState):
         """
         Returns the population with no current duties.
         """
-        return self.population - self.get_unavailable_workers() - self.get_army_size()
+        return max(self.population - self.get_unavailable_workers() - self.get_army_size(), 0)
 
     def get_production_modifier(self):
         """
@@ -236,7 +236,7 @@ class County(GameState):
         self.population += (self.births + self.immigration) - (self.deaths + self.emigration)
 
     def get_production(self):
-        return (self.get_production_modifier() * self.get_available_workers()) // 3
+        return max((self.get_production_modifier() * self.get_available_workers()) // 3, 0)
 
     def __repr__(self):
         return '<County %r (%r)>' % (self.name, self.id)

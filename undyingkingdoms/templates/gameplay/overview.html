@@ -24,6 +24,10 @@
     <li>Land: {{ county.total_land }}</li>
     <li>Weather: {{ county.weather }}</li>
 </ul>
+<form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    <button type="submit">End Day (For Testing Only)</button>
+</form>
 <ul>
     {% for event in notifications %}
     {{ event.title }}: {{ event.content }}
