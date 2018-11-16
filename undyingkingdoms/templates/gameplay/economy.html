@@ -8,14 +8,14 @@
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
     <ul>
-        <li>Gold: {{ county.gold }} (+ {{ county.get_gold_income()|int }} per day)</li>
+        <li>Gold: {{ county.gold }} (+ {{ county.get_gold_income()|int }} per day, from taxes and excess production)</li>
         <li>Wood: {{ county.wood }} (+ {{ county.get_wood_income()|int }} per day)</li>
         <li>Iron: {{ county.iron }} (+ {{ county.get_iron_income()|int }} per day)</li>
         <li>Tax rate: {{ form.tax }}%
         </li>
     </ul>
     <br>
-    <button type="submit">Build</button>
+    <button type="submit">Change</button>
     <br>
 </form>
 

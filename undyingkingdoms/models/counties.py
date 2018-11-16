@@ -18,6 +18,8 @@ class County(GameState):
     leader = db.Column(db.String(128))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
+    vote = db.Column(db.Integer)
+
     total_land = db.Column(db.Integer)
     race = db.Column(db.String(32))
     gender = db.Column(db.String(16))
@@ -54,6 +56,8 @@ class County(GameState):
         self.race = race
         self.gender = gender
         self.title = 'Engineer'
+        self.vote = None
+
         self.population = 500
         self.total_land = 150
         self.hunger = 75
@@ -90,6 +94,15 @@ class County(GameState):
         built = sum(building.amount for building in self.buildings.values())
         pending = sum(building.pending for building in self.buildings.values())
         return self.total_land - built - pending
+
+    @property
+    def votes(self):
+        return len([county for county in self.kingdom.counties if county.vote == self.id])
+
+    def display_vote(self):
+        if County.query.filter_by(id=self.vote).first():
+            return County.query.filter_by(id=self.vote).first().name
+        return self.name
 
     def get_army_size(self):
         return sum(army.amount for army in self.armies.values())
