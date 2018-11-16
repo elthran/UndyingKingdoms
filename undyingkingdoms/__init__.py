@@ -80,3 +80,15 @@ print("Game ready")
 @login_manager.user_loader
 def load_user(this_id):
     return User.query.get(this_id)
+
+
+@app.errorhandler(404)
+def not_found(error):
+    print("Error:", error)
+    return render_template('404.html', error=error), 404
+
+
+@app.errorhandler(500)
+def not_found(error):
+    print("Error:", error)
+    return render_template('500.html', error=error), 500
