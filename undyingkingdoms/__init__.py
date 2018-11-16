@@ -6,6 +6,7 @@ from flask_json import FlaskJSON
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
+from flask_sslify import SSLify
 
 import private_config
 
@@ -16,6 +17,8 @@ app = Flask(__name__)
 app.config.from_object('private_config')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+sslify = SSLify(app)
 
 if 'liveweb' in socket.gethostname():
     app.config['SQLALCHEMY_DATABASE_URI'] = private_config.SERVER_DATABASE_URI
