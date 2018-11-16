@@ -178,11 +178,11 @@ class County(GameState):
         return (self.population * (self.tax / 100)) + self.production
 
     def get_wood_income(self):
-        mills = [building.amount for building in self.buildings.values() if building.name == 'mills']
+        mills = [building.amount for building in self.buildings.values() if building.base == 'mills']
         return sum(mills) * 1
 
     def get_iron_income(self):
-        mines = [building.amount for building in self.buildings.values() if building.name == 'mines']
+        mines = [building.amount for building in self.buildings.values() if building.base == 'mines']
         return sum(mines) * 1
 
     def collect_taxes(self):
@@ -229,9 +229,9 @@ class County(GameState):
         self.weather = choice(self.weather_choices)
 
     def update_population(self):
-        self.deaths = self.population * uniform(0.01, 0.03)  # Deaths
+        self.deaths = int(self.population * uniform(0.01, 0.03))  # Deaths
         self.emigration = randint(100, 125) - self.happiness
-        self.births = self.buildings['houses'].amount * 1 * self.get_population_modifier()
+        self.births = int(self.buildings['houses'].amount * 1 * self.get_population_modifier())
         self.immigration = randint(15, 50)
         self.population += (self.births + self.immigration) - (self.deaths + self.emigration)
 
