@@ -33,6 +33,7 @@ class County(GameState):
     weather = db.Column(db.String(32))
     title = db.Column(db.String(32))
     production = db.Column(db.Integer)
+    food_stores = db.Column(db.Integer)
     notifications = db.relationship('Notification', backref='kingdom')
 
     births = db.Column(db.Integer)
@@ -67,6 +68,7 @@ class County(GameState):
         self.wood = 100
         self.iron = 25
         self.production = 0  # How many buildings you can build per day
+        self.food_stores = 0
         self.weather = choice(self.weather_choices)
 
         self.births = 0
@@ -181,6 +183,7 @@ class County(GameState):
         self.production = self.get_production()
         self.produce_pending_buildings()
         self.produce_pending_armies()
+        self.update_food()
         self.update_weather()
         self.update_population()
         if self.weather == 'stormy':
@@ -201,7 +204,6 @@ class County(GameState):
     def get_death_rate(self):
         modifier = 1
         death_rate = uniform(1.5, 2.0) / self.hunger
-        print(death_rate)
         return int(death_rate * self.population * modifier)
 
     def get_birth_rate(self):
@@ -215,7 +217,7 @@ class County(GameState):
         return int(birth_rate * modifier)
 
     def get_immigration_rate(self):
-        return randint(15, 50)
+        return randint(20, 30)
 
     def get_emmigration_rate(self):
         return randint(100, 125) - self.happiness
@@ -262,6 +264,18 @@ class County(GameState):
 
     def update_weather(self):
         self.weather = choice(self.weather_choices)
+
+    def update_food(self):
+        daily_food = self.buildings['pastures'].amount * 25
+        storable_food = self.buildings['fields'].amount * 20
+        total_food = daily_food + storable_food + self.food_stores
+        print(total_food, self.population)
+        if total_food >= self.population:
+            self.food_stores = total_food - self.population
+            self.hunger += 1
+        else:
+            self.food_stores = 0
+            self.hunger -= int((self.population / total_food) * 5)
 
     def update_population(self):
         self.deaths = self.get_death_rate()
