@@ -1,5 +1,6 @@
 from random import choice
 
+from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.bases import GameState, db
 from undyingkingdoms.static.metadata import kingdom_names
 
@@ -29,4 +30,11 @@ class Kingdom(GameState):
     def get_most_popular_county(self):
         counties = [(county.votes, county) for county in self.counties]
         return max(counties, key=lambda x: x[0])[1]
+
+    def count_votes(self):
+        if self.get_most_popular_county().votes >= self.get_votes_needed():
+            self.leader = self.get_most_popular_county().id
+
+    def get_leader_name(self, county_id):
+        return County.query.filter_by(id=county_id).first().name
 

@@ -17,21 +17,26 @@
         {% if my_county.name == county.name %}
         <form method="POST" accept-charset="UTF-8" role="form">
             {{ form.csrf_token }}
-            {{ county.name }} led by the infamous {{ county.user.name }} with {{
-            county.total_land }} acres of land
-            <a href="{{ url_for('attack', county_id=county.id) }}">[attack]</a>
+            {{ county.name }} led by the infamous {{ county.user.name }} with {{ county.total_land }} acres of land
             (Vote: {{ form.vote }})<button type="submit">Change Vote</button>
             <br>
         </form>
         {% else %}
         {{ county.name }} led by the infamous {{ county.user.name }} with {{ county.total_land }} acres of land
+        <a href="{{ url_for('attack', county_id=county.id) }}">[attack]</a>
         (Vote: {{ county.display_vote() }})
         {% endif %}
     </li>
     <li><br></li>
     {% endfor %}
 </ul>
+<br><br><br>
+{% if kingdom.leader %}
+{{ kingdom.get_leader_name(kingdom.leader) }} rules this land!
+{% else %}
 {{ kingdom.get_most_popular_county().name }} is winning with {{ kingdom.get_most_popular_county().votes }}/{{ kingdom.get_votes_needed() }} votes.
 The first county with enough votes will be crowned king.
+{% endif %}
+
 
 {% endblock %}

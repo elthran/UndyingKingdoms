@@ -99,13 +99,20 @@ class County(GameState):
     def votes(self):
         return len([county for county in self.kingdom.counties if county.vote == self.id])
 
+    def cast_vote(self, vote):
+        self.vote = vote
+        self.kingdom.count_votes()
+
     def display_vote(self):
         if County.query.filter_by(id=self.vote).first():
             return County.query.filter_by(id=self.vote).first().name
+        self.vote = self.id
         return self.name
 
     def get_army_size(self):
-        return sum(army.amount for army in self.armies.values())
+        pending = sum(army.pending for army in self.armies.values())
+        ready = sum(army.amount for army in self.armies.values())
+        return pending + ready
 
     def get_unavailable_workers(self):
         """
