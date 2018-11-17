@@ -178,6 +178,10 @@ class County(GameState):
             land_gained = int(enemy.total_land * 0.1)
             self.total_land += land_gained
             enemy.total_land -= land_gained
+            notification = Notification(enemy.id, "You were attacked by {}".format(self.name),
+                                        "You lost {} acres.".format(land_gained))
+            db.session.add(notification)
+            db.session.commit()
             return "You had {} power versus the enemies {} power. You were victorious! You gained {} acres but lost" \
                    " {} troops.".format(offense, defence, land_gained, offence_casaulties)
         else:
