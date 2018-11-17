@@ -271,7 +271,7 @@ class County(GameState):
         total_food = daily_food + storable_food + self.food_stores
         print(total_food, self.population)
         if total_food >= self.population:
-            self.food_stores = total_food - self.population
+            self.food_stores += min(total_food - self.population, storable_food)
             self.hunger += 1
         else:
             self.food_stores = 0

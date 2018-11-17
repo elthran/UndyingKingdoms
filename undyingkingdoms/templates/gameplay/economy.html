@@ -11,8 +11,8 @@
         <li>Gold: {{ county.gold }} (+ {{ county.get_gold_income()|int }} per day, from taxes and excess production)</li>
         <li>Wood: {{ county.wood }} (+ {{ county.get_wood_income()|int }} per day)</li>
         <li>Iron: {{ county.iron }} (+ {{ county.get_iron_income()|int }} per day)</li>
-        <li>Tax rate: {{ form.tax }}%
-        </li>
+        <li>Tax rate: {{ form.tax }}%</li>
+        <li>Stored Food: {{ county.food_stores }}</li>
     </ul>
     <br>
     <button type="submit">Change</button>
