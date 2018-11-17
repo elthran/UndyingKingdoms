@@ -209,6 +209,10 @@ class County(GameState):
         mines = [building.amount for building in self.buildings.values() if building.base == 'mines']
         return sum(mines) * 1
 
+    def get_death_rate(self):
+        death_rate = uniform(0.0002, 0.0005) * self.hunger
+        return int(death_rate * self.population)
+
     def collect_taxes(self):
         self.gold += self.get_gold_income()
         self.wood += self.get_wood_income()
@@ -253,7 +257,7 @@ class County(GameState):
         self.weather = choice(self.weather_choices)
 
     def update_population(self):
-        self.deaths = int(self.population * uniform(0.01, 0.03))  # Deaths
+        self.deaths = self.get_death_rate()
         self.emigration = randint(100, 125) - self.happiness
         self.births = int(self.buildings['houses'].amount * 1 * self.get_population_modifier())
         self.immigration = randint(15, 50)
