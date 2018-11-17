@@ -137,17 +137,6 @@ class County(GameState):
             modifier['Profession Bonus'] = 0.15
         return sum(modifier.values())
 
-    def get_population_modifier(self):
-        """
-        Returns the modifier for how much production each worker produces.
-        """
-        modifier = {'Base': 1}
-        if self.race == 'Elf':
-            modifier['Racial Bonus'] = -0.1
-        if self.title == 'Goblin':
-            modifier['Racial Bonus'] = 0.15
-        return sum(modifier.values())
-
     def get_offensive_strength(self, army):
         strength = 0
         for unit in self.armies.values():
@@ -210,8 +199,26 @@ class County(GameState):
         return sum(mines) * 1
 
     def get_death_rate(self):
-        death_rate = uniform(0.0002, 0.0005) * self.hunger
-        return int(death_rate * self.population)
+        modifier = 1
+        death_rate = uniform(1.5, 2.0) / self.hunger
+        print(death_rate)
+        return int(death_rate * self.population * modifier)
+
+    def get_birth_rate(self):
+        modifier = {"Base": 1}
+        if self.race == 'Elf':
+            modifier['Racial Bonus'] = -0.1
+        if self.title == 'Goblin':
+            modifier['Racial Bonus'] = 0.15
+        modifier = sum(modifier.values()) * uniform(0.9995, 1.0005)
+        birth_rate = self.buildings['houses'].amount
+        return int(birth_rate * modifier)
+
+    def get_immigration_rate(self):
+        return randint(15, 50)
+
+    def get_emmigration_rate(self):
+        return randint(100, 125) - self.happiness
 
     def collect_taxes(self):
         self.gold += self.get_gold_income()
@@ -258,9 +265,9 @@ class County(GameState):
 
     def update_population(self):
         self.deaths = self.get_death_rate()
-        self.emigration = randint(100, 125) - self.happiness
-        self.births = int(self.buildings['houses'].amount * 1 * self.get_population_modifier())
-        self.immigration = randint(15, 50)
+        self.emigration = self.get_emmigration_rate()
+        self.births = self.get_birth_rate()
+        self.immigration = self.get_immigration_rate()
         self.population += (self.births + self.immigration) - (self.deaths + self.emigration)
 
     def get_production(self):
