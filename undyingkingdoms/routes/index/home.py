@@ -26,7 +26,8 @@ def home():
         county2.total_land = datetime.datetime.now().hour
         db.session.add(county2)
         db.session.commit()
-        county.vote = county.id
+        county2.vote = county2.id
+        db.session.commit()
     else:
         print("EVERYTHING IS ALREADY BUILT")
     return redirect(url_for('login'))

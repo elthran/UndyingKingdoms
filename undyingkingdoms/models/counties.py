@@ -11,7 +11,7 @@ from copy import deepcopy
 
 
 class County(GameState):
-    weather_choices = ["clear skies", "stormy"]
+    weather_choices = ["clear skies", "stormy", "sunny", "cloudy", "light rain", "overcast"]
     buildings_workers_required = {"unusable": 0, "houses": 0, "farms": 3}
 
     name = db.Column(db.String(128), nullable=False)
@@ -69,7 +69,7 @@ class County(GameState):
         self.iron = 25
         self.production = 0  # How many buildings you can build per day
         self.food_stores = 0
-        self.weather = choice(self.weather_choices)
+        self.weather = "Sunny"
 
         self.births = 0
         self.deaths = 0
@@ -106,10 +106,7 @@ class County(GameState):
         self.kingdom.count_votes()
 
     def display_vote(self):
-        if County.query.filter_by(id=self.vote).first():
-            return County.query.filter_by(id=self.vote).first().name
-        self.vote = self.id
-        return self.name
+        return County.query.filter_by(id=self.vote).first().name
 
     def get_army_size(self):
         pending = sum(army.pending for army in self.armies.values())
@@ -170,7 +167,7 @@ class County(GameState):
             self.total_land += land_gained
             enemy.total_land -= land_gained
             notification = Notification(enemy.id, "You were attacked by {}".format(self.name),
-                                        "You lost {} acres.".format(land_gained))
+                                        "You lost {} acres.".format(land_gained), self.kingdom.day)
             db.session.add(notification)
             db.session.commit()
             return "You had {} power versus the enemies {} power. You were victorious! You gained {} acres but lost" \
@@ -178,7 +175,7 @@ class County(GameState):
         else:
             return "You had {} power versus the enemies {} power. You failed".format(offense, defence)
 
-    def change_day(self):
+    def advance_day(self):
         self.collect_taxes()
         self.production = self.get_production()
         self.produce_pending_buildings()
@@ -186,9 +183,13 @@ class County(GameState):
         self.update_food()
         self.update_weather()
         self.update_population()
-        if self.weather == 'stormy':
-            return [Notification(self.id, 'Weather Warning', 'Stormy weather has damaged your crops.')]
-        return []
+
+    def display_news(self):
+        events = [event for event in Notification.query.filter_by(county_id=self.id).all() if event.new is True]
+        for event in events:
+            event.new = False
+        db.session.commit()
+        return events
 
     def get_gold_income(self):
         return (self.population * (self.tax / 100)) + self.production
@@ -264,6 +265,11 @@ class County(GameState):
 
     def update_weather(self):
         self.weather = choice(self.weather_choices)
+        if self.weather == 'stormy':
+            notification = Notification(self.id, "Storms have ravaged your crops",
+                                        "You lost 20 bushels of wheat.", self.kingdom.day)
+            db.session.add(notification)
+            db.session.commit()
 
     def update_food(self):
         daily_food = self.buildings['pastures'].amount * 25
@@ -286,6 +292,30 @@ class County(GameState):
 
     def get_production(self):
         return max((self.get_production_modifier() * self.get_available_workers()) // 3, 0)
+
+    @property
+    def hunger_terminology(self):
+        if self.hunger < 20:
+            return "Dying of hunger"
+        if self.hunger < 50:
+            return "Starving"
+        if self.hunger < 75:
+            return "Hungry"
+        if self.hunger < 90:
+            return "Sated"
+        return "Well nourished"
+
+    @property
+    def happiness_terminology(self):
+        if self.happiness < 20:
+            return "Rioting"
+        if self.happiness < 50:
+            return "Furious"
+        if self.happiness < 75:
+            return "Discontent"
+        if self.happiness < 90:
+            return "Content"
+        return "Pleased"
 
     def __repr__(self):
         return '<County %r (%r)>' % (self.name, self.id)

@@ -18,8 +18,8 @@
         <font color="green">{{ county.immigration }} immigration,
             {{ county.births }} births</font>)
     </li>
-    <li>Happiness: {{ county.happiness }}</li>
-    <li>Hunger: {{ county.hunger }}</li>
+    <li>Happiness: {{ county.happiness_terminology }}</li>
+    <li>Hunger: {{ county.hunger_terminology }}</li>
     <li>Land: {{ county.total_land }}</li>
     <li>Weather: {{ county.weather }}</li>
 </ul>
@@ -28,8 +28,11 @@
     <button type="submit">End Day (For Testing Only)</button>
 </form>
 <ul>
-    {% for event in notifications %}
-    {{ event.title }}: {{ event.content }}
+    <h1>News</h1>
+    {% for event in county.display_news() %}
+    <p>{{ event.title }} (Day: {{ event.day }}): {{ event.content }}</p>
+    {% else %}
+    <p>No new events to report.</p>
     {% endfor %}
 </ul>
 

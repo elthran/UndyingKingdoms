@@ -11,6 +11,7 @@ class Kingdom(GameState):
     counties = db.relationship('County', backref='kingdom')
     age = db.Column(db.Integer)
     leader = db.Column(db.Integer)  # county.id of leader
+    day = db.Column(db.Integer)
 
     def __init__(self):
         used_names = set([kingdom.name for kingdom in Kingdom.query.all()])
@@ -20,12 +21,13 @@ class Kingdom(GameState):
             raise Exception("Add more kingdoms")
         self.age = 0
         self.leader = None
+        self.day = 0
 
     def __repr__(self):
         return '<Kingdom %r (%r)>' % (self.name, self.id)
 
     def get_votes_needed(self):
-        return max(len(self.counties) // 3, 5)
+        return max(len(self.counties) // 3, 3)
 
     def get_most_popular_county(self):
         counties = [(county.votes, county) for county in self.counties]
@@ -37,4 +39,9 @@ class Kingdom(GameState):
 
     def get_leader_name(self, county_id):
         return County.query.filter_by(id=county_id).first().name
+
+    def advance_day(self):
+        for county in self.counties:
+            county.advance_day()
+        self.day += 1
 

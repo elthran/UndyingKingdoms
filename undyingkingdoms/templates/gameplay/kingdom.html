@@ -18,13 +18,13 @@
         <form method="POST" accept-charset="UTF-8" role="form">
             {{ form.csrf_token }}
             {{ county.name }} led by the infamous {{ county.user.name }} with {{ county.total_land }} acres of land
-            (Vote: {{ form.vote }})<button type="submit">Change Vote</button>
+            {% if kingdom.leader == None %}(Vote: {{ form.vote }})<button type="submit">Change Vote</button>{% endif %}
             <br>
         </form>
         {% else %}
         {{ county.name }} led by the infamous {{ county.user.name }} with {{ county.total_land }} acres of land
         <a href="{{ url_for('attack', county_id=county.id) }}">[attack]</a>
-        (Vote: {{ county.display_vote() }})
+        {% if kingdom.leader == None %}(Vote: {{ county.display_vote() }}){% endif %}
         {% endif %}
     </li>
     <li><br></li>
