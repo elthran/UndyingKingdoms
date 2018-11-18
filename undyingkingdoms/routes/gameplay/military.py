@@ -10,6 +10,7 @@ from undyingkingdoms.static.metadata import all_armies
 @app.route('/gameplay/military/', methods=['GET', 'POST'])
 def military():
     form = MilitaryForm()
+    form.county_id.data = current_user.county.id
     if form.validate_on_submit():
         for army in all_armies:
             if form.data[army] > 0:

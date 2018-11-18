@@ -242,16 +242,12 @@ class County(GameState):
         """
         queue = [building for building in self.buildings.values()
                  if building.pending > 0
-                 and building.production <= self.production
-                 and building.gold <= self.gold
-                 and building.wood <= self.wood]
+                 and building.production <= self.production]
         if queue and self.production > 0:
             building = choice(queue)
             building.pending -= 1
             building.amount += 1
             self.production -= building.production
-            self.gold -= building.gold
-            self.wood -= building.wood
             self.produce_pending_buildings()
 
     def produce_pending_armies(self):
