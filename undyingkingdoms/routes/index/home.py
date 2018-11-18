@@ -18,6 +18,7 @@ def home():
         county = County("Elthrania", "Elthran", user.id, kingdom.id, 'Dwarf', 'Male')
         db.session.add(county)
         db.session.commit()
+        county.vote = county.id
         user2 = User("timekeeper", "xxx@gmail.com", "xxxx")
         db.session.add(user2)
         db.session.commit()
@@ -25,6 +26,7 @@ def home():
         county2.total_land = datetime.datetime.now().hour
         db.session.add(county2)
         db.session.commit()
+        county.vote = county.id
     else:
         print("EVERYTHING IS ALREADY BUILT")
     return redirect(url_for('login'))

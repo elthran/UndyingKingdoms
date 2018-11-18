@@ -30,5 +30,7 @@ def initialize():
         db.session.add(county)
         print("ADDED")
         db.session.commit()
+        county.vote = county.id
+        db.session.commit()
         return redirect(url_for('overview'))
     return render_template("index/initialize.html", form=form)
