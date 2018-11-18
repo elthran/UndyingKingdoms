@@ -5,7 +5,7 @@ from sqlalchemy.orm.collections import attribute_mapped_collection
 from undyingkingdoms.models.bases import GameState, db
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
-    human_buildings
+    human_buildings, rations_translations_tables
 
 from copy import deepcopy
 
@@ -26,7 +26,7 @@ class County(GameState):
     gold = db.Column(db.Integer)
     wood = db.Column(db.Integer)
     iron = db.Column(db.Integer)
-    rations = db.Column(db.Integer)  # Out of 6: ["None", "Quarter", "Half", "Normal", "Double", "Triple"]
+    rations = db.Column(db.String(32))
     happiness = db.Column(db.Integer)  # Out of 100
     population = db.Column(db.Integer)
     hunger = db.Column(db.Integer)  # Out of 100
@@ -67,7 +67,7 @@ class County(GameState):
         self.gold = 1000
         self.wood = 100
         self.iron = 25
-        self.rations = 3
+        self.rations = "Normal"
         self.production = 0  # How many buildings you can build per day
         self.food_stores = 0
         self.weather = "Sunny"
@@ -279,18 +279,16 @@ class County(GameState):
             db.session.commit()
 
     def update_food(self):
-        rations = {"0": 0, "1": 0.25, "2": 0.5, "3": 1, "4": 2, "5": 3}
-
         daily_food = self.buildings['pastures'].amount * 25
         storable_food = self.buildings['fields'].amount * 20
         total_food = daily_food + storable_food + self.food_stores
-        print(total_food, self.population)
-        if total_food >= (self.population * rations[str(self.rations)]):
-            self.food_stores += min(total_food - self.population, storable_food)
+        food_eaten = self.population * rations_translations_tables[self.rations]
+        if total_food >= food_eaten:
+            self.food_stores += min(total_food - food_eaten, storable_food)
             self.hunger += 1
         else:
             self.food_stores = 0
-            self.hunger -= int((self.population / total_food) * 5)
+            self.hunger -= int((food_eaten / total_food) * 5)
 
     def update_population(self):
         self.deaths = self.get_death_rate()
@@ -300,7 +298,7 @@ class County(GameState):
         self.population += (self.births + self.immigration) - (self.deaths + self.emigration)
 
     def get_production(self):
-        return max((self.get_production_modifier() * self.get_available_workers()) // 3, 0)
+        return max(int(self.get_production_modifier() * self.get_available_workers() / 3), 0)
 
     @property
     def hunger_terminology(self):

@@ -3,6 +3,8 @@ from undyingkingdoms.models.armies import Army
 
 kingdom_names = ["Elthrania", "Galbador", "Faenoth"]
 
+rations_translations_tables = {"None": 0, "Quarter": 0.25, "Half": 0.5, "Normal": 1, "Double": 2, "Triple": 3}
+
 # (name, amount, maintenance, description)
 all_buildings = ['houses', 'fields', 'mills', 'mines']
 
