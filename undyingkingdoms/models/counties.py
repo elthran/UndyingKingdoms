@@ -27,6 +27,7 @@ class County(GameState):
     gold = db.Column(db.Integer)
     wood = db.Column(db.Integer)
     iron = db.Column(db.Integer)
+    rations = db.Column(db.Integer)  # Out of 6: ["None", "Quarter", "Half", "Normal", "Double", "Triple"]
     happiness = db.Column(db.Integer)  # Out of 100
     population = db.Column(db.Integer)
     hunger = db.Column(db.Integer)  # Out of 100
@@ -67,6 +68,7 @@ class County(GameState):
         self.gold = 1000
         self.wood = 100
         self.iron = 25
+        self.rations = 3
         self.production = 0  # How many buildings you can build per day
         self.food_stores = 0
         self.weather = "Sunny"
@@ -272,11 +274,13 @@ class County(GameState):
             db.session.commit()
 
     def update_food(self):
+        rations = {"0": 0, "1": 0.25, "2": 0.5, "3": 1, "4": 2, "5": 3}
+
         daily_food = self.buildings['pastures'].amount * 25
         storable_food = self.buildings['fields'].amount * 20
         total_food = daily_food + storable_food + self.food_stores
         print(total_food, self.population)
-        if total_food >= self.population:
+        if total_food >= (self.population * rations[str(self.rations)]):
             self.food_stores += min(total_food - self.population, storable_food)
             self.hunger += 1
         else:

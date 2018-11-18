@@ -12,6 +12,7 @@
         <li>Wood: {{ county.wood }} (+ {{ county.get_wood_income()|int }} per day)</li>
         <li>Iron: {{ county.iron }} (+ {{ county.get_iron_income()|int }} per day)</li>
         <li>Tax rate: {{ form.tax }}%</li>
+        <li>Food Rations: {{ form.rations }}</li>
         <li>Stored Food: {{ county.food_stores }}</li>
     </ul>
     <br>
