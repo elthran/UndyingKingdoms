@@ -92,8 +92,7 @@ class County(GameState):
         """
         How much land you have which is empty and can be built upon.
         """
-        used = sum(building.amount + building.pending for building in self.buildings.values())
-        return max(self.total_land - used, 0)
+        return sum(building.amount + building.pending for building in self.buildings.values())
 
     def get_votes_for_self(self):
         """
@@ -109,25 +108,24 @@ class County(GameState):
         return County.query.filter_by(id=self.vote).first().name
 
     def get_army_size(self):
-        pending = sum(army.pending for army in self.armies.values())
-        ready = sum(army.amount for army in self.armies.values())
-        return pending + ready
+        return sum(army.amount + army.pending for army in self.armies.values())
 
-    def get_unavailable_workers(self):
+    def get_maintenance_workers(self):
         """
         Returns the population who are maintaining current buildings.
         """
-        return sum((building.labour * building.amount) for building in self.buildings.values())
+        return sum(building.labour * building.amount for building in self.buildings.values())
 
     def get_available_workers(self):
         """
         Returns the population with no current duties.
         """
-        return max(self.population - self.get_unavailable_workers() - self.get_army_size(), 0)
+        return max(self.population - self.get_maintenance_workers() - self.get_army_size(), 0)
 
     def get_production_modifier(self):
         """
         Returns the modifier for how much production each worker produces.
+        # Think about moving this to its own file or putting into a Race object or something
         """
         modifier = {'Base': 1}
         if self.race == 'Dwarf':
@@ -137,6 +135,9 @@ class County(GameState):
         return sum(modifier.values())
 
     def get_offensive_strength(self, army):
+        """
+        Returns the attack power of your army
+        """
         strength = 0
         for unit in self.armies.values():
             strength += army[unit.base] * unit.attack
@@ -149,6 +150,11 @@ class County(GameState):
         return strength
 
     def get_casualties(self, army):
+        """
+        Maybe move to a math transform file.
+        Should also kill defender.
+        Should kill based on unit health and attack power.
+        """
         casualties = 0
         for unit in self.armies.values():
             if army[unit.base] > 0:
@@ -176,6 +182,9 @@ class County(GameState):
             return "You had {} power versus the enemies {} power. You failed".format(offense, defence)
 
     def advance_day(self):
+        """
+        Add a WORLD. Tracks day. Has game clock.
+        """
         self.collect_taxes()
         self.production = self.get_production()
         self.produce_pending_buildings()
@@ -192,15 +201,13 @@ class County(GameState):
         return events
 
     def get_gold_income(self):
-        return (self.population * (self.tax / 100)) + self.production
+        return int((self.population * (self.tax / 100)) + self.production)
 
     def get_wood_income(self):
-        mills = [building.amount for building in self.buildings.values() if building.base == 'mills']
-        return sum(mills) * 1
+        return self.buildings['mills'].amount * 1
 
     def get_iron_income(self):
-        mines = [building.amount for building in self.buildings.values() if building.base == 'mines']
-        return sum(mines) * 1
+        return self.buildings['mines'].amount * 1
 
     def get_death_rate(self):
         modifier = 1
