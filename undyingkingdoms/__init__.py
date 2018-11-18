@@ -74,7 +74,7 @@ import_routes()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "login"
+login_manager.login_view = "login/"
 
 if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
     # Only runs once. If it's a debug relaunch, it won't run
