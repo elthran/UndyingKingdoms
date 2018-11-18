@@ -7,7 +7,7 @@
 
 <br><br><br><br>
 <h2>Total Land: {{ county.total_land }}</h2>
-<h2>Available Land: {{ county.available_land }}</h2>
+<h2>Available Land: {{ county.get_available_land() }}</h2>
 <h2>Gold: {{ county.gold }}</h2>
 <h2>Wood: {{ county.wood }}</h2><br>
 <form method="POST" accept-charset="UTF-8" role="form">

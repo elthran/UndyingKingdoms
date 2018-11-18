@@ -12,7 +12,6 @@ from copy import deepcopy
 
 class County(GameState):
     weather_choices = ["clear skies", "stormy", "sunny", "cloudy", "light rain", "overcast"]
-    buildings_workers_required = {"unusable": 0, "houses": 0, "farms": 3}
 
     name = db.Column(db.String(128), nullable=False)
     leader = db.Column(db.String(128))
@@ -90,14 +89,12 @@ class County(GameState):
         self.buildings = buildings
         self.armies = armies
 
-    @property
-    def available_land(self):
+    def get_available_land(self):
         """
         How much land you have which is empty and can be built upon.
         """
-        built = sum(building.amount for building in self.buildings.values())
-        pending = sum(building.pending for building in self.buildings.values())
-        return self.total_land - built - pending
+        used = sum(building.amount + building.pending for building in self.buildings.values())
+        return max(self.total_land - used, 0)
 
     @property
     def votes(self):
