@@ -32,11 +32,11 @@ class Kingdom(GameState):
         return max(len(self.counties) // 3, 3)
 
     def get_most_popular_county(self):
-        counties = [(county.votes, county) for county in self.counties]
+        counties = [(county.get_votes_for_self(), county) for county in self.counties]
         return max(counties, key=lambda x: x[0])[1]
 
     def count_votes(self):
-        if self.get_most_popular_county().votes >= self.get_votes_needed():
+        if self.get_most_popular_county().get_votes_for_self() >= self.get_votes_needed():
             self.leader = self.get_most_popular_county().id
             leader = County.query.filter_by(id=self.leader).first()
             achievement = Achievement(leader.user_id,

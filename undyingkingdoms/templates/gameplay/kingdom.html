@@ -34,7 +34,7 @@
 {% if kingdom.leader %}
 {{ kingdom.get_leader_name(kingdom.leader) }} rules this land!
 {% else %}
-{{ kingdom.get_most_popular_county().name }} is winning with {{ kingdom.get_most_popular_county().votes }}/{{ kingdom.get_votes_needed() }} votes.
+{{ kingdom.get_most_popular_county().name }} is winning with {{ kingdom.get_most_popular_county().get_votes_for_self() }}/{{ kingdom.get_votes_needed() }} votes.
 The first county with enough votes will be crowned king.
 {% endif %}
 

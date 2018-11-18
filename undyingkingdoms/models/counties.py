@@ -77,15 +77,14 @@ class County(GameState):
         self.immigration = 0
         self.emigration = 0
 
+        buildings = None
+        armies = None
         if self.race == 'Dwarf':
             buildings = deepcopy(dwarf_buildings)
             armies = deepcopy(dwarf_armies)
         elif self.race == 'Human':
             buildings = deepcopy(human_buildings)
             armies = deepcopy(human_armies)
-        else:
-            print("UNKNOWN")
-
         self.buildings = buildings
         self.armies = armies
 
@@ -96,8 +95,10 @@ class County(GameState):
         used = sum(building.amount + building.pending for building in self.buildings.values())
         return max(self.total_land - used, 0)
 
-    @property
-    def votes(self):
+    def get_votes_for_self(self):
+        """
+        Checks how many counties have voted for you to be king
+        """
         return len([county for county in self.kingdom.counties if county.vote == self.id])
 
     def cast_vote(self, vote):
