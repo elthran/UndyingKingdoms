@@ -141,45 +141,63 @@ class County(GameState):
         strength = 0
         for unit in self.armies.values():
             strength += army[unit.base] * unit.attack
-        return strength
+        strength *= uniform(0.85, 1.15)
+        return int(strength)
 
     def get_defensive_strength(self):
         strength = 0
         for unit in self.armies.values():
             strength += unit.amount * unit.defence
-        return strength
+        strength *= uniform(0.9, 1.1)
+        return int(strength)
 
-    def get_casualties(self, army):
+    def get_casualties(self, army={}, ratio=1):
         """
         Maybe move to a math transform file.
-        Should also kill defender.
-        Should kill based on unit health and attack power.
+        army: For attacker, the army is passed in as dict. For defender, it's all active troops.
+        ratio: The greater you outnumber the enemy, the safer your troops are.
         """
         casualties = 0
-        for unit in self.armies.values():
-            if army[unit.base] > 0:
-                dead = randint(army[unit.base] // 10, army[unit.base] // 5)
-                unit.amount -= dead
-                casualties += dead
+        if army:
+            for unit in self.armies.values():
+                if army[unit.base] > 0:
+                    raw_dead = army[unit.base] / uniform(1.4, 1.8) / ratio
+                    dead = int(raw_dead / unit.health)
+                    unit.amount -= dead
+                    casualties += dead
+        else:
+            for unit in self.armies.values():
+                if unit.amount > 0:
+                    dead = randint(unit.amount // 10, unit.amount // 5)
+                    unit.amount -= dead
+                    casualties += dead
         return casualties
 
     def battle_results(self, army, enemy):
         offense = self.get_offensive_strength(army)
         defence = enemy.get_defensive_strength()
-        offence_casaulties = self.get_casualties(army)
+        offence_casaulties = self.get_casualties(army=army, ratio=(offense/defence))
+        defence_casaulties = enemy.get_casualties(army={}, ratio=1)
         print(offense, defence)
         if offense > defence:
             land_gained = int(enemy.total_land * 0.1)
             self.total_land += land_gained
             enemy.total_land -= land_gained
-            notification = Notification(enemy.id, "You were attacked by {}".format(self.name),
-                                        "You lost {} acres.".format(land_gained), self.kingdom.day)
-            db.session.add(notification)
-            db.session.commit()
-            return "You had {} power versus the enemies {} power. You were victorious! You gained {} acres but lost" \
-                   " {} troops.".format(offense, defence, land_gained, offence_casaulties)
+            notification = Notification(enemy.id,
+                                        "You were attacked by {}".format(self.name),
+                                        "You lost {} acres and {} troops.".format(land_gained, defence_casaulties),
+                                        self.kingdom.day)
+            message = "You had {} power versus the enemies {} power. You were victorious! You gained {} acres" \
+                      " but lost {} troops.".format(offense, defence, land_gained, offence_casaulties)
         else:
-            return "You had {} power versus the enemies {} power. You failed".format(offense, defence)
+            notification = Notification(enemy.id,
+                                        "You were attacked by {}".format(self.name),
+                                        "You won the battle but lost {} troops.".format(defence_casaulties),
+                                        self.kingdom.day)
+            message = "You had {} power versus the enemies {} power. You failed and lost {} troops".format(offense, defence, offence_casaulties)
+        db.session.add(notification)
+        db.session.commit()
+        return message
 
     def advance_day(self):
         """
