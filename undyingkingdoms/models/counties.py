@@ -178,7 +178,6 @@ class County(GameState):
         defence = enemy.get_defensive_strength()
         offence_casaulties = self.get_casualties(army=army, ratio=(offense/defence))
         defence_casaulties = enemy.get_casualties(army={}, ratio=1)
-        print(offense, defence)
         if offense > defence:
             land_gained = int(enemy.total_land * 0.1)
             self.total_land += land_gained

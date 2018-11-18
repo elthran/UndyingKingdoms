@@ -10,6 +10,7 @@ class User(GameState):
     password_hash = db.Column(db.String(192), nullable=False)
     phone = db.Column(db.Integer)
     county = db.relationship('County', backref='user', uselist=False)
+    achievements = db.relationship('Achievement', backref='user')
 
     session_id = db.Column(db.Integer)
 

@@ -17,7 +17,7 @@
         {% if my_county.name == county.name %}
         <form method="POST" accept-charset="UTF-8" role="form">
             {{ form.csrf_token }}
-            {{ county.name }} led by the infamous {{ county.user.name }} with {{ county.total_land }} acres of land
+            {{ county.name }} led by the infamous {{ county.leader }} with {{ county.total_land }} acres of land
             {% if kingdom.leader == None %}(Vote: {{ form.vote }})<button type="submit">Change Vote</button>{% endif %}
             <br>
         </form>

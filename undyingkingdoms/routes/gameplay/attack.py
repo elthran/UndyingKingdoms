@@ -17,13 +17,11 @@ def attack(county_id):
     archer = sum([army.amount for army in current_user.county.armies.values() if army.base == 'archer'])
     soldier = sum([army.amount for army in current_user.county.armies.values() if army.base == 'soldier'])
     elite = sum([army.amount for army in current_user.county.armies.values() if army.base == 'elite'])
-    print(peasants, archer, soldier, elite)
 
     form.peasant.choices = [(amount, amount) for amount in range(peasants)]
     form.archer.choices = [(amount, amount) for amount in range(archer)]
     form.soldier.choices = [(amount, amount) for amount in range(soldier)]
     form.elite.choices = [(amount, amount) for amount in range(elite)]
-    print(form.peasant.choices, form.archer.choices, form.soldier.choices, form.elite.choices)
 
     if not form.peasant.choices:
         form.peasant.choices = [(0, 0)]

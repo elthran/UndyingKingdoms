@@ -1,0 +1,21 @@
+{% extends "gameplay/layout.html" %}
+{% block content2 %}
+
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+
+User: {{ user.name }}<br>
+Achievement Points: 0
+<ul>
+    <h1>Earned:</h1>
+    {% for achievement in user.achievements %}
+    <li><h2>{{ achievement.name }}:</h2><h3>{{ achievement.description }}</h3></li>
+    {% endfor %}
+    <li>--------------------------------------------------------------------------</li>
+    <h1>Unearned:</h1>
+    {% for achievement in user.achievements %}
+    <li><h2>{{ achievement.name }}:</h2><h3>{{ achievement.description }}</h3></li>
+    {% endfor %}
+</ul>
+{% endblock %}

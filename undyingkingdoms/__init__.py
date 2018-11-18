@@ -67,6 +67,8 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.kingdom
     import undyingkingdoms.routes.gameplay.attack
 
+    import undyingkingdoms.routes.user.achievements
+
     import undyingkingdoms.routes.reset_schema
 
 

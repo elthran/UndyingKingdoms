@@ -14,21 +14,13 @@ def initialize():
     form.gender.choices = [(i, genders[i]) for i in range(len(genders))]
     form.race.choices = [(i, races[i]) for i in range(len(races))]
     if form.validate_on_submit():
-        print("CREATING", form.county.data,
-              form.leader.data,
-              current_user.id,
-              1,
-              races[form.race.data],
-              genders[form.gender.data])
         county = County(form.county.data,
                         form.leader.data,
                         current_user.id,
                         1,
                         races[form.race.data],
                         genders[form.gender.data])
-        print("ADDING")
         db.session.add(county)
-        print("ADDED")
         db.session.commit()
         county.vote = county.id
         db.session.commit()
