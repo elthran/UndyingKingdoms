@@ -99,7 +99,7 @@ class County(GameState):
         """
         Checks how many counties have voted for you to be king
         """
-        return len([county for county in self.kingdom.counties if county.vote == self.id])
+        return County.query.filter_by(vote=self.id, kingdom_id=self.kingdom.id).count()
 
     def cast_vote(self, vote):
         self.vote = vote
