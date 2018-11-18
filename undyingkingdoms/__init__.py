@@ -52,18 +52,25 @@ def not_found(error):
 from flask_login import LoginManager
 from undyingkingdoms.models.users import User
 
-import undyingkingdoms.routes.index.home
-import undyingkingdoms.routes.index.login
-import undyingkingdoms.routes.index.register
-import undyingkingdoms.routes.index.logout
-import undyingkingdoms.routes.index.initialize
 
-import undyingkingdoms.routes.gameplay.overview
-import undyingkingdoms.routes.gameplay.economy
-import undyingkingdoms.routes.gameplay.infrastructure
-import undyingkingdoms.routes.gameplay.military
-import undyingkingdoms.routes.gameplay.kingdom
-import undyingkingdoms.routes.gameplay.attack
+def import_routes():
+    import undyingkingdoms.routes.index.home
+    import undyingkingdoms.routes.index.login
+    import undyingkingdoms.routes.index.register
+    import undyingkingdoms.routes.index.logout
+    import undyingkingdoms.routes.index.initialize
+
+    import undyingkingdoms.routes.gameplay.overview
+    import undyingkingdoms.routes.gameplay.economy
+    import undyingkingdoms.routes.gameplay.infrastructure
+    import undyingkingdoms.routes.gameplay.military
+    import undyingkingdoms.routes.gameplay.kingdom
+    import undyingkingdoms.routes.gameplay.attack
+
+    import undyingkingdoms.routes.reset_schema
+
+
+import_routes()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -71,9 +78,7 @@ login_manager.login_view = "login"
 
 if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
     # Only runs once. If it's a debug relaunch, it won't run
-    db.drop_all()
-    db.create_all()
-    print("Rebuilding database")
+    pass
 print("Game ready")
 
 
