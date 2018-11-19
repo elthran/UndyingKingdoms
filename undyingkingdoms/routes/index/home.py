@@ -1,13 +1,14 @@
-import datetime
-
 from flask import url_for, redirect
 from undyingkingdoms import app, db
-from undyingkingdoms.models import User, County, Kingdom
+from undyingkingdoms.models import User, County, Kingdom, World
 
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if not User.query.filter().all():
+        world = World()
+        db.session.add(world)
+        db.session.commit()
         print("BUILDING EVERYTHING")
         user = User("elthran", "jacobbrunner@gmail.com", "star")
         db.session.add(user)
@@ -19,15 +20,6 @@ def home():
         db.session.add(county)
         db.session.commit()
         county.vote = county.id
-        user2 = User("timekeeper", "xxx@gmail.com", "xxxx")
-        db.session.add(user2)
-        db.session.commit()
-        county2 = County("Time Warp", "The Timekeeper", user2.id, kingdom.id, 'Dwarf', 'Female')
-        county2.total_land = datetime.datetime.now().hour
-        db.session.add(county2)
-        db.session.commit()
-        county2.vote = county2.id
-        db.session.commit()
     else:
         print("EVERYTHING IS ALREADY BUILT")
     return redirect(url_for('login'))

@@ -187,14 +187,14 @@ class County(GameState):
             notification = Notification(enemy.id,
                                         "You were attacked by {}".format(self.name),
                                         "You lost {} acres and {} troops.".format(land_gained, defence_casaulties),
-                                        self.kingdom.day)
+                                        self.kingdom.world.day)
             message = "You had {} power versus the enemies {} power. You were victorious! You gained {} acres" \
                       " but lost {} troops.".format(offence, defence, land_gained, offence_casaulties)
         else:
             notification = Notification(enemy.id,
                                         "You were attacked by {}".format(self.name),
                                         "You won the battle but lost {} troops.".format(defence_casaulties),
-                                        self.kingdom.day)
+                                        self.kingdom.world.day)
             message = "You had {} power versus the enemies {} power. You failed and lost {} troops".format(offence,
                                                                                                            defence,
                                                                                                            offence_casaulties)
@@ -291,7 +291,7 @@ class County(GameState):
         self.weather = choice(self.weather_choices)
         if self.weather == 'stormy':
             notification = Notification(self.id, "Storms have ravaged your crops",
-                                        "You lost 20 bushels of wheat.", self.kingdom.day)
+                                        "You lost 20 bushels of wheat.", self.kingdom.world.day)
             db.session.add(notification)
             db.session.commit()
 

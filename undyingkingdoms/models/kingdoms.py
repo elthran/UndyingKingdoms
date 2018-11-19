@@ -10,10 +10,9 @@ from undyingkingdoms.static.metadata import kingdom_names
 class Kingdom(GameState):
 
     name = db.Column(db.String(128), nullable=False, unique=True)
+    world_id = db.Column(db.Integer, db.ForeignKey('world.id'), nullable=False)
     counties = db.relationship('County', backref='kingdom')
-    age = db.Column(db.Integer)
     leader = db.Column(db.Integer)  # county.id of leader
-    day = db.Column(db.Integer)
 
     def __init__(self):
         used_names = set([kingdom.name for kingdom in Kingdom.query.all()])
@@ -21,9 +20,8 @@ class Kingdom(GameState):
             self.name = choice(list(set(kingdom_names)-used_names))
         except IndexError:
             raise Exception("Add more kingdoms")
-        self.age = 0
         self.leader = None
-        self.day = 0
+        self.world_id = 1
 
     def __repr__(self):
         return '<Kingdom %r (%r)>' % (self.name, self.id)
@@ -47,9 +45,4 @@ class Kingdom(GameState):
 
     def get_leader_name(self, county_id):
         return County.query.filter_by(id=county_id).first().name
-
-    def advance_day(self):
-        for county in self.counties:
-            county.advance_day()
-        self.day += 1
 
