@@ -2,6 +2,7 @@ from random import choice, uniform, randint
 
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
+# from undyingkingdoms.calculations.counties import get_attack_power
 from undyingkingdoms.models.bases import GameState, db
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
@@ -174,11 +175,12 @@ class County(GameState):
         return casualties
 
     def battle_results(self, army, enemy):
-        offense = self.get_offensive_strength(army)
+        offence = self.get_offensive_strength(army)
+        # offence = get_attack_power(self.id, army)
         defence = enemy.get_defensive_strength()
-        offence_casaulties = self.get_casualties(army=army, ratio=(offense/defence))
+        offence_casaulties = self.get_casualties(army=army, ratio=(offence / defence))
         defence_casaulties = enemy.get_casualties(army={}, ratio=1)
-        if offense > defence:
+        if offence > defence:
             land_gained = int(enemy.total_land * 0.1)
             self.total_land += land_gained
             enemy.total_land -= land_gained
@@ -187,13 +189,15 @@ class County(GameState):
                                         "You lost {} acres and {} troops.".format(land_gained, defence_casaulties),
                                         self.kingdom.day)
             message = "You had {} power versus the enemies {} power. You were victorious! You gained {} acres" \
-                      " but lost {} troops.".format(offense, defence, land_gained, offence_casaulties)
+                      " but lost {} troops.".format(offence, defence, land_gained, offence_casaulties)
         else:
             notification = Notification(enemy.id,
                                         "You were attacked by {}".format(self.name),
                                         "You won the battle but lost {} troops.".format(defence_casaulties),
                                         self.kingdom.day)
-            message = "You had {} power versus the enemies {} power. You failed and lost {} troops".format(offense, defence, offence_casaulties)
+            message = "You had {} power versus the enemies {} power. You failed and lost {} troops".format(offence,
+                                                                                                           defence,
+                                                                                                           offence_casaulties)
         db.session.add(notification)
         db.session.commit()
         return message

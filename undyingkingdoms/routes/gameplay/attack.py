@@ -4,7 +4,6 @@ from flask_login import login_required, current_user
 from undyingkingdoms import app, db
 from undyingkingdoms.models import County
 from undyingkingdoms.models.forms.attack import AttackForm
-from undyingkingdoms.models.forms.military import MilitaryForm
 
 
 @login_required
@@ -18,19 +17,10 @@ def attack(county_id):
     soldier = sum([army.amount for army in current_user.county.armies.values() if army.base == 'soldier'])
     elite = sum([army.amount for army in current_user.county.armies.values() if army.base == 'elite'])
 
-    form.peasant.choices = [(amount, amount) for amount in range(peasants)]
-    form.archer.choices = [(amount, amount) for amount in range(archer)]
-    form.soldier.choices = [(amount, amount) for amount in range(soldier)]
-    form.elite.choices = [(amount, amount) for amount in range(elite)]
-
-    if not form.peasant.choices:
-        form.peasant.choices = [(0, 0)]
-    if not form.archer.choices:
-        form.archer.choices = [(0, 0)]
-    if not form.soldier.choices:
-        form.soldier.choices = [(0, 0)]
-    if not form.elite.choices:
-        form.elite.choices = [(0, 0)]
+    form.peasant.choices = [(amount, amount) for amount in range(peasants+1)]
+    form.archer.choices = [(amount, amount) for amount in range(archer+1)]
+    form.soldier.choices = [(amount, amount) for amount in range(soldier+1)]
+    form.elite.choices = [(amount, amount) for amount in range(elite+1)]
 
     if form.validate_on_submit():
         print("validated")
