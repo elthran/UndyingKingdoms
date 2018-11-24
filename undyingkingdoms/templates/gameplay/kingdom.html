@@ -22,8 +22,7 @@
             <br>
         </form>
         {% else %}
-        {{ county.name }} led by the infamous {{ county.user.name }} with {{ county.total_land }} acres of land
-        <a href="{{ url_for('attack', county_id=county.id) }}">[attack]</a>
+        <a href="{{ url_for('overview', county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.user.name }} with {{ county.total_land }} acres of land
         {% if kingdom.leader == None %}(Vote: {{ county.display_vote() }}){% endif %}
         {% endif %}
     </li>

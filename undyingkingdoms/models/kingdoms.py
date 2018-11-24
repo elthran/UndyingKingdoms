@@ -20,7 +20,7 @@ class Kingdom(GameState):
             self.name = choice(list(set(kingdom_names)-used_names))
         except IndexError:
             raise Exception("Add more kingdoms")
-        self.leader = None
+        self.leader = 0
         self.world_id = 1
 
     def __repr__(self):

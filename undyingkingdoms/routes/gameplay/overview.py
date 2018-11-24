@@ -1,17 +1,18 @@
 from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
 
-from undyingkingdoms import app, db
-from undyingkingdoms.models import World
+from undyingkingdoms import app
+from undyingkingdoms.models import World, County
 from undyingkingdoms.models.forms.attack import TempGameAdvance
 
 
 @login_required
-@app.route('/gameplay/overview/', methods=['GET', 'POST'])
-def overview():
+@app.route('/gameplay/overview/<int:county_id>/', methods=['GET', 'POST'])
+def overview(county_id=0):
     if not current_user.county:
         return redirect(url_for('initialize'))
 
+    county = County.query.filter_by(id=county_id).first()
     # Below is clock functions
     world = World.query.first()
     world.check_clock()
@@ -19,4 +20,4 @@ def overview():
     if form.validate_on_submit():
         world.advance_day()
     # End of clock functions
-    return render_template('gameplay/overview.html', form=form)
+    return render_template('gameplay/overview.html', form=form, selected_county=county)

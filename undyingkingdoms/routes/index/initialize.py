@@ -24,5 +24,5 @@ def initialize():
         db.session.commit()
         county.vote = county.id
         db.session.commit()
-        return redirect(url_for('overview'))
+        return redirect(url_for('overview', county_id=current_user.county.id))
     return render_template("index/initialize.html", form=form)

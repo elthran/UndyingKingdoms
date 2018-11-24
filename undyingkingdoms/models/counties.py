@@ -106,7 +106,10 @@ class County(GameState):
         self.kingdom.count_votes()
 
     def display_vote(self):
-        return County.query.filter_by(id=self.vote).first().name
+        vote = County.query.filter_by(id=self.vote).first()
+        if vote:
+            return vote.name
+        return "No vote"
 
     def get_army_size(self):
         return sum(army.amount + army.pending for army in self.armies.values())

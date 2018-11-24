@@ -2,15 +2,22 @@
 {% block content2 %}
 
 {% set user = current_user %}
-{% set county = current_user.county %}
+{% if current_user.county == selected_county %}
+    {% set county = current_user.county %}
+    {% set viewing_self = True %}
+{% else %}
+    {% set county = selected_county %}
+    {% set viewing_self = False %}
+{% endif %}
 {% set kingdom = county.kingdom %}
-
 <ul>
     <li>Leader: {{ county.leader }} ({{ county.gender }})</li>
     <li>County: {{ county.name }}</li>
     <li>Race: {{ county.race }}</li>
     <li>Title: {{ county.title }}</li>
     <li>Games Days this Age: {{ kingdom.world.day }}</li>
+    <li>Land: {{ county.total_land }}</li>
+    {% if viewing_self %}
     <li>Coffers: {{ county.gold }} gold</li>
     <li>Population: {{ county.population }} (Yesterday ->
         <font color="red">{{ county.deaths }} deaths,
@@ -20,13 +27,10 @@
     </li>
     <li>Happiness: {{ county.happiness_terminology }}</li>
     <li>Hunger: {{ county.hunger_terminology }}</li>
-    <li>Land: {{ county.total_land }}</li>
     <li>Weather: {{ county.weather }}</li>
+    {% endif %}
 </ul>
-<form method="POST" accept-charset="UTF-8" role="form">
-    {{ form.csrf_token }}
-    <button type="submit">End Day (For Testing Only)</button>
-</form>
+{% if viewing_self %}
 <ul>
     <h1>News</h1>
     {% for event in county.display_news() %}
@@ -35,5 +39,14 @@
     <p>No new events to report.</p>
     {% endfor %}
 </ul>
+{% elif kingdom.leader == 0 %}
+<a href="{{ url_for('attack', county_id=selected_county.id) }}">[attack]</a>
+{% endif %}
 
+<!-- Temporary -->
+<form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    <button type="submit">End Day (For Testing Only)</button>
+</form>
+<!-- Temporary -->
 {% endblock %}
