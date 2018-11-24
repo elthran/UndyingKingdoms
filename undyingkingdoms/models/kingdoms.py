@@ -22,6 +22,7 @@ class Kingdom(GameState):
             raise Exception("Add more kingdoms")
         self.leader = 0
         self.world_id = 1
+        self.chatroom = []
 
     def __repr__(self):
         return '<Kingdom %r (%r)>' % (self.name, self.id)

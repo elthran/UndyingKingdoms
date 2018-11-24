@@ -66,6 +66,7 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.military
     import undyingkingdoms.routes.gameplay.kingdom
     import undyingkingdoms.routes.gameplay.attack
+    import undyingkingdoms.routes.gameplay.chatroom
 
     import undyingkingdoms.routes.user.achievements
 

@@ -1,0 +1,19 @@
+{% extends "gameplay/layout.html" %}
+{% block content2 %}
+
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+<h1>Discussion</h1>
+{% for message in kingdom.chatroom %}
+{{ message[0] }}: {{ message[1] }}
+{% endfor %}
+
+<form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    {{ render_field(form.message, placeholder="What you want to say to your kingdom", autofocus="") }}
+    <br><br>
+    <button type="submit">Say</button>
+</form>
+
+{% endblock %}
