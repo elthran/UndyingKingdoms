@@ -10,5 +10,5 @@ from undyingkingdoms.models.forms.chatroom import ChatForm
 def chatroom():
     form = ChatForm()
     if form.validate_on_submit():
-        current_user.county.kingdom.chatroom.append(form.message.data)
+        current_user.county.kingdom.chatroom.append((current_user.county.leader, form.message.data))
     return render_template('gameplay/chatroom.html', form=form)
