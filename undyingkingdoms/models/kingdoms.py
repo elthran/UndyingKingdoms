@@ -1,7 +1,5 @@
 from random import choice
 
-from sqlalchemy import orm
-
 from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.users import User
 from undyingkingdoms.models.counties import County
@@ -24,11 +22,6 @@ class Kingdom(GameState):
             raise Exception("Add more kingdoms")
         self.leader = 0
         self.world_id = 1
-        self.chatroom = []
-
-    @orm.reconstructor
-    def init_on_load(self):
-        self.chatroom = []
 
     def __repr__(self):
         return '<Kingdom %r (%r)>' % (self.name, self.id)
