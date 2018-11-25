@@ -42,3 +42,14 @@ class Kingdom(GameState):
     def get_leader_name(self, county_id):
         return County.query.filter_by(id=county_id).first().name
 
+    def kingdom_button(self, direction, current_id):
+        if direction == 'left':
+            current_id -= 1
+        elif direction == 'right':
+            current_id += 1
+        if current_id == 0:
+            current_id = len(kingdom_names)
+        elif current_id > len(kingdom_names):
+            current_id = 1
+        return current_id
+

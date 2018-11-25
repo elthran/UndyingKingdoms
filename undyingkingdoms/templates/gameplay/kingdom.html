@@ -3,15 +3,20 @@
 
 {% set user = current_user %}
 {% set my_county = current_user.county %}
-{% set kingdom = my_county.kingdom %}
+Current kingdom: {{ kingdom.id }}
+
+{% set left_button = kingdom.kingdom_button('left', kingdom.id) %}
+{% set right_button = kingdom.kingdom_button('right', kingdom.id) %}
+button is {{ left_button }}, {{ right_button }}
 
 <div style="width:100%;text-align:center;">
-    <button style="float:left;width:100px;" disabled>Left</button>
+    <a href="{{ url_for('kingdom', kingdom_id=left_button) }}"><button style="float:left;width:100px;">Left</button></a>
     <h1 style="display:inline-block;margin:0 auto;width:100px;">{{ kingdom.name }}</h1>
-    <button style="float:right;width:100px;" disabled>Right</button>
+    <a href="{{ url_for('kingdom', kingdom_id=right_button) }}"><button style="float:right;width:100px;">Right</button></a>
 </div>
 <br><br><br>
 <ul>
+    {% if kingdom == my_county.kingdom %}
     {% for county in kingdom.counties %}
     <li>
         {% if my_county.name == county.name %}
@@ -28,6 +33,14 @@
     </li>
     <li><br></li>
     {% endfor %}
+    {% else %}
+    {% for county in kingdom.counties %}
+    <li>
+            {{ county.name }} led by the infamous {{ county.leader }} with {{ county.total_land }} acres of land
+    </li>
+    {% endfor %}
+    {% endif %}
+    <li><br></li>
 </ul>
 <br><br><br>
 {% if kingdom.leader %}

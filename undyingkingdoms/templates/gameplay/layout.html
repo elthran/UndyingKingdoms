@@ -12,7 +12,7 @@
         <li><a href="{{ url_for('infrastructure') }}">Infrastructure</a></li>
         <li><a href="{{ url_for('military') }}">Military</a></li>
         <li><a href="{{ url_for('chatroom') }}">Town Hall</a></li>
-        <li><a href="{{ url_for('kingdom') }}">Kingdom Overview</a></li>
+        <li><a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom Overview</a></li>
         <li><br></li>
         <li><a href="{{ url_for('achievements') }}">Achievements</a></li>
         <li><a href="{{ url_for('logout') }}">Logout</a></li>
