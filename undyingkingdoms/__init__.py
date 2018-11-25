@@ -10,7 +10,7 @@ from flask_sslify import SSLify
 
 import private_config
 
-g_chat_room = {}
+global_chatroom = {}
 UPLOAD_FOLDER = 'undyingkingdoms/static/uploads/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
