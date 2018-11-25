@@ -17,7 +17,6 @@ def initialize():
         county = County(form.county.data,
                         form.leader.data,
                         current_user.id,
-                        1,
                         races[form.race.data],
                         genders[form.gender.data])
         db.session.add(county)

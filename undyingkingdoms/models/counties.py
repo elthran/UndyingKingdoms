@@ -6,7 +6,7 @@ from sqlalchemy.orm.collections import attribute_mapped_collection
 from undyingkingdoms.models.bases import GameState, db
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
-    human_buildings, rations_translations_tables
+    human_buildings, rations_translations_tables, kingdom_names
 
 from copy import deepcopy
 
@@ -49,12 +49,12 @@ class County(GameState):
                              collection_class=attribute_mapped_collection('base'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
 
-    def __init__(self, name, leader, user_id, kingdom_id, race, gender):
+    def __init__(self, name, leader, user_id, race, gender):
 
         self.name = name
         self.leader = leader
         self.user_id = user_id
-        self.kingdom_id = kingdom_id
+        self.kingdom_id = randint(1, len(kingdom_names))
         self.race = race
         self.gender = gender
         self.title = 'Engineer'

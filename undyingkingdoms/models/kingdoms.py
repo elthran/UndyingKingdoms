@@ -14,12 +14,8 @@ class Kingdom(GameState):
     counties = db.relationship('County', backref='kingdom')
     leader = db.Column(db.Integer)  # county.id of leader
 
-    def __init__(self):
-        used_names = set([kingdom.name for kingdom in Kingdom.query.all()])
-        try:
-            self.name = choice(list(set(kingdom_names)-used_names))
-        except IndexError:
-            raise Exception("Add more kingdoms")
+    def __init__(self, name):
+        self.name = name
         self.leader = 0
         self.world_id = 1
 
