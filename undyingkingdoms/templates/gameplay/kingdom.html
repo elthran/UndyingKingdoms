@@ -17,13 +17,13 @@
         {% if my_county.name == county.name %}
         <form method="POST" accept-charset="UTF-8" role="form">
             {{ form.csrf_token }}
-            {{ county.name }} led by the infamous {{ county.leader }} with {{ county.total_land }} acres of land
-            {% if kingdom.leader == None %}(Vote: {{ form.vote }})<button type="submit">Change Vote</button>{% endif %}
+            (YOURSELF) {{ county.name }} led by the infamous {{ county.leader }} with {{ county.total_land }} acres of land
+            {% if kingdom.leader == 0 %}(Vote: {{ form.vote }})<button type="submit">Change Vote</button>{% endif %}
             <br>
         </form>
         {% else %}
         <a href="{{ url_for('overview', county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.user.name }} with {{ county.total_land }} acres of land
-        {% if kingdom.leader == None %}(Vote: {{ county.display_vote() }}){% endif %}
+        {% if kingdom.leader == 0 %}(Vote: {{ county.display_vote() }}){% endif %}
         {% endif %}
     </li>
     <li><br></li>
@@ -33,8 +33,8 @@
 {% if kingdom.leader %}
 {{ kingdom.get_leader_name(kingdom.leader) }} rules this land!
 {% else %}
-{{ kingdom.get_most_popular_county().name }} is winning with {{ kingdom.get_most_popular_county().get_votes_for_self() }}/{{ kingdom.get_votes_needed() }} votes.
-The first county with enough votes will be crowned king.
+{{ kingdom.get_most_popular_county().name }} is winning with {{ kingdom.get_most_popular_county().get_votes_for_self() }} vote(s).
+The first county with {{ kingdom.get_votes_needed() }} votes will be crowned ruler.
 {% endif %}
 
 

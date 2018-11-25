@@ -5,15 +5,17 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 <h1>Discussion</h1>
+<div style="border:solid 1px;width:75%;margin-left:200px;min-height:300px;">
 <ul>
 {% for message in chat %}
     <li>{{ message[0] }}  {{ message[1] }}: {{ message[2] }}</li>
 {% endfor %}
 </ul>
-
+</div>
+<br>
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
-    {{ render_field(form.message, placeholder="What you want to say to your kingdom", autofocus="") }}
+    {{ render_field(form.message, placeholder="Public to your kingdom", autofocus="") }}
     <br><br>
     <button type="submit">Say</button>
 </form>

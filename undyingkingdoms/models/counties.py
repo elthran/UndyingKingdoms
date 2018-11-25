@@ -107,9 +107,7 @@ class County(GameState):
 
     def display_vote(self):
         vote = County.query.filter_by(id=self.vote).first()
-        if vote:
-            return vote.name
-        return "No vote"
+        return vote.name
 
     def get_army_size(self):
         return sum(army.amount + army.pending for army in self.armies.values())
@@ -305,10 +303,10 @@ class County(GameState):
         food_eaten = self.population * rations_translations_tables[self.rations]
         if total_food >= food_eaten:
             self.food_stores += min(total_food - food_eaten, storable_food)
-            self.hunger += 1
+            self.hunger = min(self.hunger + 1, 100)
         else:
             self.food_stores = 0
-            self.hunger -= int((food_eaten / total_food) * 5)
+            self.hunger -= max(int((food_eaten / total_food) * 5), 0)
 
     def update_population(self):
         self.deaths = self.get_death_rate()

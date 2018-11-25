@@ -7,12 +7,12 @@
 
 <div style="border:solid;width:150px;height:500px;float:left;margin-right:50px;padding-top:25px;">
     <ul style="text-align:center;">
-        <li><a href="{{ url_for('overview', county_id=county.id) }}">Overview</a></li>
+        <li><a href="{{ url_for('overview', county_id=county.id) }}">County Overview</a></li>
         <li><a href="{{ url_for('economy') }}">Economy</a></li>
         <li><a href="{{ url_for('infrastructure') }}">Infrastructure</a></li>
         <li><a href="{{ url_for('military') }}">Military</a></li>
-        <li><a href="{{ url_for('kingdom') }}">Kingdom Overview</a></li>
         <li><a href="{{ url_for('chatroom') }}">Town Hall</a></li>
+        <li><a href="{{ url_for('kingdom') }}">Kingdom Overview</a></li>
         <li><br></li>
         <li><a href="{{ url_for('achievements') }}">Achievements</a></li>
         <li><a href="{{ url_for('logout') }}">Logout</a></li>

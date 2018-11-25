@@ -20,6 +20,7 @@ def home():
         db.session.add(county)
         db.session.commit()
         county.vote = county.id
+        db.session.commit()
     else:
         print("EVERYTHING IS ALREADY BUILT")
     return redirect(url_for('login'))
