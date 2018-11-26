@@ -3,7 +3,7 @@ from flask_login import current_user
 from flask_login import login_user
 
 from undyingkingdoms import app, User, db
-from undyingkingdoms.models.analytics import AuthenticationEvent
+from undyingkingdoms.models import Session
 from undyingkingdoms.models.forms.register import RegisterForm
 
 
@@ -16,11 +16,14 @@ def register():
         user = User(form.username.data, form.email.data, form.password.data)
         db.session.add(user)
         db.session.commit()
-        authentication_event = AuthenticationEvent(user_id=user.id,
-                                                   activity="registration",
-                                                   session_id=user.session_id)
-        db.session.add(authentication_event)
+        session = Session(user_id=user.id, activity="register")
+        db.session.add(session)
         db.session.commit()
         login_user(user)
+        # Right ow it immediately logs you in.
+        # In the future it will send you an email for confirmation first.
+        session = Session(user_id=user.id, activity="login")
+        db.session.add(session)
+        db.session.commit()
         return redirect(url_for('initialize'))
     return render_template("index/register.html", form=form)

@@ -12,7 +12,14 @@ class User(GameState):
     county = db.relationship('County', backref='user', uselist=False)
     achievements = db.relationship('Achievement', backref='user')
 
+    # Analytics
     session_id = db.Column(db.Integer)
+    ages_completed = db.Column(db.Integer)
+    day1_retention = db.Column(db.Integer)
+    day3_retention = db.Column(db.Integer)
+    day7_retention = db.Column(db.Integer)
+    lifetime_revenue = db.Column(db.Integer)
+    country = db.Column(db.String(32))
 
     is_authenticated = db.Column(db.Boolean)
     is_active = db.Column(db.Boolean)
@@ -27,6 +34,14 @@ class User(GameState):
         self.is_active = True
         self.is_anonymous = False
 
+        # Analytics
+        self.ages_completed = 0
+        self.day1_retention = -1
+        self.day3_retention = -1
+        self.day7_retention = -1
+        self.lifetime_revenue = 0
+        self.country = ""
+
     @property
     def password(self):
         raise AttributeError('Password is not a readable attribute. Only password_hash is stored.')
@@ -39,6 +54,9 @@ class User(GameState):
 
     def get_id(self):
         return self.id
+
+    def generate_session_id(self):
+        self.session_id += 1
 
     def has_county(self):
         return True if County.query.filter_by(user_id=self.id) else False

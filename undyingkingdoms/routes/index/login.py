@@ -3,9 +3,8 @@ from flask_login import current_user
 from flask_login import login_user
 
 from undyingkingdoms import app, User, db
-from undyingkingdoms.models.analytics import AuthenticationEvent
-from undyingkingdoms.models.bases import GameEvent
 from undyingkingdoms.models.forms.login import LoginForm
+from undyingkingdoms.models.sessions import Session
 
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -17,11 +16,8 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)
-            user.session_id += 1
-            authentication_event = AuthenticationEvent(user_id=user.id,
-                                                       activity="login",
-                                                       session_id=user.session_id)
-            db.session.add(authentication_event)
+            session = Session(user.id, "login")
+            db.session.add(session)
             db.session.commit()
             return redirect(url_for('overview', county_id=current_user.county.id))
     return render_template("index/login.html", form=form)

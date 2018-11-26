@@ -1,51 +1,52 @@
+from datetime import datetime, timedelta
+
 from undyingkingdoms import db
-from undyingkingdoms.models import AuthenticationEvent, County
+from undyingkingdoms.models import Session, User
 from undyingkingdoms.models.bases import GameEvent
 
 
-class DailyActiveUserEvent(GameEvent):
-
+class DailyActiveUser(GameEvent):
+    # User data
+    user_id = db.Column(db.Integer)
+    account_age_in_days = db.Column(db.Integer)
+    todays_sessions = db.Column(db.Integer)
+    todays_minutes_played = db.Column(db.Integer)
+    todays_ads_watched = db.Column(db.Integer)
+    # Game data
     days_in_age = db.Column(db.Integer)
-    account_age = db.Column(db.Integer)
-    sessions = db.Column(db.Integer)
-    minutes_played = db.Column(db.Integer)
     land = db.Column(db.Integer)
     gold = db.Column(db.Integer)
     happiness = db.Column(db.Integer)
+    hunger = db.Column(db.Integer)
 
-    def __init__(self, user_id):
+    def __init__(self, user_id, day):
         self.user_id = user_id
-        self.days_in_age = -1
-        self.account_age = -1
-        self.sessions = -1
-        self.minutes_played = -1
-        self.land = -1
-        self.gold = -1
-        self.happiness = -1
+        self.days_in_age = day
+        self.todays_sessions = self.get_sessions(user_id)
+        self.todays_minutes_played = self.get_minutes_played(user_id)
+        self.update_self(user_id)
 
-    def get_daily_stats(self):
-        county = County.query.filter_by(user_id=self.user_id).first()
-        self.get_sessions()
-        self.get_minutes_played()
-        self.get_land(county)
-        self.get_gold(county)
-        self.get_happiness(county)
-
-    def get_sessions(self):
-        self.sessions = len(AuthenticationEvent.query.filter_by(user_id=self.user_id).filter_by(activity='login').all())
-
-    @staticmethod
-    def get_minutes_played():
-        return -1
-
-    def get_land(self, county):
+    def update_self(self, user_id):
+        user = User.query.filter_by(id=user_id).first()
+        county = user.county
+        self.account_age_in_days = (datetime.now() - user.date_created).days
         self.land = county.total_land
-
-    def get_gold(self, county):
         self.gold = county.gold
-
-    def get_happiness(self, county):
         self.happiness = county.happiness
+        self.hunger = county.hunger
+
+    def get_sessions(self, user_id):
+        # This should filter by timestamp and only return sessions that day
+        # Timestamp in filter should match day below
+        #yesterday = datetime.now() - timedelta(days=1)
+        return Session.query.filter_by(user_id=user_id, activity="login").count()
+
+    def get_minutes_played(self, user_id):
+        # This should filter by timestamp and only return sessions that day
+        # Timestamp in filter should match day below
+        # yesterday = datetime.now() - timedelta(days=1)
+        sessions = Session.query.filter_by(user_id=user_id, activity="logout").all()
+        return sum(session.minutes for session in sessions)
 
     def validate(self):
         if not isinstance(self.user_id, int):

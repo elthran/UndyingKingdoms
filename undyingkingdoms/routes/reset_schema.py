@@ -27,7 +27,7 @@ def reset_schema():
     db.session.add(user)
     db.session.commit()
     # Create Elthran's county
-    county = County("Elthrania", "Elthran", user.id, 'Dwarf', 'Male')
+    county = County("Nancouver", "Elthran", user.id, 'Dwarf', 'Male')
     db.session.add(county)
     db.session.commit()
     county.vote = county.id
