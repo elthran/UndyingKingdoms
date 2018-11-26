@@ -15,5 +15,5 @@ def kingdom(kingdom_id=0):
     if form.validate_on_submit():
         current_user.county.cast_vote(form.vote.data)
         db.session.commit()
-        return redirect(url_for('kingdom'))
+        return redirect(url_for('kingdom', kingdom_id=kingdom.id))
     return render_template('gameplay/kingdom.html', form=form, kingdom=kingdom)
