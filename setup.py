@@ -21,3 +21,5 @@ setup(
         'pytest'
     ],
 )
+
+# Open your venv and run $ python setup.py install
