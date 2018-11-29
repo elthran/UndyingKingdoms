@@ -25,7 +25,7 @@
                     <li style="font-style:italic;">{{ county.name }} led by the infamous {{ county.leader }} with {{ county.total_land }} acres of land
                         {% if kingdom.leader == 0 and my_county.can_vote() %}(Vote: {{ form.vote }})
                             <button type="submit">Change Vote</button>
-                        {% else %}
+                        {% elif kingdom.leader == 0 %}
                             (Vote: {{ county.display_vote() }} - You must wait to change your vote)
                         {% endif %}
                     </li>

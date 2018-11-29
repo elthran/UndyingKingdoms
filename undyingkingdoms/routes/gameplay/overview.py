@@ -2,7 +2,7 @@ from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
 
 from undyingkingdoms import app
-from undyingkingdoms.models import World, County
+from undyingkingdoms.models import World, County, Kingdom
 from undyingkingdoms.models.forms.attack import TempGameAdvance
 
 
@@ -20,5 +20,6 @@ def overview(kingdom_id=0, county_id=0):
     form = TempGameAdvance()
     if form.validate_on_submit():
         world.advance_day()
+        world.advance_24h_analytics()
     # End of clock functions
     return render_template('gameplay/overview.html', form=form, selected_kingdom=kingdom, selected_county=county)
