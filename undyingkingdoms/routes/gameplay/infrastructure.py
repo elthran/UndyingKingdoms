@@ -11,17 +11,18 @@ from undyingkingdoms.static.metadata import all_buildings
 @app.route('/gameplay/infrastructure/', methods=['GET', 'POST'])
 def infrastructure():
     county = current_user.county
+    world = World.query.filter_by(id=county.kingdom.world_id).first()
     form = InfrastructureForm()
     form.county_id.data = county.id
     if form.validate_on_submit():
-        current_gold = county.gold
+        transaction = Transaction(current_user.id, world.day, "buy", county.gold)
         for building in all_buildings:
             if form.data[building] > 0:
                 county.gold -= form.data[building] * county.buildings[building].gold
                 county.wood -= form.data[building] * county.buildings[building].wood
                 county.buildings[building].pending += form.data[building]
+                transaction.add_purchase(building, form.data[building], county.buildings[building].gold)
         db.session.commit()
-        transaction = Transaction(current_user.id, "buy", current_gold - county.gold)
         db.session.add(transaction)
         db.session.commit()
         return redirect(url_for('infrastructure'))
