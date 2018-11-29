@@ -11,7 +11,7 @@ from undyingkingdoms.models.forms.register import RegisterForm
 def register():
     form = RegisterForm()
     if current_user.is_authenticated:
-        return redirect(url_for('overview', county_id=current_user.county.id))
+        return redirect(url_for('overview', kingdom_id=current_user.county.kingdom.id, county_id=current_user.county.id))
     if form.validate_on_submit() and not User.query.filter_by(email=form.email.data).first():
         user = User(form.username.data, form.email.data, form.password.data)
         db.session.add(user)

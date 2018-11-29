@@ -9,7 +9,7 @@
     {% set county = selected_county %}
     {% set viewing_self = False %}
 {% endif %}
-{% set kingdom = county.kingdom %}
+{% set kingdom = selected_kingdom %}
 <ul>
     <li>Leader: {{ county.leader }} ({{ county.gender }})</li>
     <li>County: {{ county.name }}</li>
@@ -39,7 +39,7 @@
     <p>No new events to report.</p>
     {% endfor %}
 </ul>
-{% elif kingdom.leader == 0 %}
+{% elif (kingdom.leader == 0) and ((kingdom == current_user.county.kingdom) and (kingdom.leader == 0)) or (kingdom != current_user.county.kingdom) %}
 <a href="{{ url_for('attack', county_id=selected_county.id) }}">[attack]</a>
 {% endif %}
 

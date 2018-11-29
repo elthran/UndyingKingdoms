@@ -11,7 +11,7 @@ from undyingkingdoms.models.sessions import Session
 def login():
     form = LoginForm()
     if current_user.is_authenticated:
-        return redirect(url_for('overview', county_id=current_user.county.id))
+        return redirect(url_for('overview', kingdom_id=current_user.county.kingdom.id, county_id=current_user.county.id))
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
@@ -19,5 +19,5 @@ def login():
             session = Session(user.id, "login")
             db.session.add(session)
             db.session.commit()
-            return redirect(url_for('overview', county_id=current_user.county.id))
+            return redirect(url_for('overview', kingdom_id=current_user.county.kingdom.id, county_id=current_user.county.id))
     return render_template("index/login.html", form=form)
