@@ -23,8 +23,9 @@
     <form method="POST" accept-charset="UTF-8" role="form">
         {{ form.csrf_token }}
         <li style="font-style:italic;">{{ county.name }} led by the infamous {{ county.leader }} with {{ county.total_land }} acres of land
-            {% if kingdom.leader == 0 % and my_county.can_vote() }(Vote: {{ form.vote }})
+            {% if kingdom.leader == 0 and my_county.can_vote() %}(Vote: {{ form.vote }})
             <button type="submit">Change Vote</button>
+            {% else %}(Vote: {{ county.display_vote() }} - You must wait to change your vote)
             {% endif %}
         </li>
         <br>

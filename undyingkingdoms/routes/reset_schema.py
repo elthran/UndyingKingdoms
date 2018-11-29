@@ -23,7 +23,7 @@ def reset_schema():
         db.session.add(kingdom)
         db.session.commit()
     # Create Elthran
-    user = User("elthran", "elthran", "star")
+    user = User("elthran", "jacobbrunner@gmail.com", "star")
     user.is_admin = True
     user.is_active = True
     db.session.add(user)
@@ -35,3 +35,4 @@ def reset_schema():
     county.vote = county.id
     db.session.commit()
     return "Rebuilt database schema!"
+
