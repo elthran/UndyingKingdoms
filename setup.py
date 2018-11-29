@@ -23,3 +23,10 @@ setup(
 )
 
 # Open your venv and run $ python setup.py install
+
+'''
+db.metadata.create_all(db.engine, tables=[
+	Users.__table__,
+	Counties.__table__
+])
+'''

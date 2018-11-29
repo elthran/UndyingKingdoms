@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from random import choice, uniform, randint
 
 from sqlalchemy.orm.collections import attribute_mapped_collection
@@ -19,6 +20,7 @@ class County(GameState):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
     vote = db.Column(db.Integer)
+    last_vote_date = db.Column(db.DateTime)
 
     total_land = db.Column(db.Integer)
     race = db.Column(db.String(32))
@@ -59,6 +61,7 @@ class County(GameState):
         self.gender = gender
         self.title = 'Engineer'
         self.vote = None
+        self.last_vote_date = None
 
         self.population = 500
         self.total_land = 150
@@ -100,6 +103,11 @@ class County(GameState):
         Checks how many counties have voted for you to be king
         """
         return County.query.filter_by(vote=self.id, kingdom_id=self.kingdom.id).count()
+
+    def can_vote(self):
+        if datetime.now() > (self.last_vote_date - timedelta(hours=24)):
+            return True
+        return False
 
     def cast_vote(self, vote):
         self.vote = vote

@@ -4,43 +4,49 @@ from undyingkingdoms.models.counties import County
 
 
 class User(GameState):
-
-    name = db.Column(db.String(128), nullable=False)
+    # Basic data
+    username = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), nullable=False, unique=True)
     password_hash = db.Column(db.String(192), nullable=False)
-    phone = db.Column(db.Integer)
+    phone_number = db.Column(db.Integer)
     county = db.relationship('County', backref='user', uselist=False)
     achievements = db.relationship('Achievement', backref='user')
 
     # Analytics
-    session_id = db.Column(db.Integer)
     ages_completed = db.Column(db.Integer)
     day1_retention = db.Column(db.Integer)
     day3_retention = db.Column(db.Integer)
     day7_retention = db.Column(db.Integer)
     lifetime_revenue = db.Column(db.Integer)
     country = db.Column(db.String(32))
+    ip_address = db.Column(db.String(32))
 
-    is_authenticated = db.Column(db.Boolean)
-    is_active = db.Column(db.Boolean)
-    is_anonymous = db.Column(db.Boolean)
+    # Flask
+    is_authenticated = db.Column(db.Boolean)  # User has logged in
+    is_active = db.Column(db.Boolean)  # Account has been activated via email and not been locked
+    is_anonymous = db.Column(db.Boolean)  # current_user is set to is_anonymous when not yet logged in.
+    is_admin = db.Column(db.Boolean)  # Current user is a game creator with unlimited power
 
-    def __init__(self, name, email, password):
-        self.name = name
+    def __init__(self, username, email, password):
+        # Basic data
+        self.username = username
         self.email = email
         self.set_password_hash(password)
-        self.session_id = 0
-        self.is_authenticated = True
-        self.is_active = True
-        self.is_anonymous = False
 
         # Analytics
         self.ages_completed = 0
-        self.day1_retention = -1
-        self.day3_retention = -1
-        self.day7_retention = -1
+        self.day1_retention = None
+        self.day3_retention = None
+        self.day7_retention = None
         self.lifetime_revenue = 0
         self.country = ""
+        self.ip_address = ""
+
+        # Flask login
+        self.is_authenticated = True
+        self.is_active = True
+        self.is_anonymous = False
+        self.is_admin = False
 
     @property
     def password(self):
@@ -54,9 +60,6 @@ class User(GameState):
 
     def get_id(self):
         return self.id
-
-    def generate_session_id(self):
-        self.session_id += 1
 
     def has_county(self):
         return True if County.query.filter_by(user_id=self.id) else False

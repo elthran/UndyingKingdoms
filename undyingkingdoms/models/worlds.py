@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from random import randint
 
 from undyingkingdoms.models.users import User
 from undyingkingdoms.models import Session, DailyActiveUser
@@ -26,7 +27,7 @@ class World(GameState):
             self.advance_day()
             self.game_clock = (self.game_clock + 1) % 24
             db.session.commit()
-        while (self.day // 1) > self.analytic_cycles:
+        while (self.day // 4) > self.analytic_cycles:
             self.advance_24h_analytics()
             self.analytic_cycles += 1
 
@@ -41,9 +42,18 @@ class World(GameState):
     def advance_24h_analytics(self):
         users = User.query.all()
         for user in users:
+            # Create a DAU row
             session = DailyActiveUser(user.id, self.day)
             db.session.add(session)
             db.session.commit()
+            # Update User analytics
+            user_age = (datetime.now() - user.date_created).days
+            if user_age == 1:
+                user.day1_retention = randint(0, 1)
+            elif user_age == 3:
+                user.day3_retention = randint(0, 1)
+            elif user_age == 7:
+                user.day7_retention = randint(0, 1)
 
     def __repr__(self):
         return '<World %r (%r)>' % (self.name, self.id)
