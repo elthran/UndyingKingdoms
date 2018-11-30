@@ -1,6 +1,7 @@
 import csv
 from datetime import datetime
 
+from flask import render_template
 from flask_login import login_required
 
 from undyingkingdoms import app, db
@@ -9,7 +10,7 @@ from undyingkingdoms.static.metadata import kingdom_names
 
 
 @login_required
-@app.route("/database/<str:command>/")
+@app.route("/database/<string:command>/")
 def database(command=""):
     if command == "reset":
         # Should make it so only admin can visit
@@ -38,12 +39,24 @@ def database(command=""):
         db.session.commit()
         return "Rebuilt database schema!"
     if command == "export":
-        filename = str(datetime.now()) + ".csv"
-        outfile = open(filename, 'wb')
-        outcsv = csv.writer(outfile)
-        records = User.query.all()
-        [outcsv.writerow([getattr(curr, column.name) for column in User.__mapper__.columns]) for curr in records]
-        outfile.close()
-        return "exported database"
+        # filename = str(datetime.now()) + ".csv"
+        # outfile = open(filename, 'wb')
+        # outcsv = csv.writer(outfile)
+        all_users = User.query.all()
+        database_csv = []
+        new_row = []
+        for column in User.__table__.columns:
+            new_row.append(str(column))
+            database_csv.append(new_row)
+        for user in all_users:
+            new_row = []
+            for column in User.__table__.columns:
+                column_name = str(column)[5:]
+                new_row.append(str(getattr(user, column_name)))
+                database_csv.append(new_row)
+        return render_template('temporary_database.html', database_csv=database_csv)
+        # [outcsv.writerow([getattr(user, column.name) for column in User.__mapper__.column_attrs.keys()]) for user in all_users]
+        # outfile.close()
+        # return "exported database"
 
 
