@@ -5,7 +5,6 @@ kingdom_names = ["Galbador", "Faenoth"]
 
 rations_translations_tables = {"None": 0, "Quarter": 0.25, "Half": 0.5, "Normal": 1, "Double": 2, "Triple": 3}
 
-# (name, amount, maintenance, description)
 all_buildings = ['houses', 'fields', 'mills', 'mines']
 
 dwarf_buildings = {'houses': Building(base='houses',
@@ -94,7 +93,6 @@ human_buildings = {'houses': Building(base='houses',
                                      description='Each mine produces 1 iron a day.')
                    }
 
-# (name, amount, attack, defence, health)
 all_armies = ["peasant", "archer", "soldier", "elite"]
 
 dwarf_armies = {'peasant': Army(base='peasant',

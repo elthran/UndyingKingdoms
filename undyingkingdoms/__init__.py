@@ -71,7 +71,7 @@ def import_routes():
 
     import undyingkingdoms.routes.user.achievements
 
-    import undyingkingdoms.routes.reset_schema
+    import undyingkingdoms.routes.database
 
 
 import_routes()
