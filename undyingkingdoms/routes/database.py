@@ -47,13 +47,13 @@ def database(command=""):
         new_row = []
         for column in User.__table__.columns:
             new_row.append(str(column))
-            database_csv.append(new_row)
+        database_csv.append(new_row)
         for user in all_users:
             new_row = []
             for column in User.__table__.columns:
                 column_name = str(column)[5:]
                 new_row.append(str(getattr(user, column_name)))
-                database_csv.append(new_row)
+            database_csv.append(new_row)
         return render_template('temporary_database.html', database_csv=database_csv)
         # [outcsv.writerow([getattr(user, column.name) for column in User.__mapper__.column_attrs.keys()]) for user in all_users]
         # outfile.close()
