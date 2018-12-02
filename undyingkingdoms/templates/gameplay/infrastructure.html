@@ -26,7 +26,11 @@
         <tr>
             <td>{{ building.name.title() }}</td>
             <td>{{ building.amount }}</td>
-            <td>{{ form[building.base] }}</td>
+            <td>
+                <input id="{{ building.base }}_slider"
+                       type="range" value="0" min="0" max="20" step="1" />
+                <input id="{{ building.base }}_display" name="{{ building.base }}" value="0" />
+            </td>
             <td>{{ building.pending }}</td>
             <td>
                 {% if building.production %}{{ building.production }}<img class="resource_icons" src="/static/images/prod_icon.jpg">{% endif %}
@@ -38,7 +42,7 @@
         </tr>
         {% endfor %}
     </table>
-    <br><button type="submit">Build</button><br>
+    <br><button id="submit" type="submit" disabled>Build</button><br>
     You have {{ county.get_available_workers() }} available workers generating a total of {{ county.get_production()|int }}
     <img class="resource_icons" src="/static/images/prod_icon.jpg"> each day. Any excess <img class="resource_icons" src="/static/images/prod_icon.jpg">
     will be converted into gold at the end of each day.
@@ -47,4 +51,19 @@
 <br>
 Each day your kingdom will randomly produce pending buildings until you can not produce any more.
 
+<script type="text/javascript">
+{% for building in county.buildings.values() %}
+    var {{ building.base }}_slider = document.getElementById('{{ building.base }}_slider'),
+    {{ building.base }}_display = document.getElementById('{{ building.base }}_display');
+    {{ building.base }}_slider.onchange = function() {
+        {{ building.base }}_display.value = this.value;
+        if (this.value > 0) {
+            button.disabled = false;
+        }
+    }
+{% endfor %}
+button = document.getElementById('submit');
+</script>
+
 {% endblock %}
+

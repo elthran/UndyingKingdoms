@@ -5,7 +5,7 @@ kingdom_names = ["Galbador", "Faenoth"]
 
 rations_translations_tables = {"None": 0, "Quarter": 0.25, "Half": 0.5, "Normal": 1, "Double": 2, "Triple": 3}
 
-all_buildings = ['houses', 'fields', 'mills', 'mines']
+all_buildings = ['houses', 'fields', 'pastures', 'mills', 'mines']
 
 dwarf_buildings = {'houses': Building(base='houses',
                                       name='cottage',

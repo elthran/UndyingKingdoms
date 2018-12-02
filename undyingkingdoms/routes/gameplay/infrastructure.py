@@ -29,5 +29,7 @@ def infrastructure():
         db.session.add(transaction)
         db.session.commit()
         return redirect(url_for('infrastructure'))
+    else:
+        print(form.data)
     return render_template('gameplay/infrastructure.html', form=form)
 
