@@ -1,4 +1,5 @@
 from datetime import date
+import os
 
 from flask_login import login_required
 from pandas import DataFrame
@@ -41,6 +42,9 @@ def database_reset():
 @login_required
 @app.route("/database/export/")
 def database_export():
+    # Todo: consider making data write out line by line.
+    # This will become very important once the data size is large.
+
     # Create a list of all tables
     all_tables = []
     table_name_reference = []
@@ -65,12 +69,18 @@ def database_export():
         all_tables.append(new_table)
     # We have a list of smaller lists. Each smaller list should be a csv file (each one is a separate sql table)
     todays_date = date.today()
+
+    current_path = "export/{}".format(todays_date)
+    if not os.path.exists(current_path):
+        os.makedirs(current_path)
+
     for index, table in enumerate(all_tables):
         if len(table) < 2:
             continue
         headers = table.pop(0)
         name = table_name_reference[index]
-        filename = "{}-{}_table.csv".format(todays_date, name)
+
+        filename = "{}/{}_table.csv".format(current_path, name)
         df = DataFrame(table)
         df.to_csv(filename, header=headers)
     return "Database exported successfully"
