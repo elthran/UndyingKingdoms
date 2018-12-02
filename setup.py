@@ -18,7 +18,9 @@ setup(
         'pandas',
         'fuzzywuzzy',
         'python-Levenshtein',
-        'pytest'
+        'pytest',
+        'numpy',
+        'pandas'
     ],
 )
 
