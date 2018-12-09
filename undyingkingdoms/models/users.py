@@ -2,6 +2,7 @@ from copy import deepcopy
 
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
+from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.bases import GameState, db
 from werkzeug.security import generate_password_hash, check_password_hash
 from undyingkingdoms.models.counties import County
@@ -15,7 +16,6 @@ class User(GameState):
     password_hash = db.Column(db.String(192), nullable=False)
     phone_number = db.Column(db.Integer)
     county = db.relationship('County', backref='user', uselist=False)
-    achievements = db.relationship('Achievement', backref='user')
 
     # Analytics
     ages_completed = db.Column(db.Integer)
@@ -30,6 +30,7 @@ class User(GameState):
     achievements = db.relationship("Achievement",
                                    collection_class=attribute_mapped_collection('category_name'),
                                    cascade="all, delete, delete-orphan", passive_deletes=True)
+    achievement_points = db.Column(db.Integer)
 
     # Flask
     is_authenticated = db.Column(db.Boolean)  # User has logged in
@@ -54,6 +55,7 @@ class User(GameState):
 
         # Achievements
         self.achievements = deepcopy(all_achievements)
+        self.achievement_points = 0
 
         # Flask login
         self.is_authenticated = True
@@ -76,6 +78,14 @@ class User(GameState):
 
     def has_county(self):
         return True if County.query.filter_by(user_id=self.id) else False
+
+    def check_incremental_achievement(self, category, amount):
+        achievement = Achievement.query.filter_by(category_name=category, user_id=self.id).first()
+        if achievement.current_tier < achievement.maximum_tier:
+            requirement_to_advance = getattr(achievement, "tier" + str(achievement.current_tier+1))
+            if amount >= requirement_to_advance:
+                achievement.current_tier += 1
+                self.achievement_points += achievement.points_rewarded
 
     def __repr__(self):
         return '<User %r (%r)>' % (self.name, self.id)

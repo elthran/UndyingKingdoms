@@ -22,17 +22,17 @@ class County(GameState):
     vote = db.Column(db.Integer)
     last_vote_date = db.Column(db.DateTime)
 
-    land = db.Column(db.Integer)
+    _land = db.Column(db.Integer)
     race = db.Column(db.String(32))
     gender = db.Column(db.String(16))
     tax = db.Column(db.Integer)
-    gold = db.Column(db.Integer)
-    wood = db.Column(db.Integer)
-    iron = db.Column(db.Integer)
+    _gold = db.Column(db.Integer)
+    _wood = db.Column(db.Integer)
+    _iron = db.Column(db.Integer)
     rations = db.Column(db.String(32))
-    happiness = db.Column(db.Integer)  # Out of 100
-    population = db.Column(db.Integer)
-    hunger = db.Column(db.Integer)  # Out of 100
+    _happiness = db.Column(db.Integer)  # Out of 100
+    _population = db.Column(db.Integer)
+    _hunger = db.Column(db.Integer)  # Out of 100
     weather = db.Column(db.String(32))
     title = db.Column(db.String(32))
     production = db.Column(db.Integer)
@@ -63,14 +63,14 @@ class County(GameState):
         self.vote = None
         self.last_vote_date = None
 
-        self.population = 500
-        self.land = 150
-        self.hunger = 75
-        self.happiness = 75
+        self._population = 500
+        self._land = 150
+        self._hunger = 75
+        self._happiness = 75
         self.tax = 5
-        self.gold = 1000
-        self.wood = 100
-        self.iron = 25
+        self._gold = 1000
+        self._wood = 100
+        self._iron = 25
         self.rations = "Normal"
         self.production = 0  # How many buildings you can build per day
         self.food_stores = 0
@@ -91,6 +91,79 @@ class County(GameState):
             armies = deepcopy(human_armies)
         self.buildings = buildings
         self.armies = armies
+
+    @property
+    def population(self):
+        return self._population
+
+    @population.setter
+    def population(self, value):
+        self._population = value
+        self.check_incremental_achievement("population", self._population)
+        print("New population is {}".format(self._population))
+
+    @property
+    def land(self):
+        return self._land
+
+    @land.setter
+    def land(self, value):
+        self._land = value
+        self.check_incremental_achievement("population", self._land)
+        print("New land is {}".format(self._land))
+
+    @property
+    def gold(self):
+        return self._gold
+
+    @gold.setter
+    def gold(self, value):
+        self._gold = value
+        self.check_incremental_achievement("gold", self._gold)
+        print("New gold is {}".format(self._gold))
+
+    @property
+    def wood(self):
+        return self._wood
+
+    @wood.setter
+    def wood(self, value):
+        self._wood = value
+        self.check_incremental_achievement("wood", self._wood)
+        print("New wood is {}".format(self._wood))
+
+    @property
+    def iron(self):
+        return self._iron
+
+    @iron.setter
+    def iron(self, value):
+        self._iron = value
+        self.check_incremental_achievement("iron", self._iron)
+        print("New iron is {}".format(self._iron))
+
+    @property
+    def happiness(self):
+        return self._happiness
+
+    @happiness.setter
+    def happiness(self, value):
+        self._happiness = value
+        self.check_incremental_achievement("happiness", self._happiness)
+        print("New happiness is {}".format(self._happiness))
+
+    @property
+    def hunger(self):
+        return self._hunger
+
+    @hunger.setter
+    def hunger(self, value):
+        self._hunger = value
+        self.check_incremental_achievement("hunger", self._hunger)
+        print("New hunger is {}".format(self._hunger))
+
+    def check_incremental_achievement(self, category, amount):
+        self.user.check_incremental_achievement(category, amount)
 
     def get_available_land(self):
         """
