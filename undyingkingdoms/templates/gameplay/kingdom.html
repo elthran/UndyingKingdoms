@@ -22,7 +22,7 @@
             {% if my_county.name == county.name %}
                 <form method="POST" accept-charset="UTF-8" role="form">
                     {{ form.csrf_token }}
-                    <li style="font-style:italic;">{{ county.name }} led by the infamous {{ county.leader }} with {{ county.total_land }} acres of land
+                    <li style="font-style:italic;">{{ county.name }} led by the infamous {{ county.leader }} with {{ county.land }} acres of land
                         {% if kingdom.leader == 0 and my_county.can_vote() %}(Vote: {{ form.vote }})
                             <button type="submit">Change Vote</button>
                         {% elif kingdom.leader == 0 %}
@@ -32,7 +32,7 @@
                 </form>
             {% else %}
                 <li>
-                    <a href="{{ url_for('overview', kingdom_id=kingdom.id, county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.user.name }} with {{ county.total_land }} acres of land
+                    <a href="{{ url_for('overview', kingdom_id=kingdom.id, county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.user.name }} with {{ county.land }} acres of land
                     {% if kingdom.leader == 0 %}
                         (Vote: {{ county.display_vote() }})
                     {% endif %}
@@ -42,7 +42,7 @@
     {% else %}
         {% for county in kingdom.counties %}
             <li>
-                <a href="{{ url_for('overview', kingdom_id=kingdom.id, county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.total_land }} acres of land
+                <a href="{{ url_for('overview', kingdom_id=kingdom.id, county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
             </li>
         {% endfor %}
     {% endif %}

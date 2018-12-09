@@ -15,6 +15,7 @@ class DailyActiveUser(GameEvent):
     # Game data
     days_in_age = db.Column(db.Integer)
     land = db.Column(db.Integer)
+    population = db.Column(db.Integer)
     gold = db.Column(db.Integer)
     happiness = db.Column(db.Integer)
     hunger = db.Column(db.Integer)
@@ -30,7 +31,8 @@ class DailyActiveUser(GameEvent):
         user = User.query.filter_by(id=user_id).first()
         county = user.county
         self.account_age_in_days = (datetime.now() - user.date_created).days
-        self.land = county.total_land
+        self.land = county.land
+        self.population = county.population
         self.gold = county.gold
         self.happiness = county.happiness
         self.hunger = county.hunger

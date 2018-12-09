@@ -22,7 +22,7 @@ class County(GameState):
     vote = db.Column(db.Integer)
     last_vote_date = db.Column(db.DateTime)
 
-    total_land = db.Column(db.Integer)
+    land = db.Column(db.Integer)
     race = db.Column(db.String(32))
     gender = db.Column(db.String(16))
     tax = db.Column(db.Integer)
@@ -64,7 +64,7 @@ class County(GameState):
         self.last_vote_date = None
 
         self.population = 500
-        self.total_land = 150
+        self.land = 150
         self.hunger = 75
         self.happiness = 75
         self.tax = 5
@@ -192,9 +192,9 @@ class County(GameState):
         offence_casaulties = self.get_casualties(army=army, ratio=(offence / defence))
         defence_casaulties = enemy.get_casualties(army={}, ratio=1)
         if offence > defence:
-            land_gained = int(enemy.total_land * 0.1)
-            self.total_land += land_gained
-            enemy.total_land -= land_gained
+            land_gained = int(enemy.land * 0.1)
+            self.land += land_gained
+            enemy.land -= land_gained
             notification = Notification(enemy.id,
                                         "You were attacked by {}".format(self.name),
                                         "You lost {} acres and {} troops.".format(land_gained, defence_casaulties),

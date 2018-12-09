@@ -1,6 +1,11 @@
+from copy import deepcopy
+
+from sqlalchemy.orm.collections import attribute_mapped_collection
+
 from undyingkingdoms.models.bases import GameState, db
 from werkzeug.security import generate_password_hash, check_password_hash
 from undyingkingdoms.models.counties import County
+from undyingkingdoms.static.metadata import all_achievements
 
 
 class User(GameState):
@@ -20,6 +25,11 @@ class User(GameState):
     lifetime_revenue = db.Column(db.Integer)
     country = db.Column(db.String(32))
     ip_address = db.Column(db.String(32))
+
+    # Achievementes
+    achievements = db.relationship("Achievement",
+                                   collection_class=attribute_mapped_collection('category_name'),
+                                   cascade="all, delete, delete-orphan", passive_deletes=True)
 
     # Flask
     is_authenticated = db.Column(db.Boolean)  # User has logged in
@@ -41,6 +51,9 @@ class User(GameState):
         self.lifetime_revenue = 0
         self.country = ""
         self.ip_address = ""
+
+        # Achievements
+        self.achievements = deepcopy(all_achievements)
 
         # Flask login
         self.is_authenticated = True
@@ -66,4 +79,3 @@ class User(GameState):
 
     def __repr__(self):
         return '<User %r (%r)>' % (self.name, self.id)
-

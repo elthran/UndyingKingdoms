@@ -2,13 +2,12 @@ from datetime import datetime, timedelta
 from random import randint
 
 from undyingkingdoms.models.users import User
-from undyingkingdoms.models import Session, DailyActiveUser
+from undyingkingdoms.models import DailyActiveUser, Achievement
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.bases import GameState, db
 
 
 class World(GameState):
-
     kingdoms = db.relationship('Kingdom', backref='world')
     age = db.Column(db.Integer)  # How many 'reset events'
     day = db.Column(db.Integer)  # How many in-game days have passed this age
@@ -35,6 +34,24 @@ class World(GameState):
         for county in County.query.all():
             county.advance_day()
         self.day += 1
+        self.update_achievements()
+
+    def update_achievements(self):
+        for user in User.query.all():
+            for category in ["land", "population"]:
+                achievement = Achievement.query.filter_by(category_name=category, user_id=user.id).first()
+                if achievement.current_level < achievement.get_max_level():
+                    requirement_to_advance = achievement.progress_required[achievement.current_level]
+                    if getattr(user.county, category) >= requirement_to_advance:
+                        achievement.current_level += 1
+                        print("You just reached level {}/{} of the {} quest.".format(achievement.current_level,
+                                                                                     achievement.get_max_level(),
+                                                                                     category))
+                    else:
+                        print("You are level {}/{} of the {} quest.".format(
+                            achievement.current_level,
+                            achievement.get_max_level(),
+                            category))
 
     def advance_age(self):
         self.age += 1
@@ -57,5 +74,3 @@ class World(GameState):
 
     def __repr__(self):
         return '<World %r (%r)>' % (self.name, self.id)
-
-

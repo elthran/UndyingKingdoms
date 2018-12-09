@@ -1,7 +1,19 @@
+from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.buildings import Building
 from undyingkingdoms.models.armies import Army
 
 kingdom_names = ["Galbador", "Faenoth"]
+
+all_achievements = {
+    'land': Achievement(category_name="land",
+                        description="Have your county reach x amount of land in one playthrough.",
+                        points_rewarded=5,
+                        land=True),
+    'population': Achievement(category_name="population",
+                              description="Have your county reach x population in one playthrough.",
+                              points_rewarded=5,
+                              population=True)
+}
 
 rations_translations_tables = {"None": 0, "Quarter": 0.25, "Half": 0.5, "Normal": 1, "Double": 2, "Triple": 3}
 

@@ -4,3 +4,4 @@ private_*
 .pytest_cache
 venv/
 /undyingkingdoms.egg-info
+/export

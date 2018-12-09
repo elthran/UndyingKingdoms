@@ -5,17 +5,15 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
-User: {{ user.name }}<br>
 Achievement Points: 0
+<h1>Lifetime Achievements Across All Ages:</h1><br><br>
 <ul>
-    <h1>Earned:</h1>
-    {% for achievement in user.achievements %}
-    <li><h2>{{ achievement.name }}:</h2><h3>{{ achievement.description }}</h3></li>
-    {% endfor %}
-    <li>--------------------------------------------------------------------------</li>
-    <h1>Unearned:</h1>
-    {% for achievement in user.achievements %}
-    <li><h2>{{ achievement.name }}:</h2><h3>{{ achievement.description }}</h3></li>
+    {% for achievement in achievements %}
+    <li>
+        <h2>{{ achievement.category_name }}:</h2>
+        <h3>{{ achievement.description }}</h3>
+        <p>Current progress: {{ achievement.current_level }} / {{ achievement.get_max_level() }}</p>
+    </li>
     {% endfor %}
 </ul>
 {% endblock %}
