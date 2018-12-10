@@ -331,9 +331,9 @@ class County(GameState):
                 expedition.duration -= 1
                 if expedition.duration == 0:
                     self.armies['peasant'].traveling -= expedition.peasant
-                    self.armies['archer'].traveling -= expedition.peasant
-                    self.armies['soldier'].traveling -= expedition.peasant
-                    self.armies['elite'].traveling -= expedition.peasant
+                    self.armies['archer'].traveling -= expedition.archer
+                    self.armies['soldier'].traveling -= expedition.soldier
+                    self.armies['elite'].traveling -= expedition.elite
 
     def display_news(self):
         events = [event for event in Notification.query.filter_by(county_id=self.id).all() if event.new is True]
@@ -389,7 +389,7 @@ class County(GameState):
             building = choice(queue)
             building.pending -= 1
             building.total += 1
-            self.production -= building.production
+            self.production -= building.production_cost
             self.produce_pending_buildings()
 
     def produce_pending_armies(self):
