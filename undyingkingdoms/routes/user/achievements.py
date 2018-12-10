@@ -9,5 +9,4 @@ from undyingkingdoms.models import Achievement
 @app.route('/user/achievements/', methods=['GET', 'POST'])
 def achievements():
     achievements = Achievement.query.filter_by(user_id=current_user.id).all()
-    print(achievements)
     return render_template('user/achievements.html', achievements=achievements)

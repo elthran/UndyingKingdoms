@@ -100,7 +100,6 @@ class County(GameState):
     def population(self, value):
         self._population = value
         self.check_incremental_achievement("population", self._population)
-        print("New population is {}".format(self._population))
 
     @property
     def land(self):
@@ -108,9 +107,13 @@ class County(GameState):
 
     @land.setter
     def land(self, value):
+        difference = value - self._land
+        if value <= 0:
+            return "YOU LOST THE GAME"
+        if difference < 0:
+            self.destroy_buildings(self, abs(difference))
         self._land = value
-        self.check_incremental_achievement("population", self._land)
-        print("New land is {}".format(self._land))
+        self.check_incremental_achievement("land", self._land)
 
     @property
     def gold(self):
@@ -120,7 +123,6 @@ class County(GameState):
     def gold(self, value):
         self._gold = value
         self.check_incremental_achievement("gold", self._gold)
-        print("New gold is {}".format(self._gold))
 
     @property
     def wood(self):
@@ -130,7 +132,6 @@ class County(GameState):
     def wood(self, value):
         self._wood = value
         self.check_incremental_achievement("wood", self._wood)
-        print("New wood is {}".format(self._wood))
 
     @property
     def iron(self):
@@ -140,7 +141,6 @@ class County(GameState):
     def iron(self, value):
         self._iron = value
         self.check_incremental_achievement("iron", self._iron)
-        print("New iron is {}".format(self._iron))
 
     @property
     def happiness(self):
@@ -150,7 +150,6 @@ class County(GameState):
     def happiness(self, value):
         self._happiness = value
         self.check_incremental_achievement("happiness", self._happiness)
-        print("New happiness is {}".format(self._happiness))
 
     @property
     def hunger(self):
@@ -160,16 +159,16 @@ class County(GameState):
     def hunger(self, value):
         self._hunger = value
         self.check_incremental_achievement("hunger", self._hunger)
-        print("New hunger is {}".format(self._hunger))
 
     def check_incremental_achievement(self, category, amount):
+        # Currently this does nothing but it's here for flexibility.
         self.user.check_incremental_achievement(category, amount)
 
     def get_available_land(self):
         """
         How much land you have which is empty and can be built upon.
         """
-        return sum(building.amount + building.pending for building in self.buildings.values())
+        return max(self.land - sum(building.amount + building.pending for building in self.buildings.values()), 0)
 
     def get_votes_for_self(self):
         """
@@ -258,9 +257,23 @@ class County(GameState):
                     casualties += dead
         return casualties
 
+    def destroy_buildings(self, county, land_destroyed):
+        destroyed = randint(0, county.get_available_land()) # The more available land, the less likely building are destroyed
+        need_list = True
+        while destroyed < land_destroyed:
+            if need_list:
+                building_choices = [building for building in county.buildings.keys() if county.buildings[building].amount > 0]
+                if len(building_choices) == 0:
+                    break
+                need_list = False
+            this_choice = choice(building_choices)
+            county.buildings[this_choice].amount -= 1
+            if county.buildings[this_choice].amount == 0:
+                need_list = True
+            destroyed += 1
+
     def battle_results(self, army, enemy):
         offence = self.get_offensive_strength(army)
-        # offence = get_attack_power(self.id, army)
         defence = enemy.get_defensive_strength()
         offence_casaulties = self.get_casualties(army=army, ratio=(offence / defence))
         defence_casaulties = enemy.get_casualties(army={}, ratio=1)

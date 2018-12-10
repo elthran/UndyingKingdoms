@@ -2,7 +2,7 @@ from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.buildings import Building
 from undyingkingdoms.models.armies import Army
 
-kingdom_names = ["Galbador", "Faenoth"]
+kingdom_names = ["Faenoth"]
 
 all_achievements = {
     'land': Achievement(category_name="land",
@@ -81,7 +81,7 @@ dwarf_buildings = {'houses': Building(base='houses',
                                      description='Each mill produces 1 wood a day.'),
                    'mines': Building(base='mines',
                                      name='iron mine',
-                                     amount=1,
+                                     amount=0,
                                      production=35,
                                      labour=20,
                                      gold=50,

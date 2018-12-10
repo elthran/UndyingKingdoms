@@ -24,6 +24,19 @@ def database_reset():
         kingdom = Kingdom(kingdom_names[i])
         db.session.add(kingdom)
         db.session.commit()
+    # Create AI
+    user = User("ai", "ai@gmail.com", "star")
+    user.is_admin = True
+    user.is_active = True
+    db.session.add(user)
+    db.session.commit()
+    # Create AI's county
+    county = County("Robotica", "Mr. Roboto", user.id, 'Human', 'Demale')
+    db.session.add(county)
+    db.session.commit()
+    county.vote = county.id
+    county.armies['peasant'].amount = 0
+    db.session.commit()
     # Create Elthran
     user = User("elthran", "jacobbrunner@gmail.com", "star")
     user.is_admin = True
