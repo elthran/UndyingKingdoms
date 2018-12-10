@@ -8,8 +8,16 @@
 <br><br><br><br>
 <h2>Total Land: {{ county.land }}</h2>
 <h2>Available Land: {{ county.get_available_land() }}</h2>
-<h2>Gold: {{ county.gold }}</h2>
-<h2>Wood: {{ county.wood }}</h2><br>
+<h2>Daily Production:
+    {{ county.get_production()|int }} <img class="resource_icons" src="/static/images/prod_icon.jpg">
+    ({{ county.get_available_workers() }} available workers)
+</h2>
+<h2>Current Resources:
+    {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">
+    {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
+    {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
+</h2>
+<br>
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
     <table id="infrastructure_table">
@@ -43,13 +51,11 @@
         {% endfor %}
     </table>
     <br><button id="submit" type="submit" disabled>Build</button><br>
-    You have {{ county.get_available_workers() }} available workers generating a total of {{ county.get_production()|int }}
-    <img class="resource_icons" src="/static/images/prod_icon.jpg"> each day. Any excess <img class="resource_icons" src="/static/images/prod_icon.jpg">
-    will be converted into gold at the end of each day.
+    <p>
+    Any excess <img class="resource_icons" src="/static/images/prod_icon.jpg"> will be converted into gold at the end of each day.
+    Each day your kingdom will randomly produce pending buildings until you can not produce any more.
+    </p>
 </form>
-
-<br>
-Each day your kingdom will randomly produce pending buildings until you can not produce any more.
 
 <script type="text/javascript">
 {% for building in county.buildings.values() %}
