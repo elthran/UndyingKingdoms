@@ -6,6 +6,7 @@ from sqlalchemy.orm.collections import attribute_mapped_collection
 # from undyingkingdoms.calculations.counties import get_attack_power
 from undyingkingdoms.models.bases import GameState, db
 from undyingkingdoms.models.notifications import Notification
+from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
     human_buildings, rations_translations_tables, kingdom_names
 
@@ -39,16 +40,18 @@ class County(GameState):
     food_stores = db.Column(db.Integer)
     notifications = db.relationship('Notification', backref='kingdom')
 
+    expeditions = db.relationship('Expedition', backref='county')
+
     births = db.Column(db.Integer)
     deaths = db.Column(db.Integer)
     immigration = db.Column(db.Integer)
     emigration = db.Column(db.Integer)
 
     buildings = db.relationship("Building",
-                                collection_class=attribute_mapped_collection('base'),
+                                collection_class=attribute_mapped_collection('base_name'),
                                 cascade="all, delete, delete-orphan", passive_deletes=True)
     armies = db.relationship("Army",
-                             collection_class=attribute_mapped_collection('base'),
+                             collection_class=attribute_mapped_collection('base_name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
 
     def __init__(self, name, leader, user_id, race, gender):
@@ -168,7 +171,7 @@ class County(GameState):
         """
         How much land you have which is empty and can be built upon.
         """
-        return max(self.land - sum(building.amount + building.pending for building in self.buildings.values()), 0)
+        return max(self.land - sum(building.total + building.pending for building in self.buildings.values()), 0)
 
     def get_votes_for_self(self):
         """
@@ -192,13 +195,13 @@ class County(GameState):
         return vote.name
 
     def get_army_size(self):
-        return sum(army.amount + army.pending for army in self.armies.values())
+        return sum(army.total + army.currently_training for army in self.armies.values())
 
     def get_maintenance_workers(self):
         """
         Returns the population who are maintaining current buildings.
         """
-        return sum(building.labour * building.amount for building in self.buildings.values())
+        return sum(building.labour_maintenance * building.total for building in self.buildings.values())
 
     def get_available_workers(self):
         """
@@ -225,17 +228,17 @@ class County(GameState):
         strength = 0
         if army:
             for unit in self.armies.values():
-                strength += army[unit.base] * unit.attack
+                strength += army[unit.base_name] * unit.attack
         elif county:
             for unit in county.armies.values():
-                strength += unit.amount * unit.attack
+                strength += unit.total * unit.attack
         return int(strength)
 
     def get_defensive_strength(self):
-        modifier = 0.01 * self.buildings['forts'].amount + 1
+        modifier = 0.01 * self.buildings['forts'].total + 1
         strength = 0
         for unit in self.armies.values():
-            strength += unit.amount * unit.defence
+            strength += unit.total * unit.defence
         strength *= modifier
         return int(strength)
 
@@ -246,19 +249,27 @@ class County(GameState):
         ratio: The greater you outnumber the enemy, the safer your troops are.
         """
         casualties = 0
+        print("aTTACKING ARMY:", army)
+        if not army:  # ie. you are the defender and use entire army
+            for unit in self.armies.values():
+                if unit.total > 0:
+                    dead = randint(unit.total // 10, unit.total // 5)
+                    unit.total -= dead
+                    casualties += dead
+            return casualties
         if army:
+            expedition = Expedition(county_id=self.id, duration=5)
             for unit in self.armies.values():
-                if army[unit.base] > 0:
-                    raw_dead = army[unit.base] / uniform(1.4, 1.8) / ratio
+                if army[unit.base_name] > 0:
+                    raw_dead = army[unit.base_name] / uniform(1.4, 1.8) / ratio
                     dead = int(raw_dead / unit.health)
-                    unit.amount -= dead
+                    unit.total -= dead
                     casualties += dead
-        else:
-            for unit in self.armies.values():
-                if unit.amount > 0:
-                    dead = randint(unit.amount // 10, unit.amount // 5)
-                    unit.amount -= dead
-                    casualties += dead
+                    army[unit.base_name] -= dead
+                    unit.traveling = army[unit.base_name]  # Surviving troops are marked as absent
+                    setattr(expedition, unit.base_name, army[unit.base_name])
+                    db.session.add(expedition)
+                    db.session.commit()
         return casualties
 
     def destroy_buildings(self, county, land_destroyed):
@@ -266,13 +277,13 @@ class County(GameState):
         need_list = True
         while destroyed < land_destroyed:
             if need_list:
-                building_choices = [building for building in county.buildings.keys() if county.buildings[building].amount > 0]
+                building_choices = [building for building in county.buildings.keys() if county.buildings[building].total > 0]
                 if len(building_choices) == 0:
                     break
                 need_list = False
             this_choice = choice(building_choices)
-            county.buildings[this_choice].amount -= 1
-            if county.buildings[this_choice].amount == 0:
+            county.buildings[this_choice].total -= 1
+            if county.buildings[this_choice].total == 0:
                 need_list = True
             destroyed += 1
 
@@ -314,6 +325,15 @@ class County(GameState):
         self.update_food()
         self.update_weather()
         self.update_population()
+        expeditions = Expedition.query.filter_by(county_id=self.id).all()
+        for expedition in expeditions:
+            if expedition.duration > 0:
+                expedition.duration -= 1
+                if expedition.duration == 0:
+                    self.armies['peasant'].traveling -= expedition.peasant
+                    self.armies['archer'].traveling -= expedition.peasant
+                    self.armies['soldier'].traveling -= expedition.peasant
+                    self.armies['elite'].traveling -= expedition.peasant
 
     def display_news(self):
         events = [event for event in Notification.query.filter_by(county_id=self.id).all() if event.new is True]
@@ -326,10 +346,10 @@ class County(GameState):
         return int((self.population * (self.tax / 100)) + self.production)
 
     def get_wood_income(self):
-        return self.buildings['mills'].amount * 1
+        return self.buildings['mills'].total * 1
 
     def get_iron_income(self):
-        return self.buildings['mines'].amount * 1
+        return self.buildings['mines'].total * 1
 
     def get_death_rate(self):
         modifier = 1
@@ -343,7 +363,7 @@ class County(GameState):
         if self.title == 'Goblin':
             modifier['Racial Bonus'] = 0.15
         modifier = sum(modifier.values()) * uniform(0.9995, 1.0005)
-        birth_rate = self.buildings['houses'].amount
+        birth_rate = self.buildings['houses'].total
         return int(birth_rate * modifier)
 
     def get_immigration_rate(self):
@@ -364,11 +384,11 @@ class County(GameState):
         """
         queue = [building for building in self.buildings.values()
                  if building.pending > 0
-                 and building.production <= self.production]
+                 and building.production_cost <= self.production]
         if queue and self.production > 0:
             building = choice(queue)
             building.pending -= 1
-            building.amount += 1
+            building.total += 1
             self.production -= building.production
             self.produce_pending_buildings()
 
@@ -378,10 +398,10 @@ class County(GameState):
         Keeps building one until you can't or don't want to, then breaks the loop.
         """
         for unit in self.armies.values():
-            for i in range(unit.training):
-                if unit.pending > 0:
-                    unit.pending -= 1
-                    unit.amount += 1
+            for i in range(unit.currently_training):
+                if unit.currently_training > 0:
+                    unit.currently_training -= 1
+                    unit.total += 1
                 else:
                     break
 
@@ -394,8 +414,8 @@ class County(GameState):
             db.session.commit()
 
     def update_food(self):
-        daily_food = self.buildings['pastures'].amount * 25
-        storable_food = self.buildings['fields'].amount * 20
+        daily_food = self.buildings['pastures'].total * 25
+        storable_food = self.buildings['fields'].total * 20
         total_food = daily_food + storable_food + self.food_stores
         food_eaten = self.population * rations_translations_tables[self.rations]
         if total_food >= food_eaten:

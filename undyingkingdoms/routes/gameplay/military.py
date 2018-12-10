@@ -21,7 +21,7 @@ def military():
                 county.gold -= form.data[army] * county.armies[army].gold
                 county.wood -= form.data[army] * county.armies[army].wood
                 county.iron -= form.data[army] * county.armies[army].iron
-                county.armies[army].pending += form.data[army]
+                county.armies[army].currently_training += form.data[army]
                 transaction.add_purchase(item_name=army,
                                          item_amount=form.data[army],
                                          gold_per_item=county.armies[army].gold,

@@ -9,7 +9,7 @@
     {{ form.csrf_token }}
     <ul>
         {% for army in county.armies.values() %}
-        <li>{{ army.name }}: {{ form[army.base] }} (Max: {{ army.amount }}) (Attack power: {{ army.attack }})</li>
+        <li>{{ army.class_name }}: {{ form[army.base_name] }} (Available: {{ army.available }} / {{ army.total }}) (Attack power: {{ army.attack }})</li>
         {% endfor %}
     </ul>
     <button type="submit">Attack</button>

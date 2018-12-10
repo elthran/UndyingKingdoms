@@ -6,20 +6,21 @@
 {% set kingdom = county.kingdom %}
 
 <br><br><br><br>
-<ul>
-        <li>Available population: {{ county.get_available_workers() }}</li>
-        <li>Gold: {{ county.gold }}</li>
-        <li>Iron: {{ county.iron }}</li>
-        <li>Wood: {{ county.wood }}</li>
-    </ul>
-<h1>Current Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h1>
-<h1>Current Defensive Power: {{ county.get_defensive_strength() }}</h1>
+<h2>Current Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>
+<h2>Current Defensive Power: {{ county.get_defensive_strength() }}</h2>
+<h2>Current Resources:
+    {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">
+    {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
+    {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
+</h2>
+<h2>{{ county.get_available_workers() }} workers available for training</h2>
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
     <table id="infrastructure_table">
         <tr>
             <th>Name</th>
-            <th>Standing Army</th>
+            <th>Available</th>
+            <th>In Foreign Lands</th>
             <th>Train</th>
             <th style="width:125px;">Cost</th>
             <th>Currently In Training</th>
@@ -29,6 +30,7 @@
             <th>Description</th>
         </tr>
         <tr>
+            <td> </td>
             <td> </td>
             <td> </td>
             <td></td>
@@ -41,16 +43,17 @@
         </tr>
         {% for army in county.armies.values() %}
         <tr>
-            <td>{{ army.name.title() }}</td>
-            <td>{{ army.amount }}</td>
-            <td>{{ form[army.base] }}</td>
+            <td>{{ army.class_name.title() }}</td>
+            <td>{{ army.available }}</td>
+            <td>{{ army.traveling }}</td>
+            <td>{{ form[army.base_name] }}</td>
             <td>
                 {% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif %}
                 {% if army.wood %}{{ army.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif %}
                 {% if army.iron %}{{ army.iron }}<img class="resource_icons" src="/static/images/iron_icon.jpg">{% endif %}
                 {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
             </td>
-            <td>{{ army.pending }}</td>
+            <td>{{ army.currently_training }}</td>
             <td>{{ army.attack }}</td>
             <td>{{ army.defence }}</td>
             <td>{{ army.health }}</td>

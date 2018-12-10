@@ -12,23 +12,23 @@ def attack(county_id):
     enemy = County.query.filter_by(id=county_id).first()
     form = AttackForm()
 
-    peasants = sum([army.amount for army in current_user.county.armies.values() if army.base == 'peasant'])
-    archer = sum([army.amount for army in current_user.county.armies.values() if army.base == 'archer'])
-    soldier = sum([army.amount for army in current_user.county.armies.values() if army.base == 'soldier'])
-    elite = sum([army.amount for army in current_user.county.armies.values() if army.base == 'elite'])
+    peasants = current_user.county.armies['peasant'].available + 1
+    archers = current_user.county.armies['archer'].available + 1
+    soldiers = current_user.county.armies['soldier'].available + 1
+    elites = current_user.county.armies['elite'].available + 1
 
-    form.peasant.choices = [(amount, amount) for amount in range(peasants+1)]
-    form.archer.choices = [(amount, amount) for amount in range(archer+1)]
-    form.soldier.choices = [(amount, amount) for amount in range(soldier+1)]
-    form.elite.choices = [(amount, amount) for amount in range(elite+1)]
+    form.peasant.choices = [(amount, amount) for amount in range(peasants)]
+    form.archer.choices = [(amount, amount) for amount in range(archers)]
+    form.soldier.choices = [(amount, amount) for amount in range(soldiers)]
+    form.elite.choices = [(amount, amount) for amount in range(elites)]
 
     if form.validate_on_submit():
         print("validated")
         army = {}
         for unit in current_user.county.armies.values():
-            if unit.amount < form.data[unit.base]:
+            if unit.total < form.data[unit.base_name]:
                 return render_template('gameplay/attack.html', enemy=enemy, form=form)
-            army[unit.base] = form.data[unit.base]
+            army[unit.base_name] = form.data[unit.base_name]
         results = current_user.county.battle_results(army, enemy)
         db.session.commit()
         return render_template('gameplay/attack_results.html', results=results)

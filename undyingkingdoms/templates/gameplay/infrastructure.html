@@ -32,12 +32,12 @@
         </tr>
         {% for building in county.buildings.values() %}
         <tr>
-            <td>{{ building.name.title() }}</td>
+            <td>{{ building.class_name.title() }}</td>
             <td>{{ building.amount }}</td>
             <td>
-                <input id="{{ building.base }}_slider"
+                <input id="{{ building.base_name }}_slider"
                        type="range" value="0" min="0" max="{{ county.get_available_land() }}" step="1" />
-                <input id="{{ building.base }}_display" name="{{ building.base }}" value="0" />
+                <input id="{{ building.base_name }}_display" name="{{ building.base_name }}" value="0" />
             </td>
             <td>{{ building.pending }}</td>
             <td>
@@ -45,7 +45,7 @@
                 {% if building.gold %}{{ building.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif %}
                 {% if building.wood %}{{ building.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif %}
             </td>
-            <td>{{ building.labour }} each ({{ building.labour * building.amount }} total)</td>
+            <td>{{ building.labour_maintenance }} each ({{ building.labour_maintenance * building.total }} total)</td>
             <td>{{ building.description }}</td>
         </tr>
         {% endfor %}
@@ -59,10 +59,10 @@
 
 <script type="text/javascript">
 {% for building in county.buildings.values() %}
-    var {{ building.base }}_slider = document.getElementById('{{ building.base }}_slider'),
-    {{ building.base }}_display = document.getElementById('{{ building.base }}_display');
-    {{ building.base }}_slider.onchange = function() {
-        {{ building.base }}_display.value = this.value;
+    var {{ building.base_name }}_slider = document.getElementById('{{ building.base_name }}_slider'),
+    {{ building.base_name }}_display = document.getElementById('{{ building.base_name }}_display');
+    {{ building.base_name }}_slider.onchange = function() {
+        {{ building.base_name }}_display.value = this.value;
         if (this.value > 0) {
             button.disabled = false;
         }
