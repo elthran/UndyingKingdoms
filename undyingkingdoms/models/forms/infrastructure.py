@@ -12,6 +12,7 @@ class InfrastructureForm(FlaskForm):
     pastures = IntegerField('pastures', validators=[NumberRange(min=0, max=None)], default=0)
     mills = IntegerField('mills', validators=[NumberRange(min=0, max=None)], default=0)
     mines = IntegerField('mines', validators=[NumberRange(min=0, max=None)], default=0)
+    forts = IntegerField('forts', validators=[NumberRange(min=0, max=None)], default=0)
 
     def validate(self):
         if not FlaskForm.validate(self):
@@ -25,7 +26,7 @@ class InfrastructureForm(FlaskForm):
     def insufficient_gold(self):
         gold_cost = 0
         county = County.query.filter_by(id=self.county_id.data).first()
-        for building in [self.houses, self.fields, self.pastures, self.mills, self.mines]:
+        for building in [self.houses, self.fields, self.pastures, self.mills, self.mines, self.forts]:
             gold_cost += county.buildings[building.name].gold * building.data
         if gold_cost > county.gold:
             self.county_id.errors.append("Not enough gold.")
@@ -34,7 +35,7 @@ class InfrastructureForm(FlaskForm):
     def insufficient_wood(self):
         wood_cost = 0
         county = County.query.filter_by(id=self.county_id.data).first()
-        for building in [self.houses, self.fields, self.pastures, self.mills, self.mines]:
+        for building in [self.houses, self.fields, self.pastures, self.mills, self.mines, self.forts]:
             wood_cost += county.buildings[building.name].wood * building.data
         if wood_cost > county.wood:
             self.county_id.errors.append("Not enough wood.")

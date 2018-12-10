@@ -12,6 +12,8 @@
         <li>Iron: {{ county.iron }}</li>
         <li>Wood: {{ county.wood }}</li>
     </ul>
+<h1>Current Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h1>
+<h1>Current Defensive Power: {{ county.get_defensive_strength() }}</h1>
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
     <table id="infrastructure_table">

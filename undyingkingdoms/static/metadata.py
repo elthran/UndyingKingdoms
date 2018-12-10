@@ -17,34 +17,34 @@ all_achievements = {
                               population=True),
     'gold': Achievement(category_name="gold",
                         description="Have your county reach x gold in one playthrough.",
-                              tier1=1250, tier2=1500, tier3=None, tier4=None, tier5=None, maximum_tier=2,
+                        tier1=1250, tier2=1500, tier3=None, tier4=None, tier5=None, maximum_tier=2,
                         points_rewarded=5,
                         gold=True),
     'wood': Achievement(category_name="wood",
                         description="Have your county reach x wood in one playthrough.",
-                              tier1=100, tier2=200, tier3=None, tier4=None, tier5=None, maximum_tier=2,
+                        tier1=100, tier2=200, tier3=None, tier4=None, tier5=None, maximum_tier=2,
                         points_rewarded=5,
                         wood=True),
     'iron': Achievement(category_name="iron",
                         description="Have your county reach x iron in one playthrough.",
-                              tier1=50, tier2=100, tier3=None, tier4=None, tier5=None, maximum_tier=2,
+                        tier1=50, tier2=100, tier3=None, tier4=None, tier5=None, maximum_tier=2,
                         points_rewarded=5,
                         iron=True),
     'happiness': Achievement(category_name="happiness",
                              description="Have your county reach x happiness in one playthrough.",
-                              tier1=525, tier2=550, tier3=800, tier4=900, tier5=1000, maximum_tier=5,
+                             tier1=525, tier2=550, tier3=800, tier4=900, tier5=1000, maximum_tier=5,
                              points_rewarded=5,
                              happiness=True),
     'hunger': Achievement(category_name="hunger",
                           description="Have your county reach x hunger in one playthrough.",
-                              tier1=525, tier2=550, tier3=800, tier4=900, tier5=1000, maximum_tier=5,
+                          tier1=525, tier2=550, tier3=800, tier4=900, tier5=1000, maximum_tier=5,
                           points_rewarded=5,
                           hunger=True)
 }
 
 rations_translations_tables = {"None": 0, "Quarter": 0.25, "Half": 0.5, "Normal": 1, "Double": 2, "Triple": 3}
 
-all_buildings = ['houses', 'fields', 'pastures', 'mills', 'mines']
+all_buildings = ['houses', 'fields', 'pastures', 'mills', 'mines', 'forts']
 
 dwarf_buildings = {'houses': Building(base='houses',
                                       name='cottage',
@@ -86,7 +86,15 @@ dwarf_buildings = {'houses': Building(base='houses',
                                      labour=20,
                                      gold=50,
                                      wood=10,
-                                     description='Each mine produces 1 iron a day.')
+                                     description='Each mine produces 1 iron a day.'),
+                   'forts': Building(base='forts',
+                                     name='stronghold',
+                                     amount=0,
+                                     production=35,
+                                     labour=20,
+                                     gold=50,
+                                     wood=10,
+                                     description='Adds +1% to your county\'s defence value.')
                    }
 
 human_buildings = {'houses': Building(base='houses',
@@ -129,7 +137,15 @@ human_buildings = {'houses': Building(base='houses',
                                      labour=20,
                                      gold=50,
                                      wood=10,
-                                     description='Each mine produces 1 iron a day.')
+                                     description='Each mine produces 1 iron a day.'),
+                   'forts': Building(base='forts',
+                                     name='palisade',
+                                     amount=0,
+                                     production=35,
+                                     labour=20,
+                                     gold=50,
+                                     wood=10,
+                                     description='Each fort adds +1% to your county\'s defence value.')
                    }
 
 all_armies = ["peasant", "archer", "soldier", "elite"]

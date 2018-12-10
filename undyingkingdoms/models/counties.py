@@ -218,21 +218,25 @@ class County(GameState):
             modifier['Profession Bonus'] = 0.15
         return sum(modifier.values())
 
-    def get_offensive_strength(self, army):
+    def get_offensive_strength(self, army=None, county=None):
         """
-        Returns the attack power of your army
+        Returns the attack power of your army. If no army is sent in, it checks the full potential of the county.
         """
         strength = 0
-        for unit in self.armies.values():
-            strength += army[unit.base] * unit.attack
-        strength *= uniform(0.85, 1.15)
+        if army:
+            for unit in self.armies.values():
+                strength += army[unit.base] * unit.attack
+        elif county:
+            for unit in county.armies.values():
+                strength += unit.amount * unit.attack
         return int(strength)
 
     def get_defensive_strength(self):
+        modifier = 0.01 * self.buildings['forts'].amount + 1
         strength = 0
         for unit in self.armies.values():
             strength += unit.amount * unit.defence
-        strength *= uniform(0.9, 1.1)
+        strength *= modifier
         return int(strength)
 
     def get_casualties(self, army={}, ratio=1):
@@ -273,7 +277,7 @@ class County(GameState):
             destroyed += 1
 
     def battle_results(self, army, enemy):
-        offence = self.get_offensive_strength(army)
+        offence = self.get_offensive_strength(army=army)
         defence = enemy.get_defensive_strength()
         offence_casaulties = self.get_casualties(army=army, ratio=(offence / defence))
         defence_casaulties = enemy.get_casualties(army={}, ratio=1)
