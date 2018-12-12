@@ -1,4 +1,4 @@
-from flask import url_for, redirect, render_template
+from flask import url_for, redirect, render_template, flash
 from flask_login import current_user
 from flask_login import login_user
 
@@ -20,4 +20,6 @@ def login():
             db.session.add(session)
             db.session.commit()
             return redirect(url_for('overview', kingdom_id=current_user.county.kingdom.id, county_id=current_user.county.id))
+        else:
+            flash("Your email or password was incorrect.")
     return render_template("index/login.html", form=form)
