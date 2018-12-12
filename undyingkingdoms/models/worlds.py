@@ -26,7 +26,7 @@ class World(GameState):
             self.advance_day()
             self.game_clock = (self.game_clock + 1) % 24
             db.session.commit()
-        while (self.day // 4) > self.analytic_cycles:
+        while (self.day // 24) > self.analytic_cycles:
             self.advance_24h_analytics()
             self.analytic_cycles += 1
 
@@ -42,9 +42,7 @@ class World(GameState):
         users = User.query.all()
         for user in users:
             # Create a DAU row
-            session = DailyActiveUser(user.id, self.day)
-            db.session.add(session)
-            db.session.commit()
+            dau_event = DailyActiveUser(user.id, self.day)
             # Update User analytics
             user_age = (datetime.now() - user.date_created).days
             if user_age == 1:
@@ -53,6 +51,8 @@ class World(GameState):
                 user.day3_retention = randint(0, 1)
             elif user_age == 7:
                 user.day7_retention = randint(0, 1)
+            db.session.add(dau_event)
+            db.session.commit()
 
     def __repr__(self):
         return '<World %r (%r)>' % (self.name, self.id)

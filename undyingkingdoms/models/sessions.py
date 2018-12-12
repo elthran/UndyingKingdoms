@@ -8,12 +8,14 @@ from undyingkingdoms.models.bases import GameEvent
 
 class Session(GameEvent):
     user_id = db.Column(db.Integer)
+    date = db.Column(db.DateTime)
     activity = db.Column(db.String(16))
     minutes = db.Column(db.Integer)
     ip_address = db.Column(db.String(32))
 
     def __init__(self, user_id, activity):
         self.user_id = user_id
+        self.date = datetime.now.date()
         self.activity = activity
         self.minutes = self.get_minutes()
         self.ip_address = "Unknown"

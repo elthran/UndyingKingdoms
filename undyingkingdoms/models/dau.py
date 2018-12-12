@@ -38,10 +38,8 @@ class DailyActiveUser(GameEvent):
         self.hunger = county.hunger
 
     def get_sessions(self, user_id):
-        # This should filter by timestamp and only return sessions that day
-        # Timestamp in filter should match day below
-        #yesterday = datetime.now() - timedelta(days=1)
-        return Session.query.filter_by(user_id=user_id, activity="login").count()
+        today = datetime.now.date()
+        return Session.query.filter_by(user_id=user_id, activity="login", date=today).count()
 
     def get_minutes_played(self, user_id):
         # This should filter by timestamp and only return sessions that day
