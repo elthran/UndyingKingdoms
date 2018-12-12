@@ -258,7 +258,9 @@ class County(GameState):
                     casualties += dead
             return casualties
         if army:
-            expedition = Expedition(county_id=self.id, duration=5)
+            expedition = Expedition(county_id=self.id)
+            stable_modifier = 1 - ((self.buildings['stables'].total / self.land) * 5)
+            expedition.duration = max(sum(army.values()) * 0.04 * stable_modifier, 1)
             for unit in self.armies.values():
                 if army[unit.base_name] > 0:
                     raw_dead = army[unit.base_name] / uniform(1.4, 1.8) / ratio

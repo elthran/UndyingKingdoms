@@ -44,7 +44,7 @@ all_achievements = {
 
 rations_translations_tables = {"None": 0, "Quarter": 0.25, "Half": 0.5, "Normal": 1, "Double": 2, "Triple": 3}
 
-all_buildings = ['houses', 'fields', 'pastures', 'mills', 'mines', 'forts']
+all_buildings = ['houses', 'fields', 'pastures', 'mills', 'mines', 'forts', 'stables']
 
 dwarf_buildings = {'houses': Building(base_name='houses',
                                       class_name='cottage',
@@ -94,7 +94,15 @@ dwarf_buildings = {'houses': Building(base_name='houses',
                                      labour_maintenance=20,
                                      gold=50,
                                      wood=10,
-                                     description='Adds +1% to your county\'s defence value.')
+                                     description='Adds +1% to your county\'s defence value.'),
+                   'stables': Building(base_name='stables',
+                                     class_name='Pony Stables',
+                                     total=0,
+                                     production_cost=35,
+                                     labour_maintenance=20,
+                                     gold=50,
+                                     wood=10,
+                                     description='Your army returns from battle faster.')
                    }
 
 human_buildings = {'houses': Building(base_name='houses',
@@ -145,7 +153,15 @@ human_buildings = {'houses': Building(base_name='houses',
                                      labour_maintenance=20,
                                      gold=50,
                                      wood=10,
-                                     description='Each fort adds +1% to your county\'s defence value.')
+                                     description='Each fort adds +1% to your county\'s defence value.'),
+                   'stables': Building(base_name='stables',
+                                     class_name='stables',
+                                     total=0,
+                                     production_cost=35,
+                                     labour_maintenance=20,
+                                     gold=50,
+                                     wood=10,
+                                     description='Your army returns from battle faster.')
                    }
 
 all_armies = ["peasant", "archer", "soldier", "elite"]

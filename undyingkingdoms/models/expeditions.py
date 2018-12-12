@@ -11,7 +11,7 @@ class Expedition(GameEvent):
     soldier = db.Column(db.Integer)
     elite = db.Column(db.Integer)
 
-    def __init__(self, county_id, duration=10, peasant=0, archer=0, soldier=0, elite=0):
+    def __init__(self, county_id, duration, peasant=0, archer=0, soldier=0, elite=0):
 
         self.county_id = county_id
         self.duration = duration
