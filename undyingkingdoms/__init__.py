@@ -32,7 +32,6 @@ csrf.init_app(app)
 json = FlaskJSON(app)
 
 app.config.update(dict(
-    DEBUG=True,
     MAIL_SERVER='smtp.gmail.com',
     MAIL_PORT=587,
     MAIL_USE_TLS=True,
