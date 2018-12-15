@@ -16,7 +16,7 @@
 <h2>{{ county.get_available_workers() }} workers available for training</h2>
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
-    <table id="infrastructure_table">
+    <table class="production_table">
         <tr>
             <th>Name</th>
             <th>Available</th>
@@ -24,9 +24,9 @@
             <th>Train</th>
             <th style="width:125px;">Cost</th>
             <th>Currently In Training</th>
-            <th>Attack</th>
-            <th>Defence</th>
-            <th>Health</th>
+            <th><div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div></th>
+            <th><div class="tooltip">Defence<span class="tooltipText">{{ meta_data["defence"] }}</span></div></th>
+            <th><div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div></th>
             <th>Description</th>
         </tr>
         <tr>
@@ -46,7 +46,11 @@
             <td>{{ army.class_name.title() }}</td>
             <td>{{ army.available }}</td>
             <td>{{ army.traveling }}</td>
-            <td>{{ form[army.base_name] }}</td>
+            <td>
+                <input id="{{ army.base_name }}_slider"
+                       type="range" value="0" min="0" max="25" step="1" />
+                <input id="{{ army.base_name }}_display" name="{{ army.base_name }}" value="0" />
+            </td>
             <td>
                 {% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif %}
                 {% if army.wood %}{{ army.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif %}
@@ -72,10 +76,21 @@
             <td></td>
         </tr>
     </table>
-    <button type="submit">Build</button>
-    <br><br><br>
-    Note: A unit's attack value is used when attacking other counties, and a unit's defence value is used when they are defending your county.
-    A unit's health is its likelihood to die in combat.
+    <br><button type="submit">Build</button>
 </form>
+
+<script type="text/javascript">
+{% for army in county.armies.values() %}
+    var {{ army.base_name }}_slider = document.getElementById('{{ army.base_name }}_slider'),
+    {{ army.base_name }}_display = document.getElementById('{{ army.base_name }}_display');
+    {{ army.base_name }}_slider.onchange = function() {
+        {{ army.base_name }}_display.value = this.value;
+        if (this.value > 0) {
+            button.disabled = false;
+        }
+    }
+{% endfor %}
+button = document.getElementById('submit');
+</script>
 
 {% endblock %}

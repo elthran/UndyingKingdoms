@@ -257,3 +257,10 @@ human_armies = {'peasant': Army(base_name='peasant',
                               health=7,
                               description='Knights are one of the best attackers.')
                 }
+
+game_descriptions = {"attack": "How much power a unit has when attacking another county.",
+                     "defence": "How much power a unit has when defending your county.",
+                     "health": "The greater a unit's health, the less likely they will die in battle.",
+                     "available_workers": "Any citizen not in the military or employed, is available. These workers "
+                                          "will add production to your city which can be used to build new buildings. "
+                                          "Unused production generates gold."}

@@ -10,7 +10,9 @@
 <h2>Available Land: {{ county.get_available_land() }}</h2>
 <h2>Daily Production:
     {{ county.get_production()|int }} <img class="resource_icons" src="/static/images/prod_icon.jpg">
-    ({{ county.get_available_workers() }} available workers)
+    (<div class="tooltip">{{ county.get_available_workers() }} available workers
+        <span class="tooltipText">{{ meta_data["available_workers"] }}</span>
+    </div>)
 </h2>
 <h2>Current Resources:
     {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">
@@ -20,7 +22,7 @@
 <br>
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
-    <table id="infrastructure_table">
+    <table class="production_table">
         <tr>
             <th style="width:150px;">Name</th>
             <th>Currently Have</th>
@@ -33,10 +35,10 @@
         {% for building in county.buildings.values() %}
         <tr>
             <td>{{ building.class_name.title() }}</td>
-            <td>{{ building.amount }}</td>
+            <td>{{ building.total }}</td>
             <td>
                 <input id="{{ building.base_name }}_slider"
-                       type="range" value="0" min="0" max="{{ county.get_available_land() }}" step="1" />
+                       type="range" value="0" min="0" max="25" step="1" />
                 <input id="{{ building.base_name }}_display" name="{{ building.base_name }}" value="0" />
             </td>
             <td>{{ building.pending }}</td>
@@ -51,10 +53,6 @@
         {% endfor %}
     </table>
     <br><button id="submit" type="submit" disabled>Build</button><br>
-    <p>
-    Any excess <img class="resource_icons" src="/static/images/prod_icon.jpg"> will be converted into gold at the end of each day.
-    Each day your kingdom will randomly produce pending buildings until you can not produce any more.
-    </p>
 </form>
 
 <script type="text/javascript">

@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from undyingkingdoms import app, db
 from undyingkingdoms.models import Transaction, World
 from undyingkingdoms.models.forms.military import MilitaryForm
-from undyingkingdoms.static.metadata import all_armies
+from undyingkingdoms.static.metadata import all_armies, game_descriptions
 
 
 @login_required
@@ -30,4 +30,4 @@ def military():
         db.session.add(transaction)
         db.session.commit()
         return redirect(url_for('military'))
-    return render_template('gameplay/military.html', form=form)
+    return render_template('gameplay/military.html', form=form, meta_data=game_descriptions)

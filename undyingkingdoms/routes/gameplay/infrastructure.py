@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from undyingkingdoms import app, db
 from undyingkingdoms.models import World, Transaction
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm
-from undyingkingdoms.static.metadata import all_buildings
+from undyingkingdoms.static.metadata import all_buildings, game_descriptions
 
 
 @login_required
@@ -31,5 +31,5 @@ def infrastructure():
         return redirect(url_for('infrastructure'))
     else:
         print(form.data)
-    return render_template('gameplay/infrastructure.html', form=form)
+    return render_template('gameplay/infrastructure.html', form=form, meta_data=game_descriptions)
 
