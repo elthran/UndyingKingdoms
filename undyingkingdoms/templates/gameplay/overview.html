@@ -25,8 +25,8 @@
         <font color="green">{{ county.immigration }} immigration,
             {{ county.births }} births</font>)
     </li>
-    <li>Happiness: {{ county.happiness_terminology }}</li>
-    <li>Hunger: {{ county.hunger_terminology }}</li>
+    <li>Happiness: {{ county.happiness_terminology.title() }}</li>
+    <li>Hunger: {{ county.hunger_terminology.title() }}</li>
     <li>Weather: {{ county.weather }}</li>
     {% endif %}
 </ul>

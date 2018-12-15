@@ -8,7 +8,7 @@ from undyingkingdoms.models.bases import GameState, db
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
-    human_buildings, rations_translations_tables, kingdom_names
+    human_buildings, kingdom_names
 
 from copy import deepcopy
 
@@ -30,14 +30,14 @@ class County(GameState):
     _gold = db.Column(db.Integer)
     _wood = db.Column(db.Integer)
     _iron = db.Column(db.Integer)
-    rations = db.Column(db.String(32))
+    rations = db.Column(db.Float)
     _happiness = db.Column(db.Integer)  # Out of 100
     _population = db.Column(db.Integer)
     _hunger = db.Column(db.Integer)  # Out of 100
     weather = db.Column(db.String(32))
     title = db.Column(db.String(32))
     production = db.Column(db.Integer)
-    food_stores = db.Column(db.Integer)
+    grain_stores = db.Column(db.Integer)
     notifications = db.relationship('Notification', backref='kingdom')
 
     expeditions = db.relationship('Expedition', backref='county')
@@ -74,9 +74,9 @@ class County(GameState):
         self._gold = 1000
         self._wood = 100
         self._iron = 25
-        self.rations = "Normal"
+        self.rations = 1
         self.production = 0  # How many buildings you can build per day
-        self.food_stores = 0
+        self.grain_stores = 0
         self.weather = "Sunny"
 
         self.births = 0
@@ -416,16 +416,30 @@ class County(GameState):
             db.session.commit()
 
     def update_food(self):
-        daily_food = self.buildings['pastures'].total * 25
-        storable_food = self.buildings['fields'].total * 20
-        total_food = daily_food + storable_food + self.food_stores
-        food_eaten = self.population * rations_translations_tables[self.rations]
+        total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores
+        food_eaten = self.get_food_to_be_eaten()
         if total_food >= food_eaten:
-            self.food_stores += min(total_food - food_eaten, storable_food)
+            self.grain_stores += min(total_food - food_eaten, self.get_produced_grain())
             self.hunger = min(self.hunger + 1, 100)
         else:
-            self.food_stores = 0
+            self.grain_stores = 0
             self.hunger -= max(int((food_eaten / total_food) * 5), 0)
+
+    def get_produced_grain(self):
+        return self.buildings['fields'].total * 20
+
+    def get_produced_dairy(self):
+        return self.buildings['pastures'].total * 25
+    
+    def get_food_to_be_eaten(self):
+        return int(self.population * self.rations)
+    
+    def grain_storage_change(self):
+        food_produced = self.get_produced_dairy() + self.get_produced_grain()
+        food_delta = food_produced - self.get_food_to_be_eaten()
+        if food_delta > 0:  # If you have food left over, save it with a max of how much grain you produced
+            return min(food_delta, self.get_produced_grain())
+        return food_delta
 
     def update_population(self):
         self.deaths = self.get_death_rate()
@@ -440,26 +454,31 @@ class County(GameState):
     @property
     def hunger_terminology(self):
         if self.hunger < 20:
-            return "Dying of hunger"
+            return "dying of hunger"
         if self.hunger < 50:
-            return "Starving"
+            return "starving"
         if self.hunger < 75:
-            return "Hungry"
+            return "hungry"
         if self.hunger < 90:
-            return "Sated"
-        return "Well nourished"
+            return "sated"
+        return "well nourished"
 
     @property
     def happiness_terminology(self):
         if self.happiness < 20:
-            return "Rioting"
+            return "rioting"
         if self.happiness < 50:
-            return "Furious"
+            return "furious"
         if self.happiness < 75:
-            return "Discontent"
+            return "discontent"
         if self.happiness < 90:
-            return "Content"
-        return "Pleased"
+            return "content"
+        return "pleased"
+
+    @property
+    def rations_terminology(self):
+        terminology_dictionary = {0: "None", 0.25: "Quarter", 0.5: "Half", 1: "Normal", 2: "Double", 3: "Triple"}
+        return terminology_dictionary[self.rations]
 
     def __repr__(self):
         return '<County %r (%r)>' % (self.name, self.id)

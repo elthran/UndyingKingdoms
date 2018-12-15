@@ -41,8 +41,8 @@ all_achievements = {
                           points_rewarded=5,
                           hunger=True)
 }
+rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (1, "Normal"), (2, "Double"), (3, "Triple")]
 
-rations_translations_tables = {"None": 0, "Quarter": 0.25, "Half": 0.5, "Normal": 1, "Double": 2, "Triple": 3}
 
 all_buildings = ['houses', 'fields', 'pastures', 'mills', 'mines', 'forts', 'stables']
 
@@ -61,7 +61,7 @@ dwarf_buildings = {'houses': Building(base_name='houses',
                                       labour_maintenance=10,
                                       gold=25,
                                       wood=0,
-                                      description='Each field adds 20 to your food production.'),
+                                      description='Each field adds 20 to your grain production.'),
                    'pastures': Building(base_name='pastures',
                                         class_name='dwarf cow farm',
                                         total=10,
@@ -69,7 +69,7 @@ dwarf_buildings = {'houses': Building(base_name='houses',
                                         labour_maintenance=10,
                                         gold=25,
                                         wood=0,
-                                        description='Adds 25 to your food production, but excess milk can not be'
+                                        description='Adds 25 to your dairy production, but excess milk can not be'
                                                     ' stored and is lost.'),
                    'mills': Building(base_name='mills',
                                      class_name='lumber mill',
@@ -120,7 +120,7 @@ human_buildings = {'houses': Building(base_name='houses',
                                       labour_maintenance=10,
                                       gold=25,
                                       wood=0,
-                                      description='Each field adds 20 to your food production.'),
+                                      description='Each field adds 20 to your grain production.'),
                    'pastures': Building(base_name='pastures',
                                         class_name='dairy pasture',
                                         total=10,
@@ -128,7 +128,7 @@ human_buildings = {'houses': Building(base_name='houses',
                                         labour_maintenance=10,
                                         gold=25,
                                         wood=0,
-                                        description='Adds 25 to your food production, but excess milk can not be'
+                                        description='Adds 25 to your dairy production, but excess milk can not be'
                                                     ' stored and is lost.'),
                    'mills': Building(base_name='mills',
                                      class_name='lumber mill',

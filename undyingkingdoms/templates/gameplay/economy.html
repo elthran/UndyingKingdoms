@@ -5,18 +5,60 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
+<br><h1 style="text-align:center;">Economy</h1><br><br>
+
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
-    <ul>
-        <li>Gold: {{ county.gold }} (+ {{ county.get_gold_income()|int }} per day, from taxes and excess production)</li>
-        <li>Wood: {{ county.wood }} (+ {{ county.get_wood_income()|int }} per day)</li>
-        <li>Iron: {{ county.iron }} (+ {{ county.get_iron_income()|int }} per day)</li>
-        <li>Tax rate: {{ form.tax }}%</li>
-        <li>Food Rations: {{ form.rations }}</li>
-        <li>Stored Food: {{ county.food_stores }}</li>
-    </ul>
+    <h2>Resources</h2>
+    <table style="width:1200px">
+        <tr>
+            <th>Topic</th>
+            <th>Icon</th>
+            <th>Current</th>
+            <th>Modifiers</th>
+            <th>Details1</th>
+            <th>Details2</th>
+            <th>Affects</th>
+        </tr>
+        <br>
+        <tr>
+            <td>Population</td>
+            <td><img class="resource_icons" src="/static/images/population_icon.jpg"></td>
+            <td>{{ county.population }}</td>
+            <td>Birth Rate: 0%</td>
+            <td>Births: {{ county.get_birth_rate() }}</td>
+            <td>Deaths: {{ county.get_death_rate() }}</td>
+            <td>*Raise happiness to increase birth rate*</td>
+        </tr>
+        <tr>
+            <td>Gold</td>
+            <td><img class="resource_icons" src="/static/images/gold_icon.jpg"></td>
+            <td>{{ county.gold }}</td>
+            <td>Tax Rate: {{ form.tax }}%</td>
+            <td>Excess Production: {{ county.production }}</td>
+            <td>+{{ county.tax * county.population }}</td>
+            {% if county.tax < 7 %}<td style="color:green;">Your tax rate has a positive
+            {% else %}<td style="color:red;">Your tax rate has a negative
+            {% endif %}affect on happiness</td>
+        </tr>
+        <tr>
+            <td>Food</td>
+            <td>
+                <img class="resource_icons" src="/static/images/dairy_icon.jpg"> /
+                <img class="resource_icons" src="/static/images/grain_icon.jpg">
+            </td>
+            <td>{{ county.grain_stores }}</td>
+            <td>Rations: {{ form.rations }}</td>
+            <td>Produced:
+                {{ county.get_produced_dairy() }} <img class="resource_icons" src="/static/images/dairy_icon.jpg"> +
+                {{ county.get_produced_grain() }} <img class="resource_icons" src="/static/images/grain_icon.jpg">
+            </td>
+            <td>Will Consume: {{ county.get_food_to_be_eaten() }}</td>
+            <td>Your storage level will change by {{ county.grain_storage_change()}} </td>
+        </tr>
+    </table>
     <br>
-    <button type="submit">Change</button>
+    <button type="submit">Update</button>
     <br>
 </form>
 
