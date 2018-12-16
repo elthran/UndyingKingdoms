@@ -36,4 +36,3 @@ class Army(GameState):
     @property
     def available(self):
         return self.total - self.traveling
-

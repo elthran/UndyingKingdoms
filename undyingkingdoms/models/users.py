@@ -28,7 +28,7 @@ class User(GameState):
 
     # Achievementes
     achievements = db.relationship("Achievement",
-                                   collection_class=attribute_mapped_collection('category_name'),
+                                   collection_class=attribute_mapped_collection('name'),
                                    cascade="all, delete, delete-orphan", passive_deletes=True)
     achievement_points = db.Column(db.Integer)
 
@@ -79,10 +79,12 @@ class User(GameState):
     def has_county(self):
         return True if County.query.filter_by(user_id=self.id) else False
 
-    def check_incremental_achievement(self, category, amount):
-        achievement = Achievement.query.filter_by(category_name=category, user_id=self.id).first()
+    def check_incremental_achievement(self, name, amount):
+        achievement = Achievement.query.filter_by(category="reach_x_amount_in_one_age",
+                                                  sub_category=name,
+                                                  user_id=self.id).first()
         if achievement.current_tier < achievement.maximum_tier:
-            requirement_to_advance = getattr(achievement, "tier" + str(achievement.current_tier+1))
+            requirement_to_advance = getattr(achievement, "tier" + str(achievement.current_tier + 1))
             if amount >= requirement_to_advance:
                 achievement.current_tier += 1
                 self.achievement_points += achievement.points_rewarded

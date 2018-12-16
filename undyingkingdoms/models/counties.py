@@ -152,7 +152,6 @@ class County(GameState):
     @happiness.setter
     def happiness(self, value):
         self._happiness = value
-        self.check_incremental_achievement("happiness", self._happiness)
 
     @property
     def hunger(self):
@@ -161,11 +160,10 @@ class County(GameState):
     @hunger.setter
     def hunger(self, value):
         self._hunger = value
-        self.check_incremental_achievement("hunger", self._hunger)
 
-    def check_incremental_achievement(self, category, amount):
+    def check_incremental_achievement(self, name, amount):
         # Currently this does nothing but it's here for flexibility.
-        self.user.check_incremental_achievement(category, amount)
+        self.user.check_incremental_achievement(name, amount)
 
     def get_available_land(self):
         """
@@ -249,7 +247,7 @@ class County(GameState):
         ratio: The greater you outnumber the enemy, the safer your troops are.
         """
         casualties = 0
-        print("aTTACKING ARMY:", army)
+        print("Attacking army:", army)
         if not army:  # ie. you are the defender and use entire army
             for unit in self.armies.values():
                 available = unit.total - unit.traveling

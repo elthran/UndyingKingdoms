@@ -37,8 +37,8 @@
             <td>Tax Rate: {{ form.tax }}%</td>
             <td>Excess Production: {{ county.production }}</td>
             <td>+{{ county.tax * county.population }}</td>
-            {% if county.tax < 7 %}<td style="color:green;">Your tax rate has a positive
-            {% else %}<td style="color:red;">Your tax rate has a negative
+            {% if county.tax < 7 %}<td style="color:green;">Your current tax rate has a positive
+            {% else %}<td style="color:red;">Your current tax rate has a negative
             {% endif %}affect on happiness</td>
         </tr>
         <tr>

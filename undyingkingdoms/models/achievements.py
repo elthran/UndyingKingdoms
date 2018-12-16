@@ -5,20 +5,15 @@ from undyingkingdoms.models.bases import GameEvent
 class Achievement(GameEvent):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
-    category_name = db.Column(db.String(64))
-    description = db.Column(db.String(64))
+    name = db.Column(db.String(64))  # Unique name for mapping purposes
+    display_title = db.Column(db.String(64))  # The name of the achievement the user sees
+    category = db.Column(db.String(64))  # A way to group it for coding purposes
+    sub_category = db.Column(db.String(64))  # A way to identify it from its group
+    description = db.Column(db.String(64))  # For the user to read
     current_progress = db.Column(db.Integer)
-    current_tier = db.Column(db.Integer)
-    maximum_tier = db.Column(db.Integer)
-    points_rewarded = db.Column(db.Integer)
-
-    land = db.Column(db.Boolean)
-    population = db.Column(db.Boolean)
-    gold = db.Column(db.Boolean)
-    wood = db.Column(db.Boolean)
-    iron = db.Column(db.Boolean)
-    happiness = db.Column(db.Boolean)
-    hunger = db.Column(db.Boolean)
+    current_tier = db.Column(db.Integer)  # What level they are on. Starts at 0
+    maximum_tier = db.Column(db.Integer)  # The highest level they can reach
+    points_rewarded = db.Column(db.Integer)  # Points rewarded at each level
 
     tier1 = db.Column(db.Integer)
     tier2 = db.Column(db.Integer)
@@ -26,34 +21,18 @@ class Achievement(GameEvent):
     tier4 = db.Column(db.Integer)
     tier5 = db.Column(db.Integer)
 
-    def __init__(self, category_name, description, points_rewarded, maximum_tier=0,
-                 tier1=None,
-                 tier2=None,
-                 tier3=None,
-                 tier4=None,
-                 tier5=None,
-                 land=False,
-                 population=False,
-                 gold=False,
-                 wood=False,
-                 iron=False,
-                 happiness=False,
-                 hunger=False):
-        self.category_name = category_name
+    def __init__(self, name, display_title=None, category=None, sub_category=None, description=None, points_rewarded=0,
+                 maximum_tier=0, tier1=None, tier2=None, tier3=None, tier4=None, tier5=None):
+        self.name = name
+        self.display_title = display_title
+        self.category = category
+        self.sub_category = sub_category
         self.description = description
         self.progress = 0
         self._progress_required = None
         self.current_tier = 0
         self.maximum_tier = maximum_tier
         self.points_rewarded = points_rewarded
-
-        self.land = land
-        self.population = population
-        self.gold = gold
-        self.wood = wood
-        self.iron = iron
-        self.happiness = happiness
-        self.hunger = hunger
 
         self.tier1 = tier1
         self.tier2 = tier2
@@ -68,9 +47,9 @@ class Achievement(GameEvent):
     def get_earned_required_amount_message(self):
         if self.current_tier == 0:
             return "You have made no progress on this achievement."
-        return "Last reward at {} {}.".format(getattr(self, "tier" + str(self.current_tier)), self.category_name)
+        return "Last reward at {} {}.".format(getattr(self, "tier" + str(self.current_tier)), self.name)
 
     def get_next_required_amount_message(self):
         if self.current_tier == self.maximum_tier:
             return "You have unlocked all tiers."
-        return "Next reward at {} {}.".format(getattr(self, "tier" + str(self.current_tier + 1)), self.category_name)
+        return "Next reward at {} {}.".format(getattr(self, "tier" + str(self.current_tier + 1)), self.name)
