@@ -1,7 +1,7 @@
 import os
 import socket
 
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for, redirect
 from flask_json import FlaskJSON
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
@@ -77,7 +77,7 @@ import_routes()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "login/"
+login_manager.login_view = "login"  # @login_required will redirect to this page
 
 if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
     # Only runs once. If it's a debug relaunch, it won't run

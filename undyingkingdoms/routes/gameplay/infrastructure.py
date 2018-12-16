@@ -7,11 +7,9 @@ from undyingkingdoms.models.forms.infrastructure import InfrastructureForm
 from undyingkingdoms.static.metadata import all_buildings, game_descriptions
 
 
-@login_required
 @app.route('/gameplay/infrastructure/', methods=['GET', 'POST'])
+@login_required
 def infrastructure():
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
     county = current_user.county
     world = World.query.filter_by(id=county.kingdom.world_id).first()
     form = InfrastructureForm()
