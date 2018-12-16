@@ -6,7 +6,7 @@ from .kingdoms import Kingdom
 from .sessions import Session
 from .notifications import Notification
 from .achievements import Achievement
-from .dau import DailyActiveUser
+from .dau import DAU
 from .worlds import World
 from .transactions import Transaction
 from .expeditions import Expedition

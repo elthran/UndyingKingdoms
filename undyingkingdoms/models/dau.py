@@ -5,13 +5,13 @@ from undyingkingdoms.models import Session, User
 from undyingkingdoms.models.bases import GameEvent
 
 
-class DailyActiveUser(GameEvent):
+class DAU(GameEvent):
 	# User data
 	user_id = db.Column(db.Integer)
 	account_age_in_days = db.Column(db.Integer)
-	todays_sessions = db.Column(db.Integer)
-	todays_minutes_played = db.Column(db.Integer)
-	todays_ads_watched = db.Column(db.Integer)
+	sessions = db.Column(db.Integer)
+	minutes_played = db.Column(db.Integer)
+	ads_watched = db.Column(db.Integer)
 	# Game data
 	days_in_age = db.Column(db.Integer)
 	land = db.Column(db.Integer)
@@ -23,14 +23,15 @@ class DailyActiveUser(GameEvent):
 	def __init__(self, user_id, day):
 		self.user_id = user_id
 		self.days_in_age = day
-		self.todays_sessions = self.get_sessions(user_id)
-		self.todays_minutes_played = self.get_minutes_played(user_id)
+		self.sessions = self.get_sessions(user_id)
+		self.minutes_played = self.get_minutes_played(user_id)
+		self.ads_watched = 0
 		self.update_self(user_id)
 
 	def update_self(self, user_id):
 		user = User.query.filter_by(id=user_id).first()
 		county = user.county
-		self.account_age_in_days = (datetime.now() - user.date_created).days
+		self.account_age_in_days = (datetime.now() - user.time_created).days
 		self.land = county.land
 		self.population = county.population
 		self.gold = county.gold
@@ -47,20 +48,3 @@ class DailyActiveUser(GameEvent):
 		yesterday = datetime.now().date() - timedelta(days=1)
 		sessions = Session.query.filter_by(user_id=user_id, activity="logout", date_created=yesterday).all()
 		return sum(session.minutes for session in sessions)
-
-	def validate(self):
-		if not isinstance(self.user_id, int):
-			return False
-		if not isinstance(self.account_age, int):
-			return False
-		if not isinstance(self.sessions, int) or self.sessions < 1:
-			return False
-		if not isinstance(self.minutes_played, int):
-			return False
-		if not isinstance(self.land, int):
-			return False
-		if not isinstance(self.gold, int):
-			return False
-		if not isinstance(self.happiness, int):
-			return False
-		return True

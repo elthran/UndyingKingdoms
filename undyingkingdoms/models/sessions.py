@@ -7,6 +7,7 @@ from undyingkingdoms.models.bases import GameEvent
 
 
 class Session(GameEvent):
+    date_created = db.Column(db.DateTime, default=db.func.current_date())
     user_id = db.Column(db.Integer)
     activity = db.Column(db.String(16))
     minutes = db.Column(db.Integer)
@@ -14,15 +15,19 @@ class Session(GameEvent):
 
     def __init__(self, user_id, activity):
         self.user_id = user_id
-        self.date_created = datetime.now().date()  # Overwrites the parent class
         self.activity = activity
         self.minutes = self.get_minutes()
         self.ip_address = "Unknown"
 
     def get_minutes(self):
         if self.activity == "logout":
-            last_login = Session.query.filter_by(user_id=self.user_id, activity="login").order_by(desc('date_created')).first()
+            last_login = Session.query.filter_by(user_id=self.user_id,
+                                                 activity="login").order_by(desc('time_created')).first()
             if last_login:
-                time_difference = (datetime.now() - last_login.date_created)
+                time_difference = (datetime.now() - last_login.time_created)
                 return time_difference.seconds // 60
-        return -1
+            else:
+                # We cant' find login time.
+                return None
+        elif self.activity == "login":
+            return None

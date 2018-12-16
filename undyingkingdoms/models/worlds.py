@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from random import randint
 
 from undyingkingdoms.models.users import User
-from undyingkingdoms.models import DailyActiveUser, Achievement
+from undyingkingdoms.models import DAU, Achievement
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.bases import GameState, db
 
@@ -22,13 +22,15 @@ class World(GameState):
 
     def check_clock(self):
         now = datetime.now().hour
-        while now != self.game_clock:
+        while (self.day // 24) > self.analytic_cycles:  # First advance DAU since it runs a day behind and should get the older data.
+            self.advance_24h_analytics()
+            self.analytic_cycles += 1
+        while now != self.game_clock:  # Now advance all the game clocks and events.
             self.advance_day()
             self.game_clock = (self.game_clock + 1) % 24
             db.session.commit()
-        while (self.day // 24) > self.analytic_cycles:
-            self.advance_24h_analytics()
-            self.analytic_cycles += 1
+        if self.day >= 2:
+            self.advance_age()
 
     def advance_day(self):
         for county in County.query.all():
@@ -37,14 +39,15 @@ class World(GameState):
 
     def advance_age(self):
         self.age += 1
+        self.reset_age()
 
     def advance_24h_analytics(self):
         users = User.query.all()
         for user in users:
             # Create a DAU row
-            dau_event = DailyActiveUser(user.id, self.day)
+            dau_event = DAU(user.id, self.day)
             # Update User analytics
-            user_age = (datetime.now() - user.date_created).days
+            user_age = (datetime.now() - user.time_created).days
             if user_age == 1:
                 user.day1_retention = randint(0, 1)
             elif user_age == 3:
@@ -53,6 +56,10 @@ class World(GameState):
                 user.day7_retention = randint(0, 1)
             db.session.add(dau_event)
             db.session.commit()
+
+    def reset_age(self):
+        # This should delete all game data, but not user or meta_data
+        pass
 
     def __repr__(self):
         return '<World %r (%r)>' % (self.name, self.id)

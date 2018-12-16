@@ -67,7 +67,7 @@ def database_export():
         # Each table is a list inside the list
         new_table = []
         table_name_reference.append(name)
-        if name not in {'authentication_event', 'daily_active_user'}:
+        if name not in {'authentication_event', 'dau'}:
             # Each row will be a list inside the table list, inside the all_tables list
             table = tables[name]
             header_row = []
