@@ -29,18 +29,6 @@
             <th><div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div></th>
             <th>Description</th>
         </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
         {% for army in county.armies.values() %}
         <tr>
             <td>{{ army.class_name.title() }}</td>
