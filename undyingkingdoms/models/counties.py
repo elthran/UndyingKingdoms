@@ -238,7 +238,7 @@ class County(GameState):
         modifier = 0.01 * self.buildings['forts'].total + 1
         strength = 0
         for unit in self.armies.values():
-            strength += unit.total * unit.defence
+            strength += (unit.total - unit.traveling) * unit.defence
         strength *= modifier
         return int(strength)
 
@@ -252,8 +252,9 @@ class County(GameState):
         print("aTTACKING ARMY:", army)
         if not army:  # ie. you are the defender and use entire army
             for unit in self.armies.values():
-                if unit.total > 0:
-                    dead = randint(unit.total // 10, unit.total // 5)
+                available = unit.total - unit.traveling
+                if available > 0:
+                    dead = randint(available // 10, available // 5)
                     unit.total -= dead
                     casualties += dead
             return casualties
