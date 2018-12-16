@@ -10,6 +10,8 @@ from undyingkingdoms.models.forms.chatroom import ChatForm
 @login_required
 @app.route('/gameplay/chatroom/', methods=['GET', 'POST'])
 def chatroom():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
     chat_id = current_user.county.kingdom.id
     if current_user.county.kingdom.id not in global_chatroom:
         global_chatroom[chat_id] = []

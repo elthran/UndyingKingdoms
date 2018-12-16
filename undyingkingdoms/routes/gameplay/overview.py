@@ -9,6 +9,8 @@ from undyingkingdoms.models.forms.attack import TempGameAdvance
 @login_required
 @app.route('/gameplay/overview/<int:kingdom_id>/<int:county_id>/', methods=['GET', 'POST'])
 def overview(kingdom_id=0, county_id=0):
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
     if not current_user.county:
         return redirect(url_for('initialize'))
 
