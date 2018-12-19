@@ -14,7 +14,7 @@ class Session(GameEvent):
 
     def __init__(self, user_id, activity):
         self.user_id = user_id
-        self.minutes = self.get_minutes()
+        self.minutes = self.set_minutes()
         self.valid = True
         self.validate(activity)
 

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from random import randint
 
 from undyingkingdoms.models.users import User
-from undyingkingdoms.models import DAU, Achievement, Transaction
+from undyingkingdoms.models import DAU, Achievement
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.bases import GameState, db
 

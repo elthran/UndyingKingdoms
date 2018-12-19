@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
-from undyingkingdoms.models import Session
+from undyingkingdoms.models.sessions import Session
 from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.bases import GameState, db
 from werkzeug.security import generate_password_hash, check_password_hash

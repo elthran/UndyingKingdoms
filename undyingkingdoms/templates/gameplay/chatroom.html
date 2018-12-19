@@ -5,7 +5,7 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 <h1>Discussion</h1>
-<div style="border:solid 1px;width:75%;margin-left:200px;min-height:300px;">
+<div style="border:solid 1px;width:auto;min-height:300px;margin-left:250px;margin-right:250px;">
 <ul>
 {% for message in chat %}
     <li>{{ message[0] }}  {{ message[1] }}: {{ message[2] }}</li>
