@@ -7,27 +7,22 @@ from undyingkingdoms.models.bases import GameEvent
 
 
 class Session(GameEvent):
-    date_created = db.Column(db.DateTime, default=db.func.current_date())
+    time_logged_out = db.Column(db.DateTime)
     user_id = db.Column(db.Integer)
-    activity = db.Column(db.String(16))
     minutes = db.Column(db.Integer)
-    ip_address = db.Column(db.String(32))
+    valid = db.Column(db.Boolean)
 
     def __init__(self, user_id, activity):
         self.user_id = user_id
-        self.activity = activity
         self.minutes = self.get_minutes()
-        self.ip_address = "Unknown"
+        self.valid = True
+        self.validate(activity)
 
-    def get_minutes(self):
-        if self.activity == "logout":
-            last_login = Session.query.filter_by(user_id=self.user_id,
-                                                 activity="login").order_by(desc('time_created')).first()
-            if last_login:
-                time_difference = (datetime.now() - last_login.time_created)
-                return time_difference.seconds // 60
-            else:
-                # We cant' find login time.
-                return None
-        elif self.activity == "login":
-            return None
+    def set_minutes(self):
+        last_login = Session.query.filter_by(user_id=self.user_id).order_by(desc('time_created')).first()
+        if last_login.time_logged_out:  # User has no record of logging in
+            self.valid = False
+        else:
+            time_difference = (datetime.now() - last_login.time_created)
+            self.minutes = time_difference.seconds // 60
+

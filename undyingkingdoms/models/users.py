@@ -1,7 +1,10 @@
 from copy import deepcopy
+from datetime import datetime
 
+from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
+from undyingkingdoms.models import Session
 from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.bases import GameState, db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -24,7 +27,7 @@ class User(GameState):
     day7_retention = db.Column(db.Integer)
     lifetime_revenue = db.Column(db.Integer)
     country = db.Column(db.String(32))
-    ip_address = db.Column(db.String(32))
+    _logged_in = db.Column(db.Boolean)
 
     # Achievementes
     achievements = db.relationship("Achievement",
@@ -51,7 +54,7 @@ class User(GameState):
         self.day7_retention = None
         self.lifetime_revenue = 0
         self.country = ""
-        self.ip_address = ""
+        self._logged_in = False
 
         # Achievements
         self.achievements = deepcopy(all_achievements)
@@ -62,6 +65,22 @@ class User(GameState):
         self.is_active = True
         self.is_anonymous = False
         self.is_admin = False
+
+    @property
+    def logged_in(self):
+        return self._logged_in
+
+    @logged_in.setter
+    def logged_in(self, value):
+        self._logged_in = value
+        if not value:
+            session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
+            session.time_logged_out = datetime.now()
+            session.set_minutes()
+        else:
+            session = Session(self.id, value)
+            db.session.add(session)
+        db.session.commit()
 
     @property
     def password(self):

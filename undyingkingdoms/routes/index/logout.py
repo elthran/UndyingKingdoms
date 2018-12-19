@@ -7,8 +7,6 @@ from undyingkingdoms.models.sessions import Session
 
 @app.route('/logout/', methods=['GET', 'POST'])
 def logout():
-    session = Session(current_user.id, "logout")
-    db.session.add(session)
-    db.session.commit()
+    current_user.logged_in = False
     logout_user()
     return redirect(url_for('home'))
