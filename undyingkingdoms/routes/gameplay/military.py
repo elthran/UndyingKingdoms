@@ -10,6 +10,8 @@ from undyingkingdoms.static.metadata import all_armies, game_descriptions
 @app.route('/gameplay/military/', methods=['GET', 'POST'])
 @login_required
 def military():
+    if not current_user.logged_in:
+        current_user.logged_in = True
     county = current_user.county
     world = World.query.filter_by(id=county.kingdom.world_id).first()
     form = MilitaryForm()

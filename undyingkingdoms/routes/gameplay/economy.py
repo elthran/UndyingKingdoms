@@ -9,6 +9,8 @@ from undyingkingdoms.static.metadata import rations_terminology
 @app.route('/gameplay/economy/', methods=['GET', 'POST'])
 @login_required
 def economy():
+    if not current_user.logged_in:
+        current_user.logged_in = True
     form = EconomyForm(tax=current_user.county.tax, rations=current_user.county.rations)
     form.tax.choices = [(i, i) for i in range(11)]
     form.rations.choices = [(pairing[0], pairing[1]) for pairing in rations_terminology]

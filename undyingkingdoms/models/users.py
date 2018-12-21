@@ -73,13 +73,15 @@ class User(GameState):
     @logged_in.setter
     def logged_in(self, value):
         self._logged_in = value
-        if not value:
-            session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
-            session.time_logged_out = datetime.now()
-            session.set_minutes()
-        else:
-            session = Session(self.id, value)
+        print("Value:", value)
+        if value:  # Logging in
+            session = Session(self.id)
             db.session.add(session)
+        else:  # Logging out
+            session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
+            if session:
+                session.time_logged_out = datetime.now()
+                session.set_minutes()
         db.session.commit()
 
     @property

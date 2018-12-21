@@ -8,7 +8,7 @@ from undyingkingdoms.models import Achievement
 @login_required
 @app.route('/user/achievements/', methods=['GET', 'POST'])
 def achievements():
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-    achievements = Achievement.query.filter_by(user_id=current_user.id).all()
-    return render_template('user/achievements.html', achievements=achievements)
+    if not current_user.logged_in:
+        current_user.logged_in = True
+    all_achievements = Achievement.query.filter_by(user_id=current_user.id).all()
+    return render_template('user/achievements.html', achievements=all_achievements)

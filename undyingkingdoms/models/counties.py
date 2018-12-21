@@ -247,7 +247,6 @@ class County(GameState):
         ratio: The greater you outnumber the enemy, the safer your troops are.
         """
         casualties = 0
-        print("Attacking army:", army)
         if not army:  # ie. you are the defender and use entire army
             for unit in self.armies.values():
                 available = unit.total - unit.traveling

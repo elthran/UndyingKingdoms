@@ -35,10 +35,6 @@ class World(GameState):
     def advance_day(self):
         for county in County.query.all():
             county.advance_day()
-        for user in User.query.filter_by(logged_in=True).all():
-            time_since_last_activity = datetime.now() - user.time_modified
-            if time_since_last_activity.minute > 30:
-                user.logged_in = False
         self.day += 1
 
     def advance_age(self):
