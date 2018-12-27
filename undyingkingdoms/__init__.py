@@ -81,8 +81,7 @@ login_manager.login_view = "login"  # @login_required will redirect to this page
 
 if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
     # Only runs once. If it's a debug relaunch, it won't run
-    pass
-print("Game ready")
+    print("Game ready")
 
 
 @login_manager.user_loader

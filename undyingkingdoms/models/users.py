@@ -73,7 +73,6 @@ class User(GameState):
     @logged_in.setter
     def logged_in(self, value):
         self._logged_in = value
-        print("Value:", value)
         if value:  # Logging in
             session = Session(self.id)
             db.session.add(session)
