@@ -3,6 +3,7 @@ import os
 import maxminddb
 from flask import Blueprint, request, current_app
 
+# causes import loop, need to refactor model design
 # from undyingkingdoms.models.users import User
 
 geo_ip = Blueprint('geoip', __name__)
