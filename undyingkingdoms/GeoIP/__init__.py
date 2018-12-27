@@ -18,7 +18,7 @@ def pull_ip_hook():
     current_app.logger.info("Access route: " + repr(request.access_route))
     try:
         ip = request.access_route[0]
-        import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         data = city_reader.get(ip)
         current_app.logger.info("Country: " + repr(data['country']['iso_code']))
         current_app.logger.info("Subdivisions: " + repr([division['names']['en'] for division in data['subdivisions']]))
@@ -28,4 +28,4 @@ def pull_ip_hook():
         current_app.logger.info("Location: Not Found")
     finally:
         city_reader.close()
-    return None  # Must return None or the request won't propogate.
+        return None  # Must return None or the request won't propagate.
