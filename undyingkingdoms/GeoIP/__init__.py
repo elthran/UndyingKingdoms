@@ -15,9 +15,10 @@ def pull_ip_hook():
     reader = maxminddb.open_database(os.path.join(current_app.static_folder, 'GeoLite2-Country_20181218', 'GeoLite2-Country.mmdb'))
     # optionally url_for('static' + 'GeoLite2-Country.mmdb')
     current_app.logger.info("Remote IP: " + repr(request.remote_addr))
+    current_app.logger.info("Access route: " + repr(request.access_route))
     try:
         data = reader.get(request.remote_addr)
-        current_app.logger.info("Country data:" + repr(data))
+        current_app.logger.info("Country data: " + repr(data))
         # Store in User object?
     finally:
         reader.close()
