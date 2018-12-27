@@ -15,6 +15,7 @@
         <li><a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom Overview</a></li>
         <li><br></li>
         <li><a href="{{ url_for('achievements') }}">Achievements</a></li>
+        {% if user.is_admin %}<li><a href="{{ url_for('testing_page') }}">Test Page</a></li>{% endif %}
         <li><a href="{{ url_for('logout') }}">Logout</a></li>
         <li><br><br><br></li>
     </ul>

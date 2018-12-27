@@ -26,8 +26,6 @@ def database_reset():
         db.session.commit()
     # Create AI
     user = User("ai", "ai@gmail.com", "star")
-    user.is_admin = True
-    user.is_active = True
     db.session.add(user)
     db.session.commit()
     # Create AI's county
@@ -44,7 +42,19 @@ def database_reset():
     db.session.add(user)
     db.session.commit()
     # Create Elthran's county
-    county = County("Ulthuan", "Elthran", user.id, 'Dwarf', 'Male')
+    county = County("Ulthuan", "Elthran", user.id, 'Human', 'Male')
+    db.session.add(county)
+    db.session.commit()
+    county.vote = county.id
+    db.session.commit()
+    # Create Haldon
+    user = User("haldon", "haldon@gmail.com", "brunner")
+    user.is_admin = True
+    user.is_active = True
+    db.session.add(user)
+    db.session.commit()
+    # Create Haldon's county
+    county = County("Northern Wastes", "Haldon", user.id, 'Dwarf', 'Male')
     db.session.add(county)
     db.session.commit()
     county.vote = county.id

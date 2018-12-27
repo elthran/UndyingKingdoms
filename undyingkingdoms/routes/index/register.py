@@ -16,13 +16,13 @@ def register():
         user = User(form.username.data, form.email.data, form.password.data)
         db.session.add(user)
         db.session.commit()
-        session = Session(user_id=user.id, activity="register")
+        session = Session(user_id=user.id)
         db.session.add(session)
         db.session.commit()
         login_user(user)
         # Right ow it immediately logs you in.
         # In the future it will send you an email for confirmation first.
-        session = Session(user_id=user.id, activity="login")
+        session = Session(user_id=user.id)
         db.session.add(session)
         db.session.commit()
         return redirect(url_for('initialize'))
