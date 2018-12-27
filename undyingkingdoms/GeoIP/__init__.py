@@ -29,3 +29,30 @@ def pull_ip_hook():
     finally:
         city_reader.close()
         return None  # Must return None or the request won't propagate.
+
+
+@geo_ip.route('/geo_ip/update')
+def update_geo_ip_database():
+    import urllib.request
+    import shutil
+    import tarfile
+
+    # first check if current file is up to date
+
+    # if not download the new version
+
+    # if that succeeds delete the old one
+
+    # replace with new one and update file paths
+    base_name = 'GeoLite2-City.tar.gz'
+    geo_url = 'https://geolite.maxmind.com/download/geoip/database/' + base_name
+    tmp_tar_gz = '/tmp/' + base_name
+    with urllib.request.urlopen(geo_url) as f_in:
+        with open(tmp_tar_gz, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+
+    tar = tarfile.open(tmp_tar_gz, "r:gz")
+    tar.extractall('/tmp/')
+
+    return "Geo-location database has been updated."
+
