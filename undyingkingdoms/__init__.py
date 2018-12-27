@@ -1,13 +1,14 @@
 import os
 import socket
 
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template
 from flask_json import FlaskJSON
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from flask_sslify import SSLify
 
+from undyingkingdoms.GeoIP import geo_ip
 import private_config
 
 global_chatroom = {}
@@ -41,6 +42,9 @@ app.config.update(dict(
     MAIL_DEFAULT_SENDER='This seems to do nothing'
 ))
 mail = Mail(app)
+
+# Register app blueprints
+app.register_blueprint(geo_ip)
 
 
 @app.errorhandler(404)
