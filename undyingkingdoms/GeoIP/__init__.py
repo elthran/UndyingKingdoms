@@ -17,7 +17,7 @@ def pull_ip_hook():
     current_app.logger.info("Remote IP: " + repr(request.remote_addr))
     current_app.logger.info("Access route: " + repr(request.access_route))
     try:
-        data = reader.get(request.remote_addr)
+        data = reader.get(request.access_route[0])
         current_app.logger.info("Country data: " + repr(data))
         # Store in User object?
     finally:
