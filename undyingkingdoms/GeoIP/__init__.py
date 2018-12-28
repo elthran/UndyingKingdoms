@@ -76,9 +76,9 @@ def update_geo_ip_database():
         geo_url = 'https://geolite.maxmind.com/download/geoip/database/' + base_name
         tmp_tar_gz = '/tmp/' + base_name
         try:
-            with urllib.request.urlopen(geo_url) as f_in:
-                with open(tmp_tar_gz, 'wb') as f_out:
-                    f_out.write(f_in.read())
+            # Download the file from `url` and save it locally under `file_name`:
+            with urllib.request.urlopen(geo_url) as response, open(tmp_tar_gz, 'wb') as out_file:
+                shutil.copyfileobj(response, out_file)
         except Exception as ex:
             return str(ex)
 
