@@ -67,6 +67,7 @@ def update_geo_ip_database():
         month = int(date[4:6])
     except FileNotFoundError:
         # force update
+        date = 'bugged_backup'
         month = datetime.today().month - 2
     # first check if current file is up to date
     if force or ((datetime.today().month - month) % 12) > 1:
@@ -83,7 +84,7 @@ def update_geo_ip_database():
 
         # if that succeeds delete the old one
         try:
-            shutil.rmtree(geo_ip_db_folder)
+            shutil.copytree(geo_ip_db_folder, geo_ip_db_folder + "_" + date)
         except FileNotFoundError:
             pass
 
