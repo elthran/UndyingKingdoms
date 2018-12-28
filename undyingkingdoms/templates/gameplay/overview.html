@@ -39,14 +39,25 @@
     <p>No new events to report.</p>
     {% endfor %}
 </ul>
-{% elif (kingdom.leader == 0) and ((kingdom == current_user.county.kingdom) and (kingdom.leader == 0)) or (kingdom != current_user.county.kingdom) %}
-<a href="{{ url_for('attack', county_id=selected_county.id) }}">[attack]</a>
+{% else %}
+    <h1>Thieves Guild Report:</h1>
+    {% if current_user.county.get_thieves_report(county.id) %}
+    Here is your current report (It is {{ report.get_report_age(kingdom.world.day) }} days old):
+    <ul>
+        <li>{{county.armies['peasant'].class_name }}: {{ report.peasant }}</li>
+        <li>{{county.armies['archer'].class_name }}: {{ report.archer }}</li>
+        <li>{{county.armies['soldier'].class_name }}: {{ report.soldier }}</li>
+        <li>{{county.armies['elite'].class_name }}: {{ report.elite }}</li>
+    </ul>
+    <br><a href="{{ url_for('infiltrate', target_id=county.id) }}"><button>Update Report</button></a><br>
+    {% else %}
+    Your thieves guild has no information on this county.
+    <br><a href="{{ url_for('infiltrate', target_id=county.id) }}"><button>Get Report</button></a><br>
+    {% endif %}
+    {% if (kingdom.leader == 0) and ((kingdom == current_user.county.kingdom) and (kingdom.leader == 0)) or (kingdom != current_user.county.kingdom) %}
+    <!-- Checks to see if there should be an attack option Not yourself, and if not teammate if civil war over -->
+    <br><a href="{{ url_for('attack', county_id=selected_county.id) }}"><button>Attack</button></a><br>
+    {% endif %}
 {% endif %}
 
-<!-- Temporary -->
-<form method="POST" accept-charset="UTF-8" role="form">
-    {{ form.csrf_token }}
-    <button type="submit">End Day (For Testing Only)</button>
-</form>
-<!-- Temporary -->
 {% endblock %}

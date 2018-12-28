@@ -3,10 +3,10 @@ from random import choice, uniform, randint
 
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
-# from undyingkingdoms.calculations.counties import get_attack_power
 from undyingkingdoms.models.bases import GameState, db
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
+from undyingkingdoms.models.infiltrations import Infiltration
 from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
     human_buildings, kingdom_names
 
@@ -41,6 +41,7 @@ class County(GameState):
     notifications = db.relationship('Notification', backref='kingdom')
 
     expeditions = db.relationship('Expedition', backref='county')
+    infiltrations = db.relationship('Infiltration', backref='county')
 
     births = db.Column(db.Integer)
     deaths = db.Column(db.Integer)
@@ -448,6 +449,9 @@ class County(GameState):
 
     def get_production(self):
         return max(int(self.get_production_modifier() * self.get_available_workers() / 3), 0)
+
+    def get_thieves_report(self, target_id):
+        return Infiltration.query.filter_by(county_id=self.id, target_id=target_id).first()
 
     @property
     def hunger_terminology(self):

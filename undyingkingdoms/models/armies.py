@@ -1,3 +1,5 @@
+from random import randint
+
 from undyingkingdoms import db
 from undyingkingdoms.models.bases import GameState
 
@@ -36,3 +38,7 @@ class Army(GameState):
     @property
     def available(self):
         return self.total - self.traveling
+
+    def get_estimated_total(self, enemy_county):
+        noise_factor = 0
+        return int(max((self.total - self.traveling) * randint(50, 150) / 100, 0))

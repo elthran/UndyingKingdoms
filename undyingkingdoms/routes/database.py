@@ -13,7 +13,9 @@ from undyingkingdoms.static.metadata import kingdom_names
 @app.route("/database/reset/")
 def database_reset():
     # Should make it so only admin can visit
+    print("Dropping")
     db.drop_all()
+    print("Creating")
     db.create_all()
     # Create the game world
     world = World()
