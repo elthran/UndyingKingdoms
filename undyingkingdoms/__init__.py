@@ -1,7 +1,7 @@
 import os
 import socket
 
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, send_from_directory
 from flask_json import FlaskJSON
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
@@ -102,3 +102,12 @@ def not_found(error):
 def not_found(error):
     print("Error:", error)
     return render_template('500.html', error=error), 500
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'favicon.ico',
+        mimetype='image/vnd.microsoft.icon'
+    )
