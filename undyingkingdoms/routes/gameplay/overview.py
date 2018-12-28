@@ -2,10 +2,10 @@ from datetime import datetime
 
 from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
+from sqlalchemy import desc
 
 from undyingkingdoms import app
-from undyingkingdoms.models import World, County, Kingdom, User
-from undyingkingdoms.models.forms.attack import TempGameAdvance
+from undyingkingdoms.models import County, Kingdom, User, Infiltration
 
 
 @app.route('/gameplay/overview/<int:kingdom_id>/<int:county_id>/', methods=['GET', 'POST'])
@@ -22,12 +22,5 @@ def overview(kingdom_id=0, county_id=0):
 
     kingdom = Kingdom.query.filter_by(id=kingdom_id).first()
     county = County.query.filter_by(id=county_id).first()
-    # Below is clock functions
-    world = World.query.first()
-    world.check_clock()
-    form = TempGameAdvance()
-    if form.validate_on_submit():
-        world.advance_day()
-        world.advance_24h_analytics()
-    # End of clock functions
-    return render_template('gameplay/overview.html', form=form, selected_kingdom=kingdom, selected_county=county)
+    report = Infiltration.query.filter_by(county_id=current_user.county.id, target_id=county.id).first()
+    return render_template('gameplay/overview.html', selected_kingdom=kingdom, selected_county=county, report=report)
