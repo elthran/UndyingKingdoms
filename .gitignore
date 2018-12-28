@@ -5,3 +5,4 @@ private_*
 venv/
 /undyingkingdoms.egg-info
 /export
+env/

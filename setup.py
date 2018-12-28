@@ -8,6 +8,7 @@ setup(
         'flask',
         'Flask-JSON',
         'flask-sqlalchemy',
+        'mysqlclient',
         'flask-wtf',
         'flask-login',
         'flask_mail',
@@ -20,7 +21,9 @@ setup(
         'python-Levenshtein',
         'pytest',
         'numpy',
-        'pandas'
+        'pandas',
+        'flask-sslify',
+        'maxminddb'
     ],
 )
 
