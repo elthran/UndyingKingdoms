@@ -35,7 +35,7 @@ def check_ip_against_geo_db():
         data = reader.get(ip)
         try:
             info["Country"] = data['country']['iso_code']
-            info["Subdivisions"] = [division['names']['en'] for division in data['subdivisions']]
+            info["Subdivision"] = [division['names']['en'] for division in data['subdivisions']][0]
             info["City"] = data['city']['names']['en']
             # Store in User object?
         except TypeError:
