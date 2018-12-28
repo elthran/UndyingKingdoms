@@ -1,7 +1,7 @@
 import os
 import socket
 
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 from flask_json import FlaskJSON
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
@@ -72,6 +72,9 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.attack
     import undyingkingdoms.routes.gameplay.chatroom
 
+    import undyingkingdoms.routes.gameplay.infiltrate
+    import undyingkingdoms.routes.gameplay.testing_page
+
     import undyingkingdoms.routes.user.achievements
 
     import undyingkingdoms.routes.database
@@ -85,8 +88,7 @@ login_manager.login_view = "login"  # @login_required will redirect to this page
 
 if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
     # Only runs once. If it's a debug relaunch, it won't run
-    pass
-print("Game ready")
+    print("Game ready")
 
 
 @login_manager.user_loader
@@ -104,3 +106,12 @@ def not_found(error):
 def not_found(error):
     print("Error:", error)
     return render_template('500.html', error=error), 500
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'favicon.ico',
+        mimetype='image/vnd.microsoft.icon'
+    )

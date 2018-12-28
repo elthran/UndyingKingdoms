@@ -25,7 +25,6 @@ def attack(county_id):
     form.elite.choices = [(amount, amount) for amount in range(elites)]
 
     if form.validate_on_submit():
-        print("validated")
         army = {}
         for unit in current_user.county.armies.values():
             if unit.total < form.data[unit.base_name]:

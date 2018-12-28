@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 from random import randint
 
 from undyingkingdoms.models.users import User
-from undyingkingdoms.models import DAU, Achievement
+from undyingkingdoms.models import DAU, Army, Building, Notification, Kingdom
+from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.bases import GameState, db
 
@@ -58,8 +59,15 @@ class World(GameState):
             db.session.commit()
 
     def reset_age(self):
-        # This should delete all game data, but not user or meta_data
-        pass
+        # This should delete all game data, but not user or meta_data. Delete the tables below and then rebuild them.
+        '''
+        Army.__table__.drop(db.engine)
+        Building.__table__.drop(db.engine)
+        Notification.__table__.drop(db.engine)
+        Expedition.__table__.drop(db.engine)
+        County.__table__.drop(db.engine)
+        Kingdom.__table__.drop(db.engine)
+        '''
 
     def __repr__(self):
         return '<World %r (%r)>' % (self.name, self.id)
