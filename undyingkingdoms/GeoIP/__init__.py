@@ -82,10 +82,12 @@ def update_geo_ip_database():
         except Exception as ex:
             return str(ex)
 
-        # if that succeeds delete the old one
+        # if that succeeds, backup the old one
         try:
             shutil.copytree(geo_ip_db_folder, geo_ip_db_folder + "_" + date)
         except FileNotFoundError:
+            pass
+        except FileExistsError:
             pass
 
         # Next extract and replace old data with new data.
@@ -102,7 +104,10 @@ def update_geo_ip_database():
             shutil.copytree('/tmp/geo_ip/' + timestamped_folder, '/tmp/geo_ip/' + folder)
         except FileExistsError:
             pass
-        shutil.copytree('/tmp/geo_ip/' + folder, geo_ip_db_folder)
+        try:
+            shutil.copytree('/tmp/geo_ip/' + folder, geo_ip_db_folder)
+        except FileExistsError:
+            pass
 
         # create timestamp file
         touch(geo_ip_db_folder + '/created_' + date_str)
