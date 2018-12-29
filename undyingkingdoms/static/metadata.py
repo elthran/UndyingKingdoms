@@ -41,7 +41,7 @@ all_achievements = {
 }
 rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (1, "Normal"), (2, "Double"), (3, "Triple")]
 
-all_buildings = ['houses', 'fields', 'pastures', 'mills', 'mines', 'forts', 'stables']
+all_buildings = ['houses', 'fields', 'pastures', 'mills', 'mines', 'forts', 'stables', 'guilds']
 
 dwarf_buildings = {'houses': Building(base_name='houses',
                                       class_name='cottage',
@@ -99,7 +99,16 @@ dwarf_buildings = {'houses': Building(base_name='houses',
                                        labour_maintenance=20,
                                        gold=50,
                                        wood=10,
-                                       description='Your army returns from battle faster.')
+                                       description='Your army returns from battle faster.'),
+                   'guilds': Building(base_name='guilds',
+                                      class_name='Thief Guild',
+                                      total=0,
+                                      production_cost=35,
+                                      labour_maintenance=20,
+                                      gold=50,
+                                      wood=10,
+                                      description="The greater percent of your buildings dedicated to guilds, "
+                                                  "means your thieves return faster and with more reliable information.")
                    }
 
 human_buildings = {'houses': Building(base_name='houses',
@@ -158,7 +167,16 @@ human_buildings = {'houses': Building(base_name='houses',
                                        labour_maintenance=20,
                                        gold=50,
                                        wood=10,
-                                       description='Your army returns from battle faster.')
+                                       description='Your army returns from battle faster.'),
+                   'guilds': Building(base_name='guilds',
+                                      class_name='Thief Guild',
+                                      total=0,
+                                      production_cost=35,
+                                      labour_maintenance=20,
+                                      gold=50,
+                                      wood=10,
+                                      description="The greater percent of your buildings dedicated to guilds, "
+                                                  "means your thieves return faster and with more reliable information.")
                    }
 
 all_armies = ["peasant", "archer", "soldier", "elite"]

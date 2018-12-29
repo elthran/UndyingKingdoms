@@ -450,8 +450,23 @@ class County(GameState):
     def get_production(self):
         return max(int(self.get_production_modifier() * self.get_available_workers() / 3), 0)
 
+    def get_thieves_availability(self, day):
+        current_report = Infiltration.query.filter_by(county_id=self.id).first()
+        if not current_report or (current_report.day + current_report.duration <= day):
+            return True
+        else:
+            return False
+
     def get_thieves_report(self, target_id):
         return Infiltration.query.filter_by(county_id=self.id, target_id=target_id).first()
+
+    def get_future_thief_report_duration(self):
+        modifier = 1 - (self.buildings['guilds'].total / self.land)
+        return int(24 * modifier)
+
+    def get_current_thief_report_duration(self, day):
+        current_report = Infiltration.query.filter_by(county_id=self.id).first()
+        return current_report.day + current_report.duration - day
 
     @property
     def hunger_terminology(self):
