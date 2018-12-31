@@ -23,7 +23,8 @@ setup(
         'numpy',
         'pandas',
         'flask-sslify',
-        'maxminddb'
+        'maxminddb',
+        'sqlalchemy-utils',
     ],
 )
 
