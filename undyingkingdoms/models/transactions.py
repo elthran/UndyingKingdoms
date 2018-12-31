@@ -1,4 +1,4 @@
-from undyingkingdoms import db
+from extensions import flask_db as db
 from undyingkingdoms.models.bases import GameEvent
 from undyingkingdoms.static.metadata import all_buildings, all_armies
 

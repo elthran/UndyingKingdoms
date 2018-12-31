@@ -2,13 +2,12 @@ import os
 import socket
 
 from flask import Flask, render_template, send_from_directory
-from flask_json import FlaskJSON
 from flask_mail import Mail
-from flask_sqlalchemy import SQLAlchemy
-from flask_wtf.csrf import CSRFProtect
 from flask_sslify import SSLify
 
+from extensions import flask_db, flask_json, flask_csrf
 from undyingkingdoms.GeoIP import geo_ip
+from undyingkingdoms.admin import admin_blueprint
 import private_config
 
 global_chatroom = {}
@@ -25,12 +24,10 @@ sslify = SSLify(app)
 if 'liveweb' in socket.gethostname():
     app.config['SQLALCHEMY_DATABASE_URI'] = private_config.SERVER_DATABASE_URI
 
-db = SQLAlchemy(app)
-
-csrf = CSRFProtect(app)
-csrf.init_app(app)
-
-json = FlaskJSON(app)
+flask_db.init_app(app)
+db = flask_db
+flask_csrf.init_app(app)
+flask_json.init_app(app)
 
 app.config.update(dict(
     MAIL_SERVER='smtp.gmail.com',
@@ -45,6 +42,7 @@ mail = Mail(app)
 
 # Register app blueprints
 app.register_blueprint(geo_ip)
+app.register_blueprint(admin_blueprint)
 
 
 @app.errorhandler(404)
@@ -76,8 +74,6 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.testing_page
 
     import undyingkingdoms.routes.user.achievements
-
-    import undyingkingdoms.routes.database
 
 
 import_routes()

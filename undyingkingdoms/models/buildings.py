@@ -1,4 +1,4 @@
-from undyingkingdoms import db
+from extensions import flask_db as db
 from undyingkingdoms.models.bases import GameState
 
 

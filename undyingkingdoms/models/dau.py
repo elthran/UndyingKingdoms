@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from undyingkingdoms import db
+from extensions import flask_db as db
 from undyingkingdoms.models import Session, User
 from undyingkingdoms.models.bases import GameEvent
 
