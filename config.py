@@ -28,3 +28,6 @@ class TestingConfig:
         user=USER, passwd=DB_PASSWORD, host=HOST, dbname=DATABASE_NAME + '_test', options=OPTIONS)
     PRESERVE_CONTEXT_ON_EXCEPTION = False
 
+    # Disable CSRF tokens in the Forms (only valid for testing purposes!)
+    WTF_CSRF_ENABLED = False
+

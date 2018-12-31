@@ -1,4 +1,5 @@
 import os
+import logging
 
 import pytest
 from sqlalchemy import create_engine
@@ -26,3 +27,9 @@ def client():
 
     with app.app_context():
         test_db.drop_all()
+
+
+# @pytest.fixture
+# def logger():
+#     logging.basicConfig(level=logging.DEBUG)
+#     yield logging.getLogger('default')
