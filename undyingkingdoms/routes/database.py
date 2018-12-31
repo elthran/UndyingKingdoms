@@ -13,6 +13,17 @@ from undyingkingdoms.static.metadata import kingdom_names
 @app.route("/database/reset/")
 def database_reset():
     # Should make it so only admin can visit
+
+    # probably need to update the table metadata to provide
+    # a foreign key constraint pattern. See https://docs.sqlalchemy.org/en/latest/core/constraints.html#configuring-constraint-naming-conventions
+    # And https://github.com/klondikemarlen/tenacity/blob/master/model/base.py
+    # print('constraints')
+    # print(repr(db.Model.metadata.naming_convention))
+    # drop list of tables
+    # models_to_drop = [User, County, Kingdom, World]
+    # tables = [model.__table__ for model in models_to_drop]
+    # db.metadata.drop_all(db.engine, tables=tables)
+    # db.metadata.create_all(db.engine, tables=tables)
     print("Dropping")
     db.drop_all()
     print("Creating")
