@@ -1,7 +1,7 @@
 from flask import jsonify
 from flask.views import MethodView
 
-from undyingkingdoms import db
+from extensions import flask_db as db
 from undyingkingdoms.models import World
 
 
