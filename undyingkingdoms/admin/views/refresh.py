@@ -1,7 +1,8 @@
-from flask import jsonify
+from flask import jsonify, current_app
 from flask.views import MethodView
 
 from extensions import flask_db as db
+from .. import helpers
 from undyingkingdoms.models import World
 
 
@@ -12,6 +13,11 @@ class RefreshAPI(MethodView):
         world.advance_age()
         self.refresh_age()
 
+        return jsonify(
+            status='success',
+            message='Game age has been advanced and world data has been reset.'
+        ), 200
+
     def refresh_age(self):
         """Reset the current age by delete non user or metadata tables.
 
@@ -19,13 +25,8 @@ class RefreshAPI(MethodView):
 
                 Consider moving this to a "service" module.
         """
-        tables = [db.metadata.tables[name] for name in ['county', 'army', 'building', 'notification', 'expedition']]
-        db.engine.execute('SET GLOBAL FOREIGN_KEY_CHECKS=0;')
-        db.metadata.drop_all(db.engine, tables=tables)
-        db.engine.execute('SET GLOBAL FOREIGN_KEY_CHECKS=1;')
-        db.metadata.create_all(db.engine, tables=tables)
-
-        return jsonify(
-            status='success',
-            message='Game age has been advanced and world data has been reset.'
-        ), 200
+        tables = ['county', 'army', 'building', 'notification', 'expedition']
+        current_app.logger.info("Refreshing tables:")
+        for table in tables:
+            helpers.empty_table(db.engine, table)
+            current_app.logger.info("Truncating table `{}`.".format(table))
