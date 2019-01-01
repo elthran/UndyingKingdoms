@@ -15,8 +15,9 @@ def infiltrate(target_id):
     report = Infiltration.query.filter_by(county_id=current_user.county.id, target_id=target_id).first()
     if not report:
         report = Infiltration(current_user.county.id, target_id, current_day, "scout")
-        db.session.add(report)
-        db.session.commit()
+        #db.session.add(report)
+        #db.session.commit()
+        report.save()
     report.get_troop_report(current_user.county, target)
     report.duration = current_user.county.get_future_thief_report_duration()
     report.day = current_day

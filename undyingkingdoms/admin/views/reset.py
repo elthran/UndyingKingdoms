@@ -14,7 +14,7 @@ class ResetAPI(MethodView):
         # Should make it so only admin can visit
 
         print("Dropping")
-        db.metadata.drop_all(db.engine)
+        db.drop_all()
         print("Creating")
         db.create_all()
         # Create the game world
