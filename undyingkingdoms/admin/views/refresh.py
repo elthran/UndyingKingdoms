@@ -3,27 +3,26 @@ from flask.views import MethodView
 
 from extensions import flask_db as db
 from .. import helpers
-from undyingkingdoms.models import World
+from undyingkingdoms.models import World, User
 
 
 class RefreshAPI(MethodView):
     def get(self):
         """Refresh game play by advancing the current age."""
+        users = User.query.all()
+        for user in users:
+            user.ages_completed += 1
         world = World.query.first()
         world.advance_age()
         self.refresh_age()
+        return jsonify(status='success',
+                       message='Game age has been advanced and world data has been reset.'), 200
 
-        return jsonify(
-            status='success',
-            message='Game age has been advanced and world data has been reset.'
-        ), 200
-
-    def refresh_age(self):
+    @staticmethod
+    def refresh_age():
         """Reset the current age by delete non user or metadata tables.
-
-                This should delete all game data, but not user or meta_data. Delete the tables below and then rebuild them.
-
-                Consider moving this to a "service" module.
+        This should delete all game data, but not user or meta_data. Delete the tables below and then rebuild them.
+        Consider moving this to a "service" module.
         """
         tables = ['county', 'army', 'building', 'notification', 'expedition']
         current_app.logger.info("Refreshing tables:")

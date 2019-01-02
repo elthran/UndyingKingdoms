@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 {% block content1 %}
-(You are seeing this page because you have not logged in yet this age.)
+{% if current_user.ages_completed != 0 %}
+(Welcome back! A new age has started. Please establish your county to begin.)
+{% else %}
+(Welcome to the game! To start, please establish your county)
+{% endif %}
 <br>
 <h1>The king is dead! The kingdom has fallen into civil war. Now is your chance to prove to the kingdom that you should be the rightful leader.
 Manage your county and strategically secure your position as leader of your Kingdom. And once you have taken control,
