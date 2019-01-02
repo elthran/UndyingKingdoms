@@ -1,7 +1,7 @@
 from flask import render_template
 from flask_login import login_required, current_user
 
-from undyingkingdoms import app, db
+from undyingkingdoms import app
 from undyingkingdoms.models import County
 from undyingkingdoms.models.forms.attack import AttackForm
 
@@ -31,6 +31,5 @@ def attack(county_id):
                 return render_template('gameplay/attack.html', enemy=enemy, form=form)
             army[unit.base_name] = form.data[unit.base_name]
         results = current_user.county.battle_results(army, enemy)
-        db.session.commit()
         return render_template('gameplay/attack_results.html', results=results)
     return render_template('gameplay/attack.html', enemy=enemy, form=form)

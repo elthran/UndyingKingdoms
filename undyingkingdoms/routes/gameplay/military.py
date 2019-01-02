@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
 
-from undyingkingdoms import app, db
+from undyingkingdoms import app
 from undyingkingdoms.models import Transaction, World
 from undyingkingdoms.models.forms.military import MilitaryForm
 from undyingkingdoms.static.metadata import all_armies, game_descriptions
@@ -29,7 +29,6 @@ def military():
                                          gold_per_item=county.armies[army].gold,
                                          wood_per_item=county.armies[army].wood,
                                          iron_per_item=county.armies[army].iron)
-        db.session.add(transaction)
-        db.session.commit()
+        transaction.save()
         return redirect(url_for('military'))
     return render_template('gameplay/military.html', form=form, meta_data=game_descriptions)

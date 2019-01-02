@@ -30,7 +30,6 @@ class World(GameState):
         while now != self.game_clock:  # Now advance all the game clocks and events.
             self.advance_day()
             self.game_clock = (self.game_clock + 1) % 24
-            db.session.commit()
         if self.day >= 2:
             self.advance_age()
 
@@ -61,8 +60,7 @@ class World(GameState):
                 user.day3_retention = randint(0, 1)
             elif user_age == 7:
                 user.day7_retention = randint(0, 1)
-            db.session.add(dau_event)
-            db.session.commit()
+            dau_event.save()
 
 
     def __repr__(self):

@@ -1,7 +1,7 @@
 from flask import url_for, redirect, render_template
 from flask_login import current_user
 
-from undyingkingdoms import app, db
+from undyingkingdoms import app
 from undyingkingdoms.models import County
 from undyingkingdoms.models.forms.initialize import InitializeForm
 
@@ -19,9 +19,7 @@ def initialize():
                         current_user.id,
                         races[form.race.data],
                         genders[form.gender.data])
-        db.session.add(county)
-        db.session.commit()
+        county.save()
         county.vote = county.id
-        db.session.commit()
         return redirect(url_for('overview', kingdom_id=current_user.county.kingdom.id, county_id=current_user.county.id))
     return render_template("index/initialize.html", form=form)

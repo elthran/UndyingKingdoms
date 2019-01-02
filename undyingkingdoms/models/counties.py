@@ -269,8 +269,7 @@ class County(GameState):
                     army[unit.base_name] -= dead
                     unit.traveling = army[unit.base_name]  # Surviving troops are marked as absent
                     setattr(expedition, unit.base_name, army[unit.base_name])
-                    db.session.add(expedition)
-                    db.session.commit()
+                    expedition.save()
         return casualties
 
     def destroy_buildings(self, county, land_destroyed):
@@ -311,8 +310,7 @@ class County(GameState):
             message = "You had {} power versus the enemies {} power. You failed and lost {} troops".format(offence,
                                                                                                            defence,
                                                                                                            offence_casaulties)
-        db.session.add(notification)
-        db.session.commit()
+        notification.save()
         return message
 
     def advance_day(self):
@@ -340,7 +338,6 @@ class County(GameState):
         events = [event for event in Notification.query.filter_by(county_id=self.id).all() if event.new is True]
         for event in events:
             event.new = False
-        db.session.commit()
         return events
 
     def get_gold_income(self):
@@ -411,8 +408,7 @@ class County(GameState):
         if self.weather == 'stormy':
             notification = Notification(self.id, "Storms have ravaged your crops",
                                         "You lost 20 bushels of wheat.", self.kingdom.world.day)
-            db.session.add(notification)
-            db.session.commit()
+            notification.save()
 
     def update_food(self):
         total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores

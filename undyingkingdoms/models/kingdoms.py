@@ -1,7 +1,4 @@
-from random import choice
-
 from undyingkingdoms.models.achievements import Achievement
-from undyingkingdoms.models.users import User
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.bases import GameState, db
 from undyingkingdoms.static.metadata import kingdom_names
@@ -36,8 +33,7 @@ class Kingdom(GameState):
             achievement = Achievement(leader.user_id,
                                       "The King is Dead. Long Live the King.",
                                       "Be voted the King during any age of Undying Kingdoms.")
-            db.session.add(achievement)
-            db.session.commit()
+            achievement.save()
 
     def get_leader_name(self, county_id):
         return County.query.filter_by(id=county_id).first().name

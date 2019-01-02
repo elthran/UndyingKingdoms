@@ -75,13 +75,12 @@ class User(GameState):
         self._logged_in = value
         if value:  # Logging in
             session = Session(self.id)
-            db.session.add(session)
+            session.save()
         else:  # Logging out
             session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
             if session:
                 session.time_logged_out = datetime.now()
                 session.set_minutes()
-        db.session.commit()
 
     @property
     def password(self):

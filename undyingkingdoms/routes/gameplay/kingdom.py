@@ -1,7 +1,7 @@
 from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
 
-from undyingkingdoms import app, db
+from undyingkingdoms import app
 from undyingkingdoms.models import Kingdom
 from undyingkingdoms.models.forms.votes import VoteForm
 
@@ -16,6 +16,5 @@ def kingdom(kingdom_id=0):
     form.vote.choices = [(county.id, county.name) for county in current_user.county.kingdom.counties]
     if form.validate_on_submit():
         current_user.county.cast_vote(form.vote.data)
-        db.session.commit()
         return redirect(url_for('kingdom', kingdom_id=kingdom.id))
     return render_template('gameplay/kingdom.html', form=form, kingdom=kingdom)

@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
 
-from undyingkingdoms import app, db
+from undyingkingdoms import app
 from undyingkingdoms.models.forms.economy import EconomyForm
 from undyingkingdoms.static.metadata import rations_terminology
 
@@ -17,6 +17,5 @@ def economy():
     if form.validate_on_submit():
         current_user.county.tax = form.tax.data
         current_user.county.rations = form.rations.data
-        db.session.commit()
         return redirect(url_for('economy'))
     return render_template('gameplay/economy.html', form=form)

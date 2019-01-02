@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
 
-from undyingkingdoms import app, db
+from undyingkingdoms import app
 from undyingkingdoms.models import World, Transaction
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm
 from undyingkingdoms.static.metadata import all_buildings, game_descriptions
@@ -28,8 +28,7 @@ def infrastructure():
                                          gold_per_item=county.buildings[building].gold,
                                          wood_per_item=county.buildings[building].wood,
                                          iron_per_item=0)
-        db.session.add(transaction)
-        db.session.commit()
+        transaction.save()
         return redirect(url_for('infrastructure'))
     return render_template('gameplay/infrastructure.html', form=form, meta_data=game_descriptions)
 
