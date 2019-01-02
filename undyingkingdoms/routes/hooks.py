@@ -5,7 +5,6 @@ from sqlalchemy.exc import DatabaseError
 from undyingkingdoms import app, db
 
 
-# Thanks to https://chase-seibert.github.io/blog/2016/03/31/flask-sqlalchemy-sessionless.html
 @app.after_request
 def session_commit(response):
     if response.status_code >= 400:

@@ -1,9 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from random import randint
 
 from undyingkingdoms.models.users import User
-from undyingkingdoms.models import DAU, Army, Building, Notification, Kingdom
-from undyingkingdoms.models.expeditions import Expedition
+from undyingkingdoms.models import DAU
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.bases import GameState
 
@@ -48,7 +47,6 @@ class World(GameState):
         """
         self.age += 1
         self.day = 0
-        self.reset_age()
 
     def advance_24h_analytics(self):
         users = User.query.all()
@@ -66,29 +64,6 @@ class World(GameState):
             db.session.add(dau_event)
             db.session.commit()
 
-    def reset_age(self):
-        """Reset the current age by delete non user or metadata tables.
-
-        This should delete all game data, but not user or meta_data. Delete the tables below and then rebuild them.
-
-        Consider moving this to a "service" module.
-        """
-
-
-        # print([table for name, table in db.metadata.tables.items() if name not in ['user']])
-        # probably need to update the table metadata to provide
-        # a foreign key constraint pattern. See https://docs.sqlalchemy.org/en/latest/core/constraints.html#configuring-constraint-naming-conventions
-        # And https://github.com/klondikemarlen/tenacity/blob/master/model/base.py
-        # print('constraints')
-        # print(repr(db.Model.metadata.naming_convention))
-        # drop list of tables
-        # models_to_drop = [County, Army, Building, Notification, Expedition]
-        # tables = [model.__table__ for model in models_to_drop]
-        tables = [db.metadata.tables[name] for name in ['county', 'army', 'building', 'notification', 'expedition']]
-        db.engine.execute('SET GLOBAL FOREIGN_KEY_CHECKS=0;')
-        db.metadata.drop_all(db.engine, tables=tables)
-        db.engine.execute('SET GLOBAL FOREIGN_KEY_CHECKS=1;')
-        db.metadata.create_all(db.engine, tables=tables)
 
     def __repr__(self):
         return '<World %r (%r)>' % (self.name, self.id)

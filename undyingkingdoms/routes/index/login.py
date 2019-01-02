@@ -16,6 +16,8 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)
+            if current_user.county is None:
+                return redirect(url_for('initialize'))
             return redirect(url_for('overview', kingdom_id=current_user.county.kingdom.id, county_id=current_user.county.id))
         else:
             flash("Your email or password was incorrect.")

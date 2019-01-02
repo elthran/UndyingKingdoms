@@ -1,8 +1,9 @@
-from flask import jsonify
+from flask import jsonify, current_app
 from flask.views import MethodView
 from flask_login import login_required
 
 from extensions import flask_db as db
+from .. import helpers
 from undyingkingdoms.models import User, County, Kingdom, World
 from undyingkingdoms.static.metadata import kingdom_names
 
@@ -13,9 +14,12 @@ class ResetAPI(MethodView):
     def get(self):
         # Should make it so only admin can visit
 
-        print("Dropping")
-        db.metadata.drop_all(db.engine)
-        print("Creating")
+        current_app.logger.info("Deleting tables:")
+        for table in db.metadata.tables.keys():
+            helpers.delete_table(db.engine, table)
+            current_app.logger.info("Dropped table `{}`.".format(table))
+
+        current_app.logger.info("Creating tables:")
         db.create_all()
         # Create the game world
         world = World()
