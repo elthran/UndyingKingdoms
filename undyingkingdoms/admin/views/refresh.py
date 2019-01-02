@@ -1,5 +1,6 @@
 from flask import jsonify, current_app
 from flask.views import MethodView
+from flask_login import current_user, logout_user
 
 from extensions import flask_db as db
 from .. import helpers
@@ -15,6 +16,10 @@ class RefreshAPI(MethodView):
         world = World.query.first()
         world.advance_age()
         self.refresh_age()
+        # If the current user doesn't get logged out,
+        # it's buggy when they reload the game (as they are logged in with no county)
+        current_user.logged_in = False
+        logout_user()
         return jsonify(status='success',
                        message='Game age has been advanced and world data has been reset.'), 200
 

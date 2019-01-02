@@ -31,12 +31,13 @@ class DAU(GameEvent):
     def update_self(self, user_id):
         user = User.query.filter_by(id=user_id).first()
         county = user.county
-        self.account_age_in_days = (datetime.now() - user.time_created).days
-        self.land = county.land
-        self.population = county.population
-        self.gold = county.gold
-        self.happiness = county.happiness
-        self.hunger = county.hunger
+        if county:  # Needed because counties are periodically deleted but users are not
+            self.account_age_in_days = (datetime.now() - user.time_created).days
+            self.land = county.land
+            self.population = county.population
+            self.gold = county.gold
+            self.happiness = county.happiness
+            self.hunger = county.hunger
 
     @staticmethod
     def get_sessions(user_id):
