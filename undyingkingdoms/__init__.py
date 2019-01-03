@@ -74,6 +74,7 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.testing_page
 
     import undyingkingdoms.routes.user.achievements
+    import undyingkingdoms.routes.hooks
 
 
 import_routes()
