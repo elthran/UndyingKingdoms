@@ -12,4 +12,4 @@ def forum():
     if not current_user.logged_in:
         current_user.logged_in = True
     the_forum = Forum.query.first()
-    return render_template('user/achievements.html', forum=the_forum)
+    return render_template('user/forum.html', forum=the_forum)
