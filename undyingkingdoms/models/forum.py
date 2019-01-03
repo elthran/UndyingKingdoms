@@ -1,3 +1,5 @@
+from sqlalchemy import desc
+
 from extensions import flask_db as db
 from undyingkingdoms.models.bases import GameEvent
 
@@ -23,7 +25,9 @@ class Thread(GameEvent):
     
     def get_most_recent_post(self):
         post = Post.query.filter_by(thread_id=self.id).order_by(desc('time_created')).first()
-        return post.time_created
+        if post:
+            return post.time_created
+        return "No posts"
         
         
 class Post(GameEvent):
@@ -32,7 +36,8 @@ class Post(GameEvent):
     content = db.Column(db.String(16))
     user_id = db.Column(db.Integer)
 
-    def __init__(self, thread_id, title, content):
+    def __init__(self, thread_id, user_id, title, content):
         self.thread_id = thread_id
+        self.user_id = user_id
         self.title = title
         self.content = content

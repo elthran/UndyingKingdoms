@@ -7,23 +7,17 @@ from undyingkingdoms.models.forum import Forum, Thread, Post
 
 
 @login_required
-@app.route('/user/forum/', methods=['GET', 'POST'])
-def forum():
+@app.route('/user/forum/<int:thread_id>', methods=['GET', 'POST'])
+def forum(thread_id=0):
     if not current_user.logged_in:
         current_user.logged_in = True
-    the_forum = Forum.query.first()
-    if the_forum is None:
-        the_forum = Forum()
-        the_forum.save()
-    
-    the_thread = Thread.query.first()
-    if the_thread is None:
-        the_thread = Thread(the_forum.id, "Bug Reports")
-        the_thread.save()
         
+    the_forum = Forum.query.first()
+    the_thread = Thread.query.filter_by(id=thread_id).first()
+    
     form = ForumPost()
-    if form.validate_on_submit():
-        new_post = Post(the_thread.id, form.title.data, form.message.data)
+    if form.validate_on_submit() and the_thread is not None:
+        new_post = Post(the_thread.id, current_user.id, form.title.data, form.message.data)
         new_post.save()
         return redirect(url_for('forum'))
-    return render_template('user/forum.html', forum=the_forum)
+    return render_template('user/forum.html', form=form, forum=the_forum, the_thread=the_thread)

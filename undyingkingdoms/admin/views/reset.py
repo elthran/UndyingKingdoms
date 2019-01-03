@@ -2,6 +2,7 @@ from flask import jsonify, current_app
 from flask.views import MethodView
 
 from extensions import flask_db as db
+from undyingkingdoms.models.forum import Forum, Thread
 from .. import helpers
 from undyingkingdoms.models import User, County, Kingdom, World
 from undyingkingdoms.static.metadata import kingdom_names
@@ -53,6 +54,12 @@ class ResetAPI(MethodView):
         county = County("Northern Wastes", "Haldon", user.id, 'Dwarf', 'Male')
         county.save()
         county.vote = county.id
+        
+        # Create Forum shell
+        forum = Forum()
+        forum.save()
+        thread = Thread(forum.id, "Bug Reports")
+        thread.save()
         return jsonify(
             status='success',
             message="Database has been deleted and rebuilt."
