@@ -14,7 +14,8 @@ class Thread(GameEvent):
     posts = db.relationship('Post', backref='thread')
     title = db.Column(db.String(16))
 
-    def __init__(self, title="New Thread"):
+    def __init__(self, forum_id, title="New Thread"):
+        self.forum_id = forum_id
         self.title = title
         
         
@@ -24,6 +25,7 @@ class Post(GameEvent):
     content = db.Column(db.String(16))
     user_id = db.Column(db.Integer)
 
-    def __init__(self, title, content):
+    def __init__(self, thread_id, title, content):
+        self.thread_id = thread_id
         self.title = title
         self.content = content

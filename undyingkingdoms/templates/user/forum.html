@@ -17,6 +17,15 @@
         <td>{{ thread.user_id }}</td>
         <td>{{ thread.time_created }}</td>
     </tr>
+    {% endfor %}
 </table>
+
+<form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    {{ render_field(form.title, placeholder="Title", autofocus="") }}
+    {{ render_field(form.message, placeholder="Message content") }}
+    <br><br>
+    <button type="submit">Post</button>
+</form>
 
 {% endblock %}
