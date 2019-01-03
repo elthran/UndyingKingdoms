@@ -18,6 +18,13 @@ class Thread(GameEvent):
         self.forum_id = forum_id
         self.title = title
         
+    def get_post_count(self):
+        return len(self.posts)
+    
+    def get_most_recent_post(self):
+        post = Post.query.filter_by(thread_id=self.id).order_by(desc('time_created')).first()
+        return post.time_created
+        
         
 class Post(GameEvent):
     thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'), nullable=False)

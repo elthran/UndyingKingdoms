@@ -12,10 +12,13 @@ def forum():
     if not current_user.logged_in:
         current_user.logged_in = True
     the_forum = Forum.query.first()
+    if the_forum is None:
+        the_forum = Forum()
+        the_forum.save()
     
     the_thread = Thread.query.first()
     if the_thread is None:
-        the_thread = Thread(forum.id, "Bug Reports")
+        the_thread = Thread(the_forum.id, "Bug Reports")
         the_thread.save()
         
     form = ForumPost()

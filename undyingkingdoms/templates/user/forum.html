@@ -10,12 +10,14 @@
         <th>Thread</th>
         <th>Author</th>
         <th>Most Recent Post</th>
+        <th>Number of Posts</th>
     </tr>
     {% for thread in forum.threads %}
     <tr>
         <td><a>{{ thread.title }}</a></td>
         <td>{{ thread.user_id }}</td>
-        <td>{{ thread.time_created }}</td>
+        <td>{{ thread.get_most_recent_post() }}</td>
+        <td>{{ thread.get_post_count() }}</td>
     </tr>
     {% endfor %}
 </table>
