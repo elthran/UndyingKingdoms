@@ -1,0 +1,22 @@
+{% extends "gameplay/layout.html" %}
+{% block content2 %}
+
+{% set user = current_user %}
+
+<h1>Forum</h1>
+
+<table>
+    <tr>
+        <th>Thread</th>
+        <th>Author</th>
+        <th>Most Recent Post</th>
+    </tr>
+    {% for thread in forum.threads %}
+    <tr>
+        <td><a>{{ thread.title }}</a></td>
+        <td>{{ thread.user_id }}</td>
+        <td>{{ thread.time_created }}</td>
+    </tr>
+</table>
+
+{% endblock %}
