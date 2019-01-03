@@ -1,10 +1,16 @@
-from flask import Blueprint
+from flask import Blueprint, render_template
 
 from .views.refresh import RefreshAPI
 from .views.reset import ResetAPI
 from .views.export import ExportAPI
 
-admin_blueprint = Blueprint('admin', __name__, url_prefix='/admin')
+admin_blueprint = Blueprint(
+    'admin',
+    __name__,
+    url_prefix='/admin',
+    template_folder='templates',
+    static_folder='static'
+)
 
 # add rule for API endpoints
 admin_blueprint.add_url_rule('/refresh', view_func=RefreshAPI.as_view('refresh_api'))
@@ -13,5 +19,7 @@ admin_blueprint.add_url_rule('/export', view_func=ExportAPI.as_view('export_api'
 
 
 @admin_blueprint.route("/")
-def home():
-    return "Admin page that needs a fancy template panel for all these nice functions."
+def admin():
+    """An administrative panel allowing various database functions."""
+
+    return render_template('admin.html')
