@@ -2,6 +2,7 @@ from sqlalchemy import desc
 
 from extensions import flask_db as db
 from undyingkingdoms.models.bases import GameEvent
+from undyingkingdoms.models.upvotes import Upvote
 from undyingkingdoms.models.users import User
 
 
@@ -43,6 +44,7 @@ class Post(GameEvent):
     title = db.Column(db.String(32))
     content = db.Column(db.String(5000))
     author_id = db.Column(db.Integer)
+    votes = db.Column(db.Integer)
 
     def __init__(self, thread_id, author_id, title, content, parent_post_id):
         self.thread_id = thread_id
@@ -50,6 +52,7 @@ class Post(GameEvent):
         self.title = title
         self.content = content
         self.parent_post_id = parent_post_id
+        self.votes = 0
 
     def get_reply_count(self):
         replies = Post.query.filter_by(parent_post_id=self.id).all()
@@ -61,3 +64,14 @@ class Post(GameEvent):
     def get_author(self):
         author = User.query.filter_by(id=self.author_id).first()
         return author.county.leader
+
+    def get_votes(self):
+        votes = Upvote.query.filter_by(post_id=self.id, vote=1).all()
+        return len(votes)
+
+    def get_vote_status(self, user_id):
+        vote = Upvote.query.filter_by(post_id=self.id, user_id=user_id).first()
+        if vote:
+            return 1 - vote.vote
+        else:
+            return 1

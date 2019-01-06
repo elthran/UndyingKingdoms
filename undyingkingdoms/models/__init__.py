@@ -11,3 +11,4 @@ from .worlds import World
 from .transactions import Transaction
 from .expeditions import Expedition
 from .infiltrations import Infiltration
+from .upvotes import Upvote

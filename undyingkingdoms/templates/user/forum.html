@@ -63,22 +63,38 @@
     <ul>
         <li>
             <div>
-                <h1>{{ the_post.title }}</h1>
+                <h1>
+                    {{ the_post.title }}
+                    <a href="{{ url_for('upvote', thread_id=the_thread.id, post_id=the_post.id) }}">
+                        {% if the_post.get_vote_status(current_user.id) %}
+                        <img class="resource_icons" src="/static/images/upvote.jpg">
+                        {% else %}
+                        <img class="resource_icons" src="/static/images/downvote.jpg">
+                        {% endif %}
+                    </a>
+                </h1>
                 <h3>{{ the_post.content }}</h3>
-                <h3>By: {{ the_post.get_author() }} at {{ the_post.time_created }}</h3>
+                <h3>By: {{ the_post.get_author() }} at {{ the_post.time_created }} with {{ the_post.get_votes() }} votes</h3>
             </div>
         </li>
         {% for reply in the_post.get_replies() %}
         <li><br></li>
         <li>
             <div>
-                <h3>Reply {{ loop.index }} at {{ reply.time_created }}</h3>
+                <h3>
+                    Reply {{ loop.index }} at {{ reply.time_created }}
+                    <a href="{{ url_for('upvote', thread_id=the_thread.id, post_id=reply.id) }}">
+                        {% if reply.get_vote_status(current_user.id) %}
+                        <img class="resource_icons" src="/static/images/upvote.jpg">
+                        {% else %}
+                        <img class="resource_icons" src="/static/images/downvote.jpg">
+                        {% endif %}
+                    </a>
+                </h3>
                 <h3>{{ reply.content }}</h3>
-                <h3>By: {{ reply.get_author() }}</h3>
+                <h3>By: {{ reply.get_author() }} with {{ reply.get_votes() }} votes</h3>
             </div>
         </li>
-        {% else %}
-        <li>No replies</li>
         {% endfor %}
         <br><br>
         {{ render_field(form.message, placeholder="Message content") }}

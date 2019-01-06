@@ -7,9 +7,10 @@
 
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
+    <h1>Choose which troops to send:</h1><br>
     <ul>
         {% for army in county.armies.values() %}
-        <li>{{ army.class_name }}: {{ form[army.base_name] }} (Available: {{ army.available }} / {{ army.total }}) (Attack power: {{ army.attack }})</li>
+        <li>{{ army.class_name }}: {{ form[army.base_name] }} (Available: {{ army.available }} / {{ army.total }}) (Attack Power: {{ army.attack }} per troop)</li>
         {% endfor %}
     </ul>
     <button type="submit">Attack</button>

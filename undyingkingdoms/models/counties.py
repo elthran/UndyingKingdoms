@@ -408,6 +408,7 @@ class County(GameState):
         if self.weather == 'stormy':
             notification = Notification(self.id, "Storms have ravaged your crops",
                                         "You lost 20 bushels of wheat.", self.kingdom.world.day)
+            self.grain_stores = max(self.grain_stores - 20, 0)
             notification.save()
 
     def update_food(self):

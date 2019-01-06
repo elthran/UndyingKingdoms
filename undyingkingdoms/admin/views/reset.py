@@ -65,6 +65,10 @@ class ResetAPI(MethodView):
         thread.save()
         thread = Thread(forum.id, "Bug Reports", 1)
         thread.save()
+        thread = Thread(forum.id, "Weekly Art Competition", 1)
+        thread.save()
+        thread = Thread(forum.id, "Monthly Feature Vote", 1)
+        thread.save()
 
         return jsonify(
             status='success',
