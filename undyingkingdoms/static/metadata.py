@@ -2,7 +2,7 @@ from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.buildings import Building
 from undyingkingdoms.models.armies import Army
 
-kingdom_names = ["Faenoth"]
+kingdom_names = ["Faenoth", "Aldoroth"]
 
 all_achievements = {
     'land': Achievement(name="land", category="reach_x_amount_in_one_age", sub_category="land",

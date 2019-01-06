@@ -1,6 +1,6 @@
 import os
 
-import maxminddb
+#from maxminddb import open_database
 from flask import Blueprint, request, current_app, jsonify
 
 # causes import loop, need to refactor model design
@@ -31,7 +31,7 @@ def check_ip_against_geo_db():
         "Remote IP": ip,
         "Access route": 'Request via /check?ip=...' if arg_ip else request.access_route
     }
-    with maxminddb.open_database(geo_ip_db_path) as reader:
+    with open_database(geo_ip_db_path) as reader:
         data = reader.get(ip)
         try:
             info["Country"] = data['country']['iso_code']

@@ -1,9 +1,11 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Length
 
 
 class ForumPost(FlaskForm):
-    title = StringField('Title', [DataRequired(message='Your post requires a title.')])
-    message = StringField('Message', [DataRequired(message='You must enter a message.')])
+    title = StringField('Title',
+                        validators=[Length(min=0, max=32)])
+    message = StringField('Message',
+                          validators=[DataRequired(message='Your post requires a message.'), Length(min=0, max=5000)])
 

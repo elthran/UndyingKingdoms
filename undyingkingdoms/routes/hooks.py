@@ -1,5 +1,3 @@
-from flask import render_template
-
 from sqlalchemy.exc import DatabaseError
 
 from undyingkingdoms import app, db

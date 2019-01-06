@@ -5,24 +5,29 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
-<div class="sidebar">
-    <ul style="text-align:center;">
-        <li><a href="{{ url_for('overview', kingdom_id=kingdom.id, county_id=county.id) }}">County Overview</a></li>
-        <li><a href="{{ url_for('economy') }}">Economy</a></li>
-        <li><a href="{{ url_for('infrastructure') }}">Infrastructure</a></li>
-        <li><a href="{{ url_for('military') }}">Military</a></li>
-        <li><a href="{{ url_for('chatroom') }}">Town Hall</a></li>
-        <li><a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom Overview</a></li>
-        <li><br></li>
-        <li><a href="{{ url_for('achievements') }}">Achievements</a></li>
-        <li><a href="{{ url_for('forum', thread_id=0) }}">Forum</a></li>
-        {% if user.is_admin %}<li><a href="{{ url_for('testing_page') }}">Test Page</a></li>{% endif %}
-        <li><a href="{{ url_for('logout') }}">Logout</a></li>
-        <li><br><br><br></li>
-    </ul>
-</div>
+<div style="width:100%">
+    <div class="sidebar">
+        <ul style="text-align:center;">
+            <li><a href="{{ url_for('overview', kingdom_id=kingdom.id, county_id=county.id) }}">County Overview</a></li>
+            <li><a href="{{ url_for('economy') }}">Economy</a></li>
+            <li><a href="{{ url_for('infrastructure') }}">Infrastructure</a></li>
+            <li><a href="{{ url_for('military') }}">Military</a></li>
+            <li><a href="{{ url_for('chatroom') }}">Town Hall</a></li>
+            <li><a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom Overview</a></li>
+            <li><br></li>
+            <li><a href="{{ url_for('achievements') }}">Achievements</a></li>
+            <li><a href="{{ url_for('forum', thread_id=0, post_id=0) }}">Forum</a></li>
+            {% if user.is_admin %}<li><a href="{{ url_for('testing_page') }}">Test Page</a></li>{% endif %}
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            <li><br><br><br></li>
+        </ul>
+    </div>
 
-{% block content2 %}
-{% endblock %}
+    <div style="width:auto;">
+    {% block content2 %}
+    {% endblock %}
+    </div>
+
+</div>
 
 {% endblock %}

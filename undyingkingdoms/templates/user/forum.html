@@ -3,50 +3,91 @@
 
 {% set user = current_user %}
 
-<h1>Forum</h1>
-
-{% if the_thread == 'None' %}
-<table>
-    <tr>
-        <th>Thread</th>
-        <th>Author</th>
-        <th>Most Recent Post</th>
-        <th>Number of Posts</th>
-    </tr>
-    {% for thread in forum.threads %}
-    <tr>
-        <td><a href="{{ url_for('forum', thread_id=thread.id) }}">{{ thread.title }}</a></td>
-        <td>{{ thread.user_id }}</td>
-        <td>{{ thread.get_most_recent_post() }}</td>
-        <td>{{ thread.get_post_count() }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<table>
-    <tr>
-        <th>Post</th>
-        <th>Author</th>
-        <th>Most Recent Post</th>
-        <th>Number of Posts</th>
-    </tr>
-    {% for post in thread.posts %}
-    <tr>
-        <td><a href="{{ url_for('forum', thread_id=thread.id) }}">{{ post.title }}</a></td>
-        <td>{{ post.user_id }}</td>
-        <td>{{ post.time_created }}</td>
-        <td></td>
-    </tr>
-    {% endfor %}
-</table>
-
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
-    {{ render_field(form.title, placeholder="Title", autofocus="") }}
-    {{ render_field(form.message, placeholder="Message content") }}
+
+    {% if the_thread == 'None' %}  <!-- Show list of all threads -->
+    <h1>Forum</h1>
+    <table style="border:dotted 1px;">
+        <tr>
+            <th>Thread</th>
+            <th>Author</th>
+            <th>Most Recent Post</th>
+            <th>Number of Posts</th>
+        </tr>
+        {% for thread in forum.threads %}
+        <tr>
+            <td><a href="{{ url_for('forum', thread_id=thread.id, post_id=0) }}">{{ thread.title }}</a></td>
+            <td>{{ thread.get_author() }}</td>
+            <td>{{ thread.get_most_recent_post() }}</td>
+            <td>{{ thread.get_post_count() }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% elif the_post == 'None' %}  <!-- Show list of all posts in that thread -->
+    <h1>{{ the_thread.title }}</h1><br>
+    <table style="border:dotted 1px;">
+        <tr>
+            <th>Post</th>
+            <th>Author</th>
+            <th>Most Recent Post</th>
+            <th>Number of Replies</th>
+        </tr>
+        {% for post in the_thread.posts if post.parent_post_id == 0 %}
+        <tr>
+            <td><a href="{{ url_for('forum', thread_id=the_thread.id, post_id=post.id) }}">{{ post.title }}</a></td>
+            <td>{{ post.get_author() }}</td>
+            <td>{{ post.time_created }}</td>
+            <td>{{ post.get_reply_count() }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+        {% endfor %}
+    </table>
     <br><br>
-    <button type="submit">Post</button>
+    <h2>Create New Thread</h2>
+    <ul>
+        <li style="margin-top:5px;">{{ render_field(form.title, placeholder="Title", autofocus="") }}</li>
+        <li style="margin-top:5px;">{{ render_field(form.message, placeholder="Content") }}</li>
+    </ul>
+    <br><br>
+    <button type="submit">Create Post</button>
+    <br><br>
+    <a href="{{ url_for('forum', thread_id=0, post_id=0) }}">Return to forum home.</a>
+    {% else %}  <!-- Show list of all replies in that post -->
+    <ul>
+        <li>
+            <div>
+                <h1>{{ the_post.title }}</h1>
+                <h3>{{ the_post.content }}</h3>
+                <h3>By: {{ the_post.get_author() }} at {{ the_post.time_created }}</h3>
+            </div>
+        </li>
+        {% for reply in the_post.get_replies() %}
+        <li><br></li>
+        <li>
+            <div>
+                <h3>Reply {{ loop.index }} at {{ reply.time_created }}</h3>
+                <h3>{{ reply.content }}</h3>
+                <h3>By: {{ reply.get_author() }}</h3>
+            </div>
+        </li>
+        {% else %}
+        <li>No replies</li>
+        {% endfor %}
+        <br><br>
+        {{ render_field(form.message, placeholder="Message content") }}
+        <br><br>
+        <button type="submit">Reply to Post</button>
+        <br><br>
+        <a href="{{ url_for('forum', thread_id=the_thread.id, post_id=0) }}">Return to {{ the_thread.title }}</a>
+    </ul>
+    {% endif %}
 </form>
-{% endif %}
 
 {% endblock %}
