@@ -179,7 +179,7 @@ class County(GameState):
         return County.query.filter_by(vote=self.id, kingdom_id=self.kingdom.id).count()
 
     def can_vote(self):
-        if self.last_vote_date and datetime.now() < (self.last_vote_date - timedelta(hours=24)):
+        if self.last_vote_date and datetime.now() > (self.last_vote_date - timedelta(hours=24)):
             return False
         else:
             return True

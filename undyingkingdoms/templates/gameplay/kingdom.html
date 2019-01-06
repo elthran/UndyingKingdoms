@@ -15,7 +15,7 @@
         <button style="float:right;width:100px;">Right</button>
     </a>
 </div>
-<br><br><br>
+<br><br><br>{{ my_county.can_vote() }}
 <ul>
     {% if kingdom == my_county.kingdom %}
         {% for county in kingdom.counties %}
