@@ -30,8 +30,6 @@ class World(GameState):
         while now != self.game_clock:  # Now advance all the game clocks and events.
             self.advance_day()
             self.game_clock = (self.game_clock + 1) % 24
-        if self.day >= 2:
-            self.advance_age()
 
     def advance_day(self):
         for county in County.query.all():
