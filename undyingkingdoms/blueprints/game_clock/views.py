@@ -23,11 +23,11 @@ class AdvanceAPI(MethodView):
             auth_token = ''
         if auth_token:
             resp = Token.decode_auth_token(auth_token)
-            if not isinstance(resp, str) and resp == current_app.config.get("CLOCK_KEY"):
+            if resp == current_app.config.get("CLOCK_KEY"):
 
                 # advance game clock here!
                 world = World.query.first()
-                world.advance_age()
+                world.advance_day()
 
                 response = {
                     'status': 'success',
@@ -36,7 +36,7 @@ class AdvanceAPI(MethodView):
                 return jsonify(response), 200
             response = {
                 'status': 'fail',
-                'message': resp
+                'message': "Response token doesn't match private_config.CLOCK_KEY."
             }
             return jsonify(response), 401
         else:
@@ -56,7 +56,8 @@ class TokenAPI(MethodView):
             if isinstance(token.decode(), str):
                 return jsonify(
                     status='success',
-                    message=token.decode()
+                    message='You logged in and are and Admin user, so here is your token',
+                    auth_token=token.decode()
                 ), 200
             else:
                 return jsonify(

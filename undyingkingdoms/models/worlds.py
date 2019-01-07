@@ -60,6 +60,5 @@ class World(GameState):
                 user.day7_retention = randint(0, 1)
             dau_event.save()
 
-
     def __repr__(self):
-        return '<World %r (%r)>' % (self.name, self.id)
+        return '<World %r (%r)>' % ('id:', self.id)
