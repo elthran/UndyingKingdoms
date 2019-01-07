@@ -420,7 +420,8 @@ class County(GameState):
         total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores
         food_eaten = self.get_food_to_be_eaten()
         if total_food >= food_eaten:
-            self.grain_stores += min(total_food - food_eaten, self.get_produced_grain())
+            print(self.grain_stores, total_food - food_eaten, self.get_produced_grain())
+            self.grain_stores += min(self.get_produced_dairy() + self.get_produced_grain() - food_eaten, self.get_produced_grain())
             self.hunger = min(self.hunger + 1, 100)
         else:
             self.grain_stores = 0
