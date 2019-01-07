@@ -24,12 +24,13 @@
         <tr>
             <td>Population</td>
             <td>{{ county.population }}</td>
-            {% if county.get_population_change() >= 0 %}
+            {% set population_projection = county.get_population_change() %}
+            {% if population_projection >= 0 %}
             <td style="color:green;">+
                 {% else %}
             <td style="color:red;">
                 {% endif %}
-                {{ county.get_population_change() }} <img class="resource_icons" src="/static/images/population_icon.jpg">
+                {{ population_projection }} <img class="resource_icons" src="/static/images/population_icon.jpg">
             </td>
             <td>Birth Rate: 0%</td>
             <td>
