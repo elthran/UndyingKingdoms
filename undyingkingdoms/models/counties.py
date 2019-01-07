@@ -471,6 +471,10 @@ class County(GameState):
         current_report = Infiltration.query.filter_by(county_id=self.id).first()
         return current_report.day + current_report.duration - day
 
+    def get_expeditions(self):
+        expeditions = Expedition.query.filter_by(county_id=self.id).all()
+        return [expedition for expedition in expeditions if expedition.duration > 0]
+
     @property
     def hunger_terminology(self):
         if self.hunger < 20:

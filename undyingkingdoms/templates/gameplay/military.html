@@ -67,6 +67,11 @@
     <br><button type="submit">Build</button>
 </form>
 
+<h2>Expeditions:</h2>
+{% for expedition in county.get_expeditions() %}
+{{ expedition.peasant + expedition.archer + expedition.soldier + expedition.elite }} troops will return in {{ expedition.duration }} days.
+{% endfor %}
+
 <script type="text/javascript">
 {% for army in county.armies.values() %}
     var {{ army.base_name }}_slider = document.getElementById('{{ army.base_name }}_slider'),
