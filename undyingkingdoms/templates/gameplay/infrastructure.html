@@ -43,7 +43,7 @@
             </td>
             <td>{{ building.pending }}</td>
             <td>
-                {% if building.production %}{{ building.production }}<img class="resource_icons" src="/static/images/prod_icon.jpg">{% endif %}
+                {{ building.production_cost }}<img class="resource_icons" src="/static/images/prod_icon.jpg">
                 {% if building.gold %}{{ building.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif %}
                 {% if building.wood %}{{ building.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif %}
             </td>
