@@ -262,8 +262,9 @@ class County(GameState):
             expedition = Expedition(self.id, duration)
             for unit in self.armies.values():
                 if army[unit.base_name] > 0:
-                    raw_dead = army[unit.base_name] / uniform(1.4, 1.8) / ratio
+                    raw_dead = army[unit.base_name] * 0.35 / ratio
                     dead = int(raw_dead / unit.health)
+                    print("Total:{}, Raw:{}, Dead:{}, Ratio:{}".format(army[unit.base_name], raw_dead, dead, ratio))
                     unit.total -= dead
                     casualties += dead
                     army[unit.base_name] -= dead
@@ -290,7 +291,8 @@ class County(GameState):
     def battle_results(self, army, enemy):
         offence = self.get_offensive_strength(army=army)
         defence = enemy.get_defensive_strength()
-        offence_casaulties = self.get_casualties(army=army, ratio=(offence / defence))
+        offence_massacre = max(offence / defence, 1)  # If you outnumber, you lose less when attacking
+        offence_casaulties = self.get_casualties(army=army, ratio=offence_massacre)
         defence_casaulties = enemy.get_casualties(army={}, ratio=1)
         if offence > defence:
             land_gained = int(enemy.land * 0.1)
