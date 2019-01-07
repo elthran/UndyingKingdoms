@@ -25,6 +25,12 @@ def login():
 
 
 class LoginAPI(MethodView):
+    def get(self):
+        if current_user.is_authenticated:
+            return redirect(url_for('overview', kingdom_id=current_user.county.kingdom.id, county_id=current_user.county.id))
+        form = LoginForm()
+        return render_template("index/login.html", form=form)
+
     def post(self):
         form = LoginForm()
         if current_user.is_authenticated:
@@ -70,7 +76,8 @@ class LoginAPI(MethodView):
         else:
             return jsonify(
                 status='fail',
-                message='The data sent is not in an acceptable form.'
+                message='The data sent is not in an acceptable form.',
+                errors=form.errors
             ), 200
 
 
