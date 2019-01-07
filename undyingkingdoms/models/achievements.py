@@ -10,7 +10,6 @@ class Achievement(GameEvent):
     category = db.Column(db.String(64))  # A way to group it for coding purposes
     sub_category = db.Column(db.String(64))  # A way to identify it from its group
     description = db.Column(db.String(64))  # For the user to read
-    current_progress = db.Column(db.Integer)
     current_tier = db.Column(db.Integer)  # What level they are on. Starts at 0
     maximum_tier = db.Column(db.Integer)  # The highest level they can reach
     points_rewarded = db.Column(db.Integer)  # Points rewarded at each level
@@ -28,8 +27,6 @@ class Achievement(GameEvent):
         self.category = category
         self.sub_category = sub_category
         self.description = description
-        self.progress = 0
-        self._progress_required = None
         self.current_tier = 0
         self.maximum_tier = maximum_tier
         self.points_rewarded = points_rewarded
@@ -39,10 +36,6 @@ class Achievement(GameEvent):
         self.tier3 = tier3
         self.tier4 = tier4
         self.tier5 = tier5
-
-    @property
-    def progress_required(self):
-        return self.tiers
 
     def get_earned_required_amount_message(self):
         if self.current_tier == 0:

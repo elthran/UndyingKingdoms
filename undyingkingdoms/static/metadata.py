@@ -33,10 +33,12 @@ all_achievements = {
     'dwarf_class_leader': Achievement(name="dwarf_class_leader", category="class_leader", sub_category="dwarf",
                                       display_title="Lord Under the Mountain!",
                                       description="Become the leader of your kingdom while playing as Dwarves.",
+                                      maximum_tier=1,
                                       points_rewarded=15),
     'human_class_leader': Achievement(name="human_class_leader", category="class_leader", sub_category="human",
                                       display_title="Return of the King",
                                       description="Become the leader of your kingdom while playing as Humans.",
+                                      maximum_tier=1,
                                       points_rewarded=15)
 }
 rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (1, "Normal"), (2, "Double"), (3, "Triple")]

@@ -19,7 +19,7 @@
 <ul>
     {% if kingdom == my_county.kingdom %}
         {% for county in kingdom.counties %}
-            {% if my_county.name == county.name %}
+            {% if my_county.id == county.id %}
                 <form method="POST" accept-charset="UTF-8" role="form">
                     {{ form.csrf_token }}
                     <li style="font-style:italic;">{{ county.name }} led by the infamous {{ county.leader }} with {{ county.land }} acres of land

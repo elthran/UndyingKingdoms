@@ -5,7 +5,6 @@ from undyingkingdoms.static.metadata import kingdom_names
 
 
 class Kingdom(GameState):
-
     name = db.Column(db.String(128), nullable=False, unique=True)
     world_id = db.Column(db.Integer, db.ForeignKey('world.id'), nullable=False)
     counties = db.relationship('County', backref='kingdom')
@@ -28,12 +27,11 @@ class Kingdom(GameState):
 
     def count_votes(self):
         if self.get_most_popular_county().get_votes_for_self() >= self.get_votes_needed():
-            self.leader = self.get_most_popular_county().id
-            leader = County.query.filter_by(id=self.leader).first()
-            achievement = Achievement(leader.user_id,
-                                      "The King is Dead. Long Live the King.",
-                                      "Be voted the King during any age of Undying Kingdoms.")
-            achievement.save()
+            county = self.get_most_popular_county()
+            self.leader = county.id
+            achievement = Achievement.query.filter_by(user_id=county.user_id, category="class_leader",
+                                                      sub_category=county.race).first()
+            achievement.current_tier += 1
 
     def get_leader_name(self, county_id):
         return County.query.filter_by(id=county_id).first().name
@@ -48,4 +46,3 @@ class Kingdom(GameState):
         elif current_id > len(kingdom_names):
             current_id = 1
         return current_id
-
