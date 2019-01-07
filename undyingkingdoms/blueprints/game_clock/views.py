@@ -3,6 +3,7 @@ from flask.views import MethodView
 from flask_login import login_required, current_user
 
 from .models import Token
+from undyingkingdoms.models.worlds import World
 
 
 class AdvanceAPI(MethodView):
@@ -23,6 +24,11 @@ class AdvanceAPI(MethodView):
         if auth_token:
             resp = Token.decode_auth_token(auth_token)
             if not isinstance(resp, str) and resp == current_app.config.get("CLOCK_KEY"):
+
+                # advance game clock here!
+                world = World.query.first()
+                world.advance_age()
+
                 response = {
                     'status': 'success',
                     'message': 'Oh happy day!'
