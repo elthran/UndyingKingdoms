@@ -370,6 +370,11 @@ class County(GameState):
     def get_emmigration_rate(self):
         return randint(100, 125) - self.happiness
 
+    def get_population_change(self):
+        growth = self.get_birth_rate() + self.get_immigration_rate()
+        decay = self.get_death_rate() + self.get_emmigration_rate()
+        return growth - decay
+
     def collect_taxes(self):
         self.gold += self.get_gold_income()
         self.wood += self.get_wood_income()

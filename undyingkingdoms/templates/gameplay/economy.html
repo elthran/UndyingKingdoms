@@ -13,48 +13,78 @@
     <table class="production_table">
         <tr>
             <th>Topic</th>
-            <th>Icon</th>
             <th>Current</th>
+            <th>Projected Change</th>
             <th>Modifiers</th>
-            <th>Details1</th>
-            <th>Details2</th>
-            <th>Affects</th>
+            <th>Positive</th>
+            <th>Negative</th>
+            <th>Notes</th>
         </tr>
         <br>
         <tr>
             <td>Population</td>
-            <td><img class="resource_icons" src="/static/images/population_icon.jpg"></td>
             <td>{{ county.population }}</td>
+            {% if county.get_population_change() >= 0 %}
+            <td style="color:green;">+
+                {% else %}
+            <td style="color:red;">
+                {% endif %}
+                {{ county.get_population_change() }} <img class="resource_icons" src="/static/images/population_icon.jpg">
+            </td>
             <td>Birth Rate: 0%</td>
-            <td>Births: {{ county.get_birth_rate() }}</td>
-            <td>Deaths: {{ county.get_death_rate() }}</td>
-            <td>*Raise happiness to increase birth rate*</td>
+            <td>
+                <ul>
+                    <li>Births: {{ county.get_birth_rate() }}</li>
+                    <li>Immigration: {{ county.get_immigration_rate() }}</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>Deaths: {{ county.get_death_rate() }}</li>
+                    <li>Emigration: {{ county.get_emmigration_rate() }}</li>
+                </ul>
+            </td>
+            <td>Raise happiness to increase birth rate</td>
         </tr>
         <tr>
             <td>Gold</td>
-            <td><img class="resource_icons" src="/static/images/gold_icon.jpg"></td>
             <td>{{ county.gold }}</td>
+            {% if county.get_gold_income() >= 0 %}
+            <td style="color:green;">+
+                {% else %}
+            <td style="color:red;">
+                {% endif %}
+                {{ county.get_gold_income() }} <img class="resource_icons" src="/static/images/gold_icon.jpg">
+            </td>
             <td>Tax Rate: {{ form.tax }}%</td>
             <td>Excess Production: {{ county.production }}</td>
-            <td>+{{ county.tax * county.population }}</td>
-            {% if county.tax < 7 %}<td style="color:green;">Your current tax rate has a positive
-            {% else %}<td style="color:red;">Your current tax rate has a negative
-            {% endif %}affect on happiness</td>
+            <td>N/A</td>
+            {% if county.tax <= 7 %}
+            <td style="color:green;">Your current tax rate has a positive
+                {% else %}
+            <td style="color:red;">Your current tax rate has a negative
+                {% endif %}affect on happiness
+            </td>
         </tr>
         <tr>
             <td>Food</td>
-            <td>
-                <img class="resource_icons" src="/static/images/dairy_icon.jpg"> /
-                <img class="resource_icons" src="/static/images/grain_icon.jpg">
-            </td>
             <td>{{ county.grain_stores }}</td>
-            <td>Rations: {{ form.rations }}</td>
-            <td>Produced:
-                {{ county.get_produced_dairy() }} <img class="resource_icons" src="/static/images/dairy_icon.jpg"> +
-                {{ county.get_produced_grain() }} <img class="resource_icons" src="/static/images/grain_icon.jpg">
+            {% if county.grain_storage_change() >= 0 %}
+            <td style="color:green;">+
+                {% else %}
+            <td style="color:red;">
+                {% endif %}
+                {{ county.grain_storage_change() }} <img class="resource_icons" src="/static/images/grain_icon.jpg">
             </td>
-            <td>Will Consume: {{ county.get_food_to_be_eaten() }}</td>
-            <td>Your storage level will change by {{ county.grain_storage_change()}} </td>
+            <td>Rations: {{ form.rations }}</td>
+            <td>
+                <ul>
+                    <li>+ {{ county.get_produced_grain() }} <img class="resource_icons" src="/static/images/grain_icon.jpg"></li>
+                    <li>+ {{ county.get_produced_dairy() }} <img class="resource_icons" src="/static/images/dairy_icon.jpg"></li>
+                </ul>
+            </td>
+            <td>Food to be Eaten: {{ county.get_food_to_be_eaten() }}</td>
+            <td>Excess dairy can not be stored in your graneries.</td>
         </tr>
     </table>
     <br>
