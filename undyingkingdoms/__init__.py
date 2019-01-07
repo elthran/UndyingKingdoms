@@ -16,6 +16,7 @@ UPLOAD_FOLDER = 'undyingkingdoms/static/uploads/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
+app.config.from_object('config.BaseConfig')
 app.config.from_object('private_config')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024

@@ -24,6 +24,7 @@ setup(
         'pandas',
         'flask-sslify',
         'maxminddb',
+        'sqlalchemy-utils',
         'PyJWT'
     ],
 )
