@@ -196,6 +196,15 @@ class County(GameState):
     def get_army_size(self):
         return sum(army.total + army.currently_training for army in self.armies.values())
 
+    def get_available_army_size(self):
+        return sum(army.available for army in self.armies.values())
+
+    def get_training_army_size(self):
+        return sum(army.currently_training for army in self.armies.values())
+
+    def get_unavailable_army_size(self):
+        return sum(army.traveling for army in self.armies.values())
+
     def get_maintenance_workers(self):
         """
         Returns the population who are maintaining current buildings.
@@ -268,7 +277,7 @@ class County(GameState):
                     unit.total -= dead
                     casualties += dead
                     army[unit.base_name] -= dead
-                    unit.traveling = army[unit.base_name]  # Surviving troops are marked as absent
+                    unit.traveling += army[unit.base_name]  # Surviving troops are marked as absent
                     setattr(expedition, unit.base_name, army[unit.base_name])
                     expedition.save()
         return casualties

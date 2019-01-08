@@ -54,11 +54,11 @@
         {% endfor %}
         <tr>
             <td>Total</td>
-            <td>{{ county.get_army_size() }}</td>
+            <td>{{ county.get_available_army_size() }}</td>
+            <td>{{ county.get_unavailable_army_size() }}</td>
             <td>-</td>
             <td>-</td>
-            <td></td>
-            <td>-</td>
+            <td>{{ county.get_training_army_size() }}</td>
             <td></td>
             <td></td>
             <td></td>
