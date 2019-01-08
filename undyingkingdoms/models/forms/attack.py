@@ -1,8 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, SelectField
-from wtforms.validators import NumberRange
 
-from undyingkingdoms.static.metadata import all_armies
+from undyingkingdoms.models.counties import County
 
 
 class AttackForm(FlaskForm):
@@ -10,6 +9,19 @@ class AttackForm(FlaskForm):
     archer = SelectField('archer', coerce=int)
     soldier = SelectField('soldier', coerce=int)
     elite = SelectField('elite', coerce=int)
+
+    def validate(self):
+        if not FlaskForm.validate(self):
+            return False
+        if self.insufficient_troops():
+            return False
+        return True
+
+    def insufficient_troops(self):
+        troops_being_sent = self.peasant.data + self.archer.data + self.soldier.data + self.elite.data
+        if troops_being_sent < 25:
+            return True
+
 
 class TempGameAdvance(FlaskForm):
     pass
