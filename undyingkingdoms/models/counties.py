@@ -286,8 +286,9 @@ class County(GameState):
                 self.armies[unit].total -= 1
                 casualties += 1
                 army[unit] -= 1
-            self.armies[unit].traveling += army[unit]  # Surviving troops are marked as absent
-            setattr(expedition, unit, army[unit])
+            for unit in army.keys():
+                self.armies[unit].traveling = army[unit]  # Surviving troops are marked as absent
+                setattr(expedition, unit, army[unit])
         return casualties, expedition
 
     def destroy_buildings(self, county, land_destroyed):
