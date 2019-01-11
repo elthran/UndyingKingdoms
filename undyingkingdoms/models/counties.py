@@ -160,7 +160,7 @@ class County(GameState):
 
     @hunger.setter
     def hunger(self, value):
-        self._hunger = value
+        self._hunger = int(min(max(value, 1), 100))
 
     def check_incremental_achievement(self, name, amount):
         # Currently this does nothing but it's here for flexibility.
@@ -438,12 +438,11 @@ class County(GameState):
         total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores
         food_eaten = self.get_food_to_be_eaten()
         if total_food >= food_eaten:
-            print(self.grain_stores, total_food - food_eaten, self.get_produced_grain())
             self.grain_stores += min(self.get_produced_dairy() + self.get_produced_grain() - food_eaten, self.get_produced_grain())
-            self.hunger = min(self.hunger + 1, 100)
+            self.hunger = self.hunger + 1
         else:
             self.grain_stores = 0
-            self.hunger -= max(int((food_eaten / total_food) * 5), 1)
+            self.hunger -= (food_eaten / total_food) * 5
 
     def get_produced_grain(self):
         return self.buildings['fields'].total * 20
