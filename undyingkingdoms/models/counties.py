@@ -1,4 +1,7 @@
+import functools
+import os
 from datetime import datetime, timedelta
+import random
 from random import choice, uniform, randint
 
 from sqlalchemy.orm.collections import attribute_mapped_collection
@@ -11,6 +14,31 @@ from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_bu
     human_buildings, kingdom_names
 
 from copy import deepcopy
+
+SEED_SIZE = 5
+
+
+def get_max_random_int():
+    random.seed(os.urandom(SEED_SIZE))
+    return random.randint(-2147483648, 2147483647)
+
+
+def cached_random(func):
+    @functools.wraps(func)
+    def wrapper(that, *args, **kwargs):
+        """Wrap an object's method, allowing access to self.
+
+        Wrapped method's self attribute can be accessed through 'that'
+        parameter.
+
+        Requires: Object to have a 'seed' parameter.
+        """
+        # restore cached seed to allow repeatable randoms
+        random.seed(that.seed)
+        return func(that, *args, **kwargs)
+
+    random.seed(os.urandom(SEED_SIZE))  # unset random seed, might be unnecessary
+    return wrapper
 
 
 class County(GameState):
@@ -47,6 +75,9 @@ class County(GameState):
     deaths = db.Column(db.Integer)
     immigration = db.Column(db.Integer)
     emigration = db.Column(db.Integer)
+
+    # seed for random daily events.
+    seed = db.Column(db.Integer)
 
     buildings = db.relationship("Building",
                                 collection_class=attribute_mapped_collection('base_name'),
@@ -95,6 +126,8 @@ class County(GameState):
             armies = deepcopy(human_armies)
         self.buildings = buildings
         self.armies = armies
+
+        self.seed = get_max_random_int()
 
     @property
     def population(self):
@@ -335,6 +368,7 @@ class County(GameState):
         """
         Add a WORLD. Tracks day. Has game clock.
         """
+        self.seed = get_max_random_int()
         self.collect_taxes()
         self.production = self.get_production()
         self.produce_pending_buildings()
@@ -377,13 +411,14 @@ class County(GameState):
         death_rate = uniform(1.5, 2.0) / self.hunger
         return int(death_rate * self.population * modifier)
 
+    @cached_random
     def get_birth_rate(self):
         modifier = {"Base": 1}
         if self.race == 'Elf':
             modifier['Racial Bonus'] = -0.1
         if self.title == 'Goblin':
             modifier['Racial Bonus'] = 0.15
-        modifier = sum(modifier.values()) * uniform(0.9995, 1.0005)
+        modifier = sum(modifier.values()) * random.uniform(0.9995, 1.0005)
         birth_rate = self.buildings['houses'].total
         return int(birth_rate * modifier)
 
