@@ -262,7 +262,7 @@ class County(GameState):
             modifier['Profession Bonus'] = 0.15
         return sum(modifier.values())
 
-    def get_offensive_strength(self, army=None, county=None):
+    def get_offensive_strength(self, army=None, county=None, traveling=False):
         """
         Returns the attack power of your army. If no army is sent in, it checks the full potential of the county.
         """
@@ -272,14 +272,14 @@ class County(GameState):
                 strength += army[unit.base_name] * unit.attack
         elif county:
             for unit in county.armies.values():
-                strength += unit.total * unit.attack
+                strength += unit.available * unit.attack
         return int(strength)
 
     def get_defensive_strength(self):
         modifier = 0.01 * self.buildings['forts'].total + 1
         strength = 0
         for unit in self.armies.values():
-            strength += (unit.total - unit.traveling) * unit.defence
+            strength += unit.available * unit.defence
         strength += self.population // 25  # Every 25 population is 1 defence power
         strength *= modifier
         return int(strength)
@@ -319,8 +319,9 @@ class County(GameState):
                 self.armies[unit].total -= 1
                 casualties += 1
                 army[unit] -= 1
-            self.armies[unit].traveling += army[unit]  # Surviving troops are marked as absent
-            setattr(expedition, unit, army[unit])
+            for unit in army.keys():
+                self.armies[unit].traveling = army[unit]  # Surviving troops are marked as absent
+                setattr(expedition, unit, army[unit])
         return casualties, expedition
 
     def destroy_buildings(self, county, land_destroyed):
