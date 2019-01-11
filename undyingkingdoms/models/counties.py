@@ -1,5 +1,3 @@
-import functools
-import os
 import random
 from datetime import datetime, timedelta
 from random import choice, uniform, randint
@@ -7,6 +5,7 @@ from random import choice, uniform, randint
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
 from undyingkingdoms.models.bases import GameState, db
+from undyingkingdoms.models.helpers import get_max_random_int, cached_random
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
@@ -14,33 +13,6 @@ from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_bu
     human_buildings, kingdom_names
 
 from copy import deepcopy
-
-
-SEED_SIZE = 5
-
-
-def get_max_random_int():
-    random.seed(os.urandom(SEED_SIZE))
-    return random.randint(-2147483648, 2147483647)
-
-
-def cached_random(func):
-    @functools.wraps(func)
-    def wrapper(that, *args, **kwargs):
-        """Wrap an object's method, allowing access to self.
-
-        Wrapped method's self attribute can be accessed through 'that'
-        parameter.
-
-        Requires: Object to have a 'seed' parameter.
-        """
-        # restore cached seed to allow repeatable randoms
-        random.seed(that.seed)
-        return func(that, *args, **kwargs)
-
-    # unset random seed, might be unnecessary
-    random.seed(os.urandom(SEED_SIZE))
-    return wrapper
 
 
 class County(GameState):
