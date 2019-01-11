@@ -1,7 +1,7 @@
 import functools
 import os
-from datetime import datetime, timedelta
 import random
+from datetime import datetime, timedelta
 from random import choice, uniform, randint
 
 from sqlalchemy.orm.collections import attribute_mapped_collection
@@ -14,6 +14,7 @@ from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_bu
     human_buildings, kingdom_names
 
 from copy import deepcopy
+
 
 SEED_SIZE = 5
 
@@ -37,7 +38,8 @@ def cached_random(func):
         random.seed(that.seed)
         return func(that, *args, **kwargs)
 
-    random.seed(os.urandom(SEED_SIZE))  # unset random seed, might be unnecessary
+    # unset random seed, might be unnecessary
+    random.seed(os.urandom(SEED_SIZE))
     return wrapper
 
 
