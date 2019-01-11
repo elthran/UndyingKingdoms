@@ -247,21 +247,20 @@ class County(GameState):
         strength = 0
         for unit in self.armies.values():
             strength += (unit.total - unit.traveling) * unit.defence
-        strength += self.population // 25
+        strength += self.population // 25  # Every 25 population is 1 defence power
         strength *= modifier
         return int(strength)
 
-    def get_casualties(self, army={}, ratio=1, offence_power=None, defence_power=None):
+    def get_casualties(self, attack_power, army={}):
         """
         Maybe move to a math transform file.
         army: For attacker, the army is passed in as dict. For defender, it's all active troops.
         ratio: The greater you outnumber the enemy, the safer your troops are.
         """
         casualties = 0
+        hit_points_lost = randint(attack_power // 10, attack_power // 5)
+        hit_points_to_be_removed = hit_points_lost
         if not army:  # ie. you are the defender and use entire army
-            hit_points_lost = randint(offence_power // 10, offence_power // 5)
-            hit_points_to_be_removed = hit_points_lost
-            casualties = 0
             for unit in self.armies.values():
                 available = unit.total - unit.traveling
                 if available > 0:
@@ -277,20 +276,18 @@ class County(GameState):
             stable_modifier = 1 - ((self.buildings['stables'].total / self.land) * 5)
             duration = max(sum(army.values()) * 0.04 * stable_modifier, 1)
             expedition = Expedition(self.id, duration)
-            hit_points_lost = randint(offence_power // 10, offence_power // 5)
-            hit_points_to_be_removed = hit_points_lost
-            casualties = 0
-            for unit in self.armies.values():
-                if army[unit.base_name] > 0:
-                    raw_dead = army[unit.base_name] * 0.35 / ratio
-                    dead = int(raw_dead / unit.health)
-                    print("Total:{}, Raw:{}, Dead:{}, Ratio:{}".format(army[unit.base_name], raw_dead, dead, ratio))
-                    unit.total -= dead
-                    casualties += dead
-                    army[unit.base_name] -= dead
-                    unit.traveling += army[unit.base_name]  # Surviving troops are marked as absent
-                    setattr(expedition, unit.base_name, army[unit.base_name])
-                    expedition.save()
+            expedition.save()
+            while hit_points_to_be_removed > 0:
+                army = {key: value for key, value in army.items() if value > 0}  # Remove dead troops
+                if army == {}:
+                    break
+                unit = choice(army.keys())
+                hit_points_to_be_removed -= self.armies[unit].health
+                self.armies[unit].total -= 1
+                casualties += 1
+                army[unit] -= 1
+            self.armies[unit].traveling += army[unit]  # Surviving troops are marked as absent
+            setattr(expedition, unit, army[unit])
         return casualties
 
     def destroy_buildings(self, county, land_destroyed):
@@ -311,9 +308,8 @@ class County(GameState):
     def battle_results(self, army, enemy):
         offence = self.get_offensive_strength(army=army)
         defence = enemy.get_defensive_strength()
-        offence_massacre = max(offence / defence, 1)  # If you outnumber, you lose less when attacking
-        offence_casaulties = self.get_casualties(army=army, ratio=offence_massacre, defence_power=defence)
-        defence_casaulties = enemy.get_casualties(army={}, ratio=1, offence_power=offence)
+        offence_casaulties = self.get_casualties(attack_power=defence, army=army)
+        defence_casaulties = enemy.get_casualties(attack_power=offence)
         if offence > defence:
             land_gained = int(enemy.land * 0.1)
             self.land += land_gained
