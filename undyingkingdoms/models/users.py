@@ -34,6 +34,7 @@ class User(GameState):
                                    collection_class=attribute_mapped_collection('name'),
                                    cascade="all, delete, delete-orphan", passive_deletes=True)
     achievement_points = db.Column(db.Integer)
+    alpha_wins = db.Column(db.Integer)
 
     # Flask
     is_authenticated = db.Column(db.Boolean)  # User has logged in
@@ -65,6 +66,8 @@ class User(GameState):
         self.is_active = True
         self.is_anonymous = False
         self.is_admin = False
+
+        self.alpha_wins = 0
 
     @property
     def logged_in(self):

@@ -281,7 +281,7 @@ class County(GameState):
                 army = {key: value for key, value in army.items() if value > 0}  # Remove dead troops
                 if army == {}:
                     break
-                unit = choice(army.keys())
+                unit = choice(list(army))
                 hit_points_to_be_removed -= self.armies[unit].health
                 self.armies[unit].total -= 1
                 casualties += 1
@@ -443,7 +443,7 @@ class County(GameState):
             self.hunger = min(self.hunger + 1, 100)
         else:
             self.grain_stores = 0
-            self.hunger -= max(int((food_eaten / total_food) * 5), 0)
+            self.hunger -= max(int((food_eaten / total_food) * 5), 1)
 
     def get_produced_grain(self):
         return self.buildings['fields'].total * 20
