@@ -1,5 +1,8 @@
-from datetime import datetime
+import os
+from datetime import datetime, date
 from random import randint
+
+from pandas import DataFrame
 
 from undyingkingdoms.models.users import User
 from undyingkingdoms.models import DAU
@@ -59,7 +62,47 @@ class World(GameState):
             elif user_age == 7:
                 user.day7_retention = randint(0, 1)
             dau_event.save()
+        self.export_data_to_csv()
 
+    @staticmethod
+    def export_data_to_csv():
+        all_tables = []
+        table_name_reference = []
+        tables = db.metadata.tables
+        table_names = db.engine.table_names()
+        for name in table_names:
+            # Each table is a list inside the list
+            new_table = []
+            table_name_reference.append(name)
+            if name not in {}:
+                # Each row will be a list inside the table list, inside the all_tables list
+                table = tables[name]
+                header_row = []
+                for column in table.columns:
+                    header_row.append(column.name)
+                new_table.append(header_row)
+                for row in db.session.query(table).all():
+                    normal_row = []
+                    for value in row:
+                        normal_row.append(value)
+                    new_table.append(normal_row)
+            all_tables.append(new_table)
+        # We have a list of smaller lists. Each smaller list should be a csv file (each one is a separate sql table)
+        todays_date = date.today()
+
+        current_path = "export/{}".format(todays_date)
+        if not os.path.exists(current_path):
+            os.makedirs(current_path)
+
+        for index, table in enumerate(all_tables):
+            if len(table) < 2:
+                continue
+            headers = table.pop(0)
+            name = table_name_reference[index]
+
+            filename = "{}/{}_table.csv".format(current_path, name)
+            df = DataFrame(table)
+            df.to_csv(filename, header=headers)
 
     def __repr__(self):
         return '<World %r (%r)>' % (self.name, self.id)
