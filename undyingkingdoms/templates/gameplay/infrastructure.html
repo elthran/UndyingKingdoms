@@ -47,7 +47,7 @@
                 {% if building.gold %}{{ building.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif %}
                 {% if building.wood %}{{ building.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif %}
             </td>
-            <td>{{ buildir_maintenance }} each ({{ building.labour_maintenance * building.total }} total)</td>
+            <td>{{ building.labour_maintenance * building.total }} ({{ building.labour_maintenance }} each)</td>
             <td>{{ building.description }}</td>
         </tr>
         {% endfor %}

@@ -229,7 +229,7 @@ class County(GameState):
             modifier['Profession Bonus'] = 0.15
         return sum(modifier.values())
 
-    def get_offensive_strength(self, army=None, county=None):
+    def get_offensive_strength(self, army=None, county=None, traveling=False):
         """
         Returns the attack power of your army. If no army is sent in, it checks the full potential of the county.
         """
@@ -239,14 +239,14 @@ class County(GameState):
                 strength += army[unit.base_name] * unit.attack
         elif county:
             for unit in county.armies.values():
-                strength += unit.total * unit.attack
+                strength += unit.available * unit.attack
         return int(strength)
 
     def get_defensive_strength(self):
         modifier = 0.01 * self.buildings['forts'].total + 1
         strength = 0
         for unit in self.armies.values():
-            strength += (unit.total - unit.traveling) * unit.defence
+            strength += unit.available * unit.defence
         strength += self.population // 25  # Every 25 population is 1 defence power
         strength *= modifier
         return int(strength)
@@ -286,9 +286,10 @@ class County(GameState):
                 self.armies[unit].total -= 1
                 casualties += 1
                 army[unit] -= 1
-            self.armies[unit].traveling += army[unit]  # Surviving troops are marked as absent
-            setattr(expedition, unit, army[unit])
-        return casualties
+            for unit in army.keys():
+                self.armies[unit].traveling = army[unit]  # Surviving troops are marked as absent
+                setattr(expedition, unit, army[unit])
+        return casualties, expedition
 
     def destroy_buildings(self, county, land_destroyed):
         destroyed = randint(0, county.get_available_land()) # The more available land, the less likely building are destroyed
@@ -308,11 +309,11 @@ class County(GameState):
     def battle_results(self, army, enemy):
         offence = self.get_offensive_strength(army=army)
         defence = enemy.get_defensive_strength()
-        offence_casaulties = self.get_casualties(attack_power=defence, army=army)
+        offence_casaulties, expedition = self.get_casualties(attack_power=defence, army=army)
         defence_casaulties = enemy.get_casualties(attack_power=offence)
         if offence > defence:
             land_gained = int(enemy.land * 0.1)
-            self.land += land_gained
+            expedition.land_acquired = land_gained
             enemy.land -= land_gained
             notification = Notification(enemy.id,
                                         "You were attacked by {}".format(self.name),
@@ -351,6 +352,11 @@ class County(GameState):
                     self.armies['archer'].traveling -= expedition.archer
                     self.armies['soldier'].traveling -= expedition.soldier
                     self.armies['elite'].traveling -= expedition.elite
+                    self.land += expedition.land_acquired
+                    notification = Notification(self.id, "Your army has returned",
+                                                "{} new land has been added to your kingdom".format(expedition.land_acquired),
+                                                self.kingdom.world.day)
+                    notification.save()
 
     def display_news(self):
         events = [event for event in Notification.query.filter_by(county_id=self.id).all() if event.new is True]

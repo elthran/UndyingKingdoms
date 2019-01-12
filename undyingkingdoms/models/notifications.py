@@ -7,7 +7,7 @@ class Notification(GameState):
     content = db.Column(db.String(128), nullable=False)
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
     new = db.Column(db.Boolean)
-    day = db.Column(db.Integer)
+    day = db.Column(db.Integer)  # What is this for?
 
     def __init__(self, county_id, title, content, day):
         self.county_id = county_id
