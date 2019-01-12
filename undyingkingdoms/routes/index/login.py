@@ -19,9 +19,10 @@ def login():
 	if form.validate_on_submit():
 		user = User.query.filter_by(email=form.email.data).first()
 		if user and user.check_password(form.password.data):
-			hours_since_last_login = (datetime.now() - user.get_last_login()).seconds // 3600
 			if user.county is None:
+				login_user(user)
 				return redirect(url_for('initialize'))
+			hours_since_last_login = (datetime.now() - user.get_last_login()).seconds // 3600
 			if hours_since_last_login >= 12:
 				gold_reward = max(hours_since_last_login, 48) * randint(3, 4)
 				user.county.gold += gold_reward
