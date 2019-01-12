@@ -299,4 +299,6 @@ game_descriptions = {"attack": "How much power a unit has when attacking another
                      "health": "Health affects how many of your units die in battle.",
                      "available_workers": "Any citizen not in the military or employed, is available. These workers "
                                           "will add production to your city which can be used to build new buildings. "
-                                          "Unused production generates gold."}
+                                          "Unused production generates gold.",
+                     "upkeep": "Monthly cost of paying your soldiers' salaries.",
+                     "upkeep_daily": "Today's expected salary cost."}

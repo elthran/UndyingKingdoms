@@ -50,18 +50,22 @@
         <tr>
             <td>Gold</td>
             <td>{{ county.gold }}</td>
-            {% if county.get_gold_income() >= 0 %}
-            <td style="color:green;">+
-                {% else %}
-            <td style="color:red;">
-                {% endif %}
-                {{ county.get_gold_income() }} <img class="resource_icons" src="/static/images/gold_icon.jpg">
+            <td style="color:green;">
+                +{{ county.get_gold_change() }}
+                <img class="resource_icons" src="/static/images/gold_icon.jpg">
             </td>
             <td>Tax Rate: {{ form.tax }}%</td>
-            <td>Excess Production: {{ county.production }}</td>
-            <td>N/A</td>
-            {% if county.tax <= 7 %}
+            <td>
+                <ul>
+                    <li>Taxes: {{ county.get_tax_income() }}</li>
+                    <li>Excess Production: {{ county.production }}</li>
+                </ul>
+            </td>
+            <td>Military Expenses: {{ county.get_upkeep_costs() }}</td>
+            {% if county.tax < 7 %}
             <td style="color:green;">Your current tax rate has a positive
+                {% elif county.tax == 7 %}
+            <td style="color:black;">Your current tax rate has no
                 {% else %}
             <td style="color:red;">Your current tax rate has a negative
                 {% endif %}affect on happiness

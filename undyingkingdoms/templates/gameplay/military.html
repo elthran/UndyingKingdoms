@@ -27,6 +27,7 @@
             <th><div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div></th>
             <th><div class="tooltip">Defence<span class="tooltipText">{{ meta_data["defence"] }}</span></div></th>
             <th><div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div></th>
+            <th><div class="tooltip">Upkeep<span class="tooltipText">{{ meta_data["upkeep"] }}</span></div></th>
             <th>Description</th>
         </tr>
         {% for army in county.armies.values() %}
@@ -49,6 +50,7 @@
             <td>{{ army.attack }}</td>
             <td>{{ army.defence }}</td>
             <td>{{ army.health }}</td>
+            <td>{{ army.upkeep }}</td>
             <td>{{ army.description }}</td>
         </tr>
         {% endfor %}
@@ -62,6 +64,7 @@
             <td>-</td>
             <td>-</td>
             <td>-</td>
+            <td><div class="tooltip">{{ county.get_upkeep_costs() }}<span class="tooltipText">{{ meta_data["upkeep_daily"] }}</span></div></td>
             <td>-</td>
         </tr>
     </table>

@@ -336,7 +336,7 @@ class County(GameState):
         """
         Add a WORLD. Tracks day. Has game clock.
         """
-        self.collect_taxes()
+        self.update_daily_resources()
         self.production = self.get_production()
         self.produce_pending_buildings()
         self.produce_pending_armies()
@@ -364,8 +364,14 @@ class County(GameState):
             event.new = False
         return events
 
-    def get_gold_income(self):
-        return int((self.population * (self.tax / 100)) + self.production)
+    def get_tax_income(self):
+        return int(self.population * (self.tax / 100))
+
+    def get_upkeep_costs(self):
+        return sum(unit.upkeep * unit.total for unit in self.armies.values()) // 24
+
+    def get_gold_change(self):
+        return self.get_tax_income() + self.production - self.get_upkeep_costs()
 
     def get_wood_income(self):
         return self.buildings['mills'].total * self.buildings['mills'].output
@@ -401,8 +407,8 @@ class County(GameState):
         decay = self.get_death_rate() + self.get_emmigration_rate()
         return growth - decay
 
-    def collect_taxes(self):
-        self.gold += self.get_gold_income()
+    def update_daily_resources(self):
+        self.gold += self.get_gold_change()
         self.wood += self.get_wood_income()
         self.iron += self.get_iron_income()
         self.happiness = min(self.happiness + 7 - self.tax, 100)
