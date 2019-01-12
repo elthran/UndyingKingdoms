@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from random import choice, uniform, randint
+from random import choice, uniform, randint, seed
 
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
@@ -388,7 +388,9 @@ class County(GameState):
     def get_emmigration_rate(self):
         return randint(100, 125) - self.happiness
 
-    def get_population_change(self):
+    def get_population_change(self, prediction=False):
+        if prediction:
+            seed(self.kingdom.world.day)
         growth = self.get_birth_rate() + self.get_immigration_rate()
         decay = self.get_death_rate() + self.get_emmigration_rate()
         return growth - decay

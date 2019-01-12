@@ -24,7 +24,7 @@
         <tr>
             <td>Population</td>
             <td>{{ county.population }}</td>
-            {% set population_projection = county.get_population_change() %}
+            {% set population_projection = county.get_population_change(prediction=True) %}
             {% if population_projection >= 0 %}
             <td style="color:green;">+
                 {% else %}
