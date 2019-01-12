@@ -77,7 +77,7 @@ class County(GameState):
         self._iron = 25
         self.rations = 1
         self.production = 0  # How many buildings you can build per day
-        self.grain_stores = 0
+        self.grain_stores = 500
         self.weather = "Sunny"
 
         self.births = 0

@@ -34,7 +34,7 @@ class ResetAPI(MethodView):
         user.is_admin = True
         user.is_active = True
         user.save()
-        county = County("Ulthuan", "Elthran", user.id, 'Dwarf', 'Male')
+        county = County("Ulthuan", "Elthran", user.id, 'Human', 'Male')
         county.save()
         county.vote = county.id
 
@@ -50,7 +50,7 @@ class ResetAPI(MethodView):
         # Create AI (He is weak and easier to attack for testing)
         user = User("ai", "ai@gmail.com", "star")
         user.save()
-        county = County("Robotica", "Mr. Roboto", user.id, 'Human', 'Female')
+        county = County("Robotica", "Mr. Roboto", user.id, 'Dwarf', 'Female')
         county.save()
         county.vote = county.id
         county.armies['peasant'].amount = 0
