@@ -52,16 +52,17 @@
             <td>{{ army.description }}</td>
         </tr>
         {% endfor %}
-        <tr>
+        <tr style="font-weight:bold;">
             <td>Total</td>
             <td>{{ county.get_available_army_size() }}</td>
             <td>{{ county.get_unavailable_army_size() }}</td>
             <td>-</td>
             <td>-</td>
             <td>{{ county.get_training_army_size() }}</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
         </tr>
     </table>
     <br><button type="submit">Build</button>

@@ -243,7 +243,7 @@ class County(GameState):
         return int(strength)
 
     def get_defensive_strength(self):
-        modifier = 0.01 * self.buildings['forts'].total + 1
+        modifier = (self.buildings['forts'].output * self.buildings['forts'].total) + 1
         strength = 0
         for unit in self.armies.values():
             strength += unit.available * unit.defence
@@ -273,7 +273,7 @@ class County(GameState):
             self.population -= hit_points_to_be_removed
             return casualties
         if army:
-            stable_modifier = 1 - ((self.buildings['stables'].total / self.land) * 5)
+            stable_modifier = 1 - min((self.buildings['stables'].total / 100), 0)
             duration = max(sum(army.values()) * 0.04 * stable_modifier, 1)
             expedition = Expedition(self.id, duration)
             expedition.save()
@@ -368,10 +368,10 @@ class County(GameState):
         return int((self.population * (self.tax / 100)) + self.production)
 
     def get_wood_income(self):
-        return self.buildings['mills'].total * 1
+        return self.buildings['mills'].total * self.buildings['mills'].output
 
     def get_iron_income(self):
-        return self.buildings['mines'].total * 1
+        return self.buildings['mines'].total * self.buildings['mines'].output
 
     def get_death_rate(self):
         modifier = 1
@@ -385,14 +385,14 @@ class County(GameState):
         if self.title == 'Goblin':
             modifier['Racial Bonus'] = 0.15
         modifier = sum(modifier.values()) * uniform(0.9995, 1.0005)
-        birth_rate = self.buildings['houses'].total
+        birth_rate = self.buildings['houses'].total * self.buildings['houses'].output
         return int(birth_rate * modifier)
 
     def get_immigration_rate(self):
         return randint(20, 30)
 
     def get_emmigration_rate(self):
-        return randint(100, 125) - self.happiness
+        return randint(100, 110 + self.kingdom.world.age) - self.happiness
 
     def get_population_change(self, prediction=False):
         if prediction:
@@ -453,10 +453,10 @@ class County(GameState):
             self.hunger -= (food_eaten / total_food) * 5
 
     def get_produced_grain(self):
-        return self.buildings['fields'].total * 20
+        return self.buildings['fields'].total * self.buildings['fields'].output
 
     def get_produced_dairy(self):
-        return self.buildings['pastures'].total * 25
+        return self.buildings['pastures'].total * self.buildings['pastures'].output
     
     def get_food_to_be_eaten(self):
         return int(self.population * self.rations)

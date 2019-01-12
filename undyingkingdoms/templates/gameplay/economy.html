@@ -15,9 +15,9 @@
             <th>Topic</th>
             <th>Current</th>
             <th>Projected Change</th>
-            <th>Modifiers</th>
-            <th>Positive</th>
-            <th>Negative</th>
+            <th style="width:175px;">Modifiers</th>
+            <th style="width:175px;">Projected Growth</th>
+            <th style="width:175px;">Projected Losses</th>
             <th>Notes</th>
         </tr>
         <br>
@@ -86,6 +86,36 @@
             </td>
             <td>Food to be Eaten: {{ county.get_food_to_be_eaten() }}</td>
             <td>Excess dairy can not be stored in your graneries. If you do not have enough food, your populace will begin to starve.</td>
+        </tr>
+        <tr>
+            <td>Lumber</td>
+            <td>{{ county.wood }}</td>
+            {% if county.get_wood_income() >= 0 %}
+            <td style="color:green;">+
+                {% else %}
+            <td style="color:red;">
+                {% endif %}
+                {{ county.get_wood_income() }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
+            </td>
+            <td>-</td>
+            <td>+ {{ county.get_wood_income() }} from {{ county.buildings['mills'].class_name }}</td>
+            <td>-</td>
+            <td>Lumber is used to build buildings and to equip certain soldiers.</td>
+        </tr>
+        <tr>
+            <td>Iron</td>
+            <td>{{ county.iron }}</td>
+            {% if county.get_iron_income() >= 0 %}
+            <td style="color:green;">+
+                {% else %}
+            <td style="color:red;">
+                {% endif %}
+                {{ county.get_iron_income() }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
+            </td>
+            <td>-</td>
+            <td>+ {{ county.get_iron_income() }} from {{ county.buildings['mines'].class_name }}</td>
+            <td>-</td>
+            <td>Iron is used to equip powerful soldiers.</td>
         </tr>
     </table>
     <br>

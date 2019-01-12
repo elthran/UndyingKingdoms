@@ -34,7 +34,7 @@ class ResetAPI(MethodView):
         user.is_admin = True
         user.is_active = True
         user.save()
-        county = County("Ulthuan", "Elthran", user.id, 'Human', 'Male')
+        county = County("Ulthuan", "Elthran", user.id, 'Dwarf', 'Male')
         county.save()
         county.vote = county.id
 
