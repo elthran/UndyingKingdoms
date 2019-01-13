@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta
-from random import choice, uniform, randint, seed
+from random import choice, uniform, randint
 
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
 from undyingkingdoms.models.bases import GameState, db
+from undyingkingdoms.models.helpers import cached_random
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
@@ -47,7 +48,6 @@ class County(GameState):
     deaths = db.Column(db.Integer)
     immigration = db.Column(db.Integer)
     emigration = db.Column(db.Integer)
-
     buildings = db.relationship("Building",
                                 collection_class=attribute_mapped_collection('base_name'),
                                 cascade="all, delete, delete-orphan", passive_deletes=True)
@@ -113,7 +113,7 @@ class County(GameState):
     def land(self, value):
         difference = value - self._land
         if value <= 0:
-            return "YOU LOST THE GAME"
+            self._land = "YOU LOST THE GAME"
         if difference < 0:
             self.destroy_buildings(self, abs(difference))
         self._land = value
@@ -161,6 +161,10 @@ class County(GameState):
     @hunger.setter
     def hunger(self, value):
         self._hunger = int(min(max(value, 1), 100))
+
+    @property
+    def seed(self):
+        return self.kingdom.world.day
 
     def check_incremental_achievement(self, name, amount):
         # Currently this does nothing but it's here for flexibility.
@@ -400,9 +404,8 @@ class County(GameState):
     def get_emmigration_rate(self):
         return randint(100, 110 + self.kingdom.world.age) - self.happiness
 
+    @cached_random
     def get_population_change(self, prediction=False):
-        if prediction:
-            seed(self.kingdom.world.day)
         growth = self.get_birth_rate() + self.get_immigration_rate()
         decay = self.get_death_rate() + self.get_emmigration_rate()
         return growth - decay
