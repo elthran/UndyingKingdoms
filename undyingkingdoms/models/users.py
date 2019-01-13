@@ -34,6 +34,7 @@ class User(GameState):
                                    collection_class=attribute_mapped_collection('name'),
                                    cascade="all, delete, delete-orphan", passive_deletes=True)
     achievement_points = db.Column(db.Integer)
+    alpha_wins = db.Column(db.Integer)
 
     # Flask
     is_authenticated = db.Column(db.Boolean)  # User has logged in
@@ -65,6 +66,8 @@ class User(GameState):
         self.is_active = True
         self.is_anonymous = False
         self.is_admin = False
+
+        self.alpha_wins = 0
 
     @property
     def logged_in(self):
@@ -107,6 +110,12 @@ class User(GameState):
             if amount >= requirement_to_advance:
                 achievement.current_tier += 1
                 self.achievement_points += achievement.points_rewarded
+                
+    def get_last_login(self):
+        session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
+        if session is None:
+            return self.time_created
+        return session.time_created
 
     def __repr__(self):
         return '<User %r (%r)>' % (self.name, self.id)

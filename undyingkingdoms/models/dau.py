@@ -50,4 +50,4 @@ class DAU(GameEvent):
         yesterday = datetime.now().date() - timedelta(days=1)
         today = datetime.now().date()
         sessions = Session.query.filter_by(user_id=user_id).filter(Session.time_created.between(yesterday, today)).all()
-        return sum(session.minutes for session in sessions)
+        return sum(session.minutes for session in sessions if session.minutes is not None)

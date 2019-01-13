@@ -2,6 +2,8 @@ from flask import jsonify, current_app
 from flask.views import MethodView
 
 from extensions import flask_db as db
+from private_config import JACOB_TEMPORARY_ACCOUNT_PASSWORD, MARLEN_TEMPORARY_ACCOUNT_PASSWORD, JACOB_TEMPORARY_EMAIL, \
+    MARLEN_TEMPORARY_EMAIL
 from undyingkingdoms.models.forum import Forum, Thread
 from .. import helpers
 from undyingkingdoms.models import User, County, Kingdom, World
@@ -30,7 +32,7 @@ class ResetAPI(MethodView):
             kingdom.save()
 
         # Create Elthran
-        user = User("elthran", "jacobbrunner@gmail.com", "star")
+        user = User("elthran", JACOB_TEMPORARY_EMAIL, JACOB_TEMPORARY_ACCOUNT_PASSWORD)
         user.is_admin = True
         user.is_active = True
         user.save()
@@ -39,7 +41,7 @@ class ResetAPI(MethodView):
         county.vote = county.id
 
         # Create Haldon
-        user = User("haldon", "haldon@gmail.com", "brunner")
+        user = User("haldon", MARLEN_TEMPORARY_EMAIL, MARLEN_TEMPORARY_ACCOUNT_PASSWORD)
         user.is_admin = True
         user.is_active = True
         user.save()
@@ -50,7 +52,7 @@ class ResetAPI(MethodView):
         # Create AI (He is weak and easier to attack for testing)
         user = User("ai", "ai@gmail.com", "star")
         user.save()
-        county = County("Robotica", "Mr. Roboto", user.id, 'Human', 'Demale')
+        county = County("Robotica", "Mr. Roboto", user.id, 'Dwarf', 'Female')
         county.save()
         county.vote = county.id
         county.armies['peasant'].amount = 0

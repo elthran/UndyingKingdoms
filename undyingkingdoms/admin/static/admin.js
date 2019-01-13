@@ -4,9 +4,6 @@ function callReset() {
 function callRefresh() {
     sendRequest("/admin/refresh");
 }
-function callExport() {
-    sendRequest("/admin/export");
-}
 
 function sendRequest(url) {
   var xhttp = new XMLHttpRequest();
