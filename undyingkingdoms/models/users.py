@@ -113,9 +113,9 @@ class User(GameState):
                 
     def get_last_login(self):
         session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
-        if session:
-            return session.time_created
-        return None
+        if session is None:
+            return self.time_created
+        return session.time_created
 
     def __repr__(self):
         return '<User %r (%r)>' % (self.name, self.id)
