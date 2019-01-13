@@ -32,7 +32,7 @@ def cached_random(func):
                 pass
 
         and 'that' will refer to Foo's self parameter.
-        as long as Foo also has a 'seed' property of some kind.
+        Foo must have a 'seed' property of some kind.
         """
         # restore cached seed to allow repeatable randoms
         if 'prediction' in kwargs and kwargs['prediction']:
