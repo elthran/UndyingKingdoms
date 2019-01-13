@@ -19,6 +19,20 @@ def cached_random(func):
         parameter.
 
         Requires: Object to have a 'seed' parameter.
+
+        Means you can do:
+
+        class Foo:
+            @property
+            def seed(self):
+                return 42
+
+            @cached_random
+            def bar(self, prediction=True):
+                pass
+
+        and 'that' will refer to Foo's self parameter.
+        as long as Foo also has a 'seed' property of some kind.
         """
         # restore cached seed to allow repeatable randoms
         if 'prediction' in kwargs and kwargs['prediction']:
