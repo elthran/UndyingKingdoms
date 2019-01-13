@@ -17,6 +17,5 @@ def testing_page():
     form = TempGameAdvance()
     if form.validate_on_submit():
         world.advance_day()
-        world.advance_24h_analytics()
     # End of clock functions
     return render_template('gameplay/test_page.html', form=form)

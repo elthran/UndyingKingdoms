@@ -15,16 +15,16 @@
             <th>Topic</th>
             <th>Current</th>
             <th>Projected Change</th>
-            <th>Modifiers</th>
-            <th>Positive</th>
-            <th>Negative</th>
+            <th style="width:175px;">Modifiers</th>
+            <th style="width:175px;">Projected Growth</th>
+            <th style="width:175px;">Projected Losses</th>
             <th>Notes</th>
         </tr>
         <br>
         <tr>
             <td>Population</td>
             <td>{{ county.population }}</td>
-            {% set population_projection = county.get_population_change() %}
+            {% set population_projection = county.get_population_change(prediction=True) %}
             {% if population_projection >= 0 %}
             <td style="color:green;">+
                 {% else %}
@@ -50,18 +50,22 @@
         <tr>
             <td>Gold</td>
             <td>{{ county.gold }}</td>
-            {% if county.get_gold_income() >= 0 %}
-            <td style="color:green;">+
-                {% else %}
-            <td style="color:red;">
-                {% endif %}
-                {{ county.get_gold_income() }} <img class="resource_icons" src="/static/images/gold_icon.jpg">
+            <td style="color:green;">
+                +{{ county.get_gold_change() }}
+                <img class="resource_icons" src="/static/images/gold_icon.jpg">
             </td>
             <td>Tax Rate: {{ form.tax }}%</td>
-            <td>Excess Production: {{ county.production }}</td>
-            <td>N/A</td>
-            {% if county.tax <= 7 %}
+            <td>
+                <ul>
+                    <li>Taxes: {{ county.get_tax_income() }}</li>
+                    <li>Excess Production: {{ county.production }}</li>
+                </ul>
+            </td>
+            <td>Military Expenses: {{ county.get_upkeep_costs() }}</td>
+            {% if county.tax < 7 %}
             <td style="color:green;">Your current tax rate has a positive
+                {% elif county.tax == 7 %}
+            <td style="color:black;">Your current tax rate has no
                 {% else %}
             <td style="color:red;">Your current tax rate has a negative
                 {% endif %}affect on happiness
@@ -86,6 +90,36 @@
             </td>
             <td>Food to be Eaten: {{ county.get_food_to_be_eaten() }}</td>
             <td>Excess dairy can not be stored in your graneries. If you do not have enough food, your populace will begin to starve.</td>
+        </tr>
+        <tr>
+            <td>Lumber</td>
+            <td>{{ county.wood }}</td>
+            {% if county.get_wood_income() >= 0 %}
+            <td style="color:green;">+
+                {% else %}
+            <td style="color:red;">
+                {% endif %}
+                {{ county.get_wood_income() }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
+            </td>
+            <td>-</td>
+            <td>+ {{ county.get_wood_income() }} from {{ county.buildings['mills'].class_name }}</td>
+            <td>-</td>
+            <td>Lumber is used to build buildings and to equip certain soldiers.</td>
+        </tr>
+        <tr>
+            <td>Iron</td>
+            <td>{{ county.iron }}</td>
+            {% if county.get_iron_income() >= 0 %}
+            <td style="color:green;">+
+                {% else %}
+            <td style="color:red;">
+                {% endif %}
+                {{ county.get_iron_income() }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
+            </td>
+            <td>-</td>
+            <td>+ {{ county.get_iron_income() }} from {{ county.buildings['mines'].class_name }}</td>
+            <td>-</td>
+            <td>Iron is used to equip powerful soldiers.</td>
         </tr>
     </table>
     <br>

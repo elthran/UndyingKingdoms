@@ -51,6 +51,15 @@
             <td>{{ building.description }}</td>
         </tr>
         {% endfor %}
+        <tr style="font-weight:bold;">
+            <td style="width:150px;">Total</td>
+            <td>{{ county.buildings.values()|sum(attribute='total') }}</td>
+            <td>-</td>
+            <td>{{ county.buildings.values()|sum(attribute='pending') }}</td>
+            <td style="width:150px;">-</td>
+            <td style="width:150px;">{{ county.get_maintenance_workers() }}</td>
+            <td>-</td>
+        </tr>
     </table>
     <br><button id="submit" type="submit" disabled>Build</button><br>
 </form>

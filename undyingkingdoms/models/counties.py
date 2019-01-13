@@ -5,7 +5,7 @@ from random import choice, uniform, randint
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
 from undyingkingdoms.models.bases import GameState, db
-from undyingkingdoms.models.helpers import get_max_random_int, cached_random
+from undyingkingdoms.models.helpers import cached_random
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
@@ -49,10 +49,6 @@ class County(GameState):
     deaths = db.Column(db.Integer)
     immigration = db.Column(db.Integer)
     emigration = db.Column(db.Integer)
-
-    # seed for random daily events.
-    seed = db.Column(db.Integer)
-
     buildings = db.relationship("Building",
                                 collection_class=attribute_mapped_collection('base_name'),
                                 cascade="all, delete, delete-orphan", passive_deletes=True)
@@ -82,7 +78,7 @@ class County(GameState):
         self._iron = 25
         self.rations = 1
         self.production = 0  # How many buildings you can build per day
-        self.grain_stores = 0
+        self.grain_stores = 500
         self.weather = "Sunny"
 
         self.births = 0
@@ -101,8 +97,6 @@ class County(GameState):
         self.buildings = buildings
         self.armies = armies
 
-        self.seed = get_max_random_int()
-
     @property
     def population(self):
         return self._population
@@ -120,7 +114,7 @@ class County(GameState):
     def land(self, value):
         difference = value - self._land
         if value <= 0:
-            return "YOU LOST THE GAME"
+            self._land = "YOU LOST THE GAME"
         if difference < 0:
             self.destroy_buildings(self, abs(difference))
         self._land = value
@@ -250,7 +244,7 @@ class County(GameState):
         return int(strength)
 
     def get_defensive_strength(self):
-        modifier = 0.01 * self.buildings['forts'].total + 1
+        modifier = (self.buildings['forts'].output * self.buildings['forts'].total) + 1
         strength = 0
         for unit in self.armies.values():
             strength += unit.available * unit.defence
@@ -280,7 +274,7 @@ class County(GameState):
             self.population -= hit_points_to_be_removed
             return casualties
         if army:
-            stable_modifier = 1 - ((self.buildings['stables'].total / self.land) * 5)
+            stable_modifier = 1 - min((self.buildings['stables'].total / 100), 0)
             duration = max(sum(army.values()) * 0.04 * stable_modifier, 1)
             expedition = Expedition(self.id, duration)
             expedition.save()
@@ -343,7 +337,7 @@ class County(GameState):
         """
         Add a WORLD. Tracks day. Has game clock.
         """
-        self.collect_taxes()
+        self.update_daily_resources()
         self.production = self.get_production()
         self.produce_pending_buildings()
         self.produce_pending_armies()
@@ -371,44 +365,50 @@ class County(GameState):
             event.new = False
         return events
 
-    def get_gold_income(self):
-        return int((self.population * (self.tax / 100)) + self.production)
+    def get_tax_income(self):
+        return int(self.population * (self.tax / 100))
+
+    def get_upkeep_costs(self):
+        return sum(unit.upkeep * unit.total for unit in self.armies.values()) // 24
+
+    def get_gold_change(self):
+        return self.get_tax_income() + self.production - self.get_upkeep_costs()
 
     def get_wood_income(self):
-        return self.buildings['mills'].total * 1
+        return self.buildings['mills'].total * self.buildings['mills'].output
 
     def get_iron_income(self):
-        return self.buildings['mines'].total * 1
+        return self.buildings['mines'].total * self.buildings['mines'].output
 
     def get_death_rate(self):
         modifier = 1
         death_rate = uniform(1.5, 2.0) / self.hunger
         return int(death_rate * self.population * modifier)
 
-    @cached_random
     def get_birth_rate(self):
         modifier = {"Base": 1}
         if self.race == 'Elf':
             modifier['Racial Bonus'] = -0.1
         if self.title == 'Goblin':
             modifier['Racial Bonus'] = 0.15
-        modifier = sum(modifier.values()) * random.uniform(0.9995, 1.0005)
-        birth_rate = self.buildings['houses'].total
+        modifier = sum(modifier.values()) * uniform(0.9995, 1.0005)
+        birth_rate = self.buildings['houses'].total * self.buildings['houses'].output
         return int(birth_rate * modifier)
 
     def get_immigration_rate(self):
         return randint(20, 30)
 
     def get_emmigration_rate(self):
-        return randint(100, 125) - self.happiness
+        return randint(100, 110 + self.kingdom.world.age) - self.happiness
 
-    def get_population_change(self):
+    @cached_random
+    def get_population_change(self, prediction=False):
         growth = self.get_birth_rate() + self.get_immigration_rate()
         decay = self.get_death_rate() + self.get_emmigration_rate()
         return growth - decay
 
-    def collect_taxes(self):
-        self.gold += self.get_gold_income()
+    def update_daily_resources(self):
+        self.gold += self.get_gold_change()
         self.wood += self.get_wood_income()
         self.iron += self.get_iron_income()
         self.happiness = min(self.happiness + 7 - self.tax, 100)
@@ -459,10 +459,10 @@ class County(GameState):
             self.hunger -= (food_eaten / total_food) * 5
 
     def get_produced_grain(self):
-        return self.buildings['fields'].total * 20
+        return self.buildings['fields'].total * self.buildings['fields'].output
 
     def get_produced_dairy(self):
-        return self.buildings['pastures'].total * 25
+        return self.buildings['pastures'].total * self.buildings['pastures'].output
     
     def get_food_to_be_eaten(self):
         return int(self.population * self.rations)
