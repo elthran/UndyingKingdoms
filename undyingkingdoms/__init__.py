@@ -8,6 +8,7 @@ from flask_sslify import SSLify
 from extensions import flask_db, flask_json, flask_csrf
 from undyingkingdoms.GeoIP import geo_ip
 from undyingkingdoms.admin import admin_blueprint
+from undyingkingdoms.blueprints.game_clock import game_clock_blueprint
 import private_config
 
 global_chatroom = {}
@@ -15,6 +16,7 @@ UPLOAD_FOLDER = 'undyingkingdoms/static/uploads/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
+app.config.from_object('config.BaseConfig')
 app.config.from_object('private_config')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
@@ -43,6 +45,7 @@ mail = Mail(app)
 # Register app blueprints
 app.register_blueprint(geo_ip)
 app.register_blueprint(admin_blueprint)
+app.register_blueprint(game_clock_blueprint)
 
 
 @app.errorhandler(404)

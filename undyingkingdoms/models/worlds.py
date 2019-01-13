@@ -105,4 +105,4 @@ class World(GameState):
             df.to_csv(filename, header=headers)
 
     def __repr__(self):
-        return '<World %r (%r)>' % (self.name, self.id)
+        return '<World %r (%r)>' % ('id:', self.id)
