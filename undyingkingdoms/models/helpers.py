@@ -22,9 +22,9 @@ def cached_random(func):
         """
         # restore cached seed to allow repeatable randoms
         if 'prediction' in kwargs and kwargs['prediction']:
-            random.seed(that.kingdom.world.day)
+            random.seed(that.seed)
         return func(that, *args, **kwargs)
 
-    # unset random seed, might be unnecessary
-    #random.seed(os.urandom(SEED_SIZE))
+    # unset random seed, currently unnecessary
+    # random.seed(os.urandom(SEED_SIZE))
     return wrapper

@@ -1,4 +1,3 @@
-import random
 from datetime import datetime, timedelta
 from random import choice, uniform, randint
 
@@ -162,6 +161,10 @@ class County(GameState):
     @hunger.setter
     def hunger(self, value):
         self._hunger = int(min(max(value, 1), 100))
+
+    @property
+    def seed(self):
+        return self.kingdom.world.day
 
     def check_incremental_achievement(self, name, amount):
         # Currently this does nothing but it's here for flexibility.
