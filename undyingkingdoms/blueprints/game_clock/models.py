@@ -57,7 +57,7 @@ class Token(GameState):
 class BlacklistToken(GameState):
     """Token model for storing JWT tokens."""
 
-    token = db.Column(db.String(500), a=True, nullable=False)
+    token = db.Column(db.String(500), unique=True, nullable=False)
     blacklisted_on = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, token):
