@@ -2,7 +2,9 @@
 
 import requests
 
-token = "replace with real token on server"
+from . import private_bearer_token
+
+token = private_bearer_token.token
 route = "https://undyingkingdoms.pythonanywhere.com/game_clock/advance_24h_analytics"
 
 r = requests.get(
