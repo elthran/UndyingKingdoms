@@ -6,3 +6,4 @@ venv/
 /undyingkingdoms.egg-info
 /export
 env/
+*.pyc

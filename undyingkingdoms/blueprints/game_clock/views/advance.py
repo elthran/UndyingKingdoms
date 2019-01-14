@@ -1,9 +1,8 @@
-from flask import jsonify, request, current_app
+from flask import request, jsonify, current_app
 from flask.views import MethodView
-from flask_login import login_required, current_user
 
-from .models import Token
-from undyingkingdoms.models.worlds import World
+from ..models import Token
+from undyingkingdoms.models import World
 
 
 class AdvanceAPI(MethodView):
@@ -45,27 +44,3 @@ class AdvanceAPI(MethodView):
                 'message': 'Provide a valid auth token.'
             }
             return jsonify(response), 401
-
-
-# Consider moving this to the admin panel?
-class TokenAPI(MethodView):
-    @login_required
-    def get(self):
-        if current_user.is_admin:
-            token = Token.encode_auth_token()
-            if isinstance(token.decode(), str):
-                return jsonify(
-                    status='success',
-                    message='You logged in and are and Admin user, so here is your token',
-                    auth_token=token.decode()
-                ), 200
-            else:
-                return jsonify(
-                    status='fail',
-                    message='token code is broken',
-                    error=str(token)
-                ), 200
-        return jsonify(
-            status='fail',
-            message="You don't have authorization to generate a new token."
-        ), 407
