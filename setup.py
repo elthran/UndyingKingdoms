@@ -25,7 +25,8 @@ setup(
         'flask-sslify',
         'maxminddb',
         'sqlalchemy-utils',
-        'PyJWT'
+        'PyJWT',
+        'requests',
     ],
 )
 
