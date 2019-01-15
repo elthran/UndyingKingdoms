@@ -1,6 +1,12 @@
 #!/usr/bin/python3.6
+import os
+import sys
 
 import requests
+
+path = os.path.dirname(os.path.realpath(__file__))
+if path not in sys.path:
+    sys.path = [path] + sys.path
 
 from . import private_bearer_token
 
