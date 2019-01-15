@@ -6,6 +6,6 @@ from undyingkingdoms import app
 
 @app.route('/logout/', methods=['GET', 'POST'])
 def logout():
-    current_user.logged_in = False
+    current_user.in_active_session = False
     logout_user()
     return redirect(url_for('home'))

@@ -9,8 +9,8 @@ from undyingkingdoms.models.forms.attack import TempGameAdvance
 @app.route('/gameplay/testing_page/', methods=['GET', 'POST'])
 @login_required
 def testing_page():
-    if not current_user.logged_in:
-        current_user.logged_in = True
+    if not current_user.in_active_session:
+        current_user.in_active_session = True
     # Below is clock functions
     world = World.query.first()
     form = TempGameAdvance()

@@ -10,8 +10,8 @@ from undyingkingdoms.static.metadata import all_buildings, game_descriptions
 @app.route('/gameplay/infrastructure/', methods=['GET', 'POST'])
 @login_required
 def infrastructure():
-    if not current_user.logged_in:
-        current_user.logged_in = True
+    if not current_user.in_active_session:
+        current_user.in_active_session = True
     county = current_user.county
     world = World.query.filter_by(id=county.kingdom.world_id).first()
     form = InfrastructureForm()

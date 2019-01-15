@@ -7,6 +7,7 @@ from undyingkingdoms.models.bases import GameEvent
 class Infiltration(GameEvent):
 
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
+    user_id = db.Column(db.Integer)
     target_id = db.Column(db.Integer)
     day = db.Column(db.Integer)  # On which game day the report was created
     duration = db.Column(db.Integer)  # How many game days until your thieves return
@@ -17,9 +18,10 @@ class Infiltration(GameEvent):
     soldier = db.Column(db.Integer)
     elite = db.Column(db.Integer)
 
-    def __init__(self, county_id, target_id, day, mission, peasant=0, archer=0, soldier=0, elite=0):
+    def __init__(self, county_id, user_id, target_id, day, mission, peasant=0, archer=0, soldier=0, elite=0):
 
         self.county_id = county_id
+        self.user_id = user_id
         self.target_id = target_id
         self.day = day
         self.duration = None  # The default is 24 game days for thieves to return

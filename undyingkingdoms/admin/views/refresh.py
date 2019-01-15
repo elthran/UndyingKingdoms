@@ -18,7 +18,7 @@ class RefreshAPI(MethodView):
         self.refresh_age()
         # If the current user doesn't get logged out,
         # it's buggy when they reload the game (as they are logged in with no county)
-        current_user.logged_in = False
+        current_user.in_active_session = False
         logout_user()
         return jsonify(status='success',
                        message='Game age has been advanced and world data has been reset.'), 200

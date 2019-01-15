@@ -280,7 +280,7 @@ class County(GameState):
             print("Full attacking army:", army)
             stable_modifier = 1 - min((self.buildings['stables'].total / 100), 0)
             duration = max(sum(army.values()) * 0.04 * stable_modifier, 1)
-            expedition = Expedition(self.id, duration)
+            expedition = Expedition(self.id, self.user_id, self.kingdom.world.day, duration, "attack")
             expedition.save()
             while hit_points_to_be_removed > 0:
                 army = {key: value for key, value in army.items() if value > 0}  # Remove dead troops

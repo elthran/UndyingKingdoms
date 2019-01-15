@@ -27,9 +27,9 @@ class User(GameState):
     day7_retention = db.Column(db.Integer)
     lifetime_revenue = db.Column(db.Integer)
     country = db.Column(db.String(32))
-    _logged_in = db.Column(db.Boolean)
+    _in_active_session = db.Column(db.Boolean)
 
-    # Achievementes
+    # Achievements
     achievements = db.relationship("Achievement",
                                    collection_class=attribute_mapped_collection('name'),
                                    cascade="all, delete, delete-orphan", passive_deletes=True)
@@ -55,7 +55,7 @@ class User(GameState):
         self.day7_retention = None
         self.lifetime_revenue = 0
         self.country = ""
-        self._logged_in = False
+        self._in_active_session = False
 
         # Achievements
         self.achievements = deepcopy(all_achievements)
@@ -70,12 +70,12 @@ class User(GameState):
         self.alpha_wins = 0
 
     @property
-    def logged_in(self):
-        return self._logged_in
+    def in_active_session(self):
+        return self._in_active_session
 
-    @logged_in.setter
-    def logged_in(self, value):
-        self._logged_in = value
+    @in_active_session.setter
+    def in_active_session(self, value):
+        self._in_active_session = value
         if value:  # Logging in
             session = Session(self.id)
             session.save()

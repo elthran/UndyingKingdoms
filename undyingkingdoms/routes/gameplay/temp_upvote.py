@@ -9,8 +9,8 @@ from undyingkingdoms.models.upvotes import Upvote
 @app.route('/gameplay/upvote/<thread_id>/<post_id>', methods=['GET', 'POST'])
 @login_required
 def upvote(thread_id, post_id):
-    if not current_user.logged_in:
-        current_user.logged_in = True
+    if not current_user.in_active_session:
+        current_user.in_active_session = True
     upvote = Upvote.query.filter_by(user_id=current_user.id, post_id=post_id).first()
     if upvote is None:
         upvote = Upvote(current_user.id, post_id, 1)
