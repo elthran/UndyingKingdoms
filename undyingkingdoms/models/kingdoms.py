@@ -45,4 +45,7 @@ class Kingdom(GameState):
             current_id = len(kingdom_names)
         elif current_id > len(kingdom_names):
             current_id = 1
+        chosen_kingdom = Kingdom.quer.filter_by(id=current_id).first()  # Get the chosen kingdom
+        if len(chosen_kingdom.counties) == 0:  # If it's empty, skip it and go to next kingdom in that direction
+            return self.kingdom_button(direction, current_id)
         return current_id

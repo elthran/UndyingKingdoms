@@ -73,7 +73,7 @@
 
 <h2>Expeditions:</h2>
 {% for expedition in county.get_expeditions() %}
-{{ expedition.peasant + expedition.archer + expedition.soldier + expedition.elite }} troops will return in {{ expedition.duration }} days.
+<br>Your surviving {{ expedition.peasant + expedition.archer + expedition.soldier + expedition.elite }} troops will return in {{ expedition.duration }} days with {{ expedition.land_acquired }} new land.
 {% endfor %}
 
 <script type="text/javascript">
