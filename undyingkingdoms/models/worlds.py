@@ -37,17 +37,18 @@ class World(GameState):
     def advance_24h_analytics(self):
         users = User.query.all()
         for user in users:
-            # Create a DAU row
-            dau_event = DAU(user.id, self.day)
-            # Update User analytics
-            user_age = (datetime.now() - user.time_created).days
-            if user_age == 1:
-                user.day1_retention = randint(0, 1)
-            elif user_age == 3:
-                user.day3_retention = randint(0, 1)
-            elif user_age == 7:
-                user.day7_retention = randint(0, 1)
-            dau_event.save()
+            if user.county:
+                # Create a DAU row
+                dau_event = DAU(user.id, self.day)
+                # Update User analytics
+                user_age = (datetime.now() - user.time_created).days
+                if user_age == 1:
+                    user.day1_retention = randint(0, 1)
+                elif user_age == 3:
+                    user.day3_retention = randint(0, 1)
+                elif user_age == 7:
+                    user.day7_retention = randint(0, 1)
+                dau_event.save()
         self.export_data_to_csv()
 
     @staticmethod
