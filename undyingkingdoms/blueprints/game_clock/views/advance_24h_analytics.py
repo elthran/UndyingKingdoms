@@ -10,6 +10,3 @@ class Advance24hAnalyticsAPI(MethodView):
         # advance game clock here!
         world = World.query.first()
         world.advance_24h_analytics()
-
-        # might not be necessary
-        world.analytic_cycles += 1

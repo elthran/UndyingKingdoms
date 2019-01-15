@@ -10,6 +10,3 @@ class AdvanceAPI(MethodView):
         # advance game clock here!
         world = World.query.first()
         world.advance_day()
-
-        # might not be necessary
-        world.game_clock = (world.game_clock + 1) % 24
