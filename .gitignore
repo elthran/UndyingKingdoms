@@ -7,6 +7,6 @@ venv/
 /export
 env/
 *.pyc
-/undyingkingdoms/routes/gameplay/testing_page.py
+undyingkingdoms/routes/gameplay/testing_page.py
 undyingkingdoms/admin/views/reset.py
 undyingkingdoms/admin/views/refresh.py
