@@ -5,7 +5,7 @@ from random import randint
 from pandas import DataFrame
 
 from undyingkingdoms.models.users import User
-from undyingkingdoms.models import DAU
+from undyingkingdoms.models import DAU, Session
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.bases import GameState
 
@@ -37,17 +37,22 @@ class World(GameState):
     def advance_24h_analytics(self):
         users = User.query.all()
         for user in users:
+            # First check and set their retention
+            user_age = (datetime.now() - user.time_created).days
+            if user.get_last_login().date() == datetime.today().date():
+                retention = 1
+            else:
+                retention = 0
+                user.day1_retention = 1
+            if user_age == 1:
+                user.day1_retention = retention
+            elif user_age == 3:
+                user.day3_retention = retention
+            elif user_age == 7:
+                user.day7_retention = retention
+            # If they are playing this age, create a DAU for them
             if user.county:
-                # Create a DAU row
-                dau_event = DAU(user.id, self.day)
-                # Update User analytics
-                user_age = (datetime.now() - user.time_created).days
-                if user_age == 1:
-                    user.day1_retention = randint(0, 1)
-                elif user_age == 3:
-                    user.day3_retention = randint(0, 1)
-                elif user_age == 7:
-                    user.day7_retention = randint(0, 1)
+                dau_event = DAU(user.id, self.day)  # Create a DAU row
                 dau_event.save()
         self.export_data_to_csv()
 
