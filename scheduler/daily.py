@@ -4,7 +4,7 @@ import sys
 
 import requests
 
-path = os.path.dirname(os.path.realpath(__file__))
+path = u'/home/undyingkingdoms/UndyingKingdoms/'
 if path not in sys.path:
     sys.path = [path] + sys.path
 
