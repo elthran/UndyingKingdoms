@@ -247,7 +247,7 @@ class County(GameState):
         return int(strength)
 
     def get_defensive_strength(self):
-        modifier = (self.buildings['forts'].output * self.buildings['forts'].total) + 1
+        modifier = (self.buildings['forts'].output * self.buildings['forts'].total) / 100 + 1
         strength = 0
         for unit in self.armies.values():
             strength += unit.available * unit.defence
@@ -277,6 +277,7 @@ class County(GameState):
             self.population -= hit_points_to_be_removed
             return casualties
         if army:
+            print("Full attacking army:", army)
             stable_modifier = 1 - min((self.buildings['stables'].total / 100), 0)
             duration = max(sum(army.values()) * 0.04 * stable_modifier, 1)
             expedition = Expedition(self.id, duration)
@@ -290,8 +291,9 @@ class County(GameState):
                 self.armies[unit].total -= 1
                 casualties += 1
                 army[unit] -= 1
+            print("Surviving army, to be added to traveling:", army)
             for unit in army.keys():
-                self.armies[unit].traveling = army[unit]  # Surviving troops are marked as absent
+                self.armies[unit].traveling += army[unit]  # Surviving troops are marked as absent
                 setattr(expedition, unit, army[unit])
         return casualties, expedition
 
