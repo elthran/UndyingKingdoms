@@ -1,21 +1,19 @@
 #!/usr/bin/python3.6
-import os
 import sys
 
 import requests
 
-path = u'/home/undyingkingdoms/UndyingKingdoms/'
+path = u'/home/undyingkingdoms/UndyingKingdoms'
 if path not in sys.path:
     sys.path = [path] + sys.path
 
-from . import private_bearer_token
+from scheduler import private_bearer_token
 
-token = private_bearer_token.token
 route = "https://undyingkingdoms.pythonanywhere.com/game_clock/advance_24h_analytics"
 
 r = requests.get(
     route,
-    headers={"Authorization": "Bearer " + token}
+    headers={"Authorization": "Bearer " + private_bearer_token.token}
 )
 
 try:
