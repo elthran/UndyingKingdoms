@@ -7,3 +7,4 @@ venv/
 /export
 env/
 *.pyc
+/undyingkingdoms/routes/gameplay/testing_page.py

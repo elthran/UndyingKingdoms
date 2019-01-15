@@ -25,15 +25,6 @@ class World(GameState):
         self.game_clock = datetime.now().hour
         self.analytic_cycles = 0
 
-    def check_clock(self):
-        now = datetime.now().hour
-        while (self.day // 24) > self.analytic_cycles:  # First advance DAU since it runs a day behind and should get the older data.
-            self.advance_24h_analytics()
-            self.analytic_cycles += 1
-        while now != self.game_clock:  # Now advance all the game clocks and events.
-            self.advance_day()
-            self.game_clock = (self.game_clock + 1) % 24
-
     def advance_day(self):
         for county in County.query.all():
             county.advance_day()
@@ -41,7 +32,6 @@ class World(GameState):
 
     def advance_age(self):
         """Refresh the play experience.
-
         +1 to the current age, set the day to 0,
         reset game data, not including user nor metadata.
         """

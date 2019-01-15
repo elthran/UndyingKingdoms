@@ -13,9 +13,9 @@ def testing_page():
         current_user.logged_in = True
     # Below is clock functions
     world = World.query.first()
-    world.check_clock()
     form = TempGameAdvance()
     if form.validate_on_submit():
         world.advance_day()
+        world.advance_24h_analytics()
     # End of clock functions
     return render_template('gameplay/test_page.html', form=form)
