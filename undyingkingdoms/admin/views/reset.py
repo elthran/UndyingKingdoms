@@ -49,10 +49,26 @@ class ResetAPI(MethodView):
         county.save()
         county.vote = county.id
 
-        # Create AI (He is weak and easier to attack for testing)
-        user = User("ai", "ai@gmail.com", "star")
+        # Create AI1 (He is weak and easier to attack for testing)
+        user = User("ai1", "1@gmail.com", "star")
         user.save()
-        county = County("Robotica", "Mr. Roboto", user.id, 'Dwarf', 'Female')
+        county = County("Robotica1", "Mr. Roboto1", user.id, 'Dwarf', 'Female')
+        county.save()
+        county.vote = county.id
+        county.armies['peasant'].amount = 0
+        county.armies['archer'].amount = 0
+        # Create AI2 (He is weak and easier to attack for testing)
+        user = User("ai2", "2@gmail.com", "star")
+        user.save()
+        county = County("Robotica2", "Mr. Roboto2", user.id, 'Dwarf', 'Female')
+        county.save()
+        county.vote = county.id
+        county.armies['peasant'].amount = 0
+        county.armies['archer'].amount = 0
+        # Create AI3 (He is weak and easier to attack for testing)
+        user = User("ai3", "3@gmail.com", "star")
+        user.save()
+        county = County("Robotica3", "Mr. Roboto3", user.id, 'Dwarf', 'Female')
         county.save()
         county.vote = county.id
         county.armies['peasant'].amount = 0
