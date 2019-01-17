@@ -16,11 +16,4 @@
 <br><br>
 <p>The game is currently in early stages of Alpha (00.00.01)</p>
 <p>This round of testing will end on January 12th, 2019.</p>
-<br><br>
-<h1>Alpha Testing Leaderboard</h1>
-<ul>
-    {% for user in users|sort(attribute='alpha_wins') %}
-    <li>&emsp;{{ user.username }}: {{ user.alpha_wins }}</li>
-    {% endfor %}
-</ul>
 {% endblock %}

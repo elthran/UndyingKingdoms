@@ -80,6 +80,7 @@ def import_routes():
     import undyingkingdoms.routes.user.achievements
     import undyingkingdoms.routes.user.forum
     import undyingkingdoms.routes.user.guide
+    import undyingkingdoms.routes.user.leaderboard
     import undyingkingdoms.routes.hooks
 
 

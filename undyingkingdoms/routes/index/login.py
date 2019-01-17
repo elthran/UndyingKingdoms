@@ -33,7 +33,7 @@ def login():
                 url_for('overview', kingdom_id=current_user.county.kingdom.id, county_id=current_user.county.id))
         else:
             flash("Your email or password was incorrect.")
-    return render_template("index/login.html", form=form, users=User.query.all())
+    return render_template("index/login.html", form=form)
 
 
 class LoginAPI(MethodView):
