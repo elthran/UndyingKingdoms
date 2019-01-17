@@ -9,6 +9,6 @@
     {% endfor %}
 </ul>
 
-Total Rounds Completed: {{ for user in users|sum(attribute='alpha_wins') }}
+Total Rounds Completed: {% for user in users|sum(attribute='alpha_wins') %}
 
 {% endblock %}
