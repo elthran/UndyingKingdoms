@@ -266,7 +266,7 @@ class County(GameState):
         hit_points_to_be_removed = hit_points_lost
         if not army:  # ie. you are the defender and use entire army
             for unit in self.armies.values():
-                available = unit.total - unit.traveling
+                available = unit.available
                 if available > 0:
                     available_hit_points = available * unit.health
                     this_units_damage = min(available_hit_points, hit_points_lost // 4)
