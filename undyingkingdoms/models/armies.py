@@ -15,12 +15,13 @@ class Army(GameState):
     gold = db.Column(db.Integer)
     iron = db.Column(db.Integer)
     wood = db.Column(db.Integer)
+    upkeep = db.Column(db.Integer)
     attack = db.Column(db.Integer)
     defence = db.Column(db.Integer)
     health = db.Column(db.Integer)
     description = db.Column(db.String(128))
 
-    def __init__(self, base_name, class_name, total, trainable_per_day, gold, iron, wood, attack, defence, health, description):
+    def __init__(self, base_name, class_name, total, trainable_per_day, gold, iron, wood, upkeep, attack, defence, health, description):
         self.base_name = base_name
         self.class_name = class_name
         self.total = total
@@ -30,6 +31,7 @@ class Army(GameState):
         self.gold = gold
         self.iron = iron
         self.wood = wood
+        self.upkeep = upkeep
         self.attack = attack
         self.defence = defence
         self.health = health

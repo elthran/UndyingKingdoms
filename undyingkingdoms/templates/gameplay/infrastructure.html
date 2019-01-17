@@ -28,7 +28,7 @@
             <th>Currently Have</th>
             <th>To Be Built</th>
             <th>Under Construction</th>
-            <th style="width:125px;">Cost</th>
+            <th style="width:150px;">Cost</th>
             <th style="width:150px;">Workers Employed</th>
             <th>Description</th>
         </tr>
@@ -47,10 +47,19 @@
                 {% if building.gold %}{{ building.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif %}
                 {% if building.wood %}{{ building.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif %}
             </td>
-            <td>{{ building.labour_maintenance }} each ({{ building.labour_maintenance * building.total }} total)</td>
+            <td>{{ building.labour_maintenance * building.total }} ({{ building.labour_maintenance }} each)</td>
             <td>{{ building.description }}</td>
         </tr>
         {% endfor %}
+        <tr style="font-weight:bold;">
+            <td style="width:150px;">Total</td>
+            <td>{{ county.buildings.values()|sum(attribute='total') }}</td>
+            <td>-</td>
+            <td>{{ county.buildings.values()|sum(attribute='pending') }}</td>
+            <td style="width:150px;">-</td>
+            <td style="width:150px;">{{ county.get_maintenance_workers() }}</td>
+            <td>-</td>
+        </tr>
     </table>
     <br><button id="submit" type="submit" disabled>Build</button><br>
 </form>

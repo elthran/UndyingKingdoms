@@ -2,7 +2,6 @@ from flask import Blueprint, render_template
 
 from .views.refresh import RefreshAPI
 from .views.reset import ResetAPI
-from .views.export import ExportAPI
 
 admin_blueprint = Blueprint(
     'admin',
@@ -15,7 +14,6 @@ admin_blueprint = Blueprint(
 # add rule for API endpoints
 admin_blueprint.add_url_rule('/refresh', view_func=RefreshAPI.as_view('refresh_api'))
 admin_blueprint.add_url_rule('/reset', view_func=ResetAPI.as_view('reset_api'))
-admin_blueprint.add_url_rule('/export', view_func=ExportAPI.as_view('export_api'))
 
 
 @admin_blueprint.route("/")

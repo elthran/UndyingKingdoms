@@ -27,13 +27,14 @@ class User(GameState):
     day7_retention = db.Column(db.Integer)
     lifetime_revenue = db.Column(db.Integer)
     country = db.Column(db.String(32))
-    _logged_in = db.Column(db.Boolean)
+    _in_active_session = db.Column(db.Boolean)
 
-    # Achievementes
+    # Achievements
     achievements = db.relationship("Achievement",
                                    collection_class=attribute_mapped_collection('name'),
                                    cascade="all, delete, delete-orphan", passive_deletes=True)
     achievement_points = db.Column(db.Integer)
+    alpha_wins = db.Column(db.Integer)
 
     # Flask
     is_authenticated = db.Column(db.Boolean)  # User has logged in
@@ -54,7 +55,7 @@ class User(GameState):
         self.day7_retention = None
         self.lifetime_revenue = 0
         self.country = ""
-        self._logged_in = False
+        self._in_active_session = False
 
         # Achievements
         self.achievements = deepcopy(all_achievements)
@@ -66,13 +67,15 @@ class User(GameState):
         self.is_anonymous = False
         self.is_admin = False
 
-    @property
-    def logged_in(self):
-        return self._logged_in
+        self.alpha_wins = 0
 
-    @logged_in.setter
-    def logged_in(self, value):
-        self._logged_in = value
+    @property
+    def in_active_session(self):
+        return self._in_active_session
+
+    @in_active_session.setter
+    def in_active_session(self, value):
+        self._in_active_session = value
         if value:  # Logging in
             session = Session(self.id)
             session.save()
@@ -107,6 +110,12 @@ class User(GameState):
             if amount >= requirement_to_advance:
                 achievement.current_tier += 1
                 self.achievement_points += achievement.points_rewarded
+                
+    def get_last_login(self):
+        session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
+        if session is None:
+            return self.time_created
+        return session.time_created
 
     def __repr__(self):
         return '<User %r (%r)>' % (self.name, self.id)

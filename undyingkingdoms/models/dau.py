@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+from sqlalchemy import cast, Date
+
 from extensions import flask_db as db
 from undyingkingdoms.models import Session, User
 from undyingkingdoms.models.bases import GameEvent
@@ -8,6 +10,7 @@ from undyingkingdoms.models.bases import GameEvent
 class DAU(GameEvent):
     # User data
     user_id = db.Column(db.Integer)
+    county_id = db.Column(db.Integer)
     account_age_in_days = db.Column(db.Integer)
     sessions = db.Column(db.Integer)
     minutes_played = db.Column(db.Integer)
@@ -33,6 +36,7 @@ class DAU(GameEvent):
         county = user.county
         if county:  # Needed because counties are periodically deleted but users are not
             self.account_age_in_days = (datetime.now() - user.time_created).days
+            self.county_id = county.id
             self.land = county.land
             self.population = county.population
             self.gold = county.gold
@@ -41,13 +45,11 @@ class DAU(GameEvent):
 
     @staticmethod
     def get_sessions(user_id):
-        yesterday = datetime.now().date() - timedelta(days=1)
-        today = datetime.now().date()
-        return Session.query.filter_by(user_id=user_id).filter(Session.time_created.between(yesterday, today)).count()
+        return Session.query.filter_by(user_id=user_id).filter(
+            cast(Session.time_logged_out, Date) == datetime.now().date()).count()
 
     @staticmethod
     def get_minutes_played(user_id):
-        yesterday = datetime.now().date() - timedelta(days=1)
-        today = datetime.now().date()
-        sessions = Session.query.filter_by(user_id=user_id).filter(Session.time_created.between(yesterday, today)).all()
-        return sum(session.minutes for session in sessions)
+        sessions = Session.query.filter_by(user_id=user_id).filter(
+            cast(Session.time_logged_out, Date) == datetime.now().date()).all()
+        return sum(session.minutes for session in sessions if session.minutes is not None)

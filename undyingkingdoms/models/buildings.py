@@ -12,9 +12,10 @@ class Building(GameState):
     labour_maintenance = db.Column(db.Integer)
     gold = db.Column(db.Integer)
     wood = db.Column(db.Integer)
+    output = db.Column(db.Integer)  # How much x it produces
     description = db.Column(db.String(128))
 
-    def __init__(self, base_name, class_name, total, production_cost, labour_maintenance, gold, wood, description):
+    def __init__(self, base_name, class_name, total, production_cost, labour_maintenance, gold, wood, output, description):
         self.base_name = base_name
         self.class_name = class_name
         self.total = total
@@ -23,4 +24,5 @@ class Building(GameState):
         self.labour_maintenance = labour_maintenance  # Amount of workers to use it
         self.gold = gold  # Gold cost to build it
         self.wood = wood  # Wood cost to build it
-        self.description = description
+        self.output = output
+        self.description = description.format(self.class_name, self.output)

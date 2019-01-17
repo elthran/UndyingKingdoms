@@ -27,6 +27,7 @@
             <th><div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div></th>
             <th><div class="tooltip">Defence<span class="tooltipText">{{ meta_data["defence"] }}</span></div></th>
             <th><div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div></th>
+            <th><div class="tooltip">Upkeep<span class="tooltipText">{{ meta_data["upkeep"] }}</span></div></th>
             <th>Description</th>
         </tr>
         {% for army in county.armies.values() %}
@@ -49,19 +50,22 @@
             <td>{{ army.attack }}</td>
             <td>{{ army.defence }}</td>
             <td>{{ army.health }}</td>
+            <td>{{ army.upkeep }}</td>
             <td>{{ army.description }}</td>
         </tr>
         {% endfor %}
-        <tr>
+        <tr style="font-weight:bold;">
             <td>Total</td>
-            <td>{{ county.get_army_size() }}</td>
+            <td>{{ county.get_available_army_size() }}</td>
+            <td>{{ county.get_unavailable_army_size() }}</td>
             <td>-</td>
             <td>-</td>
-            <td></td>
+            <td>{{ county.get_training_army_size() }}</td>
             <td>-</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>-</td>
+            <td>-</td>
+            <td><div class="tooltip">{{ county.get_upkeep_costs() }}<span class="tooltipText">{{ meta_data["upkeep_daily"] }}</span></div></td>
+            <td>-</td>
         </tr>
     </table>
     <br><button type="submit">Build</button>
@@ -69,7 +73,7 @@
 
 <h2>Expeditions:</h2>
 {% for expedition in county.get_expeditions() %}
-{{ expedition.peasant + expedition.archer + expedition.soldier + expedition.elite }} troops will return in {{ expedition.duration }} days.
+<br>Your surviving {{ expedition.peasant + expedition.archer + expedition.soldier + expedition.elite }} troops will return in {{ expedition.duration }} days with {{ expedition.land_acquired }} acres of newly captured land.
 {% endfor %}
 
 <script type="text/javascript">

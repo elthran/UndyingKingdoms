@@ -8,12 +8,13 @@
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
     <h1>Choose which troops to send:</h1><br>
+    <h2>Current available attack power: {{ county.get_offensive_strength(county=county) }}</h2><br>
     <ul>
         {% for army in county.armies.values() %}
         <li>{{ army.class_name }}: {{ form[army.base_name] }} (Available: {{ army.available }} / {{ army.total }}) (Attack Power: {{ army.attack }} per troop)</li>
         {% endfor %}
     </ul>
-    <button type="submit">Attack</button>
+    <button type="submit">Attack</button><br>
     <p style="width:70%">Note: You will typically lose around 20% of any soldiers sent. However, if your army is much weaker,
         then your troops will take heavy casaulties. Conversely, if you greatly overpower them you will lose very few troops.</p>
 </form>

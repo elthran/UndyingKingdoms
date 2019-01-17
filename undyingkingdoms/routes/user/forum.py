@@ -9,8 +9,8 @@ from undyingkingdoms.models.forum import Forum, Thread, Post
 @login_required
 @app.route('/user/forum/<int:thread_id>/<int:post_id>', methods=['GET', 'POST'])
 def forum(thread_id=0, post_id=0):
-    if not current_user.logged_in:
-        current_user.logged_in = True
+    if not current_user.in_active_session:
+        current_user.in_active_session = True
         
     the_forum = Forum.query.first()
     the_thread = Thread.query.filter_by(id=thread_id).first()

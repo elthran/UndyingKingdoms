@@ -4,6 +4,7 @@ from random import choice, uniform, randint
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
 from undyingkingdoms.models.bases import GameState, db
+from undyingkingdoms.models.helpers import cached_random
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
@@ -47,7 +48,6 @@ class County(GameState):
     deaths = db.Column(db.Integer)
     immigration = db.Column(db.Integer)
     emigration = db.Column(db.Integer)
-
     buildings = db.relationship("Building",
                                 collection_class=attribute_mapped_collection('base_name'),
                                 cascade="all, delete, delete-orphan", passive_deletes=True)
@@ -77,7 +77,7 @@ class County(GameState):
         self._iron = 25
         self.rations = 1
         self.production = 0  # How many buildings you can build per day
-        self.grain_stores = 0
+        self.grain_stores = 500
         self.weather = "Sunny"
 
         self.births = 0
@@ -113,7 +113,7 @@ class County(GameState):
     def land(self, value):
         difference = value - self._land
         if value <= 0:
-            return "YOU LOST THE GAME"
+            self._land = "YOU LOST THE GAME"
         if difference < 0:
             self.destroy_buildings(self, abs(difference))
         self._land = value
@@ -160,7 +160,11 @@ class County(GameState):
 
     @hunger.setter
     def hunger(self, value):
-        self._hunger = value
+        self._hunger = int(min(max(value, 1), 100))
+
+    @property
+    def seed(self):
+        return self.kingdom.world.day
 
     def check_incremental_achievement(self, name, amount):
         # Currently this does nothing but it's here for flexibility.
@@ -196,6 +200,15 @@ class County(GameState):
     def get_army_size(self):
         return sum(army.total + army.currently_training for army in self.armies.values())
 
+    def get_available_army_size(self):
+        return sum(army.available for army in self.armies.values())
+
+    def get_training_army_size(self):
+        return sum(army.currently_training for army in self.armies.values())
+
+    def get_unavailable_army_size(self):
+        return sum(army.traveling for army in self.armies.values())
+
     def get_maintenance_workers(self):
         """
         Returns the population who are maintaining current buildings.
@@ -220,7 +233,7 @@ class County(GameState):
             modifier['Profession Bonus'] = 0.15
         return sum(modifier.values())
 
-    def get_offensive_strength(self, army=None, county=None):
+    def get_offensive_strength(self, army=None, county=None, traveling=False):
         """
         Returns the attack power of your army. If no army is sent in, it checks the full potential of the county.
         """
@@ -230,48 +243,59 @@ class County(GameState):
                 strength += army[unit.base_name] * unit.attack
         elif county:
             for unit in county.armies.values():
-                strength += unit.total * unit.attack
+                strength += unit.available * unit.attack
         return int(strength)
 
     def get_defensive_strength(self):
-        modifier = 0.01 * self.buildings['forts'].total + 1
+        modifier = (self.buildings['forts'].output * self.buildings['forts'].total) / 100 + 1
         strength = 0
         for unit in self.armies.values():
-            strength += (unit.total - unit.traveling) * unit.defence
+            strength += unit.available * unit.defence
+        strength += self.population // 25  # Every 25 population is 1 defence power
         strength *= modifier
         return int(strength)
 
-    def get_casualties(self, army={}, ratio=1):
+    def get_casualties(self, attack_power, army={}):
         """
         Maybe move to a math transform file.
         army: For attacker, the army is passed in as dict. For defender, it's all active troops.
         ratio: The greater you outnumber the enemy, the safer your troops are.
         """
         casualties = 0
+        hit_points_lost = randint(attack_power // 10, attack_power // 5)
+        hit_points_to_be_removed = hit_points_lost
         if not army:  # ie. you are the defender and use entire army
             for unit in self.armies.values():
                 available = unit.total - unit.traveling
                 if available > 0:
-                    dead = randint(available // 10, available // 5)
-                    unit.total -= dead
-                    casualties += dead
+                    available_hit_points = available * unit.health
+                    this_units_damage = min(available_hit_points, hit_points_lost // 4)
+                    hit_points_to_be_removed -= this_units_damage
+                    this_dead = hit_points_to_be_removed // unit.health
+                    unit.total -= this_dead
+                    casualties += this_dead
+            self.population -= hit_points_to_be_removed
             return casualties
         if army:
-            stable_modifier = 1 - ((self.buildings['stables'].total / self.land) * 5)
+            print("Full attacking army:", army)
+            stable_modifier = 1 - min((self.buildings['stables'].total / 100), 0)
             duration = max(sum(army.values()) * 0.04 * stable_modifier, 1)
-            expedition = Expedition(self.id, duration)
-            for unit in self.armies.values():
-                if army[unit.base_name] > 0:
-                    raw_dead = army[unit.base_name] * 0.35 / ratio
-                    dead = int(raw_dead / unit.health)
-                    print("Total:{}, Raw:{}, Dead:{}, Ratio:{}".format(army[unit.base_name], raw_dead, dead, ratio))
-                    unit.total -= dead
-                    casualties += dead
-                    army[unit.base_name] -= dead
-                    unit.traveling = army[unit.base_name]  # Surviving troops are marked as absent
-                    setattr(expedition, unit.base_name, army[unit.base_name])
-                    expedition.save()
-        return casualties
+            expedition = Expedition(self.id, self.user_id, self.kingdom.world.day, duration, "attack")
+            expedition.save()
+            while hit_points_to_be_removed > 0:
+                army = {key: value for key, value in army.items() if value > 0}  # Remove dead troops
+                if army == {}:
+                    break
+                unit = choice(list(army))
+                hit_points_to_be_removed -= self.armies[unit].health
+                self.armies[unit].total -= 1
+                casualties += 1
+                army[unit] -= 1
+            print("Surviving army, to be added to traveling:", army)
+            for unit in army.keys():
+                self.armies[unit].traveling += army[unit]  # Surviving troops are marked as absent
+                setattr(expedition, unit, army[unit])
+        return casualties, expedition
 
     def destroy_buildings(self, county, land_destroyed):
         destroyed = randint(0, county.get_available_land()) # The more available land, the less likely building are destroyed
@@ -291,12 +315,11 @@ class County(GameState):
     def battle_results(self, army, enemy):
         offence = self.get_offensive_strength(army=army)
         defence = enemy.get_defensive_strength()
-        offence_massacre = max(offence / defence, 1)  # If you outnumber, you lose less when attacking
-        offence_casaulties = self.get_casualties(army=army, ratio=offence_massacre)
-        defence_casaulties = enemy.get_casualties(army={}, ratio=1)
+        offence_casaulties, expedition = self.get_casualties(attack_power=defence, army=army)
+        defence_casaulties = enemy.get_casualties(attack_power=offence)
         if offence > defence:
             land_gained = int(enemy.land * 0.1)
-            self.land += land_gained
+            expedition.land_acquired = land_gained
             enemy.land -= land_gained
             notification = Notification(enemy.id,
                                         "You were attacked by {}".format(self.name),
@@ -319,7 +342,7 @@ class County(GameState):
         """
         Add a WORLD. Tracks day. Has game clock.
         """
-        self.collect_taxes()
+        self.update_daily_resources()
         self.production = self.get_production()
         self.produce_pending_buildings()
         self.produce_pending_armies()
@@ -335,6 +358,11 @@ class County(GameState):
                     self.armies['archer'].traveling -= expedition.archer
                     self.armies['soldier'].traveling -= expedition.soldier
                     self.armies['elite'].traveling -= expedition.elite
+                    self.land += expedition.land_acquired
+                    notification = Notification(self.id, "Your army has returned",
+                                                "{} new land has been added to your kingdom".format(expedition.land_acquired),
+                                                self.kingdom.world.day)
+                    notification.save()
 
     def display_news(self):
         events = [event for event in Notification.query.filter_by(county_id=self.id).all() if event.new is True]
@@ -342,14 +370,20 @@ class County(GameState):
             event.new = False
         return events
 
-    def get_gold_income(self):
-        return int((self.population * (self.tax / 100)) + self.production)
+    def get_tax_income(self):
+        return int(self.population * (self.tax / 100))
+
+    def get_upkeep_costs(self):
+        return sum(unit.upkeep * unit.total for unit in self.armies.values()) // 24
+
+    def get_gold_change(self):
+        return self.get_tax_income() + self.production - self.get_upkeep_costs()
 
     def get_wood_income(self):
-        return self.buildings['mills'].total * 1
+        return self.buildings['mills'].total * self.buildings['mills'].output
 
     def get_iron_income(self):
-        return self.buildings['mines'].total * 1
+        return self.buildings['mines'].total * self.buildings['mines'].output
 
     def get_death_rate(self):
         modifier = 1
@@ -363,22 +397,23 @@ class County(GameState):
         if self.title == 'Goblin':
             modifier['Racial Bonus'] = 0.15
         modifier = sum(modifier.values()) * uniform(0.9995, 1.0005)
-        birth_rate = self.buildings['houses'].total
+        birth_rate = self.buildings['houses'].total * self.buildings['houses'].output
         return int(birth_rate * modifier)
 
     def get_immigration_rate(self):
         return randint(20, 30)
 
     def get_emmigration_rate(self):
-        return randint(100, 125) - self.happiness
+        return randint(100, 110 + self.kingdom.world.age) - self.happiness
 
-    def get_population_change(self):
+    @cached_random
+    def get_population_change(self, prediction=False):
         growth = self.get_birth_rate() + self.get_immigration_rate()
         decay = self.get_death_rate() + self.get_emmigration_rate()
         return growth - decay
 
-    def collect_taxes(self):
-        self.gold += self.get_gold_income()
+    def update_daily_resources(self):
+        self.gold += self.get_gold_change()
         self.wood += self.get_wood_income()
         self.iron += self.get_iron_income()
         self.happiness = min(self.happiness + 7 - self.tax, 100)
@@ -422,18 +457,17 @@ class County(GameState):
         total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores
         food_eaten = self.get_food_to_be_eaten()
         if total_food >= food_eaten:
-            print(self.grain_stores, total_food - food_eaten, self.get_produced_grain())
             self.grain_stores += min(self.get_produced_dairy() + self.get_produced_grain() - food_eaten, self.get_produced_grain())
-            self.hunger = min(self.hunger + 1, 100)
+            self.hunger = self.hunger + 1
         else:
             self.grain_stores = 0
-            self.hunger -= max(int((food_eaten / total_food) * 5), 0)
+            self.hunger -= (food_eaten / total_food) * 5
 
     def get_produced_grain(self):
-        return self.buildings['fields'].total * 20
+        return self.buildings['fields'].total * self.buildings['fields'].output
 
     def get_produced_dairy(self):
-        return self.buildings['pastures'].total * 25
+        return self.buildings['pastures'].total * self.buildings['pastures'].output
     
     def get_food_to_be_eaten(self):
         return int(self.population * self.rations)

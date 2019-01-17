@@ -9,8 +9,8 @@ from undyingkingdoms.models.forms.attack import AttackForm
 @app.route('/gameplay/attack/<int:county_id>/', methods=['GET', 'POST'])
 @login_required
 def attack(county_id):
-    if not current_user.logged_in:
-        current_user.logged_in = True
+    if not current_user.in_active_session:
+        current_user.in_active_session = True
     enemy = County.query.filter_by(id=county_id).first()
     form = AttackForm()
 
