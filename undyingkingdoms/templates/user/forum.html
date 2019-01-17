@@ -92,7 +92,7 @@
                     </a>
                 </h3>
                 <h3>{{ reply.content }}</h3>
-                <h3>By: {{ reply.get_author() }} with {{ reply.get_votes() }} votes</h3>
+                <h3 style="font-weight:bold;">By: {{ reply.get_author() }} with {{ reply.get_votes() }} votes</h3>
             </div>
         </li>
         {% endfor %}
