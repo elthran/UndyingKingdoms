@@ -255,12 +255,15 @@ class County(GameState):
         strength *= modifier
         return int(strength)
 
-    def get_casualties(self, attack_power, army={}):
+    def get_casualties(self, attack_power, army=()):
         """
         Maybe move to a math transform file.
         army: For attacker, the army is passed in as dict. For defender, it's all active troops.
         ratio: The greater you outnumber the enemy, the safer your troops are.
         """
+        if army is ():
+            army = {}
+
         casualties = 0
         hit_points_lost = randint(attack_power // 10, attack_power // 5)
         hit_points_to_be_removed = hit_points_lost
