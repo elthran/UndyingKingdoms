@@ -117,5 +117,9 @@ class User(GameState):
             return self.time_created
         return session.time_created
 
+    def get_current_leaderboard_score(self):
+        # TEMPORARY FOR ALPHA. Just a quick way to add some fun
+        return self.county.land * 10 + self.county.population
+
     def __repr__(self):
         return '<User %r (%r)>' % (self.name, self.id)
