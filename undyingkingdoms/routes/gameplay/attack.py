@@ -29,7 +29,6 @@ def attack(county_id):
         for unit in current_user.county.armies.values():
             if unit.total < form.data[unit.base_name]:
                 return render_template('gameplay/attack.html', enemy=enemy, form=form)
-            import pdb;pdb.set_trace()
             army[unit.base_name] = form.data[unit.base_name]
         results = current_user.county.battle_results(army, enemy)
         return render_template('gameplay/attack_results.html', results=results)
