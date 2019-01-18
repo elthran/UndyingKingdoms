@@ -277,7 +277,7 @@ class County(GameState):
                     this_dead = this_units_damage // unit.health
                     unit.total -= this_dead
                     casualties += this_dead
-            self.population -= hit_points_to_be_removed
+            self.population -= min(hit_points_to_be_removed, self.population)
             return casualties
         if army:
             print("Full attacking army:", army)
