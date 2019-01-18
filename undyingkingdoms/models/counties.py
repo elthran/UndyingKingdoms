@@ -457,11 +457,26 @@ class County(GameState):
         total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores
         food_eaten = self.get_food_to_be_eaten()
         if total_food >= food_eaten:
+            # If you have enough food, you lose it and your hunger changes based on rations
             self.grain_stores += min(self.get_produced_dairy() + self.get_produced_grain() - food_eaten, self.get_produced_grain())
-            self.hunger = self.hunger + 1
+            if self.rations == 0:
+                self.hunger -= 4
+            elif self.rations == 0.25:
+                self.hunger -= 2
+            elif self.rations == 0.5:
+                self.hunger -= 1
+            elif self.rations == 1:
+                self.hunger += 1
+            elif self.rations == 2:
+                self.hunger += 2
+            elif self.rations == 3:
+                self.hunger += 4
         else:
+            # If you don't have enough food, you lose it all and lose hunger based on leftover people
             self.grain_stores = 0
-            self.hunger -= (food_eaten / total_food) * 5
+            hungry_people = food_eaten - total_food
+            hunger_loss = (hungry_people // 100) + 1  # 1 plus 1 for every 100 unfed people
+            self.hunger -= min(hunger_loss, 5)
 
     def get_produced_grain(self):
         return self.buildings['fields'].total * self.buildings['fields'].output
