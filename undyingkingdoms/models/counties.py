@@ -441,10 +441,12 @@ class County(GameState):
         Keeps building one until you can't or don't want to, then breaks the loop.
         """
         for unit in self.armies.values():
+            trainable = unit.trainable_per_day
             for i in range(unit.currently_training):
-                if unit.currently_training > 0:
+                if unit.currently_training > 0 and trainable > 0:
                     unit.currently_training -= 1
                     unit.total += 1
+                    trainable -= 1
                 else:
                     break
 
