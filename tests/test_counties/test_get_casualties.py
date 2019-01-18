@@ -25,4 +25,4 @@ def test_negative_casualties(app):
         for unit in county.armies.values():
             assert unit.total >= 0
 
-        assert county.population > 0
+        assert county.population >= 0
