@@ -74,7 +74,6 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.chatroom
 
     import undyingkingdoms.routes.gameplay.infiltrate
-    import undyingkingdoms.routes.gameplay.testing_page
     import undyingkingdoms.routes.gameplay.temp_upvote
 
     import undyingkingdoms.routes.user.achievements
