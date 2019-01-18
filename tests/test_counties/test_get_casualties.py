@@ -14,7 +14,7 @@ from undyingkingdoms.models.counties import County
 def test_get_casualties(app):
     with app.app_context():
         county = County.query.first()
-        assert 31 < county.get_casualties(500) < 61
+        assert 17 < county.get_casualties(500) < 61
 
 
 def test_negative_casualties(app):

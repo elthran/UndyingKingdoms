@@ -274,7 +274,7 @@ class County(GameState):
                     available_hit_points = available * unit.health
                     this_units_damage = min(available_hit_points, hit_points_lost // 4)
                     hit_points_to_be_removed -= this_units_damage
-                    this_dead = hit_points_to_be_removed // unit.health
+                    this_dead = this_units_damage // unit.health
                     unit.total -= this_dead
                     casualties += this_dead
             self.population -= hit_points_to_be_removed
