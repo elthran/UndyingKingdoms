@@ -6,7 +6,7 @@
 {% set kingdom = county.kingdom %}
 <h1>Discussion</h1>
 <div style="border:solid 1px;width:auto;min-height:300px;margin-left:250px;margin-right:250px;">
-<ul>
+<ul id="chatlist">
 {% for message in chat %}
     <li>{{ message[0] }}  {{ message[1] }}: {{ message[2] }}</li>
 {% endfor %}
@@ -22,12 +22,12 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-<!--var email = $('#emailinput').val();-->
-<!--var variable = $('#variablesinput').val();-->
-<!--alert(email + variable);-->
 $("form").submit(function(e) {
   e.preventDefault();
+	updateChat();
+});
 
+function updateChat() {
   $.ajaxSetup({
     headers: { 'X-CSRF-TOKEN': $("#csrf_token").val() }
   });
@@ -36,11 +36,23 @@ $("form").submit(function(e) {
     {
       message: $("#message").val()
     },
-    function(data, status) {
-      console.log(data);
-      alert("Data: " + data + "\nStatus: " + status);
-    }
-  );
-});
+    function(resp, status) {
+      if (status === "success") {
+        $("#chatlist").empty();
+        // <li> 13:27:26  Haldon: Test message</li>
+        $.each(resp.data[1], function(index, value) {
+          $("#chatlist").append($("<li></li>").text(value[0] + " " + value[1] + ": " + value[2]))
+          // console.log(index);
+          // console.log(value);
+        });
+      }
+      console.log(resp);
+      console.log(status);
+  });
+}
+
+refreshInterval = setInterval(updateChat, 5000);
+$(window).on('focus', function() { refreshInterval });
+$(window).on('blur', function() { clearInterval(refreshInterval) });
 </script>
 {% endblock %}
