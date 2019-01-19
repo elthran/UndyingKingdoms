@@ -63,7 +63,7 @@ class County(GameState):
         self.kingdom_id = randint(1, len(kingdom_names))
         self.race = race
         self.gender = gender
-        self.title = 'Engineer'
+        self.title = 'Noble'
         self.vote = None
         self.last_vote_date = None
 
@@ -72,7 +72,7 @@ class County(GameState):
         self._hunger = 75
         self._happiness = 75
         self.tax = 5
-        self._gold = 1000
+        self._gold = 500
         self._wood = 100
         self._iron = 25
         self.rations = 1
@@ -334,18 +334,16 @@ class County(GameState):
             expedition.land_acquired = land_gained
             enemy.land -= land_gained
             notification = Notification(enemy.id,
-                                        "You were attacked by {} and suffered a {} loss.",
-                                        "You lost {} acres and {} troops in the battle.".format(self.name, battle_word,
-                                                                                                land_gained,
-                                                                                                defence_casaulties),
+                                        "You were attacked by {} and suffered a {} loss.".format(self.name, battle_word),
+                                        "You lost {} acres and {} troops in the battle.".format(land_gained, defence_casaulties),
                                         self.kingdom.world.day)
-            message = "You claimed a {} victory and gained {} acres," \
-                      " but lost {} troops in the battle.".format(battle_word, land_gained, offence_casaulties)
+            message = "You claimed a {} victory and gained {} acres, but lost {} troops in the battle.".format(battle_word,
+                                                                                                               land_gained,
+                                                                                                               offence_casaulties)
         else:
             notification = Notification(enemy.id,
-                                        "You were attacked by {}",
-                                        "You achieved a {} victory but lost {} troops.".format(
-                                            self.name, battle_word, defence_casaulties),
+                                        "You were attacked by {}".format(self.name),
+                                        "You achieved a {} victory but lost {} troops.".format(battle_word, defence_casaulties),
                                         self.kingdom.world.day)
             message = "You suffered a {} failure in battle and lost {} troops".format(battle_word, offence_casaulties)
         notification.save()
@@ -385,7 +383,7 @@ class County(GameState):
         return events
 
     def get_tax_income(self):
-        return int(self.population * (self.tax / 100))
+        return int(self.population * (self.tax / 200))
 
     def get_upkeep_costs(self):
         return sum(unit.upkeep * unit.total for unit in self.armies.values()) // 24

@@ -51,13 +51,21 @@ class World(GameState):
 
     def advance_age(self):
         users = User.query.all()
+        top_score = 0
+        top_user = None
         for user in users:
             # This is so that only users who played this age
             if user.county is not None:
                 user.ages_completed += 1
+                this_score = user.get_current_leaderboard_score()
             if user.is_authenticated:
                 user.is_authenticated = False
                 user.save()
+            if this_score > top_score:
+                top_score = this_score
+                top_user = user
+        top_user.alpha_wins += 1
+        top_user.save()
         tables = ['county', 'army', 'building', 'notification', 'expedition', 'infiltration']
         for table in tables:
             helpers.empty_table(db, table)

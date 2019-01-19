@@ -32,4 +32,4 @@ def test_battle_results(app, client):
         # create user 1
         # create user 2
         # simulate attack.
-        assert 'You had 430 power versus the enemies 230 power. You were victorious! You gained 15 acres but lost' in county1.battle_results(army1, county2)
+        assert 'You claimed a massive victory and gained 15 acres, but lost' in county1.battle_results(army1, county2)
