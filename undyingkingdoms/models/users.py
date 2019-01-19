@@ -122,4 +122,4 @@ class User(GameState):
         return self.county.land * 10 + self.county.population
 
     def __repr__(self):
-        return '<User %r (%r)>' % (self.name, self.id)
+        return '<User %r (%r)>' % (self.username, self.id)

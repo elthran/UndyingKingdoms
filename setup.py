@@ -2,6 +2,7 @@ from setuptools import setup
 
 setup(
     name='undyingkingdoms',
+    version='0.0.02',
     packages=['undyingkingdoms'],
     include_package_data=True,
     install_requires=[
@@ -27,14 +28,15 @@ setup(
         'sqlalchemy-utils',
         'PyJWT',
         'requests',
+        'flask-script'
     ],
 )
 
 # Open your venv and run $ python setup.py install
-
-'''
-db.metadata.create_all(db.engine, tables=[
-	Users.__table__,
-	Counties.__table__
-])
+__doc__ = '''
+To run the game, enter your virtual environment and then
+$ source venv/bin/activate
+$ python manage.py runserver 
+For more information try
+$ python manage.py --help
 '''
