@@ -21,6 +21,14 @@ class BaseConfig:
     JWT_ALGORITHM = 'HS256'
 
 
+class DevelopmentConfig(BaseConfig):
+    """Development configuration."""
+    ENV = 'dev'
+    DEBUG = True
+    if DEBUG:
+        SSLIFY_DISABLE = True
+
+
 class TestingConfig:
     ENV = 'testing'
     DEBUG = True

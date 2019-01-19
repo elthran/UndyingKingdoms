@@ -93,4 +93,4 @@ class LoginAPI(MethodView):
             ), 200
 
 
-app.add_url_rule('/login', view_func=LoginAPI.as_view('login_api'))
+# app.add_url_rule('/login', view_func=LoginAPI.as_view('login_api'))
