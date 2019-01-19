@@ -301,11 +301,13 @@ class County(GameState):
         return casualties, expedition
 
     def destroy_buildings(self, county, land_destroyed):
-        destroyed = randint(0, county.get_available_land()) # The more available land, the less likely building are destroyed
+        destroyed = randint(0,
+                            county.get_available_land())  # The more available land, the less likely building are destroyed
         need_list = True
         while destroyed < land_destroyed:
             if need_list:
-                building_choices = [building for building in county.buildings.keys() if county.buildings[building].total > 0]
+                building_choices = [building for building in county.buildings.keys() if
+                                    county.buildings[building].total > 0]
                 if len(building_choices) == 0:
                     break
                 need_list = False
@@ -320,24 +322,31 @@ class County(GameState):
         defence = enemy.get_defensive_strength()
         offence_casaulties, expedition = self.get_casualties(attack_power=defence, army=army)
         defence_casaulties = enemy.get_casualties(attack_power=offence)
+        percent_difference_in_power = abs(defence - offence) / (sum(defence, offence) / 2) * 100
+        if percent_difference_in_power < 25:
+            battle_word = "minor"
+        elif percent_difference_in_power < 50:
+            battle_word = "major"
+        else:
+            battle_word = "massive"
         if offence > defence:
             land_gained = int(enemy.land * 0.1)
             expedition.land_acquired = land_gained
             enemy.land -= land_gained
             notification = Notification(enemy.id,
-                                        "You were attacked by {}".format(self.name),
-                                        "You lost {} acres and {} troops.".format(land_gained, defence_casaulties),
+                                        "You were attacked by {} and suffered a {} loss." \
+                                        "You lost {} acres and {} troops in the battle.".format(self.name, battle_word,
+                                                                                                land_gained,
+                                                                                                defence_casaulties),
                                         self.kingdom.world.day)
-            message = "You had {} power versus the enemies {} power. You were victorious! You gained {} acres" \
-                      " but lost {} troops.".format(offence, defence, land_gained, offence_casaulties)
+            message = "You claimed a {} victory and gained {} acres," \
+                      " but lost {} troops in the battle.".format(battle_word, land_gained, offence_casaulties)
         else:
             notification = Notification(enemy.id,
-                                        "You were attacked by {}".format(self.name),
-                                        "You won the battle but lost {} troops.".format(defence_casaulties),
+                                        "You were attacked by {}. You achieved a {} victory but lost {} troops.".format(
+                                            self.name, battle_word, defence_casaulties),
                                         self.kingdom.world.day)
-            message = "You had {} power versus the enemies {} power. You failed and lost {} troops".format(offence,
-                                                                                                           defence,
-                                                                                                           offence_casaulties)
+            message = "You suffered a {} failure in battle and lost {} troops".format(battle_word, offence_casaulties)
         notification.save()
         return message
 
@@ -363,7 +372,8 @@ class County(GameState):
                     self.armies['elite'].traveling -= expedition.elite
                     self.land += expedition.land_acquired
                     notification = Notification(self.id, "Your army has returned",
-                                                "{} new land has been added to your kingdom".format(expedition.land_acquired),
+                                                "{} new land has been added to your kingdom".format(
+                                                    expedition.land_acquired),
                                                 self.kingdom.world.day)
                     notification.save()
 
@@ -463,7 +473,8 @@ class County(GameState):
         food_eaten = self.get_food_to_be_eaten()
         if total_food >= food_eaten:
             # If you have enough food, you lose it and your hunger changes based on rations
-            self.grain_stores += min(self.get_produced_dairy() + self.get_produced_grain() - food_eaten, self.get_produced_grain())
+            self.grain_stores += min(self.get_produced_dairy() + self.get_produced_grain() - food_eaten,
+                                     self.get_produced_grain())
             if self.rations == 0:
                 self.hunger -= 4
             elif self.rations == 0.25:
@@ -488,10 +499,10 @@ class County(GameState):
 
     def get_produced_dairy(self):
         return self.buildings['pastures'].total * self.buildings['pastures'].output
-    
+
     def get_food_to_be_eaten(self):
         return int(self.population * self.rations)
-    
+
     def grain_storage_change(self):
         food_produced = self.get_produced_dairy() + self.get_produced_grain()
         food_delta = food_produced - self.get_food_to_be_eaten()

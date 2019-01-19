@@ -59,7 +59,7 @@ Here is your current report ({{ report.get_report_age(kingdom.world.day) }} days
 {% if not current_user.county.get_thieves_availability(kingdom.world.day) %}
 <button disabled>Update Report
 </button> (Your thieves are already away on a mission. They will return in {{ current_user.county.get_current_thief_report_duration(kingdom.world.day) }} days)
-{% else %}<a href="{{ url_for('infiltrate', target_id=county.id) }}">
+{% else %}<a href="{{ url_for('infiltrate', target_id=selected_county.id) }}">
     <button>Update Report</button>
 </a> (If you send your thieves, they will return after {{ current_user.county.get_future_thief_report_duration() }} days){% endif %}
 <br>
@@ -68,7 +68,7 @@ Your thieves guild has no information on this county.
 {% if not current_user.county.get_thieves_availability(kingdom.world.day) %}
 <button disabled>Request Report
 </button> (Your thieves are already away on a mission. They will return in {{ current_user.county.get_current_thief_report_duration(kingdom.world.day) }} days)
-{% else %}<a href="{{ url_for('infiltrate', target_id=county.id) }}">
+{% else %}<a href="{{ url_for('infiltrate', target_id=selected_county.id) }}">
     <button>Request Report</button>
 </a> (If you send your thieves, they will return after {{ current_user.county.get_future_thief_report_duration() }} days){% endif %}
 <br>{% endif %}
