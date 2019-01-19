@@ -334,7 +334,7 @@ class County(GameState):
             expedition.land_acquired = land_gained
             enemy.land -= land_gained
             notification = Notification(enemy.id,
-                                        "You were attacked by {} and suffered a {} loss." \
+                                        "You were attacked by {} and suffered a {} loss.",
                                         "You lost {} acres and {} troops in the battle.".format(self.name, battle_word,
                                                                                                 land_gained,
                                                                                                 defence_casaulties),
@@ -343,7 +343,8 @@ class County(GameState):
                       " but lost {} troops in the battle.".format(battle_word, land_gained, offence_casaulties)
         else:
             notification = Notification(enemy.id,
-                                        "You were attacked by {}. You achieved a {} victory but lost {} troops.".format(
+                                        "You were attacked by {}",
+                                        "You achieved a {} victory but lost {} troops.".format(
                                             self.name, battle_word, defence_casaulties),
                                         self.kingdom.world.day)
             message = "You suffered a {} failure in battle and lost {} troops".format(battle_word, offence_casaulties)
