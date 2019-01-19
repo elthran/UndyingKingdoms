@@ -8,7 +8,9 @@
 *Score is currently based on your land and your population*
 <ul>
     {% for user in users %}
+    {% if user.county %}
     <li>&emsp;{{ user.username }}: {{ user.get_current_leaderboard_score() }}</li>
+    {% endif %}
     {% endfor %}
 </ul>
 <br>
