@@ -6,13 +6,13 @@ if __name__ == "__main__":
 
     import os
 
-    os.system("python3 -m pytest -vv {}".format(__file__))
+    os.system("python3 -m pytest -vvs {}".format(__file__))
     exit(1)  # prevents code from trying to run file afterwards.
 
 import json
 
 from tests.helpers import login
-from undyingkingdoms.models import World
+from undyingkingdoms.models import World, County
 
 
 def test_advance_age(client):
@@ -42,6 +42,6 @@ def test_advance_age(client):
         assert data['status'] == 'success'
         assert data['message']
         world2 = World.query.first()
-        assert world2.kingdom.counties is None
+        assert County.query.all() == []
         assert world2.age == age + 1
         assert world2.day == 0

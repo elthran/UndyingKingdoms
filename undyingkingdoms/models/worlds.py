@@ -50,7 +50,6 @@ class World(GameState):
         self.export_data_to_csv()
 
     def advance_age(self):
-        print("at start")
         users = User.query.all()
         for user in users:
             # This is so that only users who played this age
@@ -59,13 +58,10 @@ class World(GameState):
             if user.is_authenticated:
                 user.is_authenticated = False
                 user.save()
-        print("reached tables")
         tables = ['county', 'army', 'building', 'notification', 'expedition', 'infiltration']
         for table in tables:
-            helpers.empty_table(db.engine, table)
-            print("done emptying 1 table")
+            helpers.empty_table(db, table)
             current_app.logger.info("Truncating table `{}`.".format(table))
-        print("angry now")
         self.age += 1
         self.day = 0
 
