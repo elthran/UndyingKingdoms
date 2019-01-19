@@ -32,13 +32,16 @@ function updateChat() {
     headers: { 'X-CSRF-TOKEN': $("#csrf_token").val() }
   });
 
+  message = $("#message").val()
+  console.log("updateOnly", message === '' ? true : false);
   $.post("{{ url_for('chatroom_api') }}",
     {
-      message: $("#message").val()
+      message: message,
+      updateOnly: message === '' ? true : false
     },
     function(resp, status) {
       if (status === "success") {
-        $("#message").text();
+        $("#message").val('');
         $("#chatlist").empty();
         // <li> 13:27:26  Haldon: Test message</li>
         $.each(resp.data[1], function(index, value) {
@@ -59,11 +62,12 @@ var clock = {
   }
 };
 
+// Active update function when the window gains focus.
 $(window).on('focus', function() {
   clock.handle = clock.run();
 });
 
-console.log(clock.handle);
+// Stop update function when the window loses focus.
 $(window).on('blur', function() { clearInterval(clock.handle) });
 </script>
 {% endblock %}

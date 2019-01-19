@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import render_template, url_for, redirect, jsonify, make_response
+from flask import render_template, jsonify, request
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
@@ -48,6 +48,12 @@ class ChatRoomAPI(MethodView):
             return jsonify(dict(
                 status='success',
                 message='Here is your chat data.',
+                data=global_chatroom,
+            ))
+        elif request.form['updateOnly']:
+            return jsonify(dict(
+                status='success',
+                message='Here is your updated data.',
                 data=global_chatroom,
             ))
         return jsonify(dict(
