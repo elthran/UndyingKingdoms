@@ -12,19 +12,16 @@ from undyingkingdoms.blueprints.game_clock import game_clock_blueprint
 import private_config
 
 global_chatroom = {}
-UPLOAD_FOLDER = 'undyingkingdoms/static/uploads/'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
-app.config.from_object('config.DevelopmentConfig')
 app.config.from_object('private_config')
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-
-sslify = SSLify(app)
 
 if 'liveweb' in socket.gethostname():
-    app.config['SQLALCHEMY_DATABASE_URI'] = private_config.SERVER_DATABASE_URI
+    app.config.from_object('config.ProductionConfig')
+else:
+    app.config.from_object('config.DevelopmentConfig')
+
+sslify = SSLify(app)
 
 flask_db.init_app(app)
 db = flask_db
