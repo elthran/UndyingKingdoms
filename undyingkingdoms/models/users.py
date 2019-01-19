@@ -110,7 +110,7 @@ class User(GameState):
             if amount >= requirement_to_advance:
                 achievement.current_tier += 1
                 self.achievement_points += achievement.points_rewarded
-                
+
     def get_last_login(self):
         session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
         if session is None:
@@ -119,7 +119,10 @@ class User(GameState):
 
     def get_current_leaderboard_score(self):
         # TEMPORARY FOR ALPHA. Just a quick way to add some fun
-        return self.county.land * 10 + self.county.population
+        score = self.county.land * 10
+        score += self.county.population // 2
+        score += max(self.county.get_offensive_strength(), self.county.get_defensive_strength())
+        return score
 
     def __repr__(self):
         return '<User %r (%r)>' % (self.username, self.id)
