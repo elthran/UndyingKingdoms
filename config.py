@@ -31,6 +31,7 @@ class BaseConfig:
 class ProductionConfig(BaseConfig):
     ENV = 'production'
     DEBUG = False
+    SQLALCHEMY_POOL_RECYCLE = 299  # 1s less than PythonAnywhere's 300s (5 min).
     SQLALCHEMY_DATABASE_URI = private_config.SERVER_DATABASE_URI
 
 

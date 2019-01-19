@@ -68,7 +68,9 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.military
     import undyingkingdoms.routes.gameplay.kingdom
     import undyingkingdoms.routes.gameplay.attack
-    import undyingkingdoms.routes.gameplay.chatroom
+
+    from undyingkingdoms.routes.gameplay.chatroom import ChatRoomAPI
+    app.add_url_rule('/gameplay/chatroom/', view_func=ChatRoomAPI.as_view('chatroom_api'))
 
     import undyingkingdoms.routes.gameplay.infiltrate
     import undyingkingdoms.routes.gameplay.temp_upvote
