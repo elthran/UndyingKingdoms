@@ -4,9 +4,10 @@ from .helpers import check_clock_key
 from undyingkingdoms.models import World
 
 
-class AdvanceAPI(MethodView):
+class AdvanceAgeAPI(MethodView):
     @check_clock_key
     def get(self):
         # advance game clock here!
         world = World.query.first()
-        world.advance_day()
+        # update age, day
+        world.advance_age()

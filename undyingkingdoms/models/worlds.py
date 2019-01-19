@@ -1,11 +1,12 @@
 import os
 from datetime import datetime, date
-from random import randint
 
+from flask import current_app
 from pandas import DataFrame
 
+from undyingkingdoms.blueprints import helpers
 from undyingkingdoms.models.users import User
-from undyingkingdoms.models import DAU, Session
+from undyingkingdoms.models import DAU
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.bases import GameState
 
@@ -25,14 +26,6 @@ class World(GameState):
         for county in County.query.all():
             county.advance_day()
         self.day += 1
-
-    def advance_age(self):
-        """Refresh the play experience.
-        +1 to the current age, set the day to 0,
-        reset game data, not including user nor metadata.
-        """
-        self.age += 1
-        self.day = 0
 
     def advance_24h_analytics(self):
         users = User.query.all()
@@ -55,6 +48,26 @@ class World(GameState):
                 dau_event = DAU(user.id, self.day)  # Create a DAU row
                 dau_event.save()
         self.export_data_to_csv()
+
+    def advance_age(self):
+        print("at start")
+        users = User.query.all()
+        for user in users:
+            # This is so that only users who played this age
+            if user.county is not None:
+                user.ages_completed += 1
+            if user.is_authenticated:
+                user.is_authenticated = False
+                user.save()
+        print("reached tables")
+        tables = ['county', 'army', 'building', 'notification', 'expedition', 'infiltration']
+        for table in tables:
+            helpers.empty_table(db.engine, table)
+            print("done emptying 1 table")
+            current_app.logger.info("Truncating table `{}`.".format(table))
+        print("angry now")
+        self.age += 1
+        self.day = 0
 
     @staticmethod
     def export_data_to_csv():

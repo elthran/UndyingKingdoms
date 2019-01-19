@@ -4,7 +4,7 @@ from tests.helpers import login
 from undyingkingdoms.models import World
 
 
-def test_advance_data(client):
+def test_advance_day(client):
     with client:
         rv_login = login(client, 'haldon@gmail.com', 'brunner')
         assert "Public Info" in rv_login.data.decode()
@@ -21,7 +21,7 @@ def test_advance_data(client):
         world = World.query.first()
         day = world.day
         rv = client.get(
-            '/game_clock/advance',
+            '/game_clock/advance_day',
             headers=dict(
                 Authorization='Bearer ' + data_token['auth_token']
             )

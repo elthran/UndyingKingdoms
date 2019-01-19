@@ -1,7 +1,7 @@
 import json
 
 from tests.helpers import login
-from undyingkingdoms.models import World
+from undyingkingdoms.models import DAU
 
 
 def test_advance_24h_analytics(client):
@@ -18,8 +18,7 @@ def test_advance_24h_analytics(client):
 
         # I might need to logout here just to be safe?
 
-        world = World.query.first()
-        analytic_cycles = world.analytic_cycles
+        dau_events = DAU.query.count()
         rv = client.get(
             '/game_clock/advance_24h_analytics',
             headers=dict(
@@ -30,5 +29,5 @@ def test_advance_24h_analytics(client):
         data = json.loads(rv.data.decode())
         assert data['status'] == 'success'
         assert data['message']
-        world2 = World.query.first()
-        assert world2.analytic_cycles > analytic_cycles
+        dau_events2 = DAU.query.count()
+        assert dau_events2 > dau_events

@@ -1,10 +1,21 @@
+if __name__ == "__main__":
+    """Allow running just this test.
+
+    Usage: python tests/some_folder/somefile.py
+    """
+
+    import os
+
+    os.system("python3 -m pytest -vv {}".format(__file__))
+    exit(1)  # prevents code from trying to run file afterwards.
+
 import json
 
 from tests.helpers import login
 from undyingkingdoms.models import World
 
 
-def test_end_age(client):
+def test_advance_age(client):
     with client:
         rv_login = login(client, 'haldon@gmail.com', 'brunner')
         assert "Public Info" in rv_login.data.decode()
@@ -21,7 +32,7 @@ def test_end_age(client):
         world = World.query.first()
         age, day = world.age, world.day
         rv = client.get(
-            '/game_clock/end_age',
+            '/game_clock/advance_age',
             headers=dict(
                 Authorization='Bearer ' + data_token['auth_token']
             )
@@ -31,5 +42,6 @@ def test_end_age(client):
         assert data['status'] == 'success'
         assert data['message']
         world2 = World.query.first()
-        assert world2.age > age
-        assert world2.day > day
+        assert world2.kingdom.counties is None
+        assert world2.age == age + 1
+        assert world2.day == 0
