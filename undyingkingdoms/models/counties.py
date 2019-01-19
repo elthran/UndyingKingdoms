@@ -322,7 +322,7 @@ class County(GameState):
         defence = enemy.get_defensive_strength()
         offence_casaulties, expedition = self.get_casualties(attack_power=defence, army=army)
         defence_casaulties = enemy.get_casualties(attack_power=offence)
-        percent_difference_in_power = abs(defence - offence) / (sum(defence, offence) / 2) * 100
+        percent_difference_in_power = abs(defence - offence) / ((defence + offence) / 2) * 100
         if percent_difference_in_power < 25:
             battle_word = "minor"
         elif percent_difference_in_power < 50:
