@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, SelectField
+from wtforms import IntegerField, SelectField, ValidationError
 
 from undyingkingdoms.models.counties import County
 
@@ -20,6 +20,10 @@ class AttackForm(FlaskForm):
     def insufficient_troops(self):
         troops_being_sent = self.peasant.data + self.archer.data + self.soldier.data + self.elite.data
         if troops_being_sent < 25:
+            self.peasant.errors.append("Must send at least 25 troops.")
+            self.soldier.errors.append("Must send at least 25 troops.")
+            self.archer.errors.append("Must send at least 25 troops.")
+            self.elite.errors.append("Must send at least 25 troops.")
             return True
 
 
