@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
 
 from undyingkingdoms import app
-from undyingkingdoms.models.forms.forum import ForumPost
+from undyingkingdoms.models.forms.message import MessageForm
 from undyingkingdoms.models.forum import Forum, Thread, Post
 
 
@@ -15,13 +15,13 @@ def forum(thread_id=0, post_id=0):
     the_forum = Forum.query.first()
     the_thread = Thread.query.filter_by(id=thread_id).first()
     the_post = Post.query.filter_by(id=post_id).first()
-    form = ForumPost()
+    form = MessageForm()
     if the_thread is None:
         the_thread = "None"
     if the_post is None:
         the_post = "None"
     if form.validate_on_submit():
-        new_post = Post(the_thread.id, current_user.id, form.title.data, form.message.data, post_id)
+        new_post = Post(the_thread.id, current_user.id, form.title.data, form.content.data, post_id)
         new_post.save()
         if post_id == 0:
             post_id = new_post.id  #

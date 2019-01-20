@@ -1,9 +1,7 @@
-from flask import render_template, url_for, redirect
+from flask import render_template
 from flask_login import login_required, current_user
 
 from undyingkingdoms import app
-from undyingkingdoms.models import Chatroom
-from undyingkingdoms.models.forms.chatroom import ChatForm
 
 
 @app.route('/gameplay/messages/', methods=['GET', 'POST'])
