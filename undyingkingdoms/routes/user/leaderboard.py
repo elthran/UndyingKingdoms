@@ -10,5 +10,6 @@ def leaderboard():
     if not current_user.in_active_session:
         current_user.in_active_session = True
     users = User.query.all()
-    sorted_users = sorted(users, key=lambda user: user.get_current_leaderboard_score(), reverse=True)
+    current_users = [user for user in users if user.county is not None]
+    sorted_users = sorted(current_users, key=lambda user: user.get_current_leaderboard_score(), reverse=True)
     return render_template('user/leaderboard.html', users=sorted_users)
