@@ -11,7 +11,6 @@ from undyingkingdoms.admin import admin_blueprint
 from undyingkingdoms.blueprints.game_clock import game_clock_blueprint
 import private_config
 
-global_chatroom = {}
 UPLOAD_FOLDER = 'undyingkingdoms/static/uploads/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 

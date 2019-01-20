@@ -9,4 +9,6 @@ from undyingkingdoms import app, User
 def leaderboard():
     if not current_user.in_active_session:
         current_user.in_active_session = True
-    return render_template('user/leaderboard.html', users=User.query.all())
+    users = User.query.all()
+    sorted_users = sorted(users, key=lambda user: user.get_current_leaderboard_score(), reverse=True)
+    return render_template('user/leaderboard.html', users=sorted_users)
