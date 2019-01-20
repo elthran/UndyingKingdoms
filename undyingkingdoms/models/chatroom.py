@@ -6,7 +6,7 @@ class Chatroom(GameState):
 
     kingdom_id = db.Column(db.Integer)
     user_id = db.Column(db.Integer)
-    content = db.Column(db.String(128))
+    content = db.Column(db.String(512))
 
     def __init__(self, kingdom_id, user_id, content):
         self.kingdom_id = kingdom_id

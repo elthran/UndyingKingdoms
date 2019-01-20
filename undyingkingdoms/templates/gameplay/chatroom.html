@@ -15,7 +15,7 @@
 <br>
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
-    {{ render_field(form.message, placeholder="Public to your kingdom", autofocus="") }}
+    <textarea cols="100" rows="10" type="text" name="message" placeholder="Type a message to your kingdom here"></textarea>
     <br><br>
     <button type="submit">Say</button>
 </form>

@@ -53,7 +53,7 @@
     <h2>Create New Thread</h2>
     <ul>
         <li style="margin-top:5px;">{{ render_field(form.title, placeholder="Title", autofocus="") }}</li>
-        <li style="margin-top:5px;">{{ render_field(form.message, placeholder="Content") }}</li>
+        <textarea cols="100" rows="10" type="text" name="message" placeholder="Content"></textarea>
     </ul>
     <br><br>
     <button type="submit">Create Post</button>
@@ -97,7 +97,7 @@
         </li>
         {% endfor %}
         <br><br>
-        {{ render_field(form.message, placeholder="Message content") }}
+        <textarea cols="100" rows="10" type="text" name="message" placeholder="Type your post here"></textarea>
         <br><br>
         <button type="submit">Reply to Post</button>
         <br><br>
