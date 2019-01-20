@@ -66,7 +66,7 @@ class World(GameState):
                 top_user = user
         top_user.alpha_wins += 1
         top_user.save()
-        tables = ['county', 'army', 'building', 'notification', 'expedition', 'infiltration']
+        tables = ['county', 'army', 'building', 'notification', 'expedition', 'infiltration', 'chatroom', 'message']
         for table in tables:
             helpers.empty_table(db, table)
             current_app.logger.info("Truncating table `{}`.".format(table))
