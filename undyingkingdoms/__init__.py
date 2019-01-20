@@ -11,19 +11,16 @@ from undyingkingdoms.admin import admin_blueprint
 from undyingkingdoms.blueprints.game_clock import game_clock_blueprint
 import private_config
 
-UPLOAD_FOLDER = 'undyingkingdoms/static/uploads/'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
-app.config.from_object('config.BaseConfig')
 app.config.from_object('private_config')
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-
-sslify = SSLify(app)
 
 if 'liveweb' in socket.gethostname():
-    app.config['SQLALCHEMY_DATABASE_URI'] = private_config.SERVER_DATABASE_URI
+    app.config.from_object('config.ProductionConfig')
+else:
+    app.config.from_object('config.DevelopmentConfig')
+
+sslify = SSLify(app)
 
 flask_db.init_app(app)
 db = flask_db
@@ -71,8 +68,10 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.infiltration
     import undyingkingdoms.routes.gameplay.kingdom
     import undyingkingdoms.routes.gameplay.attack
-    import undyingkingdoms.routes.gameplay.chatroom
     import undyingkingdoms.routes.gameplay.messages
+
+    from undyingkingdoms.routes.gameplay.chatroom import ChatRoomAPI
+    app.add_url_rule('/gameplay/chatroom/', view_func=ChatRoomAPI.as_view('chatroom_api'))
 
     import undyingkingdoms.routes.gameplay.infiltrate
     import undyingkingdoms.routes.gameplay.temp_upvote

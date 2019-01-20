@@ -15,10 +15,32 @@ class BaseConfig:
     SECRET_KEY = private_config.SECRET_KEY
     DEBUG = False
     BCRYPT_LOG_ROUNDS = 13
+    THREADS_PER_PAGE = 2
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     CSRF_ENABLED = True
     CSRF_SESSION_KEY = private_config.CSRF_SESSION_KEY
     JWT_ALGORITHM = 'HS256'
+    UPLOAD_FOLDER = 'undyingkingdoms/static/uploads/'
+    ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+
+    MAIL_USE_TLS = True
+    MAIL_USE_SSL = True
+
+
+class ProductionConfig(BaseConfig):
+    ENV = 'production'
+    DEBUG = False
+    SQLALCHEMY_POOL_RECYCLE = 299  # 1s less than PythonAnywhere's 300s (5 min).
+    SQLALCHEMY_DATABASE_URI = private_config.SERVER_DATABASE_URI
+
+
+class DevelopmentConfig(BaseConfig):
+    """Development configuration."""
+    ENV = 'development'
+    DEBUG = True
+    if DEBUG:
+        SSLIFY_DISABLE = True
 
 
 class TestingConfig:

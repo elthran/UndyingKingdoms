@@ -19,7 +19,8 @@ class Chatroom(GameState):
 
     def get_pretty_timestamp(self):
         # This should be improved
-        return self.time_created
+        return str(self.time_created)[11:19]
 
-
-
+    def json_ready(self):
+        # return "({time}) {leader}: {content}".format(time=self.get_pretty_timestamp(), leader=self.get_county_leader_name(), content=self.content)
+        return self.get_pretty_timestamp(), self.get_county_leader_name(), self.content
