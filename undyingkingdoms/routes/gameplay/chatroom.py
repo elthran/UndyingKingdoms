@@ -42,19 +42,20 @@ class ChatRoomAPI(MethodView):
             current_user.in_active_session = True
         chat_id = current_user.county.kingdom.id
         form = ChatForm()
-        if form.validate_on_submit():
-            global_chatroom[chat_id].append((str(datetime.now())[10:19], current_user.county.leader, form.message.data))
+        if request.form['updateOnly'] == 'true':
+            return jsonify(dict(
+                status='success',
+                message='Here is the latest data.',
+                data=global_chatroom,
+            ))
+        elif form.validate_on_submit():
+            entry = (str(datetime.now())[10:19], current_user.county.leader, form.message.data)
+            global_chatroom[chat_id].append(entry)
             global_chatroom[chat_id] = global_chatroom[chat_id][-20:]  # Only keeps most recent 20 items
             return jsonify(dict(
                 status='success',
                 message='Here is your chat data.',
-                data=global_chatroom,
-            ))
-        elif request.form['updateOnly']:
-            return jsonify(dict(
-                status='success',
-                message='Here is your updated data.',
-                data=global_chatroom,
+                data=entry,
             ))
         return jsonify(dict(
             status='fail',

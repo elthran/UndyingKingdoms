@@ -24,41 +24,55 @@
 <script>
 $("form").submit(function(e) {
   e.preventDefault();
-	updateChat();
+  sendMessage();
 });
+
+function sendMessage() {
+  $.ajaxSetup({
+    headers: { 'X-CSRF-TOKEN': $("#csrf_token").val() }
+  });
+
+  $.post("{{ url_for('chatroom_api') }}",
+    {
+      message: $("#message").val(),
+      updateOnly: false
+    },
+    function(resp, status) {
+      if (status === "success") {
+        $("#message").val('');
+        // <li> 13:27:26  Haldon: Test message</li>
+        $("#chatlist").append($("<li></li>").text(resp.data[0] + " " + resp.data[1] + ": " + resp.data[2]))
+      }
+  });
+}
 
 function updateChat() {
   $.ajaxSetup({
     headers: { 'X-CSRF-TOKEN': $("#csrf_token").val() }
   });
 
-  message = $("#message").val()
-  console.log("updateOnly", message === '' ? true : false);
   $.post("{{ url_for('chatroom_api') }}",
     {
-      message: message,
-      updateOnly: message === '' ? true : false
+      message: '',
+      updateOnly: true
     },
     function(resp, status) {
       if (status === "success") {
-        $("#message").val('');
         $("#chatlist").empty();
         // <li> 13:27:26  Haldon: Test message</li>
         $.each(resp.data[1], function(index, value) {
           $("#chatlist").append($("<li></li>").text(value[0] + " " + value[1] + ": " + value[2]))
-          // console.log(index);
-          // console.log(value);
         });
       }
-      console.log(resp);
       console.log(status);
+      console.log(resp);
   });
 }
 
 var clock = {
   handle : null,
   run : function() {
-    return setInterval(updateChat, 5000);
+    return setInterval(updateChat, 3000);
   }
 };
 
