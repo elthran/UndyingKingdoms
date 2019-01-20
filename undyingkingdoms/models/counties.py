@@ -24,6 +24,8 @@ class County(GameState):
     vote = db.Column(db.Integer)
     last_vote_date = db.Column(db.DateTime)
 
+    messages = db.relationship('Message', backref='county')
+
     _land = db.Column(db.Integer)
     race = db.Column(db.String(32))
     gender = db.Column(db.String(16))
@@ -39,7 +41,7 @@ class County(GameState):
     title = db.Column(db.String(32))
     production = db.Column(db.Integer)
     grain_stores = db.Column(db.Integer)
-    notifications = db.relationship('Notification', backref='kingdom')
+    notifications = db.relationship('Notification', backref='county')
 
     expeditions = db.relationship('Expedition', backref='county')
     infiltrations = db.relationship('Infiltration', backref='county')

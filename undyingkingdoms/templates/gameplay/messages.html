@@ -1,0 +1,21 @@
+{% extends "gameplay/layout.html" %}
+{% block content2 %}
+
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+<h1 style="text-align:center;">Inbox</h1>
+<ul>
+{% for message in county.messages|sort(attribute='time_created', reverse=True) %}
+    <br>
+    <h2>We have received a message from {{ message.get_author() }}</h2>
+    {% if message.get_age_of_message() == 0 %}
+    <h3>{{ message.title }} (Sent today)</h3>
+    {% else %}
+    <h3>{{ message.title }} (Sent {{ message.get_age_of_message() }} days ago)</h3>
+    {% endif %}
+    <p>{{ message.content }}</p>
+{% endfor %}
+</ul>
+
+{% endblock %}

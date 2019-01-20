@@ -1,0 +1,67 @@
+{% extends "gameplay/layout.html" %}
+{% block content2 %}
+
+<h1 style="text-align:center;">{{ county.name }}</h1>
+<ul>
+    <li><h2>Public Info</h2></li>
+    <li>Leader: {{ county.leader }} ({{ county.gender }})</li>
+    <li>Race: {{ county.race }}</li>
+    <li>Title: {{ county.title }}</li>
+    <li>Land: {{ county.land }} acres</li>
+    <li>Calendar: Day {{ county.kingdom.world.day }} (This round of testing will end on day 168)</li>
+</ul>
+<h1>Send Message:</h1>
+<form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    {{ render_field(form.title, placeholder="Title", autofocus="") }}
+    <textarea cols="100" rows="10" type="text" name="content" placeholder="Content"></textarea>
+    <button type="submit">Send Message</button>
+</form>
+<br>
+<h2>Thieves Guild Report:</h2>
+{% if current_user.county.get_thieves_report(county.id) %}
+Here is your current report ({{ report.get_report_age(kingdom.world.day) }} days old):
+<ul>
+    <li>Military:</li>
+    <li>
+        <ul>
+            <li>{{county.armies['peasant'].class_name }}: {{ report.peasant }}</li>
+            <li>{{county.armies['archer'].class_name }}: {{ report.archer }}</li>
+            <li>{{county.armies['soldier'].class_name }}: {{ report.soldier }}</li>
+            <li>{{county.armies['elite'].class_name }}: {{ report.elite }}</li>
+        </ul>
+    </li>
+</ul>
+{% endif %}
+<br>
+{% if not current_user.county.get_thieves_availability(kingdom.world.day) %}
+<button disabled>Update Report
+</button>
+(Your thieves are already away on a mission. They will return in {{
+current_user.county.get_current_thief_report_duration(kingdom.world.day) }} days)
+{% else %}
+<a href="{{ url_for('infiltrate', target_id=county.id) }}">
+    <button>Update Report</button>
+</a> (If you send your thieves, they will return after {{ current_user.county.get_future_thief_report_duration() }}
+days)
+{% endif %}
+<br>
+{% if not current_user.county.get_thieves_availability(kingdom.world.day) %}
+<button disabled>Request Report
+</button>
+(Your thieves are already away on a mission. They will return in {{
+current_user.county.get_current_thief_report_duration(kingdom.world.day) }} days)
+{% else %}<a href="{{ url_for('infiltrate', target_id=county.id) }}">
+    <button>Request Report</button>
+</a> (If you send your thieves, they will return after {{ current_user.county.get_future_thief_report_duration() }}
+days){% endif %}
+<br>
+
+{% if kingdom.leader == 0 or kingdom != current_user.county.kingdom %}
+<!-- Checks to see if there should be an attack option Not yourself, and if not teammate if civil war over -->
+<br><a href="{{ url_for('attack', county_id=county.id) }}">
+    <button>Attack This County</button>
+</a>
+{% endif %}
+
+{% endblock %}

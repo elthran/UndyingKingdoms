@@ -13,3 +13,4 @@ from .expeditions import Expedition
 from .infiltrations import Infiltration
 from .upvotes import Upvote
 from .chatroom import Chatroom
+from .messages import Message

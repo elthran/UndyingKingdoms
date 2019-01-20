@@ -21,5 +21,5 @@ def initialize():
                         genders[form.gender.data])
         county.save()
         county.vote = county.id
-        return redirect(url_for('overview', kingdom_id=current_user.county.kingdom.id, county_id=current_user.county.id))
+        return redirect(url_for('overview', kingdom_id=0, county_id=0))
     return render_template("index/initialize.html", form=form)
