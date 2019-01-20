@@ -14,7 +14,7 @@ def chatroom():
     form = MessageForm()
     chat = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id).all()
     if form.validate_on_submit():
-        message = Chatroom(current_user.county.kingdom_id, current_user.id, form.content.data)
+        message = Chatroom(current_user.county.kingdom_id, current_user.county.id, form.content.data)
         message.save()
         return redirect(url_for('chatroom'))
     return render_template('gameplay/chatroom.html', form=form, chat=chat)
