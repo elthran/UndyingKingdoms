@@ -2,34 +2,21 @@
 {% block content2 %}
 
 {% set user = current_user %}
-{% if current_user.county == selected_county %}
 {% set county = current_user.county %}
-{% set viewing_self = True %}
-{% else %}
-{% set county = selected_county %}
-{% set viewing_self = False %}
-{% endif %}
-{% set kingdom = selected_kingdom %}
 <h1 style="text-align:center;">{{ county.name }}</h1>
 <ul>
-    <li><h2>Public Info</h2></li>
     <li>Leader: {{ county.leader }} ({{ county.gender }})</li>
     <li>Race: {{ county.race }}</li>
     <li>Title: {{ county.title }}</li>
     <li>Land: {{ county.land }} acres</li>
     <li>Calendar: Day {{ county.kingdom.world.day }} (This round of testing will end on day 168)</li>
-    {% if viewing_self %}
-    <li><br></li>
-    <li><h2>Private Info</h2></li>
     <li>Stored Grain: {{ county.grain_stores }} <img class="resource_icons" src="/static/images/grain_icon.jpg"></li>
     <li>Coffers: {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"></li>
     <li>Population: {{ county.population }} <img class="resource_icons" src="/static/images/population_icon.jpg"></li>
     <li>Happiness: {{ county.happiness_terminology.title() }}</li>
     <li>Hunger: {{ county.hunger_terminology.title() }}</li>
     <li>Weather: {{ county.weather }}</li>
-    {% endif %}
 </ul>
-{% if viewing_self %}
 <br>
 <ul>
     <li><h2>News</h2></li>
@@ -39,45 +26,6 @@
     <li>No new events to report.</li>
     {% endfor %}
 </ul>
-{% else %}
-<br><h2>Thieves Guild Report:</h2>
-{% if current_user.county.get_thieves_report(county.id) %}
-Here is your current report ({{ report.get_report_age(kingdom.world.day) }} days old):
-<ul>
-    <li>Military:</li>
-    <li>
-        <ul>
-            <li>{{county.armies['peasant'].class_name }}: {{ report.peasant }}</li>
-            <li>{{county.armies['archer'].class_name }}: {{ report.archer }}</li>
-            <li>{{county.armies['soldier'].class_name }}: {{ report.soldier }}</li>
-            <li>{{county.armies['elite'].class_name }}: {{ report.elite }}</li>
-        </ul>
-    </li>
-</ul>
 
-<br>
-{% if not current_user.county.get_thieves_availability(kingdom.world.day) %}
-<button disabled>Update Report
-</button> (Your thieves are already away on a mission. They will return in {{ current_user.county.get_current_thief_report_duration(kingdom.world.day) }} days)
-{% else %}<a href="{{ url_for('infiltrate', target_id=selected_county.id) }}">
-    <button>Update Report</button>
-</a> (If you send your thieves, they will return after {{ current_user.county.get_future_thief_report_duration() }} days){% endif %}
-<br>
-{% else %}
-Your thieves guild has no information on this county.
-{% if not current_user.county.get_thieves_availability(kingdom.world.day) %}
-<button disabled>Request Report
-</button> (Your thieves are already away on a mission. They will return in {{ current_user.county.get_current_thief_report_duration(kingdom.world.day) }} days)
-{% else %}<a href="{{ url_for('infiltrate', target_id=selected_county.id) }}">
-    <button>Request Report</button>
-</a> (If you send your thieves, they will return after {{ current_user.county.get_future_thief_report_duration() }} days){% endif %}
-<br>{% endif %}
-{% if (kingdom.leader == 0) and ((kingdom == current_user.county.kingdom) and (kingdom.leader == 0)) or (kingdom != current_user.county.kingdom) %}
-<!-- Checks to see if there should be an attack option Not yourself, and if not teammate if civil war over -->
-<br><a href="{{ url_for('attack', county_id=selected_county.id) }}">
-    <button>Attack This County</button>
-</a>
-{% endif %}
-{% endif %}
 
 {% endblock %}

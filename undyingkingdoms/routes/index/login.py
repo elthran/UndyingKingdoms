@@ -16,7 +16,7 @@ def login():
     form = LoginForm()
     if current_user.is_authenticated:
         return redirect(
-            url_for('overview', kingdom_id=current_user.county.kingdom.id, county_id=current_user.county.id))
+            url_for('overview', kingdom_id=0, county_id=0))
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
@@ -30,7 +30,7 @@ def login():
                 notification.save()
             login_user(user)
             return redirect(
-                url_for('overview', kingdom_id=current_user.county.kingdom.id, county_id=current_user.county.id))
+                url_for('overview', kingdom_id=0, county_id=0))
         else:
             flash("Your email or password was incorrect.")
     return render_template("index/login.html", form=form)

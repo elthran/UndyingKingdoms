@@ -35,7 +35,7 @@ class Thread(GameEvent):
 
     def get_author(self):
         author = User.query.filter_by(id=self.author_id).first()
-        return author.county.leader
+        return author.username
         
         
 class Post(GameEvent):
@@ -63,7 +63,7 @@ class Post(GameEvent):
 
     def get_author(self):
         author = User.query.filter_by(id=self.author_id).first()
-        return author.county.leader
+        return author.username
 
     def get_votes(self):
         votes = Upvote.query.filter_by(post_id=self.id, vote=1).all()

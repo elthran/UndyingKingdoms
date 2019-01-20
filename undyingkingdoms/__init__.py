@@ -11,7 +11,6 @@ from undyingkingdoms.admin import admin_blueprint
 from undyingkingdoms.blueprints.game_clock import game_clock_blueprint
 import private_config
 
-global_chatroom = {}
 
 app = Flask(__name__)
 app.config.from_object('private_config')
@@ -68,6 +67,7 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.military
     import undyingkingdoms.routes.gameplay.kingdom
     import undyingkingdoms.routes.gameplay.attack
+    import undyingkingdoms.routes.gameplay.messages
 
     from undyingkingdoms.routes.gameplay.chatroom import ChatRoomAPI
     app.add_url_rule('/gameplay/chatroom/', view_func=ChatRoomAPI.as_view('chatroom_api'))
@@ -79,6 +79,7 @@ def import_routes():
     import undyingkingdoms.routes.user.forum
     import undyingkingdoms.routes.user.guide
     import undyingkingdoms.routes.user.leaderboard
+    import undyingkingdoms.routes.user.versions
     import undyingkingdoms.routes.hooks
 
 

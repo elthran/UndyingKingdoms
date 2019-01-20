@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
 
 from undyingkingdoms import app
@@ -11,6 +11,8 @@ from undyingkingdoms.models.forms.attack import AttackForm
 def attack(county_id):
     if not current_user.in_active_session:
         current_user.in_active_session = True
+    if county_id == current_user.county.id:
+        return redirect(url_for('overview', kingdom_id=0, county_id=0))
     enemy = County.query.filter_by(id=county_id).first()
     form = AttackForm()
 
