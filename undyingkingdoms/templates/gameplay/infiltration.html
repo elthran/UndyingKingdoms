@@ -1,0 +1,17 @@
+{% extends "gameplay/layout.html" %}
+{% block content2 %}
+
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+
+Thieves available: {{ county.get_number_of_available_thieves() }}
+<br>
+<h2>Previous Spy Missions</h2>
+{% for mission in infiltrations %}
+{{ mission }}
+{% else %}
+You have never sent your thieves on any missions.
+{% endfor %}
+
+{% endblock %}

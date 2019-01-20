@@ -503,16 +503,20 @@ class County(GameState):
             expedition.land_acquired = land_gained
             enemy.land -= land_gained
             notification = Notification(enemy.id,
-                                        "You were attacked by {} and suffered a {} loss.".format(self.name, battle_word),
-                                        "You lost {} acres and {} troops in the battle.".format(land_gained, defence_casaulties),
+                                        "You were attacked by {} and suffered a {} loss.".format(self.name,
+                                                                                                 battle_word),
+                                        "You lost {} acres and {} troops in the battle.".format(land_gained,
+                                                                                                defence_casaulties),
                                         self.kingdom.world.day)
-            message = "You claimed a {} victory and gained {} acres, but lost {} troops in the battle.".format(battle_word,
-                                                                                                               land_gained,
-                                                                                                               offence_casaulties)
+            message = "You claimed a {} victory and gained {} acres, but lost {} troops in the battle.".format(
+                battle_word,
+                land_gained,
+                offence_casaulties)
         else:
             notification = Notification(enemy.id,
                                         "You were attacked by {}".format(self.name),
-                                        "You achieved a {} victory but lost {} troops.".format(battle_word, defence_casaulties),
+                                        "You achieved a {} victory but lost {} troops.".format(battle_word,
+                                                                                               defence_casaulties),
                                         self.kingdom.world.day)
             message = "You suffered a {} failure in battle and lost {} troops".format(battle_word, offence_casaulties)
         notification.save()
@@ -530,6 +534,11 @@ class County(GameState):
         return events
 
     # Infiltrations
+    def get_number_of_available_thieves(self):
+        total_thieves = self.buildings['guilds'].total
+        unavailable_thieves = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).count()
+        return total_thieves - unavailable_thieves
+
     def get_thieves_availability(self, day):
         current_report = Infiltration.query.filter_by(county_id=self.id).first()
         if not current_report or (current_report.day + current_report.duration <= day):
