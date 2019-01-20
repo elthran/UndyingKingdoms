@@ -8,7 +8,7 @@
 <div style="border:solid 1px;width:auto;min-height:300px;margin-left:250px;margin-right:250px;">
 <ul>
 {% for message in chat %}
-    <li>{{ message[0] }}  {{ message[1] }}: {{ message[2] }}</li>
+    <li>({{ message.get_pretty_timestamp() }}) {{ message.get_county_leader_name() }}: {{ message.content }}</li>
 {% endfor %}
 </ul>
 </div>

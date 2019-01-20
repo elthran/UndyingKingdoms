@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
 
 from undyingkingdoms import app, global_chatroom
+from undyingkingdoms.models import Chatroom
 from undyingkingdoms.models.forms.chatroom import ChatForm
 
 
@@ -12,12 +11,10 @@ from undyingkingdoms.models.forms.chatroom import ChatForm
 def chatroom():
     if not current_user.in_active_session:
         current_user.in_active_session = True
-    chat_id = current_user.county.kingdom.id
-    if current_user.county.kingdom.id not in global_chatroom:
-        global_chatroom[chat_id] = []
     form = ChatForm()
+    chat = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id).all()
     if form.validate_on_submit():
-        global_chatroom[chat_id].append((str(datetime.now())[10:19], current_user.county.leader, form.message.data))
-        global_chatroom[chat_id] = global_chatroom[chat_id][-20:]  # Only keeps most recent 20 items
+        message = Chatroom(current_user.county.kingdom_id, current_user.id, form.message.data)
+        message.save()
         return redirect(url_for('chatroom'))
-    return render_template('gameplay/chatroom.html', form=form, chat=global_chatroom[chat_id])
+    return render_template('gameplay/chatroom.html', form=form, chat=chat)
