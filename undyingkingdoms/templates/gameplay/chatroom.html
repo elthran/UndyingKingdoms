@@ -14,10 +14,10 @@
 </div>
 <br>
 <form method="POST" accept-charset="UTF-8" role="form">
-    {{ form.csrf_token }}
-    <textarea cols="100" rows="10" type="text" name="content" placeholder="Type a message to your kingdom here"></textarea>
-    <br><br>
-    <button id="send" type="submit">Say</button>
+	{{ form.csrf_token }}
+	<input style="width: 300px;" autofocus="" class="form-control " id="content" name="content" placeholder="Public to your kingdom" required type="text" value="">
+  <br><br>
+  <button id="send" type="submit">Say</button>
 </form>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -27,6 +27,11 @@ $("form").submit(function(e) {
   sendMessage();
 });
 
+function build_element(time, leader, content) {
+	// <li> 13:27:26  Haldon: Test message</li>
+	return $("<li></li>").text("(" + time + ") " + leader + ": " + content)
+}
+
 function sendMessage() {
   $.ajaxSetup({
     headers: { 'X-CSRF-TOKEN': $("#csrf_token").val() }
@@ -34,14 +39,13 @@ function sendMessage() {
 
   $.post("{{ url_for('chatroom_api') }}",
     {
-      message: $("#message").val(),
+      content: $("#content").val(),
       updateOnly: false
     },
     function(resp, status) {
       if (status === "success") {
-        $("#message").val('');
-        // <li> 13:27:26  Haldon: Test message</li>
-        $("#chatlist").append($("<li></li>").text(resp.data[0] + " " + resp.data[1] + ": " + resp.data[2]))
+        $("#content").val('');
+        $("#chatlist").append(build_element(resp.data[0], resp.data[1], resp.data[2]));
       }
   });
 }
@@ -59,13 +63,10 @@ function updateChat() {
     function(resp, status) {
       if (status === "success") {
         $("#chatlist").empty();
-        // <li> 13:27:26  Haldon: Test message</li>
-        $.each(resp.data[1], function(index, value) {
-          $("#chatlist").append($("<li></li>").text(value[0] + " " + value[1] + ": " + value[2]))
+        $.each(resp.data, function(index, value) {
+          $("#chatlist").append(build_element(value[0], value[1], value[2]));
         });
       }
-      console.log(status);
-      console.log(resp);
   });
 }
 
