@@ -12,16 +12,16 @@ Thieves available: {{ county.get_number_of_available_thieves() }}
     <br>
     {% if mission.success %}
         {% if mission.mission == 'pilfer' %}
-        Your thieves returned {{ mission.get_report_age(kingdom.world.day) }} days ago with {{ mission.pilfer_amount }} stolen gold.
+        Your thieves will return in {{ mission.duration }} days with {{ mission.pilfer_amount }} stolen gold.
         {% endif %}
         {% if mission.mission == 'burn crops' %}
-        Your thieves returned {{ mission.get_report_age(kingdom.world.day) }} days ago after burning {{ mission.crops_burned }} crops.
+        Your thieves will return in {{ mission.duration }} days after burning {{ mission.crops_burned }} crops.
         {% endif %}
         {% if mission.mission == 'sow distrust' %}
-        Your thieves returned {{ mission.get_report_age(kingdom.world.day) }} days ago and lowered happiness by {{ mission.distrust }}%.
+        Your thieves will return in {{ mission.duration }} days and lower enemy happiness by {{ mission.distrust }}%.
         {% endif %}
         {% if mission.mission == 'scout military' %}
-        Your thieves returned {{ mission.get_report_age(kingdom.world.day) }} days ago and learned about the enemy's military.
+        Your thieves will return in {{ mission.duration }} days and have learned about the enemy's military.
         {% endif %}
     {% else %}
        The thieves you sent {{ mission.get_report_age(kingdom.world.day) }} days ago were caught.

@@ -121,6 +121,36 @@
             <td>-</td>
             <td>Iron is used to equip powerful soldiers.</td>
         </tr>
+        <tr>
+            <td>Happiness</td>
+            <td>{{ county.happiness }}%</td>
+            {% if county.get_happiness_change() >= 0 %}
+            <td style="color:green;">+
+                {% else %}
+            <td style="color:red;">
+                {% endif %}
+                {{ county.get_happiness_change() }} <img class="resource_icons" src="/static/images/heart_icon.jpg">
+            </td>
+            <td>-</td>
+            <td>+7 baseline</td>
+            <td>-{{ county.tax }} from taxes</td>
+            <td>Happiness affects emmigration rate.</td>
+        </tr>
+        <tr>
+            <td>Hunger</td>
+            <td>{{ county.hunger }}%</td>
+            {% if county.get_hunger_change() >= 0 %}
+            <td style="color:green;">+
+                {% else %}
+            <td style="color:red;">
+                {% endif %}
+                {{ county.get_hunger_change() }}
+            </td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>Hunger affects your death rate.</td>
+        </tr>
     </table>
     <br>
     <button type="submit">Update</button>

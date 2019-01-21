@@ -118,7 +118,7 @@ dwarf_buildings = {'houses': Building(base_name='houses',
                                       gold=50,
                                       wood=25,
                                       output=1,
-                                      description="Each {} you build gives you {} additional group of spies which you can send out at any given time.")
+                                      description="Each {} gives you {} additional spies to send on missions.")
                    }
 human_buildings = {'houses': Building(base_name='houses',
                                       class_name='house',
@@ -191,7 +191,7 @@ human_buildings = {'houses': Building(base_name='houses',
                                       gold=50,
                                       wood=25,
                                       output=1,
-                                      description="Each {} you build gives you {} additional group of spies which you can send out at any given time.")
+                                      description="Each {} gives you {} additional spies to send on missions.")
                    }
 
 all_armies = ["peasant", "archer", "soldier", "elite"]

@@ -104,7 +104,7 @@ class County(GameState):
 
     @population.setter
     def population(self, value):
-        self._population = value
+        self._population = max(value, 1)
         self.check_incremental_achievement("population", self._population)
 
     @property
@@ -127,7 +127,7 @@ class County(GameState):
 
     @gold.setter
     def gold(self, value):
-        self._gold = value
+        self._gold = max(value, 0)
         self.check_incremental_achievement("gold", self._gold)
 
     @property
@@ -136,7 +136,7 @@ class County(GameState):
 
     @wood.setter
     def wood(self, value):
-        self._wood = value
+        self._wood = max(value, 0)
         self.check_incremental_achievement("wood", self._wood)
 
     @property
@@ -145,7 +145,7 @@ class County(GameState):
 
     @iron.setter
     def iron(self, value):
-        self._iron = value
+        self._iron = max(value, 0)
         self.check_incremental_achievement("iron", self._iron)
 
     @property
@@ -154,7 +154,7 @@ class County(GameState):
 
     @happiness.setter
     def happiness(self, value):
-        self._happiness = value
+        self._happiness = min(max(value, 1), 100)
 
     @property
     def hunger(self):
@@ -222,7 +222,11 @@ class County(GameState):
         self.gold += self.get_gold_change()
         self.wood += self.get_wood_income()
         self.iron += self.get_iron_income()
-        self.happiness = min(self.happiness + 7 - self.tax, 100)
+        self.happiness += self.get_happiness_change()
+
+    def get_happiness_change(self):
+        change = 7 - self.tax
+        return change
 
     def update_weather(self):
         self.weather = choice(self.weather_choices)
@@ -232,6 +236,21 @@ class County(GameState):
             self.grain_stores = max(self.grain_stores - 20, 0)
             notification.save()
 
+    def get_hunger_change(self):
+        if self.rations == 0:
+            return -4
+        elif self.rations == 0.25:
+            return -2
+        elif self.rations == 0.5:
+            return -1
+        elif self.rations == 1:
+            return 1
+        elif self.rations == 2:
+            return 2
+        elif self.rations == 3:
+            return 4
+
+
     def update_food(self):
         total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores
         food_eaten = self.get_food_to_be_eaten()
@@ -239,18 +258,7 @@ class County(GameState):
             # If you have enough food, you lose it and your hunger changes based on rations
             self.grain_stores += min(self.get_produced_dairy() + self.get_produced_grain() - food_eaten,
                                      self.get_produced_grain())
-            if self.rations == 0:
-                self.hunger -= 4
-            elif self.rations == 0.25:
-                self.hunger -= 2
-            elif self.rations == 0.5:
-                self.hunger -= 1
-            elif self.rations == 1:
-                self.hunger += 1
-            elif self.rations == 2:
-                self.hunger += 2
-            elif self.rations == 3:
-                self.hunger += 4
+            self.hunger += self.get_hunger_change()
         else:
             # If you don't have enough food, you lose it all and lose hunger based on leftover people
             self.grain_stores = 0
