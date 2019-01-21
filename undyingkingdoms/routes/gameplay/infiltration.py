@@ -1,5 +1,6 @@
 from flask import render_template
 from flask_login import login_required, current_user
+from sqlalchemy import desc
 
 from undyingkingdoms import app
 from undyingkingdoms.models import Infiltration
@@ -10,5 +11,5 @@ from undyingkingdoms.models import Infiltration
 def infiltration():
     if not current_user.in_active_session:
         current_user.in_active_session = True
-    missions = Infiltration.query.filter_by(county_id=current_user.county.id).all()
+    missions = Infiltration.query.filter_by(county_id=current_user.county.id).order_by(desc('time_created')).all()
     return render_template('gameplay/infiltration.html', missions=missions)

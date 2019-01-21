@@ -4,6 +4,8 @@ from undyingkingdoms.models.armies import Army
 
 kingdom_names = ["Faenoth", "Aldoroth"]
 
+infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust']
+
 all_achievements = {
     'land': Achievement(name="land", category="reach_x_amount_in_one_age", sub_category="land",
                         display_title="From Coast to Coast",

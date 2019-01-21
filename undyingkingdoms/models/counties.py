@@ -536,8 +536,18 @@ class County(GameState):
     # Infiltrations
     def get_number_of_available_thieves(self):
         total_thieves = self.buildings['guilds'].total
-        unavailable_thieves = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).count()
+        all_current_missions = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
+        unavailable_thieves = sum(mission.amount_of_thieves for mission in all_current_missions)
         return total_thieves - unavailable_thieves
+
+    def get_thief_report_military(self, target_id):
+        current_report = Infiltration.query.filter_by(county_id=self.id, target_id=target_id, mission="scout military").first()
+        return current_report
+
+    def get_thief_report_infrastructure(self, target_id):
+        current_report = Infiltration.query.filter_by(county_id=self.id, target_id=target_id, mission="scout infrastructure").first()
+        return current_report
+
 
     def get_thieves_availability(self, day):
         current_report = Infiltration.query.filter_by(county_id=self.id).first()

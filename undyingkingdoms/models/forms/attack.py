@@ -1,7 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, SelectField, ValidationError
-
-from undyingkingdoms.models.counties import County
+from wtforms import SelectField
 
 
 class AttackForm(FlaskForm):
@@ -25,7 +23,3 @@ class AttackForm(FlaskForm):
             self.archer.errors.append("Must send at least 25 troops.")
             self.elite.errors.append("Must send at least 25 troops.")
             return True
-
-
-class TempGameAdvance(FlaskForm):
-    pass

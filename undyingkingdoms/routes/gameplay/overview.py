@@ -4,7 +4,7 @@ from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
 
 from undyingkingdoms import app
-from undyingkingdoms.models import County, Kingdom, User, Infiltration, Message
+from undyingkingdoms.models import County, Kingdom, User, Message
 from undyingkingdoms.models.forms.message import MessageForm
 
 
@@ -33,7 +33,6 @@ def overview(kingdom_id=0, county_id=0):
         message.save()
         return redirect(url_for('overview', kingdom_id=kingdom_id, county_id=county_id))
 
-    kingdom = Kingdom.query.filter_by(id=kingdom_id).first()
-    county = County.query.filter_by(id=county_id).first()
-    report = Infiltration.query.filter_by(county_id=current_user.county.id, target_id=county.id).first()
-    return render_template('gameplay/overview_enemy.html', kingdom=kingdom, county=county, report=report, form=form)
+    target_kingdom = Kingdom.query.filter_by(id=kingdom_id).first()
+    target_county = County.query.filter_by(id=county_id).first()
+    return render_template('gameplay/overview_enemy.html', target_kingdom=target_kingdom, target_county=target_county, form=form)
