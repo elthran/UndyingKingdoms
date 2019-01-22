@@ -23,7 +23,8 @@
             <th>In Foreign Lands</th>
             <th>Train</th>
             <th style="width:125px;">Cost</th>
-            <th>Currently In Training</th>
+            <th>In Training</th>
+            <th>Trainable Per Day</th>
             <th><div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div></th>
             <th><div class="tooltip">Defence<span class="tooltipText">{{ meta_data["defence"] }}</span></div></th>
             <th><div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div></th>
@@ -40,6 +41,7 @@
                        type="range" value="0" min="0" max="25" step="1" />
                 <input id="{{ army.base_name }}_display" name="{{ army.base_name }}" value="0" />
             </td>
+            <td>{{ army.trainable_per_day }}</td>
             <td>
                 {% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif %}
                 {% if army.wood %}{{ army.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif %}
@@ -61,6 +63,7 @@
             <td>-</td>
             <td>-</td>
             <td>{{ county.get_training_army_size() }}</td>
+            <td>-</td>
             <td>-</td>
             <td>-</td>
             <td>-</td>
