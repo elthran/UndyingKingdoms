@@ -507,7 +507,7 @@ class County(GameState):
         else:
             battle_word = "massive"
         if offence > defence:
-            land_gained = int(enemy.land * 0.1)
+            land_gained = int((enemy.land**3)*0.1/(self.land**2))
             expedition.land_acquired = land_gained
             enemy.land -= land_gained
             notification = Notification(enemy.id,
