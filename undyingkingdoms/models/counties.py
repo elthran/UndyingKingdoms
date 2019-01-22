@@ -238,11 +238,14 @@ class County(GameState):
 
     def get_hunger_change(self):
         if self.rations == 0:
-            return -4
+            unfed_people = self.population
+            return -(unfed_people // 200) - 1
         elif self.rations == 0.25:
-            return -2
+            unfed_people = self.population // (4/3)
+            return -(unfed_people // 200) - 1
         elif self.rations == 0.5:
-            return -1
+            unfed_people = self.population // 2
+            return -(unfed_people // 200) - 1
         elif self.rations == 1:
             return 1
         elif self.rations == 2:
@@ -263,7 +266,7 @@ class County(GameState):
             # If you don't have enough food, you lose it all and lose hunger based on leftover people
             self.grain_stores = 0
             hungry_people = food_eaten - total_food
-            hunger_loss = (hungry_people // 100) + 1  # 1 plus 1 for every 100 unfed people
+            hunger_loss = (hungry_people // 200) + 1  # 1 plus 1 for every 100 unfed people
             self.hunger -= min(hunger_loss, 5)
 
     def get_produced_grain(self):
@@ -507,7 +510,8 @@ class County(GameState):
         else:
             battle_word = "massive"
         if offence > defence:
-            land_gained = int((enemy.land**3)*0.1/(self.land**2))
+            land_gained = max((enemy.land**3)*0.1/(self.land**2), 1)
+            land_gained = int(min(land_gained, enemy.land * 0.2))
             expedition.land_acquired = land_gained
             enemy.land -= land_gained
             notification = Notification(enemy.id,
