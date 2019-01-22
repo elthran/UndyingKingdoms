@@ -17,12 +17,10 @@ def attack(county_id):
     form = AttackForm()
 
     peasants = current_user.county.armies['peasant'].available + 1
-    archers = current_user.county.armies['archer'].available + 1
     soldiers = current_user.county.armies['soldier'].available + 1
     elites = current_user.county.armies['elite'].available + 1
 
     form.peasant.choices = [(i, i) for i in range(peasants)]
-    form.archer.choices = [(i, i) for i in range(archers)]
     form.soldier.choices = [(i, i) for i in range(soldiers)]
     form.elite.choices = [(i, i) for i in range(elites)]
 
