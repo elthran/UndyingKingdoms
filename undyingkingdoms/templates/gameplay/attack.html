@@ -10,9 +10,9 @@
     <h1>Choose which troops to send:</h1><br>
     <h2>Current available attack power: {{ county.get_offensive_strength(county=county) }}</h2><br>
     <ul>
-        {% for army in county.armies.values() %}
+        {% for army in county.armies.values() %}{% if army.base_name != 'archer' %}
         <li>{{ army.class_name }}: {{ form[army.base_name] }} (Available: {{ army.available }} / {{ army.total }}) (Attack Power: {{ army.attack }} per troop)</li>
-        {% endfor %}
+        {% endif %}{% endfor %}
     </ul>
     <button type="submit">Attack</button><br>
     <p style="width:70%">Note: You will typically lose around 20% of any soldiers sent. However, if your army is much weaker,

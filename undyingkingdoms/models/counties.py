@@ -420,7 +420,8 @@ class County(GameState):
         strength = 0
         if army:
             for unit in self.armies.values():
-                strength += army[unit.base_name] * unit.attack
+                if unit.base_name != 'archer':
+                    strength += army[unit.base_name] * unit.attack
         elif county:
             for unit in county.armies.values():
                 strength += unit.available * unit.attack
@@ -435,7 +436,7 @@ class County(GameState):
         strength *= modifier
         return int(strength)
 
-    def get_casualties(self, attack_power, army=()):
+    def get_casualties(self, attack_power, army=(), enemy_id=-1):
         """
         Maybe move to a math transform file.
         army: For attacker, the army is passed in as dict. For defender, it's all active troops.
@@ -463,7 +464,7 @@ class County(GameState):
             print("Full attacking army:", army)
             stable_modifier = 1 - min((self.buildings['stables'].total / 100), 0)
             duration = max(sum(army.values()) * 0.04 * stable_modifier, 1)
-            expedition = Expedition(self.id, self.user_id, self.kingdom.world.day, duration, "attack")
+            expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, duration, "attack")
             expedition.save()
             while hit_points_to_be_removed > 0:
                 army = {key: value for key, value in army.items() if value > 0}  # Remove dead troops
@@ -500,7 +501,7 @@ class County(GameState):
     def battle_results(self, army, enemy):
         offence = self.get_offensive_strength(army=army)
         defence = enemy.get_defensive_strength()
-        offence_casaulties, expedition = self.get_casualties(attack_power=defence, army=army)
+        offence_casaulties, expedition = self.get_casualties(attack_power=defence, army=army, enemy_id=enemy.id)
         defence_casaulties = enemy.get_casualties(attack_power=offence)
         percent_difference_in_power = abs(defence - offence) / ((defence + offence) / 2) * 100
         if percent_difference_in_power < 25:

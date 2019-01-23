@@ -53,5 +53,3 @@ class GameEvent(Base):
 
     id = db.Column(db.Integer, primary_key=True)
     time_created = db.Column(db.DateTime, default=db.func.current_timestamp())
-    user_id = db.Column(db.Integer)
-

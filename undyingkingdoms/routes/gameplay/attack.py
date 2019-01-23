@@ -27,9 +27,10 @@ def attack(county_id):
     if form.validate_on_submit():
         army = {}
         for unit in current_user.county.armies.values():
-            if unit.total < form.data[unit.base_name]:
-                return render_template('gameplay/attack.html', enemy=enemy, form=form)
-            army[unit.base_name] = form.data[unit.base_name]
+            if unit.base_name != 'archer':
+                if unit.total < form.data[unit.base_name]:
+                    return render_template('gameplay/attack.html', enemy=enemy, form=form)
+                army[unit.base_name] = form.data[unit.base_name]
         results = current_user.county.battle_results(army, enemy)
         return render_template('gameplay/attack_results.html', results=results)
     return render_template('gameplay/attack.html', enemy=enemy, form=form)

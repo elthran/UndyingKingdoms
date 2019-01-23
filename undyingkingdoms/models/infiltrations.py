@@ -8,10 +8,10 @@ class Infiltration(GameEvent):
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
     target_id = db.Column(db.Integer)
     day = db.Column(db.Integer)  # On which game day the report was created
+    duration = db.Column(db.Integer)  # How many game days until your thieves return
     mission = db.Column(db.String(64))
     amount_of_thieves = db.Column(db.Integer)
     success = db.Column(db.Boolean)
-    duration = db.Column(db.Integer)  # How many game days until your thieves return
 
     # Pilfer
     pilfer_amount = db.Column(db.Integer)
