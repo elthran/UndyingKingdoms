@@ -377,8 +377,6 @@ class County(GameState):
         modifier = {'Base': 1}
         if self.race == 'Dwarf':
             modifier['Racial Bonus'] = 0.1
-        if self.title == 'Engineer':
-            modifier['Profession Bonus'] = 0.15
         return sum(modifier.values())
 
     def get_production(self):
@@ -462,9 +460,12 @@ class County(GameState):
             self.population -= min(hit_points_to_be_removed, self.population)
             return casualties
         if army:
-            stable_modifier = self.buildings['stables'].total * self.buildings['stables'].output / 100
-            stable_modifier = 1 / (1 + stable_modifier)
-            duration = int(max(sum(army.values()) * 0.04, 1) * stable_modifier) + 1
+            duration_modifier = {'Base': 1}
+            if self.race == 'Dwarf':
+                duration_modifier['Racial Bonus'] = -0.15
+            duration_modifier['Stables'] = self.buildings['stables'].total * self.buildings['stables'].output / 100
+            duration_modifier = 1 / (1 + sum(duration_modifier.values()))
+            duration = int(max(sum(army.values()) * 0.04, 1) * duration_modifier) + 1
             expedition = Expedition(self.id, enemy_id, self.county_days_in_age, self.kingdom.world.day, duration, "attack")
             expedition.save()
             while hit_points_to_be_removed > 0:

@@ -38,7 +38,7 @@ def infiltrate(county_id):
         if chance_of_success >= randint(1, 100):
             report.success = True
             if mission == 'pilfer':
-                gold_stolen = min(randint(15, 20) * form.amount.data, target.gold)
+                gold_stolen = min(randint(15, 25) * form.amount.data, target.gold)
                 target.gold -= gold_stolen
                 current_user.county.gold += gold_stolen
                 report.pilfer_amount = gold_stolen
@@ -47,7 +47,7 @@ def infiltrate(county_id):
                 target.buildings['fields'].total -= crops_burned
                 report.crops_burned = crops_burned
             elif mission == 'sow distrust':
-                happiness_lost = min(target.happiness, form.amount.data)
+                happiness_lost = min(target.happiness, form.amount.data * 3)
                 target.happiness -= happiness_lost
                 report.distrust = happiness_lost
             elif mission == 'scout military':
