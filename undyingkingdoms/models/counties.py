@@ -205,8 +205,9 @@ class County(GameState):
         self.produce_pending_buildings()
         self.produce_pending_armies()
         self.update_food()
-        self.update_weather()
         self.update_population()
+        self.update_weather()  # Is before random events because they can affect weather
+        self.get_random_daily_events()
         expeditions = Expedition.query.filter_by(county_id=self.id).all()
         for expedition in expeditions:
             if expedition.duration > 0:
@@ -236,12 +237,41 @@ class County(GameState):
 
     def update_weather(self):
         self.weather = choice(self.weather_choices)
-        if self.weather == 'stormy':
-            notification = Notification(self.id, "Storms have ravaged your crops",
-                                        "You lost 20 bushels of wheat.", self.kingdom.world.day)
-            self.grain_stores = max(self.grain_stores - 20, 0)
+            
+    def get_random_daily_events(self):
+        random_chance = randint(1, 200)
+        if random_chance == 1 and self.grain_stores > 0:
+            amount = min(self.county_days_in_age * randint(1, 2), self.grain_stores)
+            notification = Notification(self.id,
+                                        "Rats have gotten into your grain silos",
+                                        "Your county lost {} of its stored grain.",
+                                        self.kingdom.world.day).format(amount)
+            self.grain_stores -= amount
+        elif random_chance == 2 and self.happiness > 90:
+            amount = randint(100, 200)
+            notification = Notification(self.id,
+                                        "Your people celebrate your rule",
+                                        "Your people hold a feast and offer you {} gold as tribute.",
+                                        self.kingdom.world.day).format(amount)
+            self.gold += amount
+        elif random_chance == 3 and self.buildings['pastures'].total > 0:
+            amount = min(randint(3, 6), self.buildings['pastures'].total)
+            notification = Notification(self.id,
+                                        "A disease has affected your cattle",
+                                        "Your county has lost {} of its dairy farms.",
+                                        self.kingdom.world.day).format(amount)
+            self.buildings['pastures'].total -= amount
+        elif random_chance == 4 and self.buildings['fields'].total > 0:
+            amount = min(randint(3, 6), self.buildings['fields'].total)
+            notification = Notification(self.id,
+                                        "Storms have ravaged your crops",
+                                        "A massive storm has destroyed {} of your fields.",
+                                        self.kingdom.world.day).format(amount)
+            self.buildings['fields'].total -= amount
+            self.weather = 'thunderstorm'
+        if notification:
             notification.save()
-
+        
     def get_hunger_change(self):
         if self.rations == 0:
             unfed_people = self.population
