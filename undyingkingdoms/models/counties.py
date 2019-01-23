@@ -319,15 +319,13 @@ class County(GameState):
 
     def get_death_rate(self):
         modifier = 1
-        death_rate = uniform(1.5, 2.0) / self.hunger
+        death_rate = uniform(1.6, 2.0) / self.hunger
         return int(death_rate * self.population * modifier)
 
     def get_birth_rate(self):
         modifier = {"Base": 1}
         if self.race == 'Elf':
             modifier['Racial Bonus'] = -0.1
-        if self.title == 'Goblin':
-            modifier['Racial Bonus'] = 0.15
         modifier = sum(modifier.values()) * uniform(0.9995, 1.0005)
         birth_rate = self.buildings['houses'].total * self.buildings['houses'].output
         return int(birth_rate * modifier)
@@ -462,7 +460,7 @@ class County(GameState):
             return casualties
         if army:
             print("Full attacking army:", army)
-            stable_modifier = 1 - min((self.buildings['stables'].total / 100), 0)
+            stable_modifier = 1 - max((self.buildings['stables'].total / 100), 0)
             duration = max(sum(army.values()) * 0.04 * stable_modifier, 1)
             expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, duration, "attack")
             expedition.save()
