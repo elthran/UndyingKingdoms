@@ -58,7 +58,7 @@
             <td>
                 <ul>
                     <li>Taxes: {{ county.get_tax_income() }}</li>
-                    <li>Excess Production: {{ county.production }}</li>
+                    <li>Excess Production: {{ county.production // 3 }}</li>
                 </ul>
             </td>
             <td>Military Expenses: {{ county.get_upkeep_costs() }}</td>

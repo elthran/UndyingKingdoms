@@ -16,13 +16,13 @@ def attack(county_id):
     enemy = County.query.filter_by(id=county_id).first()
     form = AttackForm()
 
-    peasants = current_user.county.armies['peasant'].available + 1
-    soldiers = current_user.county.armies['soldier'].available + 1
-    elites = current_user.county.armies['elite'].available + 1
+    peasants = current_user.county.armies['peasant'].available
+    soldiers = current_user.county.armies['soldier'].available
+    elites = current_user.county.armies['elite'].available
 
-    form.peasant.choices = [(i, i) for i in range(peasants)]
-    form.soldier.choices = [(i, i) for i in range(soldiers)]
-    form.elite.choices = [(i, i) for i in range(elites)]
+    form.peasant.choices = [(peasants * i // 10, peasants * i // 10) for i in range(0, 11)]
+    form.soldier.choices = [(soldiers * i // 10, soldiers * i // 10) for i in range(0, 11)]
+    form.elite.choices = [(elites * i // 10, elites * i // 10) for i in range(0, 11)]
 
     if form.validate_on_submit():
         army = {}

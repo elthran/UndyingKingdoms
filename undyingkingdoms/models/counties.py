@@ -239,13 +239,13 @@ class County(GameState):
     def get_hunger_change(self):
         if self.rations == 0:
             unfed_people = self.population
-            return -(unfed_people // 200) - 1
+            return int(-(unfed_people // 200) - 1)
         elif self.rations == 0.25:
             unfed_people = self.population // (4/3)
-            return -(unfed_people // 200) - 1
+            return int(-(unfed_people // 200) - 1)
         elif self.rations == 0.5:
             unfed_people = self.population // 2
-            return -(unfed_people // 200) - 1
+            return int(-(unfed_people // 200) - 1)
         elif self.rations == 1:
             return 1
         elif self.rations == 2:
@@ -359,7 +359,7 @@ class County(GameState):
         return sum(unit.upkeep * unit.total for unit in self.armies.values()) // 24
 
     def get_gold_change(self):
-        return self.get_tax_income() + self.production - self.get_upkeep_costs()
+        return self.get_tax_income() + (self.production // 3) - self.get_upkeep_costs()
 
     def get_wood_income(self):
         return self.buildings['mills'].total * self.buildings['mills'].output
