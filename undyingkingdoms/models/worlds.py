@@ -45,7 +45,7 @@ class World(GameState):
                 user.day7_retention = retention
             # If they are playing this age, create a DAU for them
             if user.county:
-                dau_event = DAU(user.id, self.day)  # Create a DAU row
+                dau_event = DAU(user.id, user.county.county_days_in_age, user.county.kingdom.world.day)  # Create a DAU row
                 dau_event.save()
         self.export_data_to_csv()
 

@@ -21,6 +21,7 @@ class County(GameState):
     leader = db.Column(db.String(128))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
+    county_days_in_age = db.Column(db.Integer)
     vote = db.Column(db.Integer)
     last_vote_date = db.Column(db.DateTime)
 
@@ -66,6 +67,7 @@ class County(GameState):
         self.race = race
         self.gender = gender
         self.title = 'Noble'
+        self.county_days_in_age = 0
         self.vote = None
         self.last_vote_date = None
 
@@ -217,6 +219,7 @@ class County(GameState):
                                                     expedition.land_acquired),
                                                 self.kingdom.world.day)
                     notification.save()
+        self.county_days_in_age += 1
 
     def update_daily_resources(self):
         self.gold += self.get_gold_change()
@@ -462,7 +465,7 @@ class County(GameState):
             stable_modifier = self.buildings['stables'].total * self.buildings['stables'].output / 100
             stable_modifier = 1 / (1 + stable_modifier)
             duration = int(max(sum(army.values()) * 0.04, 1) * stable_modifier) + 1
-            expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, duration, "attack")
+            expedition = Expedition(self.id, enemy_id, self.county_days_in_age, self.kingdom.world.day, duration, "attack")
             expedition.save()
             while hit_points_to_be_removed > 0:
                 army = {key: value for key, value in army.items() if value > 0}  # Remove dead troops

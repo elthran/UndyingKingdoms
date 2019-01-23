@@ -14,11 +14,12 @@ class Expedition(GameEvent):
     soldier = db.Column(db.Integer)
     elite = db.Column(db.Integer)
 
-    def __init__(self, county_id, target_id, day, duration, mission, land_acquired=0, peasant=0, soldier=0, elite=0):
+    def __init__(self, county_id, target_id, county_age_in_days, world_age_in_days, duration, mission, land_acquired=0, peasant=0, soldier=0, elite=0):
 
         self.county_id = county_id
         self.target_id = target_id
-        self.day = day
+        self.county_age_in_days = county_age_in_days
+        self.world_age_in_days = world_age_in_days
         self.duration = duration
         self.land_acquired = land_acquired
         self.mission = mission

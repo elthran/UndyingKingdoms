@@ -28,7 +28,8 @@ def infiltrate(county_id):
     if form.validate_on_submit():
 
         mission = infiltration_missions[form.mission.data]
-        report = Infiltration(current_user.county.id, target.id, current_user.county.kingdom.world.day,
+        report = Infiltration(current_user.county.id, target.id, current_user.county.county_days_in_age,
+                              current_user.county.kingdom.world.day,
                               mission, form.amount.data)
         report.save()
 

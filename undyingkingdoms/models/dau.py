@@ -16,16 +16,18 @@ class DAU(GameEvent):
     minutes_played = db.Column(db.Integer)
     ads_watched = db.Column(db.Integer)
     # Game data
-    days_in_age = db.Column(db.Integer)
+    world_age_in_days = db.Column(db.Integer)
+    county_days_in_age = db.Column(db.Integer)
     land = db.Column(db.Integer)
     population = db.Column(db.Integer)
     gold = db.Column(db.Integer)
     happiness = db.Column(db.Integer)
     hunger = db.Column(db.Integer)
 
-    def __init__(self, user_id, day):
+    def __init__(self, user_id, county_days_in_age, world_age_in_days):
         self.user_id = user_id
-        self.days_in_age = day
+        self.county_days_in_age = county_days_in_age
+        self.world_age_in_days = world_age_in_days
         self.sessions = self.get_sessions(user_id)
         self.minutes_played = self.get_minutes_played(user_id)
         self.ads_watched = 0
