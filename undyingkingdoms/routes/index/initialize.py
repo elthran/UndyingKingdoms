@@ -4,6 +4,7 @@ from flask_login import current_user
 from undyingkingdoms import app
 from undyingkingdoms.models import County
 from undyingkingdoms.models.forms.initialize import InitializeForm
+from undyingkingdoms.static.metadata import dwarf_armies, human_armies
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])
@@ -22,4 +23,4 @@ def initialize():
         county.save()
         county.vote = county.id
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
-    return render_template("index/initialize.html", form=form)
+    return render_template("index/initialize.html", form=form, dwarf_armies=dwarf_armies, human_armies=human_armies)
