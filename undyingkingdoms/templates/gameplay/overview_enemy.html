@@ -26,12 +26,13 @@
 {% else %}
 No information is known.
 {% endif %}
-<br>
+<br><br>
 <!-- Checks to see if there should be an attack option Not yourself, and if not teammate if civil war over -->
 {% if target_kingdom.leader == 0 or target_kingdom != current_user.county.kingdom %}
-<br>
-<a href="{{ url_for('attack', county_id=target_county.id) }}">Attack</a>
-<a href="{{ url_for('infiltrate', county_id=target_county.id) }}">Infiltrate</a>
+    <a href="{{ url_for('attack', county_id=target_county.id) }}">Attack</a>
+    <a href="{{ url_for('infiltrate', county_id=target_county.id) }}">Infiltrate</a>
+{% elif target_kingdom.leader != 0 and target_kingdom == current_user.county.kingdom %}
+    <p style="color:green;">Your kingdom is at peace. You can not attack this county.</p>
 {% endif %}
 
 <br><br>

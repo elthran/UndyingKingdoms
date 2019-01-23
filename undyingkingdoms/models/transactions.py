@@ -6,12 +6,9 @@ transactions = ["buy", "sell"]
 
 
 class Transaction(GameEvent):
-    user_id = db.Column(db.Integer)
+    county_id = db.Column(db.Integer)
     days_in_age = db.Column(db.Integer)
     activity = db.Column(db.String(16))
-    starting_gold = db.Column(db.Integer)
-    starting_wood = db.Column(db.Integer)
-    starting_iron = db.Column(db.Integer)
 
     gold_spent = db.Column(db.Integer)
     wood_spent = db.Column(db.Integer)
@@ -19,26 +16,31 @@ class Transaction(GameEvent):
 
     houses = db.Column(db.Integer)
     fields = db.Column(db.Integer)
+    pastures = db.Column(db.Integer)
     mills = db.Column(db.Integer)
     mines = db.Column(db.Integer)
+    forts = db.Column(db.Integer)
+    stables = db.Column(db.Integer)
+    guilds = db.Column(db.Integer)
 
     peasant = db.Column(db.Integer)
     archer = db.Column(db.Integer)
     soldier = db.Column(db.Integer)
     elite = db.Column(db.Integer)
 
-    def __init__(self, user_id, days_in_age, activity, starting_gold, starting_wood, starting_iron):
-        self.user_id = user_id
+    def __init__(self, county_id, days_in_age, activity):
+        self.county_id = county_id
         self.days_in_age = days_in_age
         self.activity = activity if activity in transactions else "unknown"
-        self.starting_gold = starting_gold
-        self.starting_wood = starting_wood
-        self.starting_iron = starting_iron
 
         self.houses = 0
         self.fields = 0
+        self.pastures = 0
         self.mills = 0
         self.mines = 0
+        self.forts = 0
+        self.stables = 0
+        self.guilds = 0
 
         self.peasant = 0
         self.archer = 0

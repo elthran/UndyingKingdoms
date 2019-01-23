@@ -459,9 +459,9 @@ class County(GameState):
             self.population -= min(hit_points_to_be_removed, self.population)
             return casualties
         if army:
-            print("Full attacking army:", army)
-            stable_modifier = 1 - max((self.buildings['stables'].total / 100), 0)
-            duration = max(sum(army.values()) * 0.04 * stable_modifier, 1)
+            stable_modifier = self.buildings['stables'].total * self.buildings['stables'].output / 100
+            stable_modifier = 1 / (1 + stable_modifier)
+            duration = int(max(sum(army.values()) * 0.04, 1) * stable_modifier) + 1
             expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, duration, "attack")
             expedition.save()
             while hit_points_to_be_removed > 0:
