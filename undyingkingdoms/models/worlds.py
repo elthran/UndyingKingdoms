@@ -19,7 +19,7 @@ class World(GameState):
     day = db.Column(db.Integer)  # How many in-game days have passed this age
 
     def __init__(self):
-        self.age = 0
+        self.age = 1
         self.day = 0
 
     def advance_day(self):
@@ -59,14 +59,16 @@ class World(GameState):
                 user.ages_completed += 1
                 this_score = user.get_current_leaderboard_score()
             if user.is_authenticated:
-                user.is_authenticated = False
-                user.save()
+                # user.is_authenticated = False
+                # user.save()
+                pass
             if this_score > top_score:
                 top_score = this_score
                 top_user = user
         top_user.alpha_wins += 1
         top_user.save()
-        tables = ['county', 'army', 'building', 'notification', 'expedition', 'infiltration', 'chatroom', 'message']
+        tables = ['county', 'army', 'building', 'notification', 'expedition', 'infiltration', 'chatroom', 'message',
+                  'session', 'transaction']
         for table in tables:
             helpers.empty_table(db, table)
             current_app.logger.info("Truncating table `{}`.".format(table))
