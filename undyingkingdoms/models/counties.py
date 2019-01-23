@@ -9,7 +9,7 @@ from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
 from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
-    human_buildings, kingdom_names
+    human_buildings, kingdom_names, elven_buildings, elven_armies
 
 from copy import deepcopy
 
@@ -97,6 +97,9 @@ class County(GameState):
         elif self.race == 'Human':
             buildings = deepcopy(human_buildings)
             armies = deepcopy(human_armies)
+        elif self.race == 'Elf':
+            buildings = deepcopy(elven_buildings)
+            armies = deepcopy(elven_armies)
         self.buildings = buildings
         self.armies = armies
 
@@ -329,9 +332,9 @@ class County(GameState):
         modifier = {"Base": 1}
         if self.race == 'Elf':
             modifier['Racial Bonus'] = -0.1
-        modifier = sum(modifier.values()) * uniform(0.9995, 1.0005)
+        modifier = sum(modifier.values())
         birth_rate = self.buildings['houses'].total * self.buildings['houses'].output
-        return int(birth_rate * modifier)
+        return int(birth_rate * modifier * uniform(0.9995, 1.0005))
 
     def get_immigration_rate(self):
         return randint(20, 30)
@@ -431,7 +434,10 @@ class County(GameState):
         strength = 0
         for unit in self.armies.values():
             strength += unit.available * unit.defence
-        strength += self.population // 25  # Every 25 population is 1 defence power
+        if self.race == 'Elf':
+            strength += self.population // 15  # Every 15 population is 1 defence power
+        else:
+            strength += self.population // 30  # Every 30 population is 1 defence power
         strength *= modifier
         return int(strength)
 

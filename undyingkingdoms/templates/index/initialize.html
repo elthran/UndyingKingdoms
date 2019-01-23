@@ -27,12 +27,44 @@
 
 <h1>Dwarves:</h1>
 <h2>Strengths:</h2>
-    <p>+10% Production</p>
+    <p>Engineering: +10% Production</p>
 <h2>Weaknesses:</h2>
-    <p>Army returns 15% slower</p>
+    <p>Short Stature: Army returns 15% slower</p>
 <h3>Military:</h3>
 <ul>
     {% for army in dwarf_armies.values() %}
+    <li>Name: {{ army.class_name }}</li>
+    <li>Cost:</li>
+    <li>Attack:</li>
+    <li>Defense:</li>
+    <li>Health:</li>
+    {% endfor %}
+</ul>
+
+<h1>Humans:</h1>
+<h2>Strengths:</h2>
+    <p>None</p>
+<h2>Weaknesses:</h2>
+    <p>None</p>
+<h3>Military:</h3>
+<ul>
+    {% for army in human_armies.values() %}
+    <li>Name: {{ army.class_name }}</li>
+    <li>Cost:</li>
+    <li>Attack:</li>
+    <li>Defense:</li>
+    <li>Health:</li>
+    {% endfor %}
+</ul>
+
+<h1>Elves:</h1>
+<h2>Strengths:</h2>
+    <p>Civic Duty: Civilians add double defense to county</p>
+<h2>Weaknesses:</h2>
+    <p>Elders: -10% Population growth</p>
+<h3>Military:</h3>
+<ul>
+    {% for army in elf_armies.values() %}
     <li>Name: {{ army.class_name }}</li>
     <li>Cost:</li>
     <li>Attack:</li>

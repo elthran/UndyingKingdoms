@@ -10,7 +10,7 @@ from undyingkingdoms.static.metadata import dwarf_armies, human_armies
 @app.route('/initialize/', methods=['GET', 'POST'])
 def initialize():
     genders = ["----", "Female", "Male"]
-    races = ["----", "Dwarf", "Human"]
+    races = ["----", "Dwarf", "Human", "Elf"]
     form = InitializeForm()
     form.gender.choices = [(i, genders[i]) for i in range(len(genders))]
     form.race.choices = [(i, races[i]) for i in range(len(races))]
