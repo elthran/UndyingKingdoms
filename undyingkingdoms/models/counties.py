@@ -9,7 +9,7 @@ from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
 from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
-    human_buildings, kingdom_names, elven_buildings, elven_armies
+    human_buildings, kingdom_names, elf_buildings, elf_armies
 
 from copy import deepcopy
 
@@ -98,8 +98,8 @@ class County(GameState):
             buildings = deepcopy(human_buildings)
             armies = deepcopy(human_armies)
         elif self.race == 'Elf':
-            buildings = deepcopy(elven_buildings)
-            armies = deepcopy(elven_armies)
+            buildings = deepcopy(elf_buildings)
+            armies = deepcopy(elf_armies)
         self.buildings = buildings
         self.armies = armies
 

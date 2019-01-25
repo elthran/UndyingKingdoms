@@ -34,10 +34,10 @@
 <ul>
     {% for army in dwarf_armies.values() %}
     <li>Name: {{ army.class_name }}</li>
-    <li>Cost:</li>
-    <li>Attack:</li>
-    <li>Defense:</li>
-    <li>Health:</li>
+    <li>Cost: {{ army.gold }} gold, {{ army.wood }} wood, {{ army.iron }} iron</li>
+    <li>Attack: {{ army.attack }}</li>
+    <li>Defense: {{ army.defence }}</li>
+    <li>Health: {{ army.health }}</li>
     {% endfor %}
 </ul>
 
@@ -50,10 +50,10 @@
 <ul>
     {% for army in human_armies.values() %}
     <li>Name: {{ army.class_name }}</li>
-    <li>Cost:</li>
-    <li>Attack:</li>
-    <li>Defense:</li>
-    <li>Health:</li>
+    <li>Cost: {{ army.gold }} gold, {{ army.wood }} wood, {{ army.iron }} iron</li>
+    <li>Attack: {{ army.attack }}</li>
+    <li>Defense: {{ army.defence }}</li>
+    <li>Health: {{ army.health }}</li>
     {% endfor %}
 </ul>
 
@@ -66,10 +66,10 @@
 <ul>
     {% for army in elf_armies.values() %}
     <li>Name: {{ army.class_name }}</li>
-    <li>Cost:</li>
-    <li>Attack:</li>
-    <li>Defense:</li>
-    <li>Health:</li>
+    <li>Cost: {{ army.gold }} gold, {{ army.wood }} wood, {{ army.iron }} iron</li>
+    <li>Attack: {{ army.attack }}</li>
+    <li>Defense: {{ army.defence }}</li>
+    <li>Health: {{ army.health }}</li>
     {% endfor %}
 </ul>
 

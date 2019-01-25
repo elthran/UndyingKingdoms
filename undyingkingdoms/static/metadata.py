@@ -199,7 +199,7 @@ human_buildings = {'houses': Building(base_name='houses',
                                       description="Each {} gives you {} additional spies to send on missions.")
                    }
 
-elven_buildings = {'houses': Building(base_name='houses',
+elf_buildings = {'houses': Building(base_name='houses',
                                       class_name='sanctuary',
                                       total=25,
                                       production_cost=20,
@@ -375,7 +375,7 @@ human_armies = {'peasant': Army(base_name='peasant',
                               description='Knights are one of the best attackers.')
                 }
 
-elven_armies = {'peasant': Army(base_name='peasant',
+elf_armies = {'peasant': Army(base_name='peasant',
                                 class_name='defenders',
                                 total=20,
                                 trainable_per_day=25,
