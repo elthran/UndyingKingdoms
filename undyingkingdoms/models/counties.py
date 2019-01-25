@@ -208,20 +208,25 @@ class County(GameState):
         self.update_population()
         self.update_weather()  # Is before random events because they can affect weather
         self.get_random_daily_events()
-        expeditions = Expedition.query.filter_by(county_id=self.id).all()
+        
+        expeditions = Expedition.query.filter_by(county_id=self.id).filter(Expedition.duration > 0).all()
         for expedition in expeditions:
-            if expedition.duration > 0:
-                expedition.duration -= 1
-                if expedition.duration == 0:
-                    self.armies['peasant'].traveling -= expedition.peasant
-                    self.armies['soldier'].traveling -= expedition.soldier
-                    self.armies['elite'].traveling -= expedition.elite
-                    self.land += expedition.land_acquired
-                    notification = Notification(self.id, "Your army has returned",
-                                                "{} new land has been added to your kingdom".format(
-                                                    expedition.land_acquired),
-                                                self.kingdom.world.day)
-                    notification.save()
+            expedition.duration -= 1
+            if expedition.duration == 0:
+                self.armies['peasant'].traveling -= expedition.peasant
+                self.armies['soldier'].traveling -= expedition.soldier
+                self.armies['elite'].traveling -= expedition.elite
+                self.land += expedition.land_acquired
+                notification = Notification(self.id, "Your army has returned",
+                                            "{} new land has been added to your kingdom".format(
+                                                expedition.land_acquired),
+                                            self.kingdom.world.day)
+                notification.save()
+                
+        infiltrations = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
+        for infiltration in infiltrations:
+            infiltration.duration -= 1
+
         self.county_days_in_age += 1
 
     def update_daily_resources(self):
@@ -288,7 +293,6 @@ class County(GameState):
             return 2
         elif self.rations == 3:
             return 4
-
 
     def update_food(self):
         total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores
@@ -598,25 +602,6 @@ class County(GameState):
     def get_thief_report_infrastructure(self, target_id):
         current_report = Infiltration.query.filter_by(county_id=self.id, target_id=target_id, mission="scout infrastructure").first()
         return current_report
-
-
-    def get_thieves_availability(self, day):
-        current_report = Infiltration.query.filter_by(county_id=self.id).first()
-        if not current_report or (current_report.day + current_report.duration <= day):
-            return True
-        else:
-            return False
-
-    def get_thieves_report(self, target_id):
-        return Infiltration.query.filter_by(county_id=self.id, target_id=target_id).first()
-
-    def get_future_thief_report_duration(self):
-        modifier = 1 - (self.buildings['guilds'].total / self.land)
-        return int(24 * modifier)
-
-    def get_current_thief_report_duration(self, day):
-        current_report = Infiltration.query.filter_by(county_id=self.id).first()
-        return current_report.day + current_report.duration - day
 
     def get_expeditions(self):
         expeditions = Expedition.query.filter_by(county_id=self.id).all()
