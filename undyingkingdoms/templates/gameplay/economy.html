@@ -42,10 +42,10 @@
             <td>
                 <ul>
                     <li>Deaths: {{ county.get_death_rate() }}</li>
-                    <li>Emigration: {{ county.get_emmigration_rate() }}</li>
+                    <li>Emigration: {{ county.get_emigration_rate() }}</li>
                 </ul>
             </td>
-            <td>Raise happiness to increase birth rate</td>
+            <td>Raise happiness to lower the amount of emigrates leaving your county.</td>
         </tr>
         <tr>
             <td>Gold</td>
@@ -134,7 +134,7 @@
             <td>-</td>
             <td>+7 baseline</td>
             <td>-{{ county.tax }} from taxes</td>
-            <td>Happiness affects emmigration rate.</td>
+            <td>Happiness affects emigration rate.</td>
         </tr>
         <tr>
             <td>Hunger</td>
@@ -149,7 +149,7 @@
             <td>-</td>
             <td>-</td>
             <td>-</td>
-            <td>Hunger affects your death rate.</td>
+            <td>Hunger affects your death rate. Your hunger worsens by 1 for every 200 unfed people.</td>
         </tr>
     </table>
     <br>

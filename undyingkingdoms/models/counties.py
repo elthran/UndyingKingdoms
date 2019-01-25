@@ -369,18 +369,18 @@ class County(GameState):
     def get_immigration_rate(self):
         return randint(20, 30)
 
-    def get_emmigration_rate(self):
+    def get_emigration_rate(self):
         return randint(100, 110 + self.kingdom.world.age) - self.happiness
 
     @cached_random
     def get_population_change(self, prediction=False):
         growth = self.get_birth_rate() + self.get_immigration_rate()
-        decay = self.get_death_rate() + self.get_emmigration_rate()
+        decay = self.get_death_rate() + self.get_emigration_rate()
         return growth - decay
 
     def update_population(self):
         self.deaths = self.get_death_rate()
-        self.emigration = self.get_emmigration_rate()
+        self.emigration = self.get_emigration_rate()
         self.births = self.get_birth_rate()
         self.immigration = self.get_immigration_rate()
         self.population += (self.births + self.immigration) - (self.deaths + self.emigration)
