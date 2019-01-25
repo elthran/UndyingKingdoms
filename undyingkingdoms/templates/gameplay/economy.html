@@ -50,8 +50,13 @@
         <tr>
             <td>Gold</td>
             <td>{{ county.gold }}</td>
+            {% if county.get_gold_change() >= 0 %}
             <td style="color:green;">
                 +{{ county.get_gold_change() }}
+                {% else %}
+             <td style="color:red;">
+                {{ county.get_gold_change() }}
+            {% endif %}
                 <img class="resource_icons" src="/static/images/gold_icon.jpg">
             </td>
             <td>Tax Rate: {{ form.tax }}%</td>
