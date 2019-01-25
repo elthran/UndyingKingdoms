@@ -240,6 +240,7 @@ class County(GameState):
             
     def get_random_daily_events(self):
         random_chance = randint(1, 200)
+        notification = None
         if random_chance == 1 and self.grain_stores > 0:
             amount = min(self.county_days_in_age * randint(1, 2), self.grain_stores)
             notification = Notification(self.id,
