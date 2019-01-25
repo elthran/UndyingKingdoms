@@ -214,7 +214,6 @@ class County(GameState):
                 expedition.duration -= 1
                 if expedition.duration == 0:
                     self.armies['peasant'].traveling -= expedition.peasant
-                    self.armies['archer'].traveling -= expedition.archer
                     self.armies['soldier'].traveling -= expedition.soldier
                     self.armies['elite'].traveling -= expedition.elite
                     self.land += expedition.land_acquired
