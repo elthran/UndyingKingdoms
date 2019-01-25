@@ -9,7 +9,7 @@ from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
 from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
-    human_buildings, kingdom_names, elf_buildings, elf_armies
+    human_buildings, elf_buildings, elf_armies
 
 from copy import deepcopy
 
@@ -606,7 +606,13 @@ class County(GameState):
     def get_expeditions(self):
         expeditions = Expedition.query.filter_by(county_id=self.id).all()
         return [expedition for expedition in expeditions if expedition.duration > 0]
-
+    
+    def get_chance_to_be_successfully_infiltrated(self):
+        reduction = self.get_number_of_available_thieves() * 2000 / self.land
+        return 100 - reduction
+    
+    
+    # Terminology
     @property
     def hunger_terminology(self):
         if self.hunger < 20:

@@ -33,7 +33,7 @@ def infiltrate(county_id):
                               mission, form.amount.data)
         report.save()
 
-        chance_of_success = 100 - (target.get_number_of_available_thieves() * 2000 / target.land)
+        chance_of_success = target.get_chance_to_be_successfully_infiltrated()
 
         if chance_of_success >= randint(1, 100):
             report.success = True
@@ -73,6 +73,7 @@ def infiltrate(county_id):
                                             current_user.county.kingdom.world.day)
         else:
             notification = Notification(target.id, "You caught enemy thieves from {}".format(current_user.county.name), "You caught them before they could accomplish their task", current_user.county.kingdom.world.day)
+            report.duration = 4
             report.success = False
         notification.save()
 
