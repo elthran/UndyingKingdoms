@@ -2,7 +2,7 @@ from flask import url_for, redirect, render_template
 from flask_login import current_user
 
 from undyingkingdoms import app
-from undyingkingdoms.models import County
+from undyingkingdoms.models import County, Kingdom
 from undyingkingdoms.models.forms.initialize import InitializeForm
 from undyingkingdoms.static.metadata import dwarf_armies, human_armies, elf_armies
 
@@ -16,8 +16,13 @@ def initialize():
     form = InitializeForm()
     form.gender.choices = [(i, genders[i]) for i in range(len(genders))]
     form.race.choices = [(i, races[i]) for i in range(len(races))]
+    
+    kingdoms = Kingdom.query.all()
+    smallest_kingdom = min(kingdoms, key=lambda x: len(x.counties))
+    
     if form.validate_on_submit():
-        county = County(form.county.data,
+        county = County(smallest_kingdom.id,
+                        form.county.data,
                         form.leader.data,
                         current_user.id,
                         races[form.race.data],

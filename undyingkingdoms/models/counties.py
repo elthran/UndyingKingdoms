@@ -58,12 +58,12 @@ class County(GameState):
                              collection_class=attribute_mapped_collection('base_name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
 
-    def __init__(self, name, leader, user_id, race, gender):
+    def __init__(self, kingdom_id, name, leader, user_id, race, gender):
 
         self.name = name
         self.leader = leader
         self.user_id = user_id
-        self.kingdom_id = randint(1, len(kingdom_names))
+        self.kingdom_id = kingdom_id
         self.race = race
         self.gender = gender
         self.title = 'Noble'
@@ -218,7 +218,7 @@ class County(GameState):
                 self.armies['elite'].traveling -= expedition.elite
                 self.land += expedition.land_acquired
                 notification = Notification(self.id, "Your army has returned",
-                                            "{} new land has been added to your kingdom".format(
+                                            "{} new land has been added to your county".format(
                                                 expedition.land_acquired),
                                             self.kingdom.world.day)
                 notification.save()

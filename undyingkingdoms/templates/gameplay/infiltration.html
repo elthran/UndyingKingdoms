@@ -12,7 +12,7 @@ Thieves available: {{ county.get_number_of_available_thieves() }}
     <br>
     {% if mission.success %}
         {% if mission.mission == 'pilfer' %}
-        Your thieves were able to steal {{ mission.pilfer_amount }} gold.
+        Your thieves were able to steal {{ mission.pilfer_amount }} gold. (Ready for next mission in {{ mission.duration }} days)
         {% endif %}
         {% if mission.mission == 'burn crops' %}
         Your thieves burned {{ mission.crops_burned }} crops. (Ready for next mission in {{ mission.duration }} days)
