@@ -465,9 +465,9 @@ class County(GameState):
         for unit in self.armies.values():
             strength += unit.available * unit.defence
         if self.race == 'Elf':
-            strength += self.population // 15  # Every 15 population is 1 defence power
+            strength += self.population // 10  # Every 15 population is 1 defence power
         else:
-            strength += self.population // 30  # Every 30 population is 1 defence power
+            strength += self.population // 20  # Every 30 population is 1 defence power
         strength *= modifier
         return int(strength)
 

@@ -42,6 +42,7 @@ def infiltrate(county_id):
                 target.gold -= gold_stolen
                 current_user.county.gold += gold_stolen
                 report.pilfer_amount = gold_stolen
+                report.duration = 14
             elif mission == 'burn crops':
                 crops_burned = min(target.buildings['fields'].total, form.amount.data)
                 target.buildings['fields'].total -= crops_burned
@@ -50,8 +51,10 @@ def infiltrate(county_id):
                 happiness_lost = min(target.happiness, form.amount.data * 3)
                 target.happiness -= happiness_lost
                 report.distrust = happiness_lost
+                report.duration = 18
             elif mission == 'scout military':
                 report.get_troop_report(current_user.county, target, form.amount.data)
+                report.duration = 6
         else:
             report.success = False
 
