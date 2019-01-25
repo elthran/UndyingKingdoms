@@ -6,14 +6,14 @@
 {% set kingdom = county.kingdom %}
 
 <h2>Thieves available: {{ county.get_number_of_available_thieves() }}</h2>
-<h3>Chance of enemy successfully infiltrating you: {{ county.get_chance_to_be_successfully_infiltrated() }} (Note: Sending your thieves out lowers your defenses)</h3>
+<h3>Chance of enemy successfully infiltrating you: {{ county.get_chance_to_be_successfully_infiltrated() }}% (Note: Sending your thieves out lowers your defenses)</h3>
 <br><br>
 <h2>Previous Spy Missions</h2>
 {% for mission in missions|sort(attribute='duration') %}
     <br>
     {% if mission.success %}
         {% if mission.mission == 'pilfer' %}
-        Your thieves were able to steal {{ mission.pilfer_amount }} gold. (Ready for next mission in {{ mission.duration }} days)
+        Your thieves were able to steal {{ mission.pilfer_amount }} <img class="resource_icons" src="/static/images/gold_icon.jpg">. (Ready for next mission in {{ mission.duration }} days)
         {% endif %}
         {% if mission.mission == 'burn crops' %}
         Your thieves burned {{ mission.crops_burned }} crops. (Ready for next mission in {{ mission.duration }} days)

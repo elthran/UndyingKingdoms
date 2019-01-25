@@ -609,7 +609,7 @@ class County(GameState):
     
     def get_chance_to_be_successfully_infiltrated(self):
         reduction = self.get_number_of_available_thieves() * 2000 / self.land
-        return 100 - reduction
+        return int(100 - reduction)
     
     
     # Terminology
