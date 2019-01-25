@@ -30,3 +30,4 @@ class Message(GameState):
         current_day = World.query.filter_by(id=1).first().day
         return current_day - self.day
 
+

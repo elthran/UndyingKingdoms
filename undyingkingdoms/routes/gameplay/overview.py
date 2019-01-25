@@ -21,7 +21,8 @@ def overview(kingdom_id=0, county_id=0):
         return redirect(url_for('initialize'))
 
     if kingdom_id == 0 or county_id == 0:
-        return render_template('gameplay/overview.html')
+        has_mail = Message.query.filter_by(county_id=current_user.county.id, unread=True).count()
+        return render_template('gameplay/overview.html', has_mail=has_mail)
 
     form = MessageForm()
     if form.validate_on_submit():
