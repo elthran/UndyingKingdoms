@@ -9,6 +9,8 @@ from undyingkingdoms.static.metadata import dwarf_armies, human_armies, elf_armi
 
 @app.route('/initialize/', methods=['GET', 'POST'])
 def initialize():
+    if current_user.county is not None:
+        return redirect(url_for('overview', kingdom_id=0, county_id=0))
     genders = ["----", "Female", "Male"]
     races = ["----", "Dwarf", "Human", "Elf"]
     form = InitializeForm()
