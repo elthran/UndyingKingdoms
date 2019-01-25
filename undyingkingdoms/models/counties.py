@@ -387,7 +387,7 @@ class County(GameState):
 
     # Resources
     def get_tax_income(self):
-        return int(self.population * (self.tax / 200))
+        return int(self.population * (self.tax / 100))
 
     def get_upkeep_costs(self):
         return sum(unit.upkeep * unit.total for unit in self.armies.values()) // 24
