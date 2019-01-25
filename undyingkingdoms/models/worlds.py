@@ -6,8 +6,9 @@ from pandas import DataFrame
 
 from undyingkingdoms.blueprints import helpers
 from undyingkingdoms.models.users import User
-from undyingkingdoms.models import DAU
+from undyingkingdoms.models.dau import DAU
 from undyingkingdoms.models.counties import County
+from undyingkingdoms.models.kingdoms import Kingdom
 from undyingkingdoms.models.bases import GameState
 
 from extensions import flask_db as db
@@ -67,6 +68,11 @@ class World(GameState):
                 top_user = user
         top_user.alpha_wins += 1
         top_user.save()
+
+        kingdoms = Kingdom.query.all()
+        for kingdom in kingdoms:
+            kingdom.leader = 0
+
         tables = ['county', 'army', 'building', 'notification', 'expedition', 'infiltration', 'chatroom', 'message',
                   'session', 'transaction']
         for table in tables:
