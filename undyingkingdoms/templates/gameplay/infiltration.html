@@ -5,7 +5,7 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
-<h2>Thieves available: {{ county.get_number_of_available_thieves() }} / {{ county.buildings['guild'].total }}</h2>
+<h2>Thieves available: {{ county.get_number_of_available_thieves() }} / {{ county.buildings['guilds'].total }}</h2>
 <h3>Chance of enemy successfully infiltrating you: {{ county.get_chance_to_be_successfully_infiltrated() }}% (Note: Sending your thieves out lowers your defenses)</h3>
 <br><br>
 <h2>Active Missions</h2>
@@ -27,7 +27,7 @@
         <li>Your {{ mission.amount_of_thieves }} thieves have successfully scouted the enemy's military. (Ready for next mission in {{ mission.duration }} days).</li>
         {% endif %}
     {% else %}
-       <li>The {{ mission.amount_of_thieves }} thieves you sent were caught. You will have trained new thieves to replace them in {{ mission.duration }} days).</li>
+       <li>The {{ mission.amount_of_thieves }} thieves you sent were caught. You will have trained new thieves to replace them in {{ mission.duration }} days.</li>
     {% endif %}
 {% endif %}
 {% else %}

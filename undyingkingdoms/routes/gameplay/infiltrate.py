@@ -38,7 +38,7 @@ def infiltrate(county_id):
         if chance_of_success >= randint(1, 100):
             report.success = True
             if mission == 'pilfer':
-                gold_stolen = min(randint(15, 25) * form.amount.data, target.gold)
+                gold_stolen = min(randint(12 * form.amount.data, 20 * form.amount.data) * 1.25, target.gold)
                 target.gold -= gold_stolen
                 current_user.county.gold += gold_stolen
                 report.pilfer_amount = gold_stolen
@@ -51,6 +51,7 @@ def infiltrate(county_id):
                 crops_burned = min(target.buildings['fields'].total, form.amount.data)
                 target.buildings['fields'].total -= crops_burned
                 report.crops_burned = crops_burned
+                report.duration = 24
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
                                             "They burned {} of our crops".format(crops_burned),
@@ -73,7 +74,7 @@ def infiltrate(county_id):
                                             current_user.county.kingdom.world.day)
         else:
             notification = Notification(target.id, "You caught enemy thieves from {}".format(current_user.county.name), "You caught them before they could accomplish their task", current_user.county.kingdom.world.day)
-            report.duration = 4 * form.amount.data
+            report.duration = 10 + (form.amount.data * 2)
             report.success = False
         notification.save()
 
