@@ -5,32 +5,34 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
-<h2>Thieves available: {{ county.get_number_of_available_thieves() }}</h2>
+<h2>Thieves available: {{ county.get_number_of_available_thieves() }} / {{ county.buildings['guild'].total }}</h2>
 <h3>Chance of enemy successfully infiltrating you: {{ county.get_chance_to_be_successfully_infiltrated() }}% (Note: Sending your thieves out lowers your defenses)</h3>
 <br><br>
 <h2>Active Missions</h2>
+<ul>
 {% for mission in missions|sort(attribute='duration') %}
 {% if mission.duration > 0 %}
     <br>
     {% if mission.success %}
         {% if mission.mission == 'pilfer' %}
-        Your {{ mission.amount_of_thieves }} thieves were able to steal {{ mission.pilfer_amount }} <img class="resource_icons" src="/static/images/gold_icon.jpg">. (Ready for next mission in {{ mission.duration }} days)
+        <li>Your {{ mission.amount_of_thieves }} thieves were able to steal {{ mission.pilfer_amount }} <img class="resource_icons" src="/static/images/gold_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).</li>
         {% endif %}
         {% if mission.mission == 'burn crops' %}
-        Your {{ mission.amount_of_thieves }} thieves burned {{ mission.crops_burned }} crops. (Ready for next mission in {{ mission.duration }} days)
+        <li>Your {{ mission.amount_of_thieves }} thieves burned {{ mission.crops_burned }} crops. (Ready for next mission in {{ mission.duration }} days).</li>
         {% endif %}
         {% if mission.mission == 'sow distrust' %}
-        Your {{ mission.amount_of_thieves }} thieves caused unrest and lowered enemy happiness by {{ mission.distrust }} <img class="resource_icons" src="/static/images/heart_icon.jpg">. (Ready for next mission in {{ mission.duration }} days)
+        <li>Your {{ mission.amount_of_thieves }} thieves caused unrest and lowered enemy happiness by {{ mission.distrust }} <img class="resource_icons" src="/static/images/heart_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).</li>
         {% endif %}
         {% if mission.mission == 'scout military' %}
-        Your {{ mission.amount_of_thieves }} thieves have successfully scouted the enemy's military. (Ready for next mission in {{ mission.duration }} days)
+        <li>Your {{ mission.amount_of_thieves }} thieves have successfully scouted the enemy's military. (Ready for next mission in {{ mission.duration }} days).</li>
         {% endif %}
     {% else %}
-       The thieves you sent {{ mission.get_report_age(kingdom.world.day) }} days ago were caught. You will have a new thief trained in {{ mission.duration }} days).
+       <li>The {{ mission.amount_of_thieves }} thieves you sent were caught. You will have trained new thieves to replace them in {{ mission.duration }} days).</li>
     {% endif %}
 {% endif %}
 {% else %}
-All of your thieves are currently patrolling your county.
+<li>All of your thieves are currently patrolling your county.</li>
 {% endfor %}
+</ul>
 
 {% endblock %}

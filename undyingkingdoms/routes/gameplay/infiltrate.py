@@ -73,7 +73,7 @@ def infiltrate(county_id):
                                             current_user.county.kingdom.world.day)
         else:
             notification = Notification(target.id, "You caught enemy thieves from {}".format(current_user.county.name), "You caught them before they could accomplish their task", current_user.county.kingdom.world.day)
-            report.duration = 4
+            report.duration = 4 * form.amount.data
             report.success = False
         notification.save()
 
