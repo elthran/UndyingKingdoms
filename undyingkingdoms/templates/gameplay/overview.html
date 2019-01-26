@@ -26,9 +26,10 @@
     <li>No new events to report.</li>
     {% endfor %}
 </ul>
-<span id="oldNews" display="none">
-    <button onclick="oldNewsDisplay()">Display</button>
-<h2>Old News</h2>
+<br><br>
+<button onclick="oldNewsDisplay()">Show Old News</button>
+<div id="oldNews" style="display:none;">
+<br>
 <ul>
     {% for event in county.display_old_news()|sort(attribute='day', reverse=True) %}
     <li>{{ event.title }} (Day: {{ event.day }}): {{ event.content }}</li>
@@ -36,7 +37,7 @@
     <li>There is no news in your history.</li>
     {% endfor %}
 </ul>
-</span>
+</div>
 
 <script type="text/javascript">
 function oldNewsDisplay() {
@@ -44,7 +45,7 @@ function oldNewsDisplay() {
   if (x.style.display === "none") {
     x.style.display = "block";
   } else {
-    x.style.display === "none"
+    x.style.display = "none";
   }
 }
 </script>
