@@ -8,27 +8,29 @@
 <h2>Thieves available: {{ county.get_number_of_available_thieves() }}</h2>
 <h3>Chance of enemy successfully infiltrating you: {{ county.get_chance_to_be_successfully_infiltrated() }}% (Note: Sending your thieves out lowers your defenses)</h3>
 <br><br>
-<h2>Previous Spy Missions</h2>
+<h2>Active Missions</h2>
 {% for mission in missions|sort(attribute='duration') %}
+{% if mission.duration > 0 %}
     <br>
     {% if mission.success %}
         {% if mission.mission == 'pilfer' %}
-        Your thieves were able to steal {{ mission.pilfer_amount }} <img class="resource_icons" src="/static/images/gold_icon.jpg">. (Ready for next mission in {{ mission.duration }} days)
+        Your {{ mission.amount_of_thieves }} thieves were able to steal {{ mission.pilfer_amount }} <img class="resource_icons" src="/static/images/gold_icon.jpg">. (Ready for next mission in {{ mission.duration }} days)
         {% endif %}
         {% if mission.mission == 'burn crops' %}
-        Your thieves burned {{ mission.crops_burned }} crops. (Ready for next mission in {{ mission.duration }} days)
+        Your {{ mission.amount_of_thieves }} thieves burned {{ mission.crops_burned }} crops. (Ready for next mission in {{ mission.duration }} days)
         {% endif %}
         {% if mission.mission == 'sow distrust' %}
-        Your thieves caused unrest and lowered enemy happiness by {{ mission.distrust }} <img class="resource_icons" src="/static/images/heart_icon.jpg">. (Ready for next mission in {{ mission.duration }} days)
+        Your {{ mission.amount_of_thieves }} thieves caused unrest and lowered enemy happiness by {{ mission.distrust }} <img class="resource_icons" src="/static/images/heart_icon.jpg">. (Ready for next mission in {{ mission.duration }} days)
         {% endif %}
         {% if mission.mission == 'scout military' %}
-        Your thieves have successfully scouted the enemy's military. (Ready for next mission in {{ mission.duration }} days)
+        Your {{ mission.amount_of_thieves }} thieves have successfully scouted the enemy's military. (Ready for next mission in {{ mission.duration }} days)
         {% endif %}
     {% else %}
        The thieves you sent {{ mission.get_report_age(kingdom.world.day) }} days ago were caught. You will have a new thief trained in {{ mission.duration }} days).
     {% endif %}
+{% endif %}
 {% else %}
-You have never sent your thieves on any missions.
+All of your thieves are currently patrolling your county.
 {% endfor %}
 
 {% endblock %}

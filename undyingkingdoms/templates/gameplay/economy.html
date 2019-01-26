@@ -32,7 +32,7 @@
                 {% endif %}
                 {{ population_projection }} <img class="resource_icons" src="/static/images/population_icon.jpg">
             </td>
-            <td>-</td>
+            <td>{% if county.race == 'Elf' %}Elders: -10%{% else %}-{% endif %}</td>
             <td>
                 <ul>
                     <li>Births: {{ county.get_birth_rate() }}</li>

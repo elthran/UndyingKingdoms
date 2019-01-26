@@ -72,7 +72,7 @@ def populate_db():
         user.is_admin = True
         user.is_active = True
         user.save()
-        county = County("Ulthuan", "Elthran", user.id, 'Human', 'Male')
+        county = County(1, "Ulthuan", "Elthran", user.id, 'Human', 'Male')
         county.save()
         county.vote = county.id
 
@@ -81,14 +81,14 @@ def populate_db():
         user.is_admin = True
         user.is_active = True
         user.save()
-        county = County("Northern Wastes", "Haldon", user.id, 'Dwarf', 'Male')
+        county = County(1, "Northern Wastes", "Haldon", user.id, 'Dwarf', 'Male')
         county.save()
         county.vote = county.id
 
         # Create AI1 (He is weak and easier to attack for testing)
         user = User("ai1", "1@gmail.com", "star")
         user.save()
-        county = County("Robotica1", "Mr. Roboto1", user.id, 'Dwarf', 'Female')
+        county = County(1, "Robotica1", "Mr. Roboto1", user.id, 'Dwarf', 'Female')
         county.save()
         county.vote = county.id
         county.armies['peasant'].amount = 0
@@ -96,7 +96,7 @@ def populate_db():
         # Create AI2 (He is weak and easier to attack for testing)
         user = User("ai2", "2@gmail.com", "star")
         user.save()
-        county = County("Robotica2", "Mr. Roboto2", user.id, 'Dwarf', 'Female')
+        county = County(2, "Robotica2", "Mr. Roboto2", user.id, 'Elf', 'Female')
         county.save()
         county.vote = county.id
         county.armies['peasant'].amount = 0
@@ -104,7 +104,7 @@ def populate_db():
         # Create AI3 (He is weak and easier to attack for testing)
         user = User("ai3", "3@gmail.com", "star")
         user.save()
-        county = County("Robotica3", "Mr. Roboto3", user.id, 'Dwarf', 'Female')
+        county = County(2, "Robotica3", "Mr. Roboto3", user.id, 'Human', 'Female')
         county.save()
         county.vote = county.id
         county.armies['peasant'].amount = 0
