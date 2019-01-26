@@ -18,23 +18,35 @@
     <li>Weather: {{ county.weather.title() }}</li>
 </ul>
 <br>
+<h2>News</h2>
 <ul>
-    <li><h2>News</h2></li>
     {% for event in county.display_news()|sort(attribute='day', reverse=True) %}
     <li>{{ event.title }} (Day: {{ event.day }}): {{ event.content }}</li>
     {% else %}
     <li>No new events to report.</li>
     {% endfor %}
 </ul>
+<span id="oldNews" display="none">
+    <button onclick="oldNewsDisplay()">Display</button>
+<h2>Old News</h2>
 <ul>
-    <li><h2>Old News</h2></li>
     {% for event in county.display_old_news()|sort(attribute='day', reverse=True) %}
     <li>{{ event.title }} (Day: {{ event.day }}): {{ event.content }}</li>
     {% else %}
     <li>There is no news in your history.</li>
     {% endfor %}
 </ul>
+</span>
 
-
+<script type="text/javascript">
+function oldNewsDisplay() {
+  var x = document.getElementById("oldNews");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display === "none"
+  }
+}
+</script>
 
 {% endblock %}
