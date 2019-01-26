@@ -20,10 +20,18 @@
 <br>
 <ul>
     <li><h2>News</h2></li>
-    {% for event in county.display_news() %}
+    {% for event in county.display_news()|sort(attribute='day', reverse=True) %}
     <li>{{ event.title }} (Day: {{ event.day }}): {{ event.content }}</li>
     {% else %}
     <li>No new events to report.</li>
+    {% endfor %}
+</ul>
+<ul>
+    <li><h2>Old News</h2></li>
+    {% for event in county.display_old_news()|sort(attribute='day', reverse=True) %}
+    <li>{{ event.title }} (Day: {{ event.day }}): {{ event.content }}</li>
+    {% else %}
+    <li>There is no news in your history.</li>
     {% endfor %}
 </ul>
 

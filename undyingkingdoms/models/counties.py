@@ -588,6 +588,10 @@ class County(GameState):
             event.new = False
         return events
 
+    def display_old_news(self):
+        events = [event for event in Notification.query.filter_by(county_id=self.id).all() if event.new is False]
+        return events
+
     # Infiltrations
     def get_number_of_available_thieves(self):
         total_thieves = self.buildings['guilds'].total
