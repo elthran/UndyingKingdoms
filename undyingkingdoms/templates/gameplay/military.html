@@ -84,9 +84,11 @@
     Gold Cost: <span id="goldCost">0</span>
       <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
     Wood Cost: <span id="woodCost">0</span>
-      <img class="resource_icons" src="/static/images/wood_icon.jpg"> {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
+      <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
     Iron Cost: <span id="ironCost">0</span>
-      <img class="resource_icons" src="/static/images/iron_icon.jpg"> {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"><br>
+      <img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"><br>
+    Happiness Cost: <span id="happinessCost">0</span>
+      <img class="resource_icons" src="/static/images/heart_icon.jpg">
     <br>
     <button type="submit" id="submitButton">Build</button>
     <p>Note: For each 1% of your population you force into the military, your county will lose 1 happiness.</p>
@@ -118,25 +120,30 @@ function updateGold() {
     + soldier_slider.value * {{ county.armies.soldier.gold }}
     + elite_slider.value * {{ county.armies.elite.gold }};
 }
-
 function updateWood() {
     woodCost.innerHTML = peasant_slider.value * {{ county.armies.peasant.wood }}
     + archer_slider.value * {{ county.armies.archer.wood }}
     + soldier_slider.value * {{ county.armies.soldier.wood }}
     + elite_slider.value * {{ county.armies.elite.wood }};
 }
-
 function updateIron() {
     ironCost.innerHTML = peasant_slider.value * {{ county.armies.peasant.iron }}
     + archer_slider.value * {{ county.armies.archer.iron }}
     + soldier_slider.value * {{ county.armies.soldier.iron }}
     + elite_slider.value * {{ county.armies.elite.iron }};
 }
+function updateHappiness() {
+    happinessCost.innerHTML = Math.ceil((parseInt(peasant_slider.value)
+    + parseInt(archer_slider.value)
+    + parseInt(soldier_slider.value)
+    + parseInt(elite_slider.value)) * 100 / {{ county.population }});
+}
 
 function updateCosts() {
     updateGold();
     updateWood();
     updateIron();
+    updateHappiness();
     var gold = parseInt(goldCost.innerHTML);
     if (gold > {{ county.gold }}) {
         goldCost.style.color = 'red';
