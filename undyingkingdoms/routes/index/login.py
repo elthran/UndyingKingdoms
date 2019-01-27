@@ -5,6 +5,7 @@ from flask import url_for, redirect, render_template, flash, jsonify
 from flask.views import MethodView
 from flask_login import current_user
 from flask_login import login_user
+from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app, User
 from undyingkingdoms.models import Notification
@@ -12,7 +13,8 @@ from undyingkingdoms.models.forms.login import LoginForm
 
 
 @app.route('/login/', methods=['GET', 'POST'])
-def login():
+@mobile_template('{mobile/}index/login.html')
+def login(template):
     form = LoginForm()
     if current_user.is_authenticated:
         return redirect(
@@ -33,7 +35,7 @@ def login():
                 url_for('overview', kingdom_id=0, county_id=0))
         else:
             flash("Your email or password was incorrect.")
-    return render_template("index/login.html", form=form)
+    return render_template(template, form=form)
 
 
 class LoginAPI(MethodView):
