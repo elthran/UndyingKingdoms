@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}Login: {{ super() }}{% endblock %}
+
+{% block style %}
+<style type="text/css">
+div {
+	text-align: center;
+}
+
+.form-control {
+	width: 240px;
+	height: 2em;
+	margin-bottom: 4px;
+}
+
+button {
+	width: 240px;
+  height: 2.3em;
+	border-radius: 4px;
+}
+</style>
+{% endblock %}
+
+{% block content1 %}
+<div>
+	<h1>Welcome to Undying Kingdoms</h1>
+	<h2>Take charge of your county and become the rightful ruler of your kingdom. Then take over the world!</h2>
+	<br>
+	<form method="POST" accept-charset="UTF-8" role="form">
+	  <!-- LoginForm -->
+	  {{ form.csrf_token }}
+	  {{ render_field(form.email, placeholder="Your Email Address", autofocus="") }}
+	  {{ render_field(form.password, placeholder="Password") }}
+	  <input type="checkbox" name="remember" value="1"> Remember Me
+	  <br><a role="button" href="/register">New user? Create account here.</a>
+	  <br><br>
+	  <button type="submit">Sign in</button>
+	</form>
+	<br><br>
+	<p>The game is currently in early stages of Alpha (0.0.03)</p>
+	<p>This round of testing will end on January 31st, 2019.</p>
+</div>
+{% endblock %}

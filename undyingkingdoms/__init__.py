@@ -4,6 +4,7 @@ import socket
 from flask import Flask, render_template, send_from_directory
 from flask_mail import Mail
 from flask_sslify import SSLify
+from flask_mobility import Mobility
 
 from extensions import flask_db, flask_json, flask_csrf
 from undyingkingdoms.GeoIP import geo_ip
@@ -37,6 +38,7 @@ app.config.update(dict(
     MAIL_DEFAULT_SENDER='This seems to do nothing'
 ))
 mail = Mail(app)
+Mobility(app)
 
 # Register app blueprints
 app.register_blueprint(geo_ip)

@@ -28,7 +28,8 @@ setup(
         'sqlalchemy-utils',
         'PyJWT',
         'requests',
-        'flask-script'
+        'flask-script',
+        'Flask-Mobility'
     ],
 )
 
