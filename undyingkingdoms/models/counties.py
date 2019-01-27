@@ -249,29 +249,29 @@ class County(GameState):
             amount = min(self.county_days_in_age * randint(1, 2), self.grain_stores)
             notification = Notification(self.id,
                                         "Rats have gotten into your grain silos",
-                                        "Your county lost {} of its stored grain.",
-                                        self.kingdom.world.day).format(amount)
+                                        "Your county lost {} of its stored grain.".format(amount),
+                                        self.kingdom.world.day)
             self.grain_stores -= amount
         elif random_chance == 2 and self.happiness > 90:
             amount = randint(100, 200)
             notification = Notification(self.id,
                                         "Your people celebrate your rule",
-                                        "Your people hold a feast and offer you {} gold as tribute.",
-                                        self.kingdom.world.day).format(amount)
+                                        "Your people hold a feast and offer you {} gold as tribute.".format(amount),
+                                        self.kingdom.world.day)
             self.gold += amount
         elif random_chance == 3 and self.buildings['pastures'].total > 0:
             amount = min(randint(3, 6), self.buildings['pastures'].total)
             notification = Notification(self.id,
                                         "A disease has affected your cattle",
-                                        "Your county has lost {} of its dairy farms.",
-                                        self.kingdom.world.day).format(amount)
+                                        "Your county has lost {} of its dairy farms.".format(amount),
+                                        self.kingdom.world.day)
             self.buildings['pastures'].total -= amount
         elif random_chance == 4 and self.buildings['fields'].total > 0:
             amount = min(randint(3, 6), self.buildings['fields'].total)
             notification = Notification(self.id,
                                         "Storms have ravaged your crops",
-                                        "A massive storm has destroyed {} of your fields.",
-                                        self.kingdom.world.day).format(amount)
+                                        "A massive storm has destroyed {} of your fields.".format(amount),
+                                        self.kingdom.world.day)
             self.buildings['fields'].total -= amount
             self.weather = 'thunderstorm'
         if notification:

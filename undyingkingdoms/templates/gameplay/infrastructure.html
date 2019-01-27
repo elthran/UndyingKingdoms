@@ -25,8 +25,8 @@
     <table class="production_table">
         <tr>
             <th style="width:150px;">Name</th>
-            <th>Currently Have</th>
-            <th>To Be Built</th>
+            <th>Owned</th>
+            <th style="width:175px;">To Be Built</th>
             <th>Under Construction</th>
             <th style="width:150px;">Cost</th>
             <th style="width:150px;">Workers Employed</th>
@@ -37,9 +37,9 @@
             <td>{{ building.class_name.title() }}</td>
             <td>{{ building.total }}</td>
             <td>
-                <input id="{{ building.base_name }}_slider"
-                       type="range" value="0" min="0" max="25" step="1" />
-                <input id="{{ building.base_name }}_display" name="{{ building.base_name }}" value="0" />
+                <input id="{{ building.base_name }}_slider" type="range" value="0" min="0" max="20" step="1" />
+                <span id="{{ building.base_name }}_display">0</span>
+                <input id="{{ building.base_name }}_value" name="{{ building.base_name }}" value="0" hidden/>
             </td>
             <td>{{ building.pending }}</td>
             <td>
@@ -61,18 +61,57 @@
             <td>-</td>
         </tr>
     </table>
-    <br><button id="submit" type="submit" disabled>Build</button><br>
+    <br>
+    Gold Cost: <span id="goldCost">0</span>
+      <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
+    Wood Cost: <span id="woodCost">0</span>
+      <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
+    <br><br>
+    <br><button id="submitButton" type="submit">Build</button><br>
 </form>
 
 <script type="text/javascript">
+
+var submitButton = document.getElementById('submitButton');
+
 {% for building in county.buildings.values() %}
-    var {{ building.base_name }}_slider = document.getElementById('{{ building.base_name }}_slider'),
+    var {{ building.base_name }}_slider = document.getElementById('{{ building.base_name }}_slider');
     {{ building.base_name }}_display = document.getElementById('{{ building.base_name }}_display');
+{% endfor %}
+
+function updateGold() {
+    goldCost.innerHTML = 0{% for building in county.buildings.values() %} + {{ building.base_name }}_slider.value * {{ building.gold }}{% endfor %};
+}
+function updateWood() {
+    woodCost.innerHTML = 0{% for building in county.buildings.values() %} + {{ building.base_name }}_slider.value * {{ building.wood }}{% endfor %};
+}
+function updateCosts() {
+    updateGold();
+    updateWood();
+    var gold = parseInt(goldCost.innerHTML);
+    if (gold > {{ county.gold }}) {
+        goldCost.style.color = 'red';
+    } else {
+        goldCost.style.color = 'green';
+    }
+    var wood = parseInt(woodCost.innerHTML);
+    if (wood > {{ county.wood }}) {
+        woodCost.style.color = 'red';
+    } else {
+        woodCost.style.color = 'green';
+    }
+    if (gold <= {{ county.gold }} && wood <= {{ county.wood }}) {
+        submitButton.disabled = false;
+    } else {
+        submitButton.disabled = true;
+    }
+}
+
+{% for building in county.buildings.values() %}
     {{ building.base_name }}_slider.onchange = function() {
-        {{ building.base_name }}_display.value = this.value;
-        if (this.value > 0) {
-            button.disabled = false;
-        }
+        {{ building.base_name }}_display.innerHTML = this.value;
+        {{ building.base_name }}_value.value = this.value;
+        updateCosts();
     }
 {% endfor %}
 button = document.getElementById('submit');

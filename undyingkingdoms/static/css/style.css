@@ -15,7 +15,7 @@ h2 {
 
 .sidebar {              /* The main sidebar which is always visible when logged in */
     width: auto;
-    height: 750px;
+    height: 1250px;
     float: left;
     margin-right: 50px;
     padding: 15px;
