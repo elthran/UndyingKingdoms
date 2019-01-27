@@ -26,6 +26,11 @@ class BaseConfig:
 
     MAIL_USE_TLS = True
     MAIL_USE_SSL = True
+    MAIL_SERVER='smtp.gmail.com',
+    MAIL_PORT=587,
+    MAIL_USERNAME=private_config.MAIL_USERNAME,
+    MAIL_PASSWORD=private_config.MAIL_PASSWORD,
+    MAIL_DEFAULT_SENDER='This seems to do nothing'
 
 
 class ProductionConfig(BaseConfig):
