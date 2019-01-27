@@ -17,7 +17,7 @@
             <th>Available</th>
             <th>In Foreign Lands</th>
             <th>In Training</th>
-            <th>Train</th>
+            <th style="width:175px;">Train</th>
             <th style="width:125px;">Cost</th>
             <th>Trainable Per Day</th>
             <th>
@@ -42,8 +42,8 @@
             <td>{{ army.currently_training }}</td>
             <td>
                 <input id="{{ army.base_name }}_slider"
-                       type="range" value="0" min="0" max="25" step="1"/>
-                <input id="{{ army.base_name }}_display" name="{{ army.base_name }}" value="0"/>
+                       type="range" value="0" min="0" max="50" step="1"/>
+                <span id="{{ army.base_name }}_display" name="{{ army.base_name }}">0</span>
             </td>
             <td>
                 {% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif
@@ -151,7 +151,7 @@ function updateCosts() {
 
 {% for unit in county.armies.values() %}
     {{ unit.base_name }}_slider.onchange = function() {
-        {{ unit.base_name }}_display.value = this.value;
+        {{ unit.base_name }}_display.innerHTML = this.value;
         updateCosts();
     }
 {% endfor %}
