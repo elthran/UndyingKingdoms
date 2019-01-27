@@ -8,11 +8,6 @@
 <br><br><br><br>
 <h2>Current Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>
 <h2>Current Defensive Power: {{ county.get_defensive_strength() }}</h2>
-<h2>Current Resources:
-    {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">
-    {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
-    {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
-</h2>
 <h2>{{ county.get_available_workers() }} workers available for training</h2>
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
@@ -25,10 +20,18 @@
             <th>Train</th>
             <th style="width:125px;">Cost</th>
             <th>Trainable Per Day</th>
-            <th><div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div></th>
-            <th><div class="tooltip">Defence<span class="tooltipText">{{ meta_data["defence"] }}</span></div></th>
-            <th><div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div></th>
-            <th><div class="tooltip">Upkeep<span class="tooltipText">{{ meta_data["upkeep"] }}</span></div></th>
+            <th>
+                <div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div>
+            </th>
+            <th>
+                <div class="tooltip">Defence<span class="tooltipText">{{ meta_data["defence"] }}</span></div>
+            </th>
+            <th>
+                <div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div>
+            </th>
+            <th>
+                <div class="tooltip">Upkeep<span class="tooltipText">{{ meta_data["upkeep"] }}</span></div>
+            </th>
             <th>Description</th>
         </tr>
         {% for army in county.armies.values() %}
@@ -39,13 +42,16 @@
             <td>{{ army.currently_training }}</td>
             <td>
                 <input id="{{ army.base_name }}_slider"
-                       type="range" value="0" min="0" max="25" step="1" />
-                <input id="{{ army.base_name }}_display" name="{{ army.base_name }}" value="0" />
+                       type="range" value="0" min="0" max="25" step="1"/>
+                <input id="{{ army.base_name }}_display" name="{{ army.base_name }}" value="0"/>
             </td>
             <td>
-                {% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif %}
-                {% if army.wood %}{{ army.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif %}
-                {% if army.iron %}{{ army.iron }}<img class="resource_icons" src="/static/images/iron_icon.jpg">{% endif %}
+                {% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif
+                %}
+                {% if army.wood %}{{ army.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif
+                %}
+                {% if army.iron %}{{ army.iron }}<img class="resource_icons" src="/static/images/iron_icon.jpg">{% endif
+                %}
                 {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
             </td>
             <td>{{ army.trainable_per_day }}</td>
@@ -67,11 +73,18 @@
             <td>-</td>
             <td>-</td>
             <td>-</td>
-            <td><div class="tooltip">{{ county.get_upkeep_costs() }}<span class="tooltipText">{{ meta_data["upkeep_daily"] }}</span></div></td>
+            <td>
+                <div class="tooltip">{{ county.get_upkeep_costs() }}<span class="tooltipText">{{ meta_data["upkeep_daily"] }}</span>
+                </div>
+            </td>
             <td>-</td>
         </tr>
     </table>
-    <br><button type="submit">Build</button>
+    Gold Cost: <span id="goldCost">0</span> <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
+    Wood Cost: <span id="woodCost">0</span> <img class="resource_icons" src="/static/images/wood_icon.jpg"> {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
+    Iron Cost: <span id="ironCost">0</span> <img class="resource_icons" src="/static/images/iron_icon.jpg"> {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"><br>
+    <br>
+    <button type="submit" id="submitButton" disabled>Build</button>
     <p>Note: For each 1% of your population you force into the military, your county will lose 1 happiness.</p>
 </form>
 
@@ -81,17 +94,66 @@
 {% endfor %}
 
 <script type="text/javascript">
-{% for army in county.armies.values() %}
-    var {{ army.base_name }}_slider = document.getElementById('{{ army.base_name }}_slider'),
-    {{ army.base_name }}_display = document.getElementById('{{ army.base_name }}_display');
-    {{ army.base_name }}_slider.onchange = function() {
-        {{ army.base_name }}_display.value = this.value;
-        if (this.value > 0) {
-            button.disabled = false;
-        }
-    }
-{% endfor %}
-button = document.getElementById('submit');
+submitButton = document.getElementById('submitButton');
+goldCost = document.getElementById('goldCost');
+
+var peasant_slider = document.getElementById('peasant_slider');
+peasant_display = document.getElementById('peasant_display');
+
+var archer_slider = document.getElementById('archer_slider');
+archer_display = document.getElementById('archer_display');
+
+var soldier_slider = document.getElementById('soldier_slider');
+soldier_display = document.getElementById('soldier_display');
+
+var elite_slider = document.getElementById('elite_slider');
+elite_display = document.getElementById('elite_display');
+
+function updateGold() {
+    goldCost.innerHTML = peasant_slider.value * {{ county.armies.peasant.gold }}
+    + archer_slider.value * {{ county.armies.archer.gold }}
+    + soldier_slider.value * {{ county.armies.soldier.gold }}
+    + elite_slider.value * {{ county.armies.elite.gold }};
+}
+
+function updateWood() {
+    woodCost.innerHTML = peasant_slider.value * {{ county.armies.peasant.wood }}
+    + archer_slider.value * {{ county.armies.archer.wood }}
+    + soldier_slider.value * {{ county.armies.soldier.wood }}
+    + elite_slider.value * {{ county.armies.elite.wood }};
+}
+
+function updateIron() {
+    ironCost.innerHTML = peasant_slider.value * {{ county.armies.peasant.iron }}
+    + archer_slider.value * {{ county.armies.archer.iron }}
+    + soldier_slider.value * {{ county.armies.soldier.iron }}
+    + elite_slider.value * {{ county.armies.elite.iron }};
+}
+
+function updateCosts() {
+    updateGold();
+    updateWood();
+    updateIron();
+}
+
+peasant_slider.onchange = function() {
+    peasant_display.value = this.value;
+    updateCosts();
+}
+archer_slider.onchange = function() {
+    archer_display.value = this.value;
+    updateCosts();
+}
+soldier_slider.onchange = function() {
+    soldier_display.value = this.value;
+    updateCosts();
+}
+elite_slider.onchange = function() {
+    elite_display.value = this.value;
+    updateCosts();
+}
+
+
 </script>
 
 {% endblock %}
