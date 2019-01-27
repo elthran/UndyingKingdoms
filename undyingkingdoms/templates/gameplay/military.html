@@ -100,7 +100,7 @@
 {% endfor %}
 
 <script type="text/javascript">
-submitButton = document.getElementById('submitButton');
+var submitButton = document.getElementById('submitButton');
 
 var peasant_slider = document.getElementById('peasant_slider');
 peasant_display = document.getElementById('peasant_display');
@@ -162,10 +162,10 @@ function updateCosts() {
     } else {
         ironCost.style.color = 'green';
     }
-    if (gold <= {{ county.gold }} && wood <= {{ county.wood }} && iron <= county.iron) {
+    if (gold <= {{ county.gold }} && wood <= {{ county.wood }} && iron <= {{ county.iron }}) {
         submitButton.disabled = false;
     } else {
-        submitButton.disabled = false;
+        submitButton.disabled = true;
     }
 }
 
