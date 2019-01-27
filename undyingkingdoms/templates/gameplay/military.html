@@ -80,11 +80,15 @@
             <td>-</td>
         </tr>
     </table>
-    Gold Cost: <span id="goldCost">0</span> <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
-    Wood Cost: <span id="woodCost">0</span> <img class="resource_icons" src="/static/images/wood_icon.jpg"> {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
-    Iron Cost: <span id="ironCost">0</span> <img class="resource_icons" src="/static/images/iron_icon.jpg"> {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"><br>
     <br>
-    <button type="submit" id="submitButton" disabled>Build</button>
+    Gold Cost: <span id="goldCost">0</span>
+      <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
+    Wood Cost: <span id="woodCost">0</span>
+      <img class="resource_icons" src="/static/images/wood_icon.jpg"> {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
+    Iron Cost: <span id="ironCost">0</span>
+      <img class="resource_icons" src="/static/images/iron_icon.jpg"> {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"><br>
+    <br>
+    <button type="submit" id="submitButton">Build</button>
     <p>Note: For each 1% of your population you force into the military, your county will lose 1 happiness.</p>
 </form>
 
@@ -95,7 +99,6 @@
 
 <script type="text/javascript">
 submitButton = document.getElementById('submitButton');
-goldCost = document.getElementById('goldCost');
 
 var peasant_slider = document.getElementById('peasant_slider');
 peasant_display = document.getElementById('peasant_display');
@@ -134,6 +137,29 @@ function updateCosts() {
     updateGold();
     updateWood();
     updateIron();
+    var gold = parseInt(goldCost.innerHTML);
+    if (gold > {{ county.gold }}) {
+        goldCost.style.color = 'red';
+    } else {
+        goldCost.style.color = 'green';
+    }
+    var wood = parseInt(woodCost.innerHTML);
+    if (wood > {{ county.wood }}) {
+        woodCost.style.color = 'red';
+    } else {
+        woodCost.style.color = 'green';
+    }
+    var iron = parseInt(ironCost.innerHTML);
+    if (iron > {{ county.iron }}) {
+        ironCost.style.color = 'red';
+    } else {
+        ironCost.style.color = 'green';
+    }
+    if (gold <= {{ county.gold }} && wood <= {{ county.wood }} && iron <= county.iron) {
+        submitButton.disabled = false;
+    } else {
+        submitButton.disabled = false;
+    }
 }
 
 peasant_slider.onchange = function() {
@@ -152,7 +178,6 @@ elite_slider.onchange = function() {
     elite_display.value = this.value;
     updateCosts();
 }
-
 
 </script>
 
