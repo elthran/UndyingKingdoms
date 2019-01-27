@@ -4,9 +4,8 @@ import socket
 from flask import Flask, render_template, send_from_directory
 from flask_mail import Mail
 from flask_sslify import SSLify
-from flask_mobility import Mobility
 
-from extensions import flask_db, flask_json, flask_csrf
+from extensions import flask_db, flask_json, flask_csrf, flask_mobility
 from undyingkingdoms.GeoIP import geo_ip
 from undyingkingdoms.admin import admin_blueprint
 from undyingkingdoms.blueprints.game_clock import game_clock_blueprint
@@ -27,6 +26,7 @@ flask_db.init_app(app)
 db = flask_db
 flask_csrf.init_app(app)
 flask_json.init_app(app)
+flask_mobility.init_app(app)
 
 app.config.update(dict(
     MAIL_SERVER='smtp.gmail.com',
@@ -38,7 +38,7 @@ app.config.update(dict(
     MAIL_DEFAULT_SENDER='This seems to do nothing'
 ))
 mail = Mail(app)
-Mobility(app)
+
 
 # Register app blueprints
 app.register_blueprint(geo_ip)
