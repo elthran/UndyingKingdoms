@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField
+from wtforms import IntegerField, SubmitField
 from wtforms.validators import NumberRange
 
 from undyingkingdoms.models.counties import County

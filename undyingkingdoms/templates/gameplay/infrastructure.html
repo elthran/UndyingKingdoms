@@ -38,7 +38,8 @@
             <td>{{ building.total }}</td>
             <td>
                 <input id="{{ building.base_name }}_slider" type="range" value="0" min="0" max="20" step="1" />
-                <span id="{{ building.base_name }}_display" name="{{ building.base_name }}" >0</span>
+                <span id="{{ building.base_name }}_display">0</span>
+                <input id="{{ building.base_name }}_value" name="{{ building.base_name }}" value="0" hidden/>
             </td>
             <td>{{ building.pending }}</td>
             <td>
@@ -109,6 +110,7 @@ function updateCosts() {
 {% for building in county.buildings.values() %}
     {{ building.base_name }}_slider.onchange = function() {
         {{ building.base_name }}_display.innerHTML = this.value;
+        {{ building.base_name }}_value.value = this.value;
         updateCosts();
     }
 {% endfor %}

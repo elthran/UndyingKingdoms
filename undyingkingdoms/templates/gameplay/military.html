@@ -43,7 +43,8 @@
             <td>
                 <input id="{{ army.base_name }}_slider"
                        type="range" value="0" min="0" max="50" step="1"/>
-                <span id="{{ army.base_name }}_display" name="{{ army.base_name }}">0</span>
+                <span id="{{ army.base_name }}_display">0</span>
+                <input id="{{ army.base_name }}_value" name="{{ army.base_name }}" value="0" hidden/>
             </td>
             <td>
                 {% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif
@@ -90,7 +91,7 @@
     Happiness Cost: <span id="happinessCost">0</span>
       <img class="resource_icons" src="/static/images/heart_icon.jpg">
     <br><br>
-    <button type="submit" id="submitButton">Build</button>
+    <button id="submitButton" type="submit">Build</button><br>
 </form>
 <br><br>
 <h2>Expeditions:</h2>
@@ -154,6 +155,7 @@ function updateCosts() {
 {% for unit in county.armies.values() %}
     {{ unit.base_name }}_slider.onchange = function() {
         {{ unit.base_name }}_display.innerHTML = this.value;
+        {{ unit.base_name }}_value.value = this.value;
         updateCosts();
     }
 {% endfor %}
