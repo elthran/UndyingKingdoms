@@ -92,7 +92,7 @@
     <br><br>
     <button type="submit" id="submitButton">Build</button>
 </form>
-
+<br><br>
 <h2>Expeditions:</h2>
 {% for expedition in county.get_expeditions() %}
 <br>Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite }} troops will return in {{ expedition.duration }} days with {{ expedition.land_acquired }} acres of newly captured land.
@@ -102,11 +102,8 @@
 var submitButton = document.getElementById('submitButton');
 
 {% for unit in county.armies.values() %}
-
-var {{ unit.base_name }}_slider = document.getElementById('{{ unit.base_name }}_slider');
-{{ unit.base_name }}_display = document.getElementById('{{ unit.base_name }}_display');
-
-
+    var {{ unit.base_name }}_slider = document.getElementById('{{ unit.base_name }}_slider');
+    {{ unit.base_name }}_display = document.getElementById('{{ unit.base_name }}_display');
 {% endfor %}
 
 function updateGold() {
@@ -153,10 +150,10 @@ function updateCosts() {
 }
 
 {% for unit in county.armies.values() %}
-{{ unit.base_name }}_slider.onchange = function() {
-    {{ unit.base_name }}_display.value = this.value;
-    updateCosts();
-}
+    {{ unit.base_name }}_slider.onchange = function() {
+        {{ unit.base_name }}_display.value = this.value;
+        updateCosts();
+    }
 {% endfor %}
 
 </script>

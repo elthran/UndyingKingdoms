@@ -5,7 +5,7 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
-<div style="width:100%">
+<div style="width:100%;">
     <div class="sidebar">
         <ul style="text-align:center;">
             <li><a href="{{ url_for('overview', kingdom_id=0, county_id=0) }}">County Overview</a></li>
