@@ -14,9 +14,25 @@
         <li>{{ army.class_name }}: {{ form[army.base_name] }} (Available: {{ army.available }} / {{ army.total }}) (Attack Power: {{ army.attack }} per troop)</li>
         {% endif %}{% endfor %}
     </ul>
-    <button type="submit">Attack</button><br>
+    <br>
+    Current Army has <span id="calculatedAttack">0</span> attack power.
+    <button type="submit">Attack</button>
+    <br><br>
     <p style="width:70%">Note: You will typically lose around 20% of any soldiers sent. However, if your army is much weaker,
-        then your troops will take heavy casaulties. Conversely, if you greatly overpower them you will lose very few troops.</p>
+        then your troops will take heavy casualties. Conversely, if you greatly overpower them you will lose very few troops.</p>
 </form>
+
+<script>
+{% for unit in county.armies.values() %}
+    document.getElementById("{{ unit.base_name }}").onchange = updateAttack()
+    var
+{% endfor %}
+
+function updateAttack() {
+    var calculatedAttack = document.getElementById("calculatedAttack");
+    calculatedAttack.innerHTML = 1;
+}
+
+</script>
 
 {% endblock %}
