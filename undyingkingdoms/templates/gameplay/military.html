@@ -89,9 +89,8 @@
       <img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"><br>
     Happiness Cost: <span id="happinessCost">0</span>
       <img class="resource_icons" src="/static/images/heart_icon.jpg">
-    <br>
+    <br><br>
     <button type="submit" id="submitButton">Build</button>
-    <p>Note: For each 1% of your population you force into the military, your county will lose 1 happiness.</p>
 </form>
 
 <h2>Expeditions:</h2>
@@ -102,43 +101,27 @@
 <script type="text/javascript">
 var submitButton = document.getElementById('submitButton');
 
-var peasant_slider = document.getElementById('peasant_slider');
-peasant_display = document.getElementById('peasant_display');
+{% for unit in county.armies.values() %}
 
-var archer_slider = document.getElementById('archer_slider');
-archer_display = document.getElementById('archer_display');
+var {{ unit.base_name }}_slider = document.getElementById('{{ unit.base_name }}_slider');
+{{ unit.base_name }}_display = document.getElementById('{{ unit.base_name }}_display');
 
-var soldier_slider = document.getElementById('soldier_slider');
-soldier_display = document.getElementById('soldier_display');
 
-var elite_slider = document.getElementById('elite_slider');
-elite_display = document.getElementById('elite_display');
+{% endfor %}
 
 function updateGold() {
-    goldCost.innerHTML = peasant_slider.value * {{ county.armies.peasant.gold }}
-    + archer_slider.value * {{ county.armies.archer.gold }}
-    + soldier_slider.value * {{ county.armies.soldier.gold }}
-    + elite_slider.value * {{ county.armies.elite.gold }};
+    goldCost.innerHTML = 0{% for unit in county.armies.values() %} + {{ unit.base_name }}_slider.value * {{ unit.gold }}{% endfor %};
 }
 function updateWood() {
-    woodCost.innerHTML = peasant_slider.value * {{ county.armies.peasant.wood }}
-    + archer_slider.value * {{ county.armies.archer.wood }}
-    + soldier_slider.value * {{ county.armies.soldier.wood }}
-    + elite_slider.value * {{ county.armies.elite.wood }};
+    woodCost.innerHTML = 0{% for unit in county.armies.values() %} + {{ unit.base_name }}_slider.value * {{ unit.wood }}{% endfor %};
 }
 function updateIron() {
-    ironCost.innerHTML = peasant_slider.value * {{ county.armies.peasant.iron }}
-    + archer_slider.value * {{ county.armies.archer.iron }}
-    + soldier_slider.value * {{ county.armies.soldier.iron }}
-    + elite_slider.value * {{ county.armies.elite.iron }};
+    ironCost.innerHTML = 0{% for unit in county.armies.values() %} + {{ unit.base_name }}_slider.value * {{ unit.iron }}{% endfor %};
 }
 function updateHappiness() {
-    happinessCost.innerHTML = Math.ceil((parseInt(peasant_slider.value)
-    + parseInt(archer_slider.value)
-    + parseInt(soldier_slider.value)
-    + parseInt(elite_slider.value)) * 100 / {{ county.population }});
+    happinessCost.innerHTML = Math.ceil((parseInt(0){% for unit in county.armies.values() %} +
+    parseInt({{ unit.base_name }}_slider.value){% endfor %}) * 100 / {{ county.population }});
 }
-
 function updateCosts() {
     updateGold();
     updateWood();
@@ -169,22 +152,12 @@ function updateCosts() {
     }
 }
 
-peasant_slider.onchange = function() {
-    peasant_display.value = this.value;
+{% for unit in county.armies.values() %}
+{{ unit.base_name }}_slider.onchange = function() {
+    {{ unit.base_name }}_display.value = this.value;
     updateCosts();
 }
-archer_slider.onchange = function() {
-    archer_display.value = this.value;
-    updateCosts();
-}
-soldier_slider.onchange = function() {
-    soldier_display.value = this.value;
-    updateCosts();
-}
-elite_slider.onchange = function() {
-    elite_display.value = this.value;
-    updateCosts();
-}
+{% endfor %}
 
 </script>
 
