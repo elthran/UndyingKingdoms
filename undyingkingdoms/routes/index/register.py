@@ -1,6 +1,7 @@
 from flask import url_for, redirect, render_template
 from flask_login import current_user
 from flask_login import login_user
+from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app, User
 from undyingkingdoms.models import Session
@@ -8,7 +9,8 @@ from undyingkingdoms.models.forms.register import RegisterForm
 
 
 @app.route('/register/', methods=['GET', 'POST'])
-def register():
+@mobile_template('{mobile/}index/register.html')
+def register(template):
     form = RegisterForm()
     if current_user.is_authenticated:
         return redirect(url_for('overview', kingdom_id=current_user.county.kingdom.id, county_id=current_user.county.id))
@@ -23,4 +25,4 @@ def register():
         session = Session(user_id=user.id)
         session.save()
         return redirect(url_for('initialize'))
-    return render_template("index/register.html", form=form)
+    return render_template(template, form=form)
