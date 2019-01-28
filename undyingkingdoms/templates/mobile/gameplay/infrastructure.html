@@ -40,6 +40,31 @@ th {
 	font-size: 1.3em;
 }
 
+.tooltipMobile {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltipMobile .tooltipTextMobile {
+    visibility: hidden;
+    width: 350px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    left: 105%;
+}
+
+.tooltipMobile:hover .tooltipTextMobile {
+    visibility: visible;
+}
 </style>
 {% endblock %}
 
@@ -49,9 +74,10 @@ th {
 	<h2>Available Land: {{ county.get_available_land() }}</h2>
 	<h2>Daily Production:
 		{{ county.get_production()|int }} <img class="resource_icons" src="/static/images/prod_icon.jpg">
-		(<div class="tooltip">{{ county.get_available_workers() }} available workers
-			<span class="tooltipText">{{ meta_data["available_workers"] }}</span>
-		</div>)
+		<br>
+		(<span class="tooltipMobile">{{ county.get_available_workers() }} available workers
+				<span class="tooltipTextMobile">{{ meta_data["available_workers"] }}</span>
+		</span>)
 	</h2>
 	<h2>Current Resources:
 		{{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">
@@ -139,54 +165,135 @@ th {
 		<img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
 	</form>
 </div>
+{{ super() }}
 {% endblock %}
 
 {% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
+var submitButton = $("#submitButton");
+var goldCost = $("#goldCost");
+var woodCost = $("#woodCost");
 
-var submitButton = document.getElementById('submitButton');
+var houses_slider = $("#houses_slider");
+var houses_display = $("#houses_display");
+var houses_value = $("#houses_value");
 
-{% for building in county.buildings.values() %}
-    var {{ building.base_name }}_slider = document.getElementById('{{ building.base_name }}_slider');
-    {{ building.base_name }}_display = document.getElementById('{{ building.base_name }}_display');
-{% endfor %}
+var fields_slider = $("#fields_slider");
+var fields_display = $("#fields_display");
+var fields_value = $("#fields_value");
+
+var pastures_slider = $("#pastures_slider");
+var pastures_display = $("#pastures_display");
+var pastures_value = $("#pastures_value");
+
+var mills_slider = $("#mills_slider");
+var mills_display = $("#mills_display");
+var mills_value = $("#mills_value");
+
+var mines_slider = $("#mines_slider");
+var mines_display = $("#mines_display");
+var mines_value = $("#mines_value");
+
+var forts_slider = $("#forts_slider");
+var forts_display = $("#forts_display");
+var forts_value = $("#forts_value");
+
+var stables_slider = $("#stables_slider");
+var stables_display = $("#stables_display");
+var stables_value = $("#stables_value");
+
+var guilds_slider = $("#guilds_slider");
+var guilds_display = $("#guilds_display");
+var guilds_value = $("#guilds_value");
+
 
 function updateGold() {
-    goldCost.innerHTML = 0{% for building in county.buildings.values() %} + {{ building.base_name }}_slider.value * {{ building.gold }}{% endfor %};
+    goldCost.innerHTML = 0 + houses_slider.val() * 50 +
+    fields_slider.val() * 50 + pastures_slider.val() * 50 +
+    mills_slider.val() * 50 + mines_slider.val() * 65 +
+    forts_slider.val() * 100 + stables_slider.val() * 40 +
+    guilds_slider.val() * 50;
 }
+
 function updateWood() {
-    woodCost.innerHTML = 0{% for building in county.buildings.values() %} + {{ building.base_name }}_slider.value * {{ building.wood }}{% endfor %};
+    woodCost.innerHTML = 0 + houses_slider.val() * 25 +
+    fields_slider.val() * 5 + pastures_slider.val() * 5 +
+    mills_slider.val() * 20 + mines_slider.val() * 15 +
+    forts_slider.val() * 75 + stables_slider.val() * 20 +
+    guilds_slider.val() * 25;
 }
+
 function updateCosts() {
     updateGold();
     updateWood();
     var gold = parseInt(goldCost.innerHTML);
-    if (gold > {{ county.gold }}) {
-        goldCost.style.color = 'red';
+    if (gold > 408) {
+        goldCost.style.color = "red";
     } else {
-        goldCost.style.color = 'green';
+        goldCost.style.color = "green";
     }
     var wood = parseInt(woodCost.innerHTML);
-    if (wood > {{ county.wood }}) {
-        woodCost.style.color = 'red';
+    if (wood > 70) {
+        woodCost.style.color = "red";
     } else {
-        woodCost.style.color = 'green';
+        woodCost.style.color = "green";
     }
-    if (gold <= {{ county.gold }} && wood <= {{ county.wood }}) {
+    if (gold <= 408 && wood <= 70) {
         submitButton.disabled = false;
     } else {
         submitButton.disabled = true;
     }
 }
 
-{% for building in county.buildings.values() %}
-    {{ building.base_name }}_slider.onchange = function() {
-        {{ building.base_name }}_display.innerHTML = this.value;
-        {{ building.base_name }}_value.value = this.value;
-        updateCosts();
-    }
-{% endfor %}
-button = document.getElementById('submit');
+
+houses_slider.change(function () {
+    houses_display.innerHTML = $(this).val();
+    houses_value.value = $(this).val();
+    updateCosts();
+});
+
+fields_slider.change(function () {
+    fields_display.innerHTML = $(this).val();
+    fields_value.value = $(this).val();
+    updateCosts();
+});
+
+pastures_slider.change(function () {
+    pastures_display.innerHTML = $(this).val();
+    pastures_value.value = $(this).val();
+    updateCosts();
+});
+
+mills_slider.change(function () {
+    mills_display.innerHTML = $(this).val();
+    mills_value.value = $(this).val();
+    updateCosts();
+});
+
+mines_slider.change(function () {
+    mines_display.innerHTML = $(this).val();
+    mines_value.value = $(this).val();
+    updateCosts();
+});
+
+forts_slider.onchange = function () {
+    forts_display.innerHTML = $(this).val();
+    forts_value.value = $(this).val();
+    updateCosts();
+};
+
+stables_slider.onchange = function () {
+    stables_display.innerHTML = $(this).val();
+    stables_value.value = $(this).val();
+    updateCosts();
+};
+
+guilds_slider.onchange = function () {
+    guilds_display.innerHTML = $(this).val();
+    guilds_value.value = $(this).value;
+    updateCosts();
+};
 </script>
 {% endblock %}
 
