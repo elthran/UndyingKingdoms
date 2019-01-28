@@ -3,9 +3,23 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
-{% block content1 %}
-{% block content2 %}
+{% block style %}
+<style type="text/css">
+/* The main sidebar which is always visible when logged in */
+.sidebar {
+	height: auto;
+    width: auto;
+    float: left;
+    margin-right: 50px;
+    padding: 15px;
+    line-height: 30px;
+    border: solid;
+    font-size: 20px;
+}
+</style>
 {% endblock %}
+
+{% block content1 %}
 <div class="sidebar">
 	<ul style="text-align:center;">
 		<li><a href="{{ url_for('overview', kingdom_id=0, county_id=0) }}">County Overview</a></li>
@@ -23,7 +37,6 @@
 		<li><a href="{{ url_for('leaderboard') }}">Leaderboard</a></li>
 		<li><a href="{{ url_for('versions') }}">Read About Updates</a></li>
 		<li><a href="{{ url_for('logout') }}">Logout</a></li>
-		<li><br><br><br></li>
 	</ul>
 </div>
 {% endblock %}

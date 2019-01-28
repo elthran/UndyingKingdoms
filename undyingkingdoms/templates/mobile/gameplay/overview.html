@@ -5,6 +5,7 @@
 {% block title %}Overview: {{ super() }}{% endblock %}
 
 {% block style %}
+{{ super() }}
 <style type="text/css">
 #content {
 	margin: 1.2em 2em;
@@ -26,7 +27,7 @@ button {
 </style>
 {% endblock %}
 
-{% block content2 %}
+{% block content1 %}
 <div id="content">
 	<h1>{{ county.name }}</h1>
 	<ul>
@@ -64,6 +65,10 @@ button {
 		</ul>
 	</div>
 </div>
+{{ super() }}
+{% endblock %}
+
+{% block script %}
 <script type="text/javascript">
 function oldNewsDisplay() {
   var x = document.getElementById("oldNews");
@@ -74,5 +79,4 @@ function oldNewsDisplay() {
   }
 }
 </script>
-
 {% endblock %}
