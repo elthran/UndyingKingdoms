@@ -1,5 +1,6 @@
 from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
+from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models.forms.economy import EconomyForm
@@ -7,8 +8,9 @@ from undyingkingdoms.static.metadata import rations_terminology
 
 
 @app.route('/gameplay/economy/', methods=['GET', 'POST'])
+@mobile_template('{mobile/}gameplay/economy.html')
 @login_required
-def economy():
+def economy(template):
     if not current_user.in_active_session:
         current_user.in_active_session = True
     form = EconomyForm(tax=current_user.county.tax, rations=current_user.county.rations)
@@ -18,4 +20,4 @@ def economy():
         current_user.county.tax = form.tax.data
         current_user.county.rations = form.rations.data
         return redirect(url_for('economy'))
-    return render_template('gameplay/economy.html', form=form)
+    return render_template(template, form=form)
