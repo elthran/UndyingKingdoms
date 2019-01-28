@@ -1,5 +1,6 @@
 from flask import url_for, redirect, render_template
 from flask_login import current_user
+from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models import County, Kingdom
@@ -8,7 +9,8 @@ from undyingkingdoms.static.metadata import dwarf_armies, human_armies, elf_armi
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])
-def initialize():
+@mobile_template('{mobile/}index/initialize.html')
+def initialize(template):
     if current_user.county is not None:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
     genders = ["----", "Female", "Male"]
@@ -30,7 +32,7 @@ def initialize():
         county.save()
         county.vote = county.id
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
-    return render_template("index/initialize.html", form=form,
+    return render_template(template, form=form,
                            dwarf_armies=dwarf_armies,
                            human_armies=human_armies,
                            elf_armies=elf_armies)
