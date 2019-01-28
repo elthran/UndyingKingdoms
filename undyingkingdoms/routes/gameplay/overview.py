@@ -2,6 +2,7 @@ from datetime import datetime
 
 from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
+from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models import County, Kingdom, User, Message
@@ -9,8 +10,9 @@ from undyingkingdoms.models.forms.message import MessageForm
 
 
 @app.route('/gameplay/overview/<int:kingdom_id>/<int:county_id>/', methods=['GET', 'POST'])
+@mobile_template('{mobile/}gameplay/overview.html')
 @login_required
-def overview(kingdom_id=0, county_id=0):
+def overview(template, kingdom_id=0, county_id=0):
     for user in User.query.filter_by(_in_active_session=True).all():
         time_since_last_activity = datetime.now() - user.time_modified
         if time_since_last_activity.total_seconds() > 300:  # A user who hasn't done anything in 5 minutes
@@ -22,7 +24,7 @@ def overview(kingdom_id=0, county_id=0):
 
     if kingdom_id == 0 or county_id == 0:
         has_mail = Message.query.filter_by(county_id=current_user.county.id, unread=True).count()
-        return render_template('gameplay/overview.html', has_mail=has_mail)
+        return render_template(template, has_mail=has_mail)
 
     form = MessageForm()
     if form.validate_on_submit():
@@ -36,4 +38,5 @@ def overview(kingdom_id=0, county_id=0):
 
     target_kingdom = Kingdom.query.filter_by(id=kingdom_id).first()
     target_county = County.query.filter_by(id=county_id).first()
+    # todo: work out how to represent this template for mobile.
     return render_template('gameplay/overview_enemy.html', target_kingdom=target_kingdom, target_county=target_county, form=form)
