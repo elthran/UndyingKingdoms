@@ -6,37 +6,41 @@
 {% block style %}
 <style type="text/css">
 /* The main sidebar which is always visible when logged in */
-.sidebar {
-	height: auto;
-    width: auto;
-    float: left;
-    margin-right: 50px;
-    padding: 15px;
-    line-height: 30px;
-    border: solid;
-    font-size: 20px;
+.mobile-sidebar {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	font-size: 1.5em;
+	margin: 0 1em 1em;
+}
+
+nav > a {
+	margin: 0.1em;
+	border: double;
+	border-width: 0.05em;
+	border-color: gray;
+	border-radius: 0.2em;
+	text-decoration: none;
 }
 </style>
 {% endblock %}
 
 {% block content1 %}
-<div class="sidebar">
-	<ul style="text-align:center;">
-		<li><a href="{{ url_for('overview', kingdom_id=0, county_id=0) }}">County Overview</a></li>
-		<li><a href="{{ url_for('economy') }}">Economy</a></li>
-		<li><a href="{{ url_for('infrastructure') }}">Infrastructure</a></li>
-		<li><a href="{{ url_for('military') }}">Military</a></li>
-		<li><a href="{{ url_for('infiltration') }}">Infiltration</a></li>
-		<li><a href="{{ url_for('messages') }}" {% if has_mail %}style="color:blue;font-weight:bold;"{% endif %}>Inbox</a></li>
-		<li><a href="{{ url_for('chatroom_api') }}">Town Hall</a></li>
-		<li><a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom Overview</a></li>
-		<li><br></li>
-		<li><a href="{{ url_for('achievements') }}">Achievements</a></li>
-		<li><a href="{{ url_for('forum', thread_id=0, post_id=0) }}">Forum</a></li>
-		<li><a href="{{ url_for('guide') }}">New Player Guide</a></li>
-		<li><a href="{{ url_for('leaderboard') }}">Leaderboard</a></li>
-		<li><a href="{{ url_for('versions') }}">Read About Updates</a></li>
-		<li><a href="{{ url_for('logout') }}">Logout</a></li>
-	</ul>
-</div>
+<nav class="mobile-sidebar">
+	<a href="{{ url_for('overview', kingdom_id=0, county_id=0) }}">County Overview</a>
+	<a href="{{ url_for('economy') }}">Economy</a>
+	<a href="{{ url_for('infrastructure') }}">Infrastructure</a>
+	<a href="{{ url_for('military') }}">Military</a>
+	<a href="{{ url_for('infiltration') }}">Infiltration</a>
+	<a href="{{ url_for('messages') }}" {% if has_mail %}style="color:blue;font-weight:bold;"{% endif %}>Inbox</a>
+	<a href="{{ url_for('chatroom_api') }}">Town Hall</a>
+	<a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom Overview</a>
+	<br>
+	<a href="{{ url_for('achievements') }}">Achievements</a>
+	<a href="{{ url_for('forum', thread_id=0, post_id=0) }}">Forum</a>
+	<a href="{{ url_for('guide') }}">New Player Guide</a>
+	<a href="{{ url_for('leaderboard') }}">Leaderboard</a>
+	<a href="{{ url_for('versions') }}">Read About Updates</a>
+	<a href="{{ url_for('logout') }}">Logout</a>
+</nav>
 {% endblock %}
