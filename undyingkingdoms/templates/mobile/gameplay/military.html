@@ -14,6 +14,41 @@
 		justify-content: center;
     margin: 1.2em 5px;
 }
+
+th {
+	  font-weight: bold;
+	  font-size: 1.3em;
+}
+
+#spacer {
+		margin-bottom: 1em;
+}
+
+.tooltipMobile {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltipMobile .tooltipTextMobile {
+    visibility: hidden;
+    width: 300px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    left: 105%;
+}
+
+.tooltipMobile:hover .tooltipTextMobile {
+    visibility: visible;
+}
 </style>
 {% endblock %}
 
@@ -22,43 +57,37 @@
 	<h2>Current Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>
 	<h2>Current Defensive Power: {{ county.get_defensive_strength() }}</h2>
 	<h2>{{ county.get_available_workers() }} workers available for training</h2>
+	<div id="spacer"></div>
 	<form method="POST" accept-charset="UTF-8" role="form">
 		{{ form.csrf_token }}
 		<table class="production_table">
-			<tr>
-				<th>Name</th>
-				<th>Available</th>
-				<th>In Foreign Lands</th>
-				<th>In Training</th>
-				<th style="width:175px;">Train</th>
-				<th style="width:125px;">Cost</th>
-				<th>Trainable Per Day</th>
-				<th>
-					<div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div>
-				</th>
-				<th>
-					<div class="tooltip">Defence<span class="tooltipText">{{ meta_data["defence"] }}</span></div>
-				</th>
-				<th>
-					<div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div>
-				</th>
-				<th>
-					<div class="tooltip">Upkeep<span class="tooltipText">{{ meta_data["upkeep"] }}</span></div>
-				</th>
-				<th>Description</th>
-			</tr>
 			{% for army in county.armies.values() %}
 			<tr>
-				<td>{{ army.class_name.title() }}</td>
+				<th colspan="2">{{ army.class_name.title() }}</th>
+			</tr>
+			<tr>
+				<td>Available</td>
 				<td>{{ army.available }}</td>
+			</tr>
+			<tr>
+				<td>In Foreign Lands</td>
 				<td>{{ army.traveling }}</td>
+			</tr>
+			<tr>
+				<td>In Training</td>
 				<td>{{ army.currently_training }}</td>
+			</tr>
+			<tr>
+				<td>Train</td>
 				<td>
 					<input id="{{ army.base_name }}_slider"
 					       type="range" value="0" min="0" max="50" step="1"/>
 					<span id="{{ army.base_name }}_display">0</span>
 					<input id="{{ army.base_name }}_value" name="{{ army.base_name }}" value="0" hidden/>
 				</td>
+			</tr>
+			<tr>
+				<td>Cost</td>
 				<td>
 					{% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif
 					%}
@@ -68,30 +97,63 @@
 					%}
 					{% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
 				</td>
+			</tr>
+			<tr>
+				<td>Trainable Per Day</td>
 				<td>{{ army.trainable_per_day }}</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="tooltipMobile">Attack<span class="tooltipTextMobile">{{ meta_data["attack"] }}</span></div>
+				</td>
 				<td>{{ army.attack }}</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="tooltipMobile">Defence<span class="tooltipTextMobile">{{ meta_data["defence"] }}</span></div>
+				</td>
 				<td>{{ army.defence }}</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="tooltipMobile">Health<span class="tooltipTextMobile">{{ meta_data["health"] }}</span></div>
+				</td>
 				<td>{{ army.health }}</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="tooltipMobile">Upkeep<span class="tooltipTextMobile">{{ meta_data["upkeep"] }}</span></div>
+				</td>
 				<td>{{ army.upkeep }}</td>
+			</tr>
+			<tr>
+				<td>Description</td>
 				<td>{{ army.description }}</td>
 			</tr>
 			{% endfor %}
-			<tr style="font-weight:bold;">
-				<td>Total</td>
+			<tr>
+				<th colspan="2">Total</th>
+			</tr>
+			<tr>
+				<td>Available</td>
 				<td>{{ county.get_available_army_size() }}</td>
+			</tr>
+			<tr>
+				<td>In Foreign Lands</td>
 				<td>{{ county.get_unavailable_army_size() }}</td>
-				<td>-</td>
-				<td>-</td>
+			</tr>
+			<tr>
+				<td>In Training</td>
 				<td>{{ county.get_training_army_size() }}</td>
-				<td>-</td>
-				<td>-</td>
-				<td>-</td>
-				<td>-</td>
+			</tr>
+			<tr>
 				<td>
-					<div class="tooltip">{{ county.get_upkeep_costs() }}<span class="tooltipText">{{ meta_data["upkeep_daily"] }}</span>
+					<div class="tooltipMobile">Upkeep<span class="tooltipTextMobile">{{ meta_data["upkeep"] }}</span></div>
+				</td>
+				<td>
+					<div class="tooltipMobile">{{ county.get_upkeep_costs() }}<span class="tooltipTextMobile">{{ meta_data["upkeep_daily"] }}</span>
 					</div>
 				</td>
-				<td>-</td>
 			</tr>
 		</table>
 		<br>
