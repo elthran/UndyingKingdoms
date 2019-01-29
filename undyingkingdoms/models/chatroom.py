@@ -23,4 +23,4 @@ class Chatroom(GameState):
 
     def json_ready(self):
         # return "({time}) {leader}: {content}".format(time=self.get_pretty_timestamp(), leader=self.get_county_leader_name(), content=self.content)
-        return self.get_pretty_timestamp(), self.get_county_leader_name(), self.content
+        return self.time_created, self.get_county_leader_name(), self.content
