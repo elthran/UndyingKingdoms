@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from random import choice, uniform, randint
 
+from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
 from undyingkingdoms.models.bases import GameState, db
@@ -600,7 +601,7 @@ class County(GameState):
         return total_thieves - unavailable_thieves
 
     def get_thief_report_military(self, target_id):
-        current_report = Infiltration.query.filter_by(county_id=self.id, target_id=target_id, mission="scout military").first()
+        current_report = Infiltration.query.filter_by(county_id=self.id, target_id=target_id, mission="scout military").order_by(desc('time_created')).first()
         return current_report
 
     def get_thief_report_infrastructure(self, target_id):

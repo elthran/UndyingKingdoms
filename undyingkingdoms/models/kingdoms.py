@@ -30,7 +30,7 @@ class Kingdom(GameState):
             county = self.get_most_popular_county()
             self.leader = county.id
             achievement = Achievement.query.filter_by(user_id=county.user_id, category="class_leader",
-                                                      sub_category=county.race).first()
+                                                      sub_category=county.race.lower()).first()
             achievement.current_tier += 1
 
     def get_leader_name(self, county_id):
