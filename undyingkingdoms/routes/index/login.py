@@ -11,17 +11,11 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app, User
 from undyingkingdoms.models import Notification
 from undyingkingdoms.models.forms.login import LoginForm
-from undyingkingdoms.static.metadata import all_achievements
 
 
 @app.route('/login/', methods=['GET', 'POST'])
 @mobile_template('{mobile/}index/login.html')
 def login(template):
-    users = User.query.all()
-    for user in users:
-        print(user.achievements)
-        if user.achievements == {}:
-            user.achievements = deepcopy(all_achievements)
     form = LoginForm()
     if current_user.is_authenticated:
         return redirect(

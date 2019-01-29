@@ -23,13 +23,13 @@ def attack(county_id):
     if peasants == 0:
         form.peasant.choices = [(0, 0)]
     elif peasants < 10:
-        form.peasant.choices = [(i, i) for i in range(peasants)]
+        form.peasant.choices = [(i, i) for i in range(peasants + 1)]
     else:
         form.peasant.choices = [(peasants * i // 10, peasants * i // 10) for i in range(0, 11)]
     if soldiers == 0:
         form.soldier.choices = [(0, 0)]
     elif soldiers < 10:
-        form.soldier.choices = [(i, i) for i in range(soldiers)]
+        form.soldier.choices = [(i, i) for i in range(soldiers + 1)]
     else:
         form.soldier.choices = [(soldiers * i // 10, soldiers * i // 10) for i in range(0, 11)]
     if elites == 0:

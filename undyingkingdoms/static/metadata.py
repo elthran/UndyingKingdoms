@@ -30,7 +30,7 @@ all_achievements = {
     'iron': Achievement(name="iron", category="reach_x_amount_in_one_age", sub_category="iron",
                         display_title="Heart of Iron",
                         description="Have your county reach x iron in one playthrough.",
-                        tier1=500, tier2=1000, tier3=1500, tier4=2000, tier5=2500, maximum_tier=2,
+                        tier1=500, tier2=1000, tier3=1500, tier4=2000, tier5=2500, maximum_tier=5,
                         points_rewarded=5),
     'dwarf_class_leader': Achievement(name="dwarf_class_leader", category="class_leader", sub_category="dwarf",
                                       display_title="Lord Under the Mountain!",
