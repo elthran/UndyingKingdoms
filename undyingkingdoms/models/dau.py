@@ -18,11 +18,26 @@ class DAU(GameEvent):
     # Game data
     world_age_in_days = db.Column(db.Integer)
     county_days_in_age = db.Column(db.Integer)
+    current_score = db.Column(db.Integer)
     land = db.Column(db.Integer)
     population = db.Column(db.Integer)
     gold = db.Column(db.Integer)
     happiness = db.Column(db.Integer)
     hunger = db.Column(db.Integer)
+    # Military data
+    peasants = db.Column(db.Integer)
+    soldiers = db.Column(db.Integer)
+    archers = db.Column(db.Integer)
+    elites = db.Column(db.Integer)
+    # Building Data
+    houses = db.Column(db.Integer)
+    fields = db.Column(db.Integer)
+    pastures = db.Column(db.Integer)
+    mills = db.Column(db.Integer)
+    mines = db.Column(db.Integer)
+    forts = db.Column(db.Integer)
+    stables = db.Column(db.Integer)
+    guilds = db.Column(db.Integer)
 
     def __init__(self, user_id, county_days_in_age, world_age_in_days):
         self.user_id = user_id
@@ -39,11 +54,26 @@ class DAU(GameEvent):
         if county:  # Needed because counties are periodically deleted but users are not
             self.account_age_in_days = (datetime.now() - user.time_created).days
             self.county_id = county.id
+            self.current_score = user.get_current_leaderboard_score()
             self.land = county.land
             self.population = county.population
             self.gold = county.gold
             self.happiness = county.happiness
             self.hunger = county.hunger
+            
+            self.peasants = county.armies['peasants'].total
+            self.soldiers = county.armies['soldiers'].total
+            self.archers = county.armies['archers'].total
+            self.elites = county.armies['elites'].total
+
+            self.houses = county.buildings['houses'].total
+            self.fields = county.buildings['fields'].total
+            self.pastures = county.buildings['pastures'].total
+            self.mills = county.buildings['mills'].total
+            self.mines = county.buildings['mines'].total
+            self.forts = county.buildings['forts'].total
+            self.stables = county.buildings['stables'].total
+            self.guilds = county.buildings['guilds'].total
 
     @staticmethod
     def get_sessions(user_id):
