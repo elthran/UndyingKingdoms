@@ -1,5 +1,6 @@
 from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
+from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models import Transaction, World
@@ -8,8 +9,9 @@ from undyingkingdoms.static.metadata import all_armies, game_descriptions
 
 
 @app.route('/gameplay/military/', methods=['GET', 'POST'])
+@mobile_template('{mobile/}gameplay/military.html')
 @login_required
-def military():
+def military(template):
     if not current_user.in_active_session:
         current_user.in_active_session = True
     county = current_user.county
@@ -35,4 +37,4 @@ def military():
         # You lose 1 happiness for each 1% of population you force into military.
         county.happiness -= (total_trained * 100 // county.population) + 1
         return redirect(url_for('military'))
-    return render_template('gameplay/military.html', form=form, meta_data=game_descriptions)
+    return render_template(template, form=form, meta_data=game_descriptions)

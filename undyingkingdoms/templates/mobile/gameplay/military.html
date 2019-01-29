@@ -1,0 +1,180 @@
+{% extends "mobile/gameplay/layout.html" %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+
+{% block title %}Military: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+	  display: flex;
+		flex-direction: column;
+		justify-content: center;
+    margin: 1.2em 5px;
+}
+</style>
+{% endblock %}
+
+{% block content1 %}
+<div id="content">
+	<h2>Current Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>
+	<h2>Current Defensive Power: {{ county.get_defensive_strength() }}</h2>
+	<h2>{{ county.get_available_workers() }} workers available for training</h2>
+	<form method="POST" accept-charset="UTF-8" role="form">
+		{{ form.csrf_token }}
+		<table class="production_table">
+			<tr>
+				<th>Name</th>
+				<th>Available</th>
+				<th>In Foreign Lands</th>
+				<th>In Training</th>
+				<th style="width:175px;">Train</th>
+				<th style="width:125px;">Cost</th>
+				<th>Trainable Per Day</th>
+				<th>
+					<div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div>
+				</th>
+				<th>
+					<div class="tooltip">Defence<span class="tooltipText">{{ meta_data["defence"] }}</span></div>
+				</th>
+				<th>
+					<div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div>
+				</th>
+				<th>
+					<div class="tooltip">Upkeep<span class="tooltipText">{{ meta_data["upkeep"] }}</span></div>
+				</th>
+				<th>Description</th>
+			</tr>
+			{% for army in county.armies.values() %}
+			<tr>
+				<td>{{ army.class_name.title() }}</td>
+				<td>{{ army.available }}</td>
+				<td>{{ army.traveling }}</td>
+				<td>{{ army.currently_training }}</td>
+				<td>
+					<input id="{{ army.base_name }}_slider"
+					       type="range" value="0" min="0" max="50" step="1"/>
+					<span id="{{ army.base_name }}_display">0</span>
+					<input id="{{ army.base_name }}_value" name="{{ army.base_name }}" value="0" hidden/>
+				</td>
+				<td>
+					{% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif
+					%}
+					{% if army.wood %}{{ army.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif
+					%}
+					{% if army.iron %}{{ army.iron }}<img class="resource_icons" src="/static/images/iron_icon.jpg">{% endif
+					%}
+					{% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
+				</td>
+				<td>{{ army.trainable_per_day }}</td>
+				<td>{{ army.attack }}</td>
+				<td>{{ army.defence }}</td>
+				<td>{{ army.health }}</td>
+				<td>{{ army.upkeep }}</td>
+				<td>{{ army.description }}</td>
+			</tr>
+			{% endfor %}
+			<tr style="font-weight:bold;">
+				<td>Total</td>
+				<td>{{ county.get_available_army_size() }}</td>
+				<td>{{ county.get_unavailable_army_size() }}</td>
+				<td>-</td>
+				<td>-</td>
+				<td>{{ county.get_training_army_size() }}</td>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
+				<td>
+					<div class="tooltip">{{ county.get_upkeep_costs() }}<span class="tooltipText">{{ meta_data["upkeep_daily"] }}</span>
+					</div>
+				</td>
+				<td>-</td>
+			</tr>
+		</table>
+		<br>
+		Gold Cost: <span id="goldCost">0</span>
+		<img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
+		Wood Cost: <span id="woodCost">0</span>
+		<img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
+		Iron Cost: <span id="ironCost">0</span>
+		<img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"><br>
+		Happiness Cost: <span id="happinessCost">0</span>
+		<img class="resource_icons" src="/static/images/heart_icon.jpg">
+		<br><br>
+		<button id="submitButton" type="submit">Build</button><br>
+	</form>
+	<br><br>
+	<h2>Expeditions:</h2>
+	{% for expedition in county.get_expeditions() %}
+	<br>Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite }} troops will return in {{ expedition.duration }} days with {{ expedition.land_acquired }} acres of newly captured land.
+	{% else %}
+	You have no troops travelling in foreign lands.
+	{% endfor %}
+</div>
+{{ super() }}
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+var submitButton = document.getElementById('submitButton');
+
+{% for unit in county.armies.values() %}
+    var {{ unit.base_name }}_slider = document.getElementById('{{ unit.base_name }}_slider');
+    {{ unit.base_name }}_display = document.getElementById('{{ unit.base_name }}_display');
+{% endfor %}
+
+function updateGold() {
+    goldCost.innerHTML = 0{% for unit in county.armies.values() %} + {{ unit.base_name }}_slider.value * {{ unit.gold }}{% endfor %};
+}
+function updateWood() {
+    woodCost.innerHTML = 0{% for unit in county.armies.values() %} + {{ unit.base_name }}_slider.value * {{ unit.wood }}{% endfor %};
+}
+function updateIron() {
+    ironCost.innerHTML = 0{% for unit in county.armies.values() %} + {{ unit.base_name }}_slider.value * {{ unit.iron }}{% endfor %};
+}
+function updateHappiness() {
+    happinessCost.innerHTML = Math.ceil((parseInt(0){% for unit in county.armies.values() %} +
+    parseInt({{ unit.base_name }}_slider.value){% endfor %}) * 100 / {{ county.population }});
+}
+function updateCosts() {
+    updateGold();
+    updateWood();
+    updateIron();
+    updateHappiness();
+    var gold = parseInt(goldCost.innerHTML);
+    if (gold > {{ county.gold }}) {
+        goldCost.style.color = 'red';
+    } else {
+        goldCost.style.color = 'green';
+    }
+    var wood = parseInt(woodCost.innerHTML);
+    if (wood > {{ county.wood }}) {
+        woodCost.style.color = 'red';
+    } else {
+        woodCost.style.color = 'green';
+    }
+    var iron = parseInt(ironCost.innerHTML);
+    if (iron > {{ county.iron }}) {
+        ironCost.style.color = 'red';
+    } else {
+        ironCost.style.color = 'green';
+    }
+    if (gold <= {{ county.gold }} && wood <= {{ county.wood }} && iron <= {{ county.iron }}) {
+        submitButton.disabled = false;
+    } else {
+        submitButton.disabled = true;
+    }
+}
+
+{% for unit in county.armies.values() %}
+    {{ unit.base_name }}_slider.onchange = function() {
+        {{ unit.base_name }}_display.innerHTML = this.value;
+        {{ unit.base_name }}_value.value = this.value;
+        updateCosts();
+    }
+{% endfor %}
+</script>
+{% endblock %}
