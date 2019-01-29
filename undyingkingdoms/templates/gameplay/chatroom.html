@@ -20,69 +20,72 @@
   <button id="send" type="submit">Say</button>
 </form>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-$("form").submit(function(e) {
-  e.preventDefault();
-  sendMessage();
-});
-
 function build_element(time, leader, content) {
-	// <li> 13:27:26  Haldon: Test message</li>
-	return $("<li></li>").text("(" + time + ") " + leader + ": " + content)
+    // <li> 13:27:26  Haldon: Test message</li>
+    return $("<li></li>").text("(" + time + ") " + leader + ": " + content);
 }
 
 function sendMessage() {
-  $.ajaxSetup({
-    headers: { 'X-CSRF-TOKEN': $("#csrf_token").val() }
-  });
+    $.ajaxSetup({
+        headers: {"X-CSRF-TOKEN": $("#csrf_token").val()}
+    });
 
-  $.post("{{ url_for('chatroom_api') }}",
-    {
-      content: $("#content").val(),
-      updateOnly: false
-    },
-    function(resp, status) {
-      if (status === "success") {
-        $("#content").val('');
-        $("#chatlist").append(build_element(resp.data[0], resp.data[1], resp.data[2]));
-      }
-  });
+    $.post("/gameplay/chatroom/", {
+        content: $("#content").val(),
+        updateOnly: false
+    }, function (resp, status) {
+        if (status === "success") {
+            $("#content").val("");
+            $("#chatlist").append(
+                build_element(resp.data[0], resp.data[1], resp.data[2])
+            );
+        }
+    });
 }
 
-function updateChat() {
-  $.ajaxSetup({
-    headers: { 'X-CSRF-TOKEN': $("#csrf_token").val() }
-  });
+$("form").submit(function (e) {
+    e.preventDefault();
+    sendMessage();
+});
 
-  $.post("{{ url_for('chatroom_api') }}",
-    {
-      message: '',
-      updateOnly: true
-    },
-    function(resp, status) {
-      if (status === "success") {
-        $("#chatlist").empty();
-        $.each(resp.data, function(index, value) {
-          $("#chatlist").append(build_element(value[0], value[1], value[2]));
-        });
-      }
-  });
+function updateChat() {
+    $.ajaxSetup({
+        headers: {"X-CSRF-TOKEN": $("#csrf_token").val()}
+    });
+
+    $.post("/gameplay/chatroom/", {
+        message: "",
+        updateOnly: true
+    }, function (resp, status) {
+        if (status === "success") {
+            $("#csrf_token").val(resp.csrf);
+            $("#chatlist").empty();
+            $.each(resp.data, function (ignore, value) {
+                $("#chatlist").append(
+                    build_element(value[0], value[1], value[2])
+                );
+            });
+        }
+    });
 }
 
 var clock = {
-  handle : null,
-  run : function() {
-    return setInterval(updateChat, 3000);
-  }
+    handle: null,
+    run: function () {
+        updateChat();  // run immediately on focus, then every x seconds.
+        return setInterval(updateChat, 3000);
+    }
 };
 
 // Active update function when the window gains focus.
-$(window).on('focus', function() {
-  clock.handle = clock.run();
+$(window).on("focus", function () {
+    clock.handle = clock.run();
 });
 
 // Stop update function when the window loses focus.
-$(window).on('blur', function() { clearInterval(clock.handle) });
+$(window).on("blur", function () {
+    clearInterval(clock.handle);
+});
 </script>
 {% endblock %}

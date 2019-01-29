@@ -1,0 +1,311 @@
+{% extends "mobile/gameplay/layout.html" %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+
+{% block title %}Economy: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+	margin: 1.2em 2em;
+}
+h1 {
+	padding-bottom: 0.4em;
+	text-align: center;
+}
+
+h2 {
+	padding-bottom: 0.3em;
+}
+
+button {
+	width: 100%;
+	border-radius: 4px;
+	padding: 0.3em;
+	margin-top: 0.3em;
+}
+
+#table {
+	display: flex;
+}
+
+.col > div {
+	min-height: 2em;
+}
+
+th {
+	font-weight: bold;
+	font-size: 1.3em;
+}
+
+</style>
+{% endblock %}
+
+{% block content1 %}
+<div id="content">
+	<h1>Economy</h1>
+	<h2>Resources</h2>
+	<form method="POST" accept-charset="UTF-8" role="form" id="form">
+		{{ form.csrf_token }}
+		<table class="production_table">
+			<tbody>
+				<tr>
+					<th colspan="2">Population</th>
+				</tr>
+				<tr>
+					<td>Current</td>
+					<td>{{ county.population }}</td>
+					{% set population_projection = county.get_population_change(prediction=True) %}
+					{% if population_projection >= 0 %}
+				</tr>
+				<tr>
+					<td>Projected Change</td>
+					<td style="color:green;">+
+						{% else %}
+					<td style="color:red;">
+						{% endif %}
+						{{ population_projection }} <img class="resource_icons" src="/static/images/population_icon.jpg">
+					</td>
+				</tr>
+				<tr>
+					<td>Modifiers</td>
+					<td>{% if county.race == 'Elf' %}Elders: -10%{% else %}-{% endif %}</td>
+				</tr>
+				<tr>
+					<td>Projected Growth</td>
+					<td>
+						<ul>
+							<li>Births: {{ county.get_birth_rate() }}</li>
+							<li>Immigration: {{ county.get_immigration_rate() }}</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td>Projected Losses</td>
+					<td>
+						<ul>
+							<li>Deaths: {{ county.get_death_rate() }}</li>
+							<li>Emigration: {{ county.get_emigration_rate() }}</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td>Notes</td>
+					<td>Raise happiness to lower the amount of emigrants leaving your county.</td>
+				</tr>
+				<tr>
+					<th colspan="2">Gold</th>
+				</tr>
+				<tr>
+					<td>Current</td>
+					<td>{{ county.gold }}</td>
+				</tr>
+				<tr>
+					<td>Projected Change</td>
+					{% if county.get_gold_change() >= 0 %}
+						<td style="color:green;">+{{ county.get_gold_change() }}
+					{% else %}
+						<td style="color:red;">{{ county.get_gold_change() }}
+					{% endif %}
+						<img class="resource_icons" src="/static/images/gold_icon.jpg"></td>
+				</tr>
+				<tr>
+					<td>Modifiers</td>
+					<td>Tax Rate: {{ form.tax }}%<button type="submit">Update</button></td>
+				</tr>
+				<tr>
+					<td>Projected Growth</td>
+					<td>
+						<ul>
+							<li>Taxes: {{ county.get_tax_income() }}</li>
+							<li>Excess Production: {{ county.production // 3 }}</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td>Projected Losses</td>
+					<td>Military Expenses: {{ county.get_upkeep_costs() }}</td>
+				</tr>
+				<tr>
+					<td>Notes</td>
+					{% if county.tax < 7 %}
+						<td style="color:green;">Your current tax rate has a positive
+					{% elif county.tax == 7 %}
+						<td style="color:black;">Your current tax rate has no
+					{% else %}
+						<td style="color:red;">Your current tax rate has a negative
+					{% endif %}affect on happiness</td>
+				</tr>
+				<tr>
+					<th colspan="2">Food</th>
+				</tr>
+				<tr>
+					<td>Current</td>
+					<td>{{ county.grain_stores }}</td>
+				</tr>
+				<tr>
+					<td>Projected Change</td>
+					{% if county.grain_storage_change() >= 0 %}
+						<td style="color:green;">+
+					{% else %}
+						<td style="color:red;">
+					{% endif %}
+						{{ county.grain_storage_change() }} <img class="resource_icons" src="/static/images/grain_icon.jpg"></td>
+				</tr>
+				<tr>
+					<td>Modifiers</td>
+					<td>Rations: {{ form.rations }}<button type="submit">Update</button></td>
+				</tr>
+				<tr>
+					<td>Projected Growth</td>
+					<td>
+						<ul>
+							<li>+ {{ county.get_produced_grain() }} <img class="resource_icons" src="/static/images/grain_icon.jpg"></li>
+							<li>+ {{ county.get_produced_dairy() }} <img class="resource_icons" src="/static/images/dairy_icon.jpg"></li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td>Projected Losses</td>
+					<td>Food to be Eaten: {{ county.get_food_to_be_eaten() }}</td>
+				</tr>
+				<tr>
+					<td>Notes</td>
+					<td>Excess dairy can not be stored in your graneries. If you do not have enough food, your populace will begin to starve.</td>
+				</tr>
+				<tr>
+					<th colspan="2">Lumber</th>
+				</tr>
+				<tr>
+					<td>Current</td>
+					<td>{{ county.wood }}</td>
+				</tr>
+				<tr>
+					<td>Projected Change</td>
+					{% if county.get_wood_income() >= 0 %}
+						<td style="color:green;">+
+					{% else %}
+						<td style="color:red;">
+					{% endif %}
+						{{ county.get_wood_income() }} <img class="resource_icons" src="/static/images/wood_icon.jpg"></td>
+				</tr>
+				<tr>
+					<td>Modifiers</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Projected Growth</td>
+					<td>+ {{ county.get_wood_income() }} from {{ county.buildings['mills'].class_name }}</td>
+				</tr>
+				<tr>
+					<td>Projected Losses</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Notes</td>
+					<td>Lumber is used to build buildings and to equip certain soldiers.</td>
+				</tr>
+				<tr>
+					<th colspan="2">Iron</th>
+				</tr>
+				<tr>
+					<td>Current</td>
+					<td>{{ county.iron }}</td>
+				</tr>
+				<tr>
+					<td>Projected Change</td>
+					{% if county.get_iron_income() >= 0 %}
+						<td style="color:green;">+
+					{% else %}
+						<td style="color:red;">
+					{% endif %}
+						{{ county.get_iron_income() }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></td>
+				</tr>
+				<tr>
+					<td>Modifiers</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Projected Growth</td>
+					<td>+ {{ county.get_iron_income() }} from {{ county.buildings['mines'].class_name }}</td>
+				</tr>
+				<tr>
+					<td>Projected Losses</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Notes</td>
+					<td>Iron is used to equip powerful soldiers.</td>
+				</tr>
+				<tr>
+					<th colspan="2">Happiness</th>
+				</tr>
+				<tr>
+					<td>Current</td>
+					<td>{{ county.happiness }}%</td>
+				</tr>
+				<tr>
+					<td>Projected Change</td>
+					{% if county.get_happiness_change() >= 0 %}
+						<td style="color:green;">+
+					{% else %}
+						<td style="color:red;">
+					{% endif %}
+						{{ county.get_happiness_change() }} <img class="resource_icons" src="/static/images/heart_icon.jpg"></td>
+				</tr>
+				<tr>
+					<td>Modifiers</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Projected Growth</td>
+					<td>+7 baseline</td>
+				</tr>
+				<tr>
+					<td>Projected Losses</td>
+					<td>-{{ county.tax }} from taxes</td>
+				</tr>
+				<tr>
+					<td>Notes</td>
+					<td>Happiness affects emigration rate.</td>
+				</tr>
+				<tr>
+					<th colspan="2">Hunger</th>
+				</tr>
+				<tr>
+					<td>Current</td>
+					<td>{{ county.hunger }}%</td>
+				</tr>
+				<tr>
+					<td>Projected Change</td>
+					{% if county.get_hunger_change() >= 0 %}
+						<td style="color:green;">+
+					{% else %}
+						<td style="color:red;">
+					{% endif %}
+						{{ county.get_hunger_change() }}</td>
+				</tr>
+				<tr>
+					<td>Modifer</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Projected Growth</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Projected Losses</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Notes</td>
+					<td>Hunger affects your death rate. Your hunger worsens by 1 for every 200 unfed people.</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+</div>
+{{ super() }}
+{% endblock %}

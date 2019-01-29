@@ -1,0 +1,264 @@
+{% extends "mobile/gameplay/layout.html" %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+
+{% block title %}Infrastructure: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+	  display: flex;
+		flex-direction: column;
+		justify-content: center;
+    margin: 1.2em 5px;
+}
+
+#header {
+		width: 310px;
+		margin: auto;
+}
+
+h2 {
+    margin: 0 1em 0.3em;
+}
+
+button {
+	  width: 90%;
+	  border-radius: 4px;
+	  padding: 0.3em;
+	  margin-top: 0.3em;
+}
+
+#tableForm {
+    display: flex;
+    justify-content: center;
+}
+
+.col > div {
+    min-height: 2em;
+}
+
+th {
+	  font-weight: bold;
+	  font-size: 1.3em;
+}
+
+.tab {
+    margin-left: 0.5em;
+}
+.tooltipMobile {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltipMobile .tooltipTextMobile {
+    visibility: hidden;
+    width: 300px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+      left: 50%;
+      margin-left: -125px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
+.tooltipMobile:hover .tooltipTextMobile {
+    visibility: visible;
+}
+
+.slider {
+
+}
+</style>
+{% endblock %}
+
+{% set dynamic_cost %}
+<div>
+	Gold Cost: <span class="goldCost">0</span>
+	<img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
+	Wood Cost: <span class="woodCost">0</span>
+	<img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
+</div>
+{% endset %}
+
+{% block content1 %}
+<div id="content">
+	<div id="header">
+		<h2>Total Land: {{ county.land }}</h2>
+		<h2>Available Land: {{ county.get_available_land() }}</h2>
+		<h2>Daily Production:
+			{{ county.get_production()|int }} <img class="resource_icons" src="/static/images/prod_icon.jpg">
+			<br><span class="tab">
+	      (<span class="tooltipMobile">{{ county.get_available_workers() }} available workers
+	              <span class="tooltipTextMobile">{{ meta_data["available_workers"] }}</span>
+	      </span>)
+	      </span>
+		</h2>
+		<h2>Current Resources:
+			<br><span class="tab">
+	      <span id="totalGold">{{ county.gold }}</span> <img class="resource_icons" src="/static/images/gold_icon.jpg">
+	      <span id="totalWood">{{ county.wood }}</span> <img class="resource_icons" src="/static/images/wood_icon.jpg">
+	      {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
+	      </span>
+		</h2>
+	</div>
+	<br>
+	<form id="tableForm" method="POST" accept-charset="UTF-8">
+		{{ form.csrf_token }}
+		<table class="production_table">
+			<tbody>
+			{% for building in county.buildings.values() %}
+			<tr>
+				<th colspan="2">{{ building.class_name.title() }}</th>
+			</tr>
+			<tr>
+				<td>Owned</td>
+				<td>{{ building.total }}</td>
+			</tr>
+			<tr>
+				<td>Under Construction</td>
+				<td>{{ building.pending }}</td>
+			</tr>
+			<tr>
+				<td>To Be Built</td>
+				<td>
+					{{ dynamic_cost }}
+					<input class="slider" type="range" value="0" min="0" max="20" step="1"/>
+					<input class="value" name="{{ building.base_name }}" value="0" hidden/>
+					<button class="submitButton" type="submit">Build <span class="display">0</span></button>
+				</td>
+			</tr>
+			<tr>
+				<td>Cost</td>
+				<td>
+					{{ building.production_cost }}<img class="resource_icons" src="/static/images/prod_icon.jpg">
+					{% if building.gold %}<span class="buildingGoldCost">{{ building.gold }}</span><img class="resource_icons" src="/static/images/gold_icon.jpg">{%
+					endif %}
+					{% if building.wood %}<span class="buildingWoodCost">{{ building.wood }}</span><img class="resource_icons" src="/static/images/wood_icon.jpg">{%
+					endif %}
+				</td>
+			</tr>
+			<tr>
+				<td>Workers Employed</td>
+				<td>{{ building.labour_maintenance * building.total }} ({{ building.labour_maintenance }} each)</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>{{ building.description }}</td>
+			</tr>
+			{% endfor %}
+			<tr style="font-weight:bold;">
+				<th colspan="2" style="width:150px;">Total</th>
+			</tr>
+			<tr>
+				<td>Owned</td>
+				<td>{{ county.buildings.values()|sum(attribute='total') }}</td>
+			</tr>
+			<tr>
+				<td>Under Construction</td>
+				<td>{{ county.buildings.values()|sum(attribute='pending') }}</td>
+			</tr>
+			<tr>
+				<td>To Be Built</td>
+				<td>-</td>
+			</tr>
+			<tr>
+				<td>Cost</td>
+				<td style="width:150px;">-</td>
+			</tr>
+			<tr>
+				<td>Workers Employed</td>
+				<td style="width:150px;">{{ county.get_maintenance_workers() }}</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>-</td>
+			</tr>
+			</tbody>
+		</table>
+	</form>
+</div>
+{{ super() }}
+{% endblock %}
+
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+var sliders = $(".slider");
+var submitButtons = $(".submitButton");
+var goldCosts = $(".goldCost");
+var woodCosts = $(".woodCost");
+var displays = $(".display");
+var values = $(".value");
+var buildingGoldCosts = $(".buildingGoldCost");
+var buildingWoodCosts = $(".buildingWoodCost");
+var totalGold = parseInt($("#totalGold").text());
+var totalWood = parseInt($("#totalWood").text());
+
+function updateGold() {
+    goldCosts.each(function (ignore, element) {
+        var sum = 0;
+        sliders.each(function (index, element) {
+            sum += element.value * buildingGoldCosts[index].innerHTML;
+        });
+        element.innerHTML = sum;
+    });
+}
+
+function updateWood() {
+    woodCosts.each(function (ignore, element) {
+        var sum = 0;
+        sliders.each(function (index, element) {
+            sum += element.value * buildingWoodCosts[index].innerHTML;
+        });
+        element.innerHTML = sum;
+    });
+}
+
+function updateCosts() {
+    updateGold();
+    updateWood();
+    sliders.each(function (index) {
+        var goldCost = goldCosts[index];
+        var woodCost = woodCosts[index];
+
+        var gold = parseInt(goldCost.innerHTML);
+        if (gold > totalGold) {
+            goldCost.style.color = "red";
+        } else {
+            goldCost.style.color = "green";
+        }
+        var wood = parseInt(woodCost.innerHTML);
+        if (wood > totalWood) {
+            woodCost.style.color = "red";
+        } else {
+            woodCost.style.color = "green";
+        }
+        if (gold <= totalGold && wood <= totalWood) {
+            submitButtons[index].disabled = false;
+        } else {
+            submitButtons[index].disabled = true;
+        }
+    });
+}
+
+
+sliders.each(function (index) {
+    $(this).change(function () {
+        displays[index].innerHTML = $(this).val();
+        values[index].value = $(this).val();
+        updateCosts();
+    });
+});
+</script>
+{% endblock %}
+
