@@ -16,7 +16,7 @@ class AttackForm(FlaskForm):
 
     def insufficient_troops(self):
         troops_being_sent = self.peasant.data + self.soldier.data + self.elite.data
-        if troops_being_sent < 25:
+        if troops_being_sent < 15:
             self.peasant.errors.append("Must send at least 25 troops.")
             self.soldier.errors.append("Must send at least 25 troops.")
             self.elite.errors.append("Must send at least 25 troops.")

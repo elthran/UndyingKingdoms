@@ -450,9 +450,10 @@ class County(GameState):
                     break
 
     # Battling
-    def get_offensive_strength(self, army=None, county=None, traveling=False):
+    def get_offensive_strength(self, army=None, county=None, scoreboard=False):
         """
         Returns the attack power of your army. If no army is sent in, it checks the full potential of the county.
+        params: scoreboard - Looks at total possible power, even for troops who are unavailable
         """
         strength = 0
         if army:
@@ -461,14 +462,20 @@ class County(GameState):
                     strength += army[unit.base_name] * unit.attack
         elif county:
             for unit in county.armies.values():
-                strength += unit.available * unit.attack
+                if scoreboard:
+                    strength += unit.total * unit.attack
+                else:
+                    strength += unit.available * unit.attack
         return int(strength)
 
-    def get_defensive_strength(self):
+    def get_defensive_strength(self, scoreboard=False):
         modifier = (self.buildings['forts'].output * self.buildings['forts'].total) / 100 + 1
         strength = 0
         for unit in self.armies.values():
-            strength += unit.available * unit.defence
+            if scoreboard:
+                strength += unit.total * unit.defence
+            else:
+                strength += unit.available * unit.defence
         if self.race == 'Elf':
             strength += self.population // 10  # Every 15 population is 1 defence power
         else:

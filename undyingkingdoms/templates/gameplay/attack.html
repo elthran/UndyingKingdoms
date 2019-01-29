@@ -16,21 +16,28 @@
     </ul>
     <br>
     Current Army has <span id="calculatedAttack">0</span> attack power.
+    <br><br>
     <button type="submit">Attack</button>
     <br><br>
     <p style="width:70%">Note: You will typically lose around 20% of any soldiers sent. However, if your army is much weaker,
         then your troops will take heavy casualties. Conversely, if you greatly overpower them you will lose very few troops.</p>
 </form>
 
-<script>
+<script type="text/javascript">
+var total_power = 0
 {% for unit in county.armies.values() %}
-    document.getElementById("{{ unit.base_name }}").onchange = updateAttack()
-    var
+{% if unit.base_name != 'archer' %}
+document.getElementById('{{ unit.base_name }}').onchange = function() {
+    updateAttack();
+}
+var {{ unit.base_name }}_amount = document.getElementById("{{ unit.base_name }}")
+console.log({{ unit.base_name }}_amount);
+{% endif %}
 {% endfor %}
 
 function updateAttack() {
-    var calculatedAttack = document.getElementById("calculatedAttack");
-    calculatedAttack.innerHTML = 1;
+    total_power = 0{% for unit in county.armies.values() %}{% if unit.base_name != 'archer' %}  + parseInt({{ unit.base_name }}_amount.value) * parseInt({{ unit.attack }}){% endif %}{% endfor %};
+    calculatedAttack.innerHTML = total_power;
 }
 
 </script>
