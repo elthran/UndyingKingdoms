@@ -28,7 +28,7 @@ function formatDate(date) {
 
 function build_element(time, leader, content) {
     // <li> 13:27:26  Haldon: Test message</li>
-    var date = new Date(time);
+    var date = new Date(time + "Z");
     return $("<li></li>").text(
         "(" + formatDate(date) + ") " + leader + ": " + content
     );

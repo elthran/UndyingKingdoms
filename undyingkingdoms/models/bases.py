@@ -1,3 +1,5 @@
+from  datetime import datetime
+
 from sqlalchemy.exc import DatabaseError
 
 from extensions import flask_db as db
@@ -44,12 +46,12 @@ class GameState(Base):
     __abstract__ = True
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    time_created = db.Column(db.DateTime, default=db.func.current_timestamp())
-    time_modified = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    time_created = db.Column(db.DateTime, default=datetime.utcnow)
+    time_modified = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class GameEvent(Base):
     __abstract__ = True
 
     id = db.Column(db.Integer, primary_key=True)
-    time_created = db.Column(db.DateTime, default=db.func.current_timestamp())
+    time_created = db.Column(db.DateTime, default=datetime.utcnow)
