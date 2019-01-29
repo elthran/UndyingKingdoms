@@ -20,15 +20,21 @@ def attack(county_id):
     soldiers = current_user.county.armies['soldier'].available
     elites = current_user.county.armies['elite'].available
 
-    if peasants < 10:
+    if peasants == 0:
+        form.peasant.choices = [(0, 0)]
+    elif peasants < 10:
         form.peasant.choices = [(i, i) for i in range(peasants)]
     else:
         form.peasant.choices = [(peasants * i // 10, peasants * i // 10) for i in range(0, 11)]
-    if soldiers < 10:
+    if soldiers == 0:
+        form.soldier.choices = [(0, 0)]
+    elif soldiers < 10:
         form.soldier.choices = [(i, i) for i in range(soldiers)]
     else:
         form.soldier.choices = [(soldiers * i // 10, soldiers * i // 10) for i in range(0, 11)]
-    if elites < 10:
+    if elites == 0:
+        form.elite.choices = [(0, 0)]
+    elif elites < 10:
         form.elite.choices = [(i, i) for i in range(0, elites + 1)]
     else:
         form.elite.choices = [(elites * i // 10, elites * i // 10) for i in range(0, 11)]
