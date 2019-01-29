@@ -25,7 +25,8 @@ class ChatRoomAPI(MethodView):
             return jsonify(dict(
                 status='success',
                 message='Here is the latest data.',
-                data=(message.json_ready() for message in chat)
+                data=(message.json_ready() for message in chat),
+                csrf=form.csrf_token.current_token,
             ))
         elif form.validate_on_submit():
             message = Chatroom(current_user.county.kingdom_id, current_user.county.id, form.content.data)

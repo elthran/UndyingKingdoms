@@ -59,6 +59,7 @@ function updateChat() {
         updateOnly: true
     }, function (resp, status) {
         if (status === "success") {
+            $("#csrf_token").val(resp.csrf);
             $("#chatlist").empty();
             $.each(resp.data, function (ignore, value) {
                 $("#chatlist").append(
@@ -72,6 +73,7 @@ function updateChat() {
 var clock = {
     handle: null,
     run: function () {
+        updateChat();  // run immediately on focus, then every x seconds.
         return setInterval(updateChat, 3000);
     }
 };
