@@ -2,6 +2,7 @@
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
+
 {% block title %}Economy: {{ super() }}{% endblock %}
 
 {% block style %}
