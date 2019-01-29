@@ -121,7 +121,7 @@ class User(GameState):
         # TEMPORARY FOR ALPHA. Just a quick way to add some fun
         score = self.county.land * 10
         score += self.county.population // 2
-        score += max(self.county.get_offensive_strength(), self.county.get_defensive_strength())
+        score += max(self.county.get_offensive_strength(scoreboard=True), self.county.get_defensive_strength(scoreboard=True))
         return score
 
     def __repr__(self):
