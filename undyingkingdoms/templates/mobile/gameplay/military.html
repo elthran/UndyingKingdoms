@@ -15,12 +15,22 @@
     margin: 1.2em 5px;
 }
 
+#header {
+		width: 280px;
+		margin: auto;
+}
+
+#tableForm {
+    display: flex;
+    justify-content: center;
+}
+
 th {
 		font-weight: bold;
     font-size: 1.3em;
 }
 
-#spacer {
+.spacer {
     margin-bottom: 1em;
 }
 
@@ -64,6 +74,11 @@ button {
 #invisibleDataFields {
     display: none;
 }
+
+#footer {
+		max-width: 450px;
+		margin: auto;
+}
 </style>
 {% endblock %}
 
@@ -82,11 +97,13 @@ button {
 
 {% block content1 %}
 <div id="content">
-	<h2>Current Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>
-	<h2>Current Defensive Power: {{ county.get_defensive_strength() }}</h2>
-	<h2>{{ county.get_available_workers() }} workers available for training</h2>
-	<div id="spacer"></div>
-	<form method="POST" accept-charset="UTF-8" role="form">
+	<div id="header">
+		<h2>Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>
+		<h2>Defensive Power: {{ county.get_defensive_strength() }}</h2>
+		<h2>Recruitable Peasants: {{ county.get_available_workers() }} </h2>
+		<div class="spacer"></div>
+	</div>
+	<form id="tableForm" method="POST" accept-charset="UTF-8" role="form">
 		{{ form.csrf_token }}
 		<table class="production_table">
 			{% for army in county.armies.values() %}
@@ -192,13 +209,15 @@ button {
 			</tr>
 		</table>
 	</form>
-	<br><br>
-	<h2>Expeditions:</h2>
-	{% for expedition in county.get_expeditions() %}
-	<br>Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite }} troops will return in {{ expedition.duration }} days with {{ expedition.land_acquired }} acres of newly captured land.
-	{% else %}
-	You have no troops travelling in foreign lands.
-	{% endfor %}
+	<div id="footer">
+		<div class="spacer"></div>
+		<h2>Expeditions:</h2>
+		{% for expedition in county.get_expeditions() %}
+			<br>Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite }} troops will return in {{ expedition.duration }} days with {{ expedition.land_acquired }} acres of newly captured land.
+		{% else %}
+			You have no troops travelling in foreign lands.
+		{% endfor %}
+	</div>
 </div>
 <div id="invisibleDataFields">
     <span id="population">{{ county.population }}</span>
