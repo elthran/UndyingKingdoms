@@ -9,19 +9,19 @@
 {{ super() }}
 <style type="text/css">
 #content {
-	  display: flex;
-		flex-direction: column;
-		justify-content: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     margin: 1.2em 5px;
 }
 
 th {
-	  font-weight: bold;
-	  font-size: 1.3em;
+		font-weight: bold;
+    font-size: 1.3em;
 }
 
 #spacer {
-		margin-bottom: 1em;
+    margin-bottom: 1em;
 }
 
 .tooltipMobile {
@@ -32,7 +32,7 @@ th {
 
 .tooltipMobile .tooltipTextMobile {
     visibility: hidden;
-    width: 300px;
+    width: 12.5em;
     background-color: black;
     color: #fff;
     text-align: center;
@@ -49,8 +49,36 @@ th {
 .tooltipMobile:hover .tooltipTextMobile {
     visibility: visible;
 }
+
+button {
+    width: 90%;
+    border-radius: 4px;
+    padding: 0.3em;
+    margin-top: 0.3em;
+}
+
+.slider {
+    margin-top: 0.3em;
+}
+
+#invisibleDataFields {
+    display: none;
+}
 </style>
 {% endblock %}
+
+{% set dynamic_cost %}
+<div>
+	Gold Cost: <span class="goldCost">0</span>
+	<img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
+	Wood Cost: <span class="woodCost">0</span>
+	<img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
+	Iron Cost: <span class="ironCost">0</span>
+	<img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"><br>
+	Happiness Cost: <span class="happinessCost">0</span>
+	<img class="resource_icons" src="/static/images/heart_icon.jpg">
+</div>
+{% endset %}
 
 {% block content1 %}
 <div id="content">
@@ -80,21 +108,28 @@ th {
 			<tr>
 				<td>Train</td>
 				<td>
-					<input id="{{ army.base_name }}_slider"
+					{{ dynamic_cost }}
+					<input class="slider"
 					       type="range" value="0" min="0" max="50" step="1"/>
-					<span id="{{ army.base_name }}_display">0</span>
-					<input id="{{ army.base_name }}_value" name="{{ army.base_name }}" value="0" hidden/>
+					<input class="value" name="{{ army.base_name }}" value="0" hidden/>
+					<button class="submitButton" type="submit">Build <span class="display">0</span></button>
 				</td>
 			</tr>
 			<tr>
 				<td>Cost</td>
 				<td>
-					{% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif
-					%}
-					{% if army.wood %}{{ army.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif
-					%}
-					{% if army.iron %}{{ army.iron }}<img class="resource_icons" src="/static/images/iron_icon.jpg">{% endif
-					%}
+					{% if army.gold %}
+						<span class="buildingGoldCost">{{ army.gold }}</span>
+						<img class="resource_icons" src="/static/images/gold_icon.jpg">
+					{% endif %}
+					{% if army.wood %}
+						<span class="buildingWoodCost">{{ army.wood }}</span>
+						<img class="resource_icons" src="/static/images/wood_icon.jpg">
+					{% endif %}
+					{% if army.iron %}
+						<span class="buildingIronCost">{{ army.iron }}</span>
+						<img class="resource_icons" src="/static/images/iron_icon.jpg">
+					{% endif %}
 					{% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
 				</td>
 			</tr>
@@ -156,17 +191,6 @@ th {
 				</td>
 			</tr>
 		</table>
-		<br>
-		Gold Cost: <span id="goldCost">0</span>
-		<img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
-		Wood Cost: <span id="woodCost">0</span>
-		<img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
-		Iron Cost: <span id="ironCost">0</span>
-		<img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"><br>
-		Happiness Cost: <span id="happinessCost">0</span>
-		<img class="resource_icons" src="/static/images/heart_icon.jpg">
-		<br><br>
-		<button id="submitButton" type="submit">Build</button><br>
 	</form>
 	<br><br>
 	<h2>Expeditions:</h2>
@@ -176,67 +200,118 @@ th {
 	You have no troops travelling in foreign lands.
 	{% endfor %}
 </div>
+<div id="invisibleDataFields">
+    <span id="population">{{ county.population }}</span>
+    <span id="totalGold">{{ county.gold }}</span>
+    <span id="totalWood">{{ county.wood }}</span>
+	<span id="totalIron">{{ county.iron }}</span>
+</div>
 {{ super() }}
 {% endblock %}
 
 {% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
-var submitButton = document.getElementById('submitButton');
-
-{% for unit in county.armies.values() %}
-    var {{ unit.base_name }}_slider = document.getElementById('{{ unit.base_name }}_slider');
-    {{ unit.base_name }}_display = document.getElementById('{{ unit.base_name }}_display');
-{% endfor %}
+var sliders = $(".slider");
+var submitButtons = $(".submitButton");
+var goldCosts = $(".goldCost");
+var woodCosts = $(".woodCost");
+var ironCosts = $(".ironCost");
+var happinessCosts = $(".happinessCost");
+var displays = $(".display");
+var values = $(".value");
+var buildingGoldCosts = $(".buildingGoldCost");
+var buildingWoodCosts = $(".buildingWoodCost");
+var buildingIronCosts = $(".buildingWoodCost");
+var totalGold = parseInt($("#totalGold").text());
+var totalWood = parseInt($("#totalWood").text());
+var totalIron = parseInt($("#totalIron").text());
+var population = parseInt($("#population").text());
 
 function updateGold() {
-    goldCost.innerHTML = 0{% for unit in county.armies.values() %} + {{ unit.base_name }}_slider.value * {{ unit.gold }}{% endfor %};
+    goldCosts.each(function (ignore, element) {
+        var sum = 0;
+        sliders.each(function (index, element) {
+            sum += element.value * buildingGoldCosts[index].innerHTML;
+        });
+        element.innerHTML = sum;
+    });
 }
+
 function updateWood() {
-    woodCost.innerHTML = 0{% for unit in county.armies.values() %} + {{ unit.base_name }}_slider.value * {{ unit.wood }}{% endfor %};
+    woodCosts.each(function (ignore, element) {
+        var sum = 0;
+        sliders.each(function (index, element) {
+            sum += element.value * buildingWoodCosts[index].innerHTML;
+        });
+        element.innerHTML = sum;
+    });
 }
+
 function updateIron() {
-    ironCost.innerHTML = 0{% for unit in county.armies.values() %} + {{ unit.base_name }}_slider.value * {{ unit.iron }}{% endfor %};
+    ironCosts.each(function (ignore, element) {
+        var sum = 0;
+        sliders.each(function (index, element) {
+            sum += element.value * buildingIronCosts[index].innerHTML;
+        });
+        element.innerHTML = sum;
+    });
 }
+
 function updateHappiness() {
-    happinessCost.innerHTML = Math.ceil((parseInt(0){% for unit in county.armies.values() %} +
-    parseInt({{ unit.base_name }}_slider.value){% endfor %}) * 100 / {{ county.population }});
+    happinessCosts.each(function (ignore, element) {
+        var sum = 0;
+        sliders.each(function (ignore, element) {
+            sum += parseInt(element.value);
+        });
+        element.innerHTML = Math.ceil(sum / population * 100);
+    });
 }
+
 function updateCosts() {
     updateGold();
     updateWood();
     updateIron();
     updateHappiness();
-    var gold = parseInt(goldCost.innerHTML);
-    if (gold > {{ county.gold }}) {
-        goldCost.style.color = 'red';
-    } else {
-        goldCost.style.color = 'green';
-    }
-    var wood = parseInt(woodCost.innerHTML);
-    if (wood > {{ county.wood }}) {
-        woodCost.style.color = 'red';
-    } else {
-        woodCost.style.color = 'green';
-    }
-    var iron = parseInt(ironCost.innerHTML);
-    if (iron > {{ county.iron }}) {
-        ironCost.style.color = 'red';
-    } else {
-        ironCost.style.color = 'green';
-    }
-    if (gold <= {{ county.gold }} && wood <= {{ county.wood }} && iron <= {{ county.iron }}) {
-        submitButton.disabled = false;
-    } else {
-        submitButton.disabled = true;
-    }
+    sliders.each(function (index) {
+        var goldCost = goldCosts[index];
+        var woodCost = woodCosts[index];
+        var ironCost = ironCosts[index];
+        var gold = parseInt(goldCost.innerHTML);
+        var wood = parseInt(woodCost.innerHTML);
+        var iron = parseInt(ironCost.innerHTML);
+
+        if (gold > totalGold) {
+            goldCost.style.color = "red";
+        } else {
+            goldCost.style.color = "green";
+        }
+
+        if (wood > totalWood) {
+            woodCost.style.color = "red";
+        } else {
+            woodCost.style.color = "green";
+        }
+        if (iron > totalIron) {
+            ironCost.style.color = "red";
+        } else {
+            ironCost.style.color = "green";
+        }
+        if (gold <= totalGold && wood <= totalWood && iron <= totalIron) {
+            submitButtons[index].disabled = false;
+        } else {
+            submitButtons[index].disabled = true;
+        }
+    });
 }
 
-{% for unit in county.armies.values() %}
-    {{ unit.base_name }}_slider.onchange = function() {
-        {{ unit.base_name }}_display.innerHTML = this.value;
-        {{ unit.base_name }}_value.value = this.value;
+
+sliders.each(function (index) {
+    $(this).change(function () {
+        displays[index].innerHTML = $(this).val();
+        values[index].value = $(this).val();
         updateCosts();
-    }
-{% endfor %}
+    });
+});
 </script>
 {% endblock %}
