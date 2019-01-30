@@ -61,10 +61,10 @@ class DAU(GameEvent):
             self.happiness = county.happiness
             self.hunger = county.hunger
             
-            self.peasants = county.armies['peasants'].total
-            self.soldiers = county.armies['soldiers'].total
-            self.archers = county.armies['archers'].total
-            self.elites = county.armies['elites'].total
+            self.peasants = county.armies['peasant'].total
+            self.soldiers = county.armies['soldier'].total
+            self.archers = county.armies['archer'].total
+            self.elites = county.armies['elite'].total
 
             self.houses = county.buildings['houses'].total
             self.fields = county.buildings['fields'].total
@@ -77,11 +77,11 @@ class DAU(GameEvent):
 
     @staticmethod
     def get_sessions(user_id):
-        return Session.query.filter_by(user_id=user_id).filter(
-            cast(Session.time_logged_out, Date) == datetime.now().date()).count()
+        time_cutoff = datetime.now() - timedelta(hours=2)
+        return Session.query.filter_by(user_id=user_id).filter(Session.time_logged_out > time_cutoff).count()
 
     @staticmethod
     def get_minutes_played(user_id):
-        sessions = Session.query.filter_by(user_id=user_id).filter(
-            cast(Session.time_logged_out, Date) == datetime.now().date()).all()
+        time_cutoff = datetime.now() - timedelta(hours=2)
+        sessions = Session.query.filter_by(user_id=user_id).filter(Session.time_logged_out > time_cutoff).all()
         return sum(session.minutes for session in sessions if session.minutes is not None)

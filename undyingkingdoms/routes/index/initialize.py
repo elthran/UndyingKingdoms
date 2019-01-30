@@ -15,9 +15,11 @@ def initialize(template):
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
     genders = ["----", "Female", "Male"]
     races = ["----", "Dwarf", "Human", "Elf"]
+    titles = ["----", "Warlord", "Engineer", "Merchant", "Rogue"]
     form = InitializeForm()
     form.gender.choices = [(i, genders[i]) for i in range(len(genders))]
     form.race.choices = [(i, races[i]) for i in range(len(races))]
+    form.titles.choices = [(i, titles[i]) for i in range(len(titles))]
     
     kingdoms = Kingdom.query.all()
     smallest_kingdom = min(kingdoms, key=lambda x: len(x.counties))
@@ -28,7 +30,8 @@ def initialize(template):
                         form.leader.data,
                         current_user.id,
                         races[form.race.data],
-                        genders[form.gender.data])
+                        genders[form.gender.data],
+                        titles[form.title.data])
         county.save()
         county.vote = county.id
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
