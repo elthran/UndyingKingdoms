@@ -2,6 +2,7 @@ from random import randint, choice
 
 from flask import redirect, url_for, render_template
 from flask_login import login_required, current_user
+from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models import Infiltration, County, Notification
@@ -10,8 +11,9 @@ from undyingkingdoms.static.metadata import infiltration_missions, all_buildings
 
 
 @app.route('/gameplay/infiltrate/<int:county_id>', methods=['GET', 'POST'])
+@mobile_template('{mobile/}gameplay/infiltrate.html')
 @login_required
-def infiltrate(county_id):
+def infiltrate(template, county_id):
     if not current_user.in_active_session:
         current_user.in_active_session = True
     if county_id == current_user.county.id:
@@ -80,4 +82,4 @@ def infiltrate(county_id):
 
         return redirect(url_for('infiltration'))
 
-    return render_template('gameplay/infiltrate.html', target=target, form=form)
+    return render_template(template, target=target, form=form)
