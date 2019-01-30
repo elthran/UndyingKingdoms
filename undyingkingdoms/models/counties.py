@@ -59,7 +59,7 @@ class County(GameState):
                              collection_class=attribute_mapped_collection('base_name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
 
-    def __init__(self, kingdom_id, name, leader, user_id, race, gender):
+    def __init__(self, kingdom_id, name, leader, user_id, race, gender, title):
 
         self.name = name
         self.leader = leader
@@ -67,7 +67,7 @@ class County(GameState):
         self.kingdom_id = kingdom_id
         self.race = race
         self.gender = gender
-        self.title = 'Noble'
+        self.title = title
         self.county_days_in_age = 0
         self.vote = None
         self.last_vote_date = None
@@ -360,7 +360,7 @@ class County(GameState):
 
     def get_death_rate(self):
         modifier = 1
-        death_rate = uniform(1.6, 2.0) / self.hunger
+        death_rate = uniform(1.7, 2.1) / self.hunger
         return int(death_rate * self.population * modifier)
 
     def get_birth_rate(self):
@@ -372,7 +372,7 @@ class County(GameState):
         return int(birth_rate * modifier * uniform(0.9995, 1.0005))
 
     def get_immigration_rate(self):
-        return randint(20, 30)
+        return randint(25, 35)
 
     def get_emigration_rate(self):
         return randint(100, 110 + self.kingdom.world.age) - self.happiness
