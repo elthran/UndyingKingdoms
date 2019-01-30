@@ -59,7 +59,7 @@ class County(GameState):
                              collection_class=attribute_mapped_collection('base_name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
 
-    def __init__(self, kingdom_id, name, leader, user_id, race, gender, title):
+    def __init__(self, kingdom_id, name, leader, user_id, race, gender, title="Engineer"):
 
         self.name = name
         self.leader = leader
@@ -182,14 +182,14 @@ class County(GameState):
         return County.query.filter_by(vote=self.id, kingdom_id=self.kingdom.id).count()
 
     def can_vote(self):
-        if self.last_vote_date and datetime.now() > (self.last_vote_date - timedelta(hours=24)):
+        if self.last_vote_date and datetime.utcnow() > (self.last_vote_date - timedelta(hours=24)):
             return False
         else:
             return True
 
     def cast_vote(self, vote):
         self.vote = vote
-        self.last_vote_date = datetime.now()
+        self.last_vote_date = datetime.utcnow()
         self.kingdom.count_votes()
 
     def display_vote(self):
