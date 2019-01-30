@@ -13,13 +13,13 @@ from undyingkingdoms.static.metadata import dwarf_armies, human_armies, elf_armi
 def initialize(template):
     if current_user.county is not None:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
-    genders = ["----", "Female", "Male"]
-    races = ["----", "Dwarf", "Human", "Elf"]
-    titles = ["----", "Warlord", "Engineer", "Merchant", "Rogue"]
+    genders = ["<Gender>", "Female", "Male"]
+    races = ["<Race>", "Dwarf", "Human", "Elf"]
+    titles = ["<Class>", "Warlord", "Engineer", "Merchant", "Rogue"]
     form = InitializeForm()
     form.gender.choices = [(i, genders[i]) for i in range(len(genders))]
     form.race.choices = [(i, races[i]) for i in range(len(races))]
-    form.titles.choices = [(i, titles[i]) for i in range(len(titles))]
+    form.title.choices = [(i, titles[i]) for i in range(len(titles))]
     
     kingdoms = Kingdom.query.all()
     smallest_kingdom = min(kingdoms, key=lambda x: len(x.counties))
