@@ -1,5 +1,6 @@
 from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
+from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models import Kingdom
@@ -7,8 +8,9 @@ from undyingkingdoms.models.forms.votes import VoteForm
 
 
 @app.route('/gameplay/kingdom/<int:kingdom_id>/', methods=['GET', 'POST'])
+@mobile_template('{mobile/}gameplay/kingdom.html')
 @login_required
-def kingdom(kingdom_id=0):
+def kingdom(template, kingdom_id=0):
     if not current_user.in_active_session:
         current_user.in_active_session = True
     kingdom = Kingdom.query.filter_by(id=kingdom_id).first()
@@ -17,4 +19,4 @@ def kingdom(kingdom_id=0):
     if form.validate_on_submit():
         current_user.county.cast_vote(form.vote.data)
         return redirect(url_for('kingdom', kingdom_id=kingdom.id))
-    return render_template('gameplay/kingdom.html', form=form, kingdom=kingdom)
+    return render_template(template, form=form, kingdom=kingdom)

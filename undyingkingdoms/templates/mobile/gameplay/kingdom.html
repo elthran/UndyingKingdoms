@@ -1,0 +1,110 @@
+{% extends "mobile/gameplay/layout.html" %}
+{% set user = current_user %}
+{% set my_county = current_user.county %}
+{% set left_button = kingdom.kingdom_button('left', kingdom.id) %}
+{% set right_button = kingdom.kingdom_button('right', kingdom.id) %}
+
+{% block title %}Kingdom: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1em;
+}
+
+/*I want this div to expand to 400px if page grows -> width: 100%*/
+#header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 1.3em;
+    width: 100%;
+    min-width: 290px;
+    max-width: 500px;
+}
+
+h1 {
+    display: inline;
+}
+
+
+button, select {
+    height: 3em;
+    border-radius: 4px;
+    min-width: 6em;
+}
+
+.emphasis {
+    font-style: italic;
+}
+
+li {
+  margin-bottom: 0.4em;
+}
+</style>
+{% endblock %}
+
+{% block content1 %}
+<div id="content">
+  <div id="header">
+    <a href="{{ url_for('kingdom', kingdom_id=left_button) }}">
+      <button>Left</button>
+    </a>
+    <h1>{{ kingdom.name }}</h1>
+    <a href="{{ url_for('kingdom', kingdom_id=right_button) }}">
+      <button>Right</button>
+    </a>
+  </div>
+  <form id="voteForm" method="POST" accept-charset="UTF-8" role="form">
+      {{ form.csrf_token }}
+    <ul>
+      {% if kingdom == my_county.kingdom %}
+        {% for county in kingdom.counties %}
+          {% if my_county.id == county.id %}
+            <li class="emphasis">{{ county.name }} led by the infamous {{ county.leader }} with {{ county.land }} acres of land
+              {% if kingdom.leader == 0 and my_county.can_vote() %}
+                <p>(Vote: {{ form.vote }})<button type="submit">Change Vote</button></p>
+              {% elif kingdom.leader == 0 %}
+                (Vote: {{ county.display_vote() }} - You must wait to change your vote)
+              {% endif %}
+            </li>
+          {% else %}
+            <li>
+              <a href="{{ url_for('overview', kingdom_id=kingdom.id, county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
+              {% if kingdom.leader == 0 %}
+                (Vote: {{ county.display_vote() }})
+              {% endif %}
+            </li>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        {% for county in kingdom.counties %}
+          <li>
+            <a href="{{ url_for('overview', kingdom_id=kingdom.id, county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
+          </li>
+        {% endfor %}
+      {% endif %}
+    </ul>
+  </form>
+  <br><br><br>
+  {% if kingdom.leader %}
+  {{ kingdom.get_leader_name(kingdom.leader) }} rules this land!
+  {% else %}
+  {{ kingdom.get_most_popular_county().name }} is winning with {{ kingdom.get_most_popular_county().get_votes_for_self() }} vote(s).
+  The first county with {{ kingdom.get_votes_needed() }} votes will be crowned ruler.
+  {% endif %}
+</div>
+
+{{ super() }}
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script type="text/javascript">
+
+</script>
+{% endblock %}
