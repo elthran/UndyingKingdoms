@@ -14,19 +14,24 @@
     {{ form.csrf_token }}
     <h1>What type of mission would you like to do?</h1><br>
     {{ form.mission }}
-    <h1>How many thieves would you like to send?</h1><br>
+    <h1>How many thieves would you like to send? (Each extra thief increases chance of success by 1% and results in better results)</h1><br>
     {{ form.amount }}
+    <h1>Estimated Time to Return:</h1><br>
+    <span id="thiefDuration">Unknown</span>
     <button type="submit">Send Thieves</button><br>
 </form>
 
-Basic Info (This feature is very new and might be tweaked mid-age. During this period, the numbers will be shown here for visibility):
-<ul>
-    <li>Gold stolen per thief: 15-25 (+25% bonus for each additional thief), Duration: 14 days</li>
-    <li>Crops burned per thief: 1, Duration: 24 days</li>
-    <li>County happiness lost per thief: 3, Duration: 18 days</li>
-    <li>Scout military: 1 thief (50% accuracy). 2 thieves (70% accuracy). 3+ thieves (90% accuracy), Duration: 6 days</li>
-    <li>*Note for accuracy: If enemy has 100 knights, 50% accuracy means thieves would report between 50-150 knights.*</li>
-</ul>
 {% endif %}
+
+
+
+
+<script type="text/javascript">
+var thiefAmount = document.getElementById('amount');
+
+thiefAmount.onchange = function() {
+        thiefDuration.innerHTML = this.value;
+}
+</script>
 
 {% endblock %}

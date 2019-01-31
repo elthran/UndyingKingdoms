@@ -19,6 +19,8 @@ def infiltrate(template, county_id):
     if county_id == current_user.county.id:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
 
+    duration_dict = {}
+
     target = County.query.filter_by(id=county_id).first()
 
     form = InfiltrateForm()
@@ -35,7 +37,7 @@ def infiltrate(template, county_id):
                               mission, form.amount.data)
         report.save()
 
-        chance_of_success = target.get_chance_to_be_successfully_infiltrated()
+        chance_of_success = target.get_chance_to_be_successfully_infiltrated() + form.amount.data
 
         if chance_of_success >= randint(1, 100):
             report.success = True
@@ -53,7 +55,7 @@ def infiltrate(template, county_id):
                 crops_burned = min(target.buildings['fields'].total, form.amount.data)
                 target.buildings['fields'].total -= crops_burned
                 report.crops_burned = crops_burned
-                report.duration = 24
+                report.duration = 20
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
                                             "They burned {} of our crops".format(crops_burned),
@@ -76,10 +78,10 @@ def infiltrate(template, county_id):
                                             current_user.county.kingdom.world.day)
         else:
             notification = Notification(target.id, "You caught enemy thieves from {}".format(current_user.county.name), "You caught them before they could accomplish their task", current_user.county.kingdom.world.day)
-            report.duration = 10 + (form.amount.data * 2)
+            report.duration = randint(20, 26)
             report.success = False
         notification.save()
 
         return redirect(url_for('infiltration'))
 
-    return render_template(template, target=target, form=form)
+    return render_template(template, target=target, form=form, duration_dict=duration_dict)
