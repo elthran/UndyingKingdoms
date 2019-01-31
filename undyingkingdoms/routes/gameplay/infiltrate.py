@@ -19,8 +19,6 @@ def infiltrate(template, county_id):
     if county_id == current_user.county.id:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
 
-    duration_dict = {}
-
     target = County.query.filter_by(id=county_id).first()
 
     form = InfiltrateForm()
@@ -46,7 +44,7 @@ def infiltrate(template, county_id):
                 target.gold -= gold_stolen
                 current_user.county.gold += gold_stolen
                 report.pilfer_amount = gold_stolen
-                report.duration = 14
+                report.duration = randint(13, 15)
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
                                             "They stole {} gold from our coffers".format(gold_stolen),
@@ -55,7 +53,7 @@ def infiltrate(template, county_id):
                 crops_burned = min(target.buildings['fields'].total, form.amount.data)
                 target.buildings['fields'].total -= crops_burned
                 report.crops_burned = crops_burned
-                report.duration = 20
+                report.duration = randint(19, 20)
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
                                             "They burned {} of our crops".format(crops_burned),
@@ -64,7 +62,7 @@ def infiltrate(template, county_id):
                 happiness_lost = min(target.happiness, form.amount.data * 3)
                 target.happiness -= happiness_lost
                 report.distrust = happiness_lost
-                report.duration = 18
+                report.duration = randint(17, 19)
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
                                             "They have caused some unrest in our kingdom",
@@ -84,4 +82,4 @@ def infiltrate(template, county_id):
 
         return redirect(url_for('infiltration'))
 
-    return render_template(template, target=target, form=form, duration_dict=duration_dict)
+    return render_template(template, target=target, form=form)

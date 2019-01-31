@@ -5,19 +5,20 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
-<h1>Target: {{ target.name }} led by {{ target.leader }}</h1>
+<h2>Target: <a href="{{ url_for('overview', kingdom_id=target.kingdom.id, county_id=target.id) }}">{{ target.name }}</a> led by {{ target.leader }}</h2>
 <br><br>
 {% if county.get_number_of_available_thieves() == 0 %}
 <h2>You do not have any available thieves. Either wait for them to return from previous missions or build more guilds.</h2>
 {% else %}
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
-    <h1>What type of mission would you like to do?</h1><br>
-    {{ form.mission }}
-    <h1>How many thieves would you like to send? (Each extra thief increases chance of success by 1% and results in better results)</h1><br>
-    {{ form.amount }}
-    <h1>Estimated Time to Return:</h1><br>
-    <span id="thiefDuration">Unknown</span>
+    <h2>What type of mission would you like to do?</h2>
+    {{ form.mission }}<br>
+    <h2>How many thieves would you like to send? (Each extra thief increases chance of success by 1%)</h2>
+    {{ form.amount }}<br>
+    <h2>Estimated Time to Return:</h2><br>
+    Your thieves would be ready after about <span id="thiefDuration">6</span> days.
+    <br><br>
     <button type="submit">Send Thieves</button><br>
 </form>
 
@@ -27,10 +28,11 @@
 
 
 <script type="text/javascript">
-var thiefAmount = document.getElementById('amount');
+var thiefAmount = document.getElementById('mission');
+var thiefDurationDict = {1: 14, 2: 20, 3: 18, 0: 6};
 
 thiefAmount.onchange = function() {
-        thiefDuration.innerHTML = this.value;
+        thiefDuration.innerHTML = thiefDurationDict[this.value];
 }
 </script>
 
