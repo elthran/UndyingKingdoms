@@ -21,9 +21,9 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: 0.7em;
+    margin-bottom: 1.3em;
     width: 100%;
-    min-width: 300px;
+    min-width: 290px;
     max-width: 500px;
 }
 
@@ -32,10 +32,18 @@ h1 {
 }
 
 
-button {
+button, select {
     height: 3em;
     border-radius: 4px;
     min-width: 6em;
+}
+
+.emphasis {
+    font-style: italic;
+}
+
+li {
+  margin-bottom: 0.4em;
 }
 </style>
 {% endblock %}
@@ -51,16 +59,15 @@ button {
       <button>Right</button>
     </a>
   </div>
-  <br><br><br>
   <form id="voteForm" method="POST" accept-charset="UTF-8" role="form">
       {{ form.csrf_token }}
     <ul>
       {% if kingdom == my_county.kingdom %}
         {% for county in kingdom.counties %}
           {% if my_county.id == county.id %}
-            <li style="font-style:italic;">{{ county.name }} led by the infamous {{ county.leader }} with {{ county.land }} acres of land
-              {% if kingdom.leader == 0 and my_county.can_vote() %}(Vote: {{ form.vote }})
-                <button type="submit">Change Vote</button>
+            <li class="emphasis">{{ county.name }} led by the infamous {{ county.leader }} with {{ county.land }} acres of land
+              {% if kingdom.leader == 0 and my_county.can_vote() %}
+                <p>(Vote: {{ form.vote }})<button type="submit">Change Vote</button></p>
               {% elif kingdom.leader == 0 %}
                 (Vote: {{ county.display_vote() }} - You must wait to change your vote)
               {% endif %}
