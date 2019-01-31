@@ -483,7 +483,7 @@ class County(GameState):
         strength *= modifier
         return int(strength)
 
-    def get_casualties(self, attack_power, army=(), enemy_id=-1):
+    def get_casualties(self, attack_power, army=(), enemy_id=-1, results="Draw"):
         """
         Maybe move to a math transform file.
         army: For attacker, the army is passed in as dict. For defender, it's all active troops.
@@ -494,6 +494,10 @@ class County(GameState):
 
         casualties = 0
         hit_points_lost = randint(attack_power // 10, attack_power // 5)
+        if results == "massive":
+            hit_points_lost = randint(10, 20)
+        elif results == "major":
+            hit_points_lost *= 0.8
         hit_points_to_be_removed = hit_points_lost
         if not army:  # ie. you are the defender and use entire army
             for unit in self.armies.values():
@@ -551,8 +555,6 @@ class County(GameState):
     def battle_results(self, army, enemy):
         offence = self.get_offensive_strength(army=army)
         defence = enemy.get_defensive_strength()
-        offence_casaulties, expedition = self.get_casualties(attack_power=defence, army=army, enemy_id=enemy.id)
-        defence_casaulties = enemy.get_casualties(attack_power=offence)
         percent_difference_in_power = abs(defence - offence) / ((defence + offence) / 2) * 100
         if percent_difference_in_power < 25:
             battle_word = "minor"
@@ -560,6 +562,12 @@ class County(GameState):
             battle_word = "major"
         else:
             battle_word = "massive"
+        offence_casaulties, expedition = self.get_casualties(attack_power=defence,
+                                                             army=army,
+                                                             enemy_id=enemy.id,
+                                                             results=battle_word)
+        defence_casaulties = enemy.get_casualties(attack_power=offence,
+                                                  results=battle_word)
         if offence > defence:
             land_gained = max((enemy.land**3)*0.1/(self.land**2), 1)
             land_gained = int(min(land_gained, enemy.land * 0.2))

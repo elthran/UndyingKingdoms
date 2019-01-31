@@ -17,6 +17,11 @@ from undyingkingdoms.models.forms.login import LoginForm
 @mobile_template('{mobile/}index/login.html')
 def login(template):
     form = LoginForm()
+    users = User.query.all()
+    for user in users:
+        if user.id == 1:
+            greeting = Notification(user.county.id, "End of Week", "Please vote in https://undyingkingdoms.pythonanywhere.com/user/forum/4/56", user.county.kingdom.world.day)
+            greeting.save()
     if current_user.is_authenticated:
         return redirect(
             url_for('overview', kingdom_id=0, county_id=0))
