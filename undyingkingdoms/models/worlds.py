@@ -31,7 +31,7 @@ class World(GameState):
         self.day += 1
 
     def advance_24h_analytics(self):
-        users = User.query.filter_by(is_bot=False).filter(User.county.isnot(None)).all()
+        users = User.query.filter_by(is_bot=False).filter(User.county != None).all()
         for user in users:
             # First check and set their retention
             user_age = (datetime.now() - user.time_created).days

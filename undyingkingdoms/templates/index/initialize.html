@@ -78,6 +78,30 @@
 </ul>
 </div>
 
+<div id="merchantDiv" style="display:none;">
+<h1>Merchant:</h1>
+<h2>Bonus:</h2>
+    <p>+10% gold from taxes</p>
+</div>
+
+<div id="warlordDiv" style="display:none;">
+<h1>Warlord:</h1>
+<h2>Bonus:</h2>
+    <p>+10% gold from taxes</p>
+</div>
+
+<div id="rogueDiv" style="display:none;">
+<h1>Rogue:</h1>
+<h2>Bonus:</h2>
+    <p>+10% gold from taxes</p>
+</div>
+
+<div id="engineerDiv" style="display:none;">
+<h1>Engineer:</h1>
+<h2>Bonus:</h2>
+    <p>+10% gold from taxes</p>
+</div>
+
 <script type="text/javascript">
 document.getElementById("race").onchange = function () {
     var chosenRace = document.getElementById("race");
@@ -93,6 +117,27 @@ document.getElementById("race").onchange = function () {
         humanDiv.style.display = "block";
     } else if (chosenRace.value === "3") {
         elfDiv.style.display = "block";
+    }
+};
+
+document.getElementById("title").onchange = function () {
+    var chosenTitle = document.getElementById("title");
+    var merchantDiv = document.getElementById("merchantDiv");
+    var warlordDiv = document.getElementById("warlordDiv");
+    var rogueDiv = document.getElementById("rogueDiv");
+    var engineerDiv = document.getElementById("engineerDiv");
+    merchantDiv.style.display = "none";
+    warlordDiv.style.display = "none";
+    rogueDiv.style.display = "none";
+    engineerDiv.style.display = "none";
+    if (chosenTitle.value === "3") {
+        merchantDiv.style.display = "block";
+    } else if (chosenTitle.value === "1") {
+        warlordDiv.style.display = "block";
+    } else if (chosenTitle.value === "4") {
+        rogueDiv.style.display = "block";
+    } else if (chosenTitle.value === "2") {
+        engineerDiv.style.display = "block";
     }
 };
 
