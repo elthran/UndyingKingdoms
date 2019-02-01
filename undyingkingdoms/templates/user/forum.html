@@ -1,8 +1,9 @@
 {% extends "gameplay/layout.html" %}
-{% block content2 %}
-
 {% set user = current_user %}
 
+{% block title %}Forum: {{ super() }}{% endblock %}
+
+{% block content2 %}
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
 
@@ -65,7 +66,7 @@
             <div>
                 <h1>
                     {{ the_post.title }}
-                    <a href="{{ url_for('upvote', thread_id=the_thread.id, post_id=the_post.id) }}">
+                    <a href="{{ url_for('upvote_api', thread_id=the_thread.id, post_id=the_post.id) }}">
                         {% if the_post.get_vote_status(current_user.id) %}
                         <img class="resource_icons" src="/static/images/upvote.jpg">
                         {% else %}
@@ -83,7 +84,7 @@
             <div>
                 <h3>
                     Reply {{ loop.index }} at {{ reply.time_created }}
-                    <a href="{{ url_for('upvote', thread_id=the_thread.id, post_id=reply.id) }}">
+                    <a href="{{ url_for('upvote_api', thread_id=the_thread.id, post_id=reply.id) }}">
                         {% if reply.get_vote_status(current_user.id) %}
                         <img class="resource_icons" src="/static/images/upvote.jpg">
                         {% else %}
@@ -106,4 +107,11 @@
     {% endif %}
 </form>
 
+{% endblock %}
+
+
+{% block script %}
+<script type="text/javascript">
+    
+</script>
 {% endblock %}
