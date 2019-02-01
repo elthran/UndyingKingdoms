@@ -241,7 +241,8 @@ class County(GameState):
         if randint(1, 10) > 8:
             self.gold -= 25
         if randint(1, 24) == 24:
-            self.vote = randint(1, len(self.kingdom.counties))
+            pass  # Fails if they vote for county outside their kigndom
+            #self.vote = randint(1, len(self.kingdom.counties))
 
     def update_daily_resources(self):
         self.gold += self.get_gold_change()
