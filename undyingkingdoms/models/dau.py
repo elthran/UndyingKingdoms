@@ -51,29 +51,29 @@ class DAU(GameEvent):
     def update_self(self, user_id):
         user = User.query.filter_by(id=user_id).first()
         county = user.county
-        if county and not user.is_bot:  # Needed because counties are periodically deleted but users are not
-            self.account_age_in_days = (datetime.now() - user.time_created).days
-            self.county_id = county.id
-            self.current_score = user.get_current_leaderboard_score()
-            self.land = county.land
-            self.population = county.population
-            self.gold = county.gold
-            self.happiness = county.happiness
-            self.hunger = county.hunger
-            
-            self.peasants = county.armies['peasant'].total
-            self.soldiers = county.armies['soldier'].total
-            self.archers = county.armies['archer'].total
-            self.elites = county.armies['elite'].total
+        
+        self.account_age_in_days = (datetime.now() - user.time_created).days
+        self.county_id = county.id
+        self.current_score = user.get_current_leaderboard_score()
+        self.land = county.land
+        self.population = county.population
+        self.gold = county.gold
+        self.happiness = county.happiness
+        self.hunger = county.hunger
+        
+        self.peasants = county.armies['peasant'].total
+        self.soldiers = county.armies['soldier'].total
+        self.archers = county.armies['archer'].total
+        self.elites = county.armies['elite'].total
 
-            self.houses = county.buildings['houses'].total
-            self.fields = county.buildings['fields'].total
-            self.pastures = county.buildings['pastures'].total
-            self.mills = county.buildings['mills'].total
-            self.mines = county.buildings['mines'].total
-            self.forts = county.buildings['forts'].total
-            self.stables = county.buildings['stables'].total
-            self.guilds = county.buildings['guilds'].total
+        self.houses = county.buildings['houses'].total
+        self.fields = county.buildings['fields'].total
+        self.pastures = county.buildings['pastures'].total
+        self.mills = county.buildings['mills'].total
+        self.mines = county.buildings['mines'].total
+        self.forts = county.buildings['forts'].total
+        self.stables = county.buildings['stables'].total
+        self.guilds = county.buildings['guilds'].total
 
     @staticmethod
     def get_sessions(user_id):

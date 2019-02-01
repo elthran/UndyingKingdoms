@@ -29,7 +29,7 @@ class World(GameState):
         self.day += 1
 
     def advance_24h_analytics(self):
-        users = User.query.all()
+        users = User.query.filter_by(is_bot=False).filter(User.county.isnot(None)).all()
         for user in users:
             # First check and set their retention
             user_age = (datetime.now() - user.time_created).days
@@ -46,7 +46,7 @@ class World(GameState):
                 user.day7_retention = retention
             # If they are playing this age, create a DAU for them
             if user.county:
-                dau_event = DAU(user.id, user.county.county_days_in_age, user.county.kingdom.world.day)  # Create a DAU row
+                dau_event = DAU(user.id, user.county.county_days_in_age, user.county.kingdom.world.day)
                 dau_event.save()
         self.export_data_to_csv()
 
