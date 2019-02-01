@@ -341,7 +341,7 @@ class County(GameState):
         food_delta = food_produced - self.get_food_to_be_eaten()
         if food_delta > 0:  # If you have food left over, save it with a max of how much grain you produced
             return min(food_delta, self.get_produced_grain())
-        return max(food_delta, 0)
+        return max(food_delta, -self.grain_stores)
 
     # Land
     def get_available_land(self):
