@@ -1,9 +1,10 @@
 from random import randint, choice
 from uuid import uuid4
 
-from flask import render_template, request
+from flask import render_template, url_for
 from flask_login import login_required, current_user
 from flask_wtf import FlaskForm
+from werkzeug.utils import redirect
 from wtforms import SubmitField
 
 from undyingkingdoms import app, db
@@ -28,6 +29,8 @@ bot_leader_suffix = ["oth", "ith", "ion", "ilisk", "anth", "ills", "ondo", "alas
 def admin():
     if not current_user.in_active_session:
         current_user.in_active_session = True
+    if current_user.is_admin is not True:
+        return redirect(url_for('overview', kingdom_id=0, county_id=0))
     bot_form = AdminForm()
     kingdoms = Kingdom.query.all()
     if bot_form.validate_on_submit():
