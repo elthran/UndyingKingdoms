@@ -403,7 +403,11 @@ class County(GameState):
 
     # Resources
     def get_tax_income(self):
-        return int(self.population * (self.tax / 100))
+        modifier = {"Base": 1}
+        if self.title == 'Merchant':
+            modifier['Class Bonus'] = 0.1
+        modifier = sum(modifier.values())
+        return int(self.population * (self.tax / 100) * modifier)
 
     def get_upkeep_costs(self):
         return sum(unit.upkeep * unit.total for unit in self.armies.values()) // 24
@@ -426,6 +430,8 @@ class County(GameState):
         modifier = {'Base': 1}
         if self.race == 'Dwarf':
             modifier['Racial Bonus'] = 0.1
+        if self.title == 'Engineer':
+            modifier['Class Bonus'] = 0.2
         return sum(modifier.values())
 
     def get_production(self):
@@ -467,6 +473,10 @@ class County(GameState):
         params: scoreboard - Looks at total possible power, even for troops who are unavailable
         """
         strength = 0
+        modifier = {'Base': 1}
+        if self.title == 'Warlord':
+            modifier['Class Bonus'] = 0.1
+        modifier = sum(modifier.values())
         if army:
             for unit in self.armies.values():
                 if unit.base_name != 'archer':
@@ -477,7 +487,7 @@ class County(GameState):
                     strength += unit.total * unit.attack
                 else:
                     strength += unit.available * unit.attack
-        return int(strength)
+        return int(strength * modifier)
 
     def get_defensive_strength(self, scoreboard=False):
         modifier = (self.buildings['forts'].output * self.buildings['forts'].total) / 100 + 1
@@ -502,7 +512,6 @@ class County(GameState):
         """
         if army is ():
             army = {}
-
         casualties = 0
         hit_points_lost = randint(attack_power // 10, attack_power // 5)
         if results == "massive":
