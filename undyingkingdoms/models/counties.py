@@ -230,6 +230,17 @@ class County(GameState):
 
         self.county_days_in_age += 1
 
+    def temporary_bot_tweaks(self):
+        if randint(1, 10) == 10 and self.county_days_in_age > 10:
+            self.land += randint(-5, 15)
+        if randint(1, 10) == 10:
+            self.armies['peasant'] += randint(1, 10)
+            self.armies['soldier'] += randint(1, 7)
+            self.armies['archer'] += randint(1, 5)
+            self.armies['elite'] += randint(1, 3)
+        if randint(1, 10) > 8:
+            self.gold -= 25
+
     def update_daily_resources(self):
         self.gold += self.get_gold_change()
         self.wood += self.get_wood_income()

@@ -26,6 +26,8 @@ class World(GameState):
     def advance_day(self):
         for county in County.query.all():
             county.advance_day()
+            if county.user.is_bot:
+                county.temporary_bot_tweaks()
         self.day += 1
 
     def advance_24h_analytics(self):
