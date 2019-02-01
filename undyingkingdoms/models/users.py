@@ -41,6 +41,7 @@ class User(GameState):
     is_active = db.Column(db.Boolean)  # Account has been activated via email and not been locked
     is_anonymous = db.Column(db.Boolean)  # current_user is set to is_anonymous when not yet logged in.
     is_admin = db.Column(db.Boolean)  # Current user is a game creator with unlimited power
+    is_bot = db.Column(db.Boolean)  # Current user is a game creator with unlimited power
 
     def __init__(self, username, email, password):
         # Basic data
@@ -65,7 +66,10 @@ class User(GameState):
         self.is_authenticated = True
         self.is_active = True
         self.is_anonymous = False
+        
+        # Administrative
         self.is_admin = False
+        self.is_bot = False
 
         self.alpha_wins = 0
 
