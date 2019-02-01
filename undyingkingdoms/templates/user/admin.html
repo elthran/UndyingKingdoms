@@ -1,6 +1,11 @@
 {% extends "gameplay/layout.html" %}
 {% block content2 %}
 
-<input type="submit" name="generate_ai" value="Create 5 Bot Accounts">
+<form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    {{ form.tax }}
+        <button type="submit">Update</button>
+    <br>
+</form>
 
 {% endblock %}
