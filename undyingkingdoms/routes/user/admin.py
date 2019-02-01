@@ -41,6 +41,6 @@ def admin():
                             "{}{}".format(choice(bot_leader_prefix), choice(bot_leader_suffix)), user.id,
 			                choice(["Human", "Elf", "Dwarf"]), choice(["Male", "Female"]),
 			                choice(["Engineer", "Warlord", "Rogue", "Merchant"]))
-			county.vote = county.id
 			county.save()
+			county.vote = county.id
 	return render_template('user/admin.html', form=bot_form)
