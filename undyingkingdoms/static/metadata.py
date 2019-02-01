@@ -2,7 +2,7 @@ from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.buildings import Building
 from undyingkingdoms.models.armies import Army
 
-kingdom_names = ["Faenoth", "Aldoroth"]
+kingdom_names = ["Faenoth", "Aldoroth", "Ecthalion"]
 
 infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust']
 

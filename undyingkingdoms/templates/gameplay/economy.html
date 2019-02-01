@@ -59,7 +59,10 @@
             {% endif %}
                 <img class="resource_icons" src="/static/images/gold_icon.jpg">
             </td>
-            <td>Tax Rate: {{ form.tax }}%</td>
+            <td><ul>
+                <li>Tax Rate: {{ form.tax }}%</li>
+                {% if county.title == 'Merchant' %}<li>Class Bonus: +10%</li>{% endif %}
+            </td>
             <td>
                 <ul>
                     <li>Taxes: {{ county.get_tax_income() }}</li>

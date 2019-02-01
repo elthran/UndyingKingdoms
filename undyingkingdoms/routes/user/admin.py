@@ -33,9 +33,6 @@ def admin():
     if bot_form.validate_on_submit():
         for i in range(3):
             smallest_kingdom = min(kingdoms, key=lambda x: len(x.counties))
-            for kingdom in kingdoms:
-                if kingdom.counties is None:
-                    smallest_kingdom = kingdom
             bot_name = uuid4()
             user = User("bot_{}".format(bot_name), "bot_{}@gmail.com".format(bot_name), "1234")
             user.is_bot = True
