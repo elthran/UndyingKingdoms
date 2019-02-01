@@ -21,6 +21,9 @@ def overview(template, kingdom_id=0, county_id=0):
         current_user.in_active_session = True
     if not current_user.county:
         return redirect(url_for('initialize'))
+    if kingdom_id == current_user.county.kingdom_id and county_id == current_user.county.id:
+        kingdom_id = 0
+        county_id = 0
 
     if kingdom_id == 0 or county_id == 0:
         has_mail = Message.query.filter_by(county_id=current_user.county.id, unread=True).count()

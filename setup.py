@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='undyingkingdoms',
-    version='0.0.03',
+    version='0.0.04',
     packages=['undyingkingdoms'],
     include_package_data=True,
     install_requires=[
