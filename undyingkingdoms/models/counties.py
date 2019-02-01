@@ -240,6 +240,8 @@ class County(GameState):
             self.armies['elite'].total += randint(1, 3)
         if randint(1, 10) > 8:
             self.gold -= 25
+        if randint(1, 24) == 24:
+            self.vote = randint(1, len(self.kingdom.counties))
 
     def update_daily_resources(self):
         self.gold += self.get_gold_change()
@@ -290,6 +292,10 @@ class County(GameState):
             notification.save()
         
     def get_hunger_change(self):
+        hungry_people = self.get_food_to_be_eaten() - self.get_produced_dairy() - self.get_produced_grain() - self.grain_stores
+        if hungry_people > 0:
+            hunger_loss = (hungry_people // 200) + 1  # 1 plus 1 for every 200 unfed people
+            return - min(hunger_loss, 5)
         if self.rations == 0:
             unfed_people = self.population
             return int(-(unfed_people // 200) - 1)
@@ -318,7 +324,7 @@ class County(GameState):
             # If you don't have enough food, you lose it all and lose hunger based on leftover people
             self.grain_stores = 0
             hungry_people = food_eaten - total_food
-            hunger_loss = (hungry_people // 200) + 1  # 1 plus 1 for every 100 unfed people
+            hunger_loss = (hungry_people // 200) + 1  # 1 plus 1 for every 200 unfed people
             self.hunger -= min(hunger_loss, 5)
 
     def get_produced_grain(self):
@@ -335,7 +341,7 @@ class County(GameState):
         food_delta = food_produced - self.get_food_to_be_eaten()
         if food_delta > 0:  # If you have food left over, save it with a max of how much grain you produced
             return min(food_delta, self.get_produced_grain())
-        return food_delta
+        return max(food_delta, 0)
 
     # Land
     def get_available_land(self):

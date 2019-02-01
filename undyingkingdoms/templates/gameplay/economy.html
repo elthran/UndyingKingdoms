@@ -82,7 +82,7 @@
         <tr>
             <td>Food</td>
             <td>{{ county.grain_stores }}</td>
-            {% if county.grain_storage_change() >= 0 %}
+            {% if county.grain_storage_change() > 0 %}
             <td style="color:green;">+
                 {% else %}
             <td style="color:red;">
