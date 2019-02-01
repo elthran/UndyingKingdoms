@@ -234,10 +234,10 @@ class County(GameState):
         if randint(1, 10) == 10 and self.county_days_in_age > 10:
             self.land += randint(-5, 15)
         if randint(1, 10) == 10:
-            self.armies['peasant'] += randint(1, 10)
-            self.armies['soldier'] += randint(1, 7)
-            self.armies['archer'] += randint(1, 5)
-            self.armies['elite'] += randint(1, 3)
+            self.armies['peasant'].total += randint(1, 10)
+            self.armies['soldier'].total += randint(1, 7)
+            self.armies['archer'].total += randint(1, 5)
+            self.armies['elite'].total += randint(1, 3)
         if randint(1, 10) > 8:
             self.gold -= 25
 
