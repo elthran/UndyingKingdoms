@@ -12,6 +12,7 @@
     border-width: 1px;
     border-style: outset;
     border-radius: 6px;
+    margin-left: 0.4em;
 }
 
 .voteImage:hover {
@@ -31,11 +32,21 @@
 }
 
 p.post {
-    padding: 1em 1em 0;
+    padding: 0.3em 1em 0.6em;
 }
 
 p.bold {
     font-weight: bold;
+}
+
+li {
+    list-style: none;
+    margin-bottom: 1em;
+}
+
+.verticalCenter {
+    display: flex;
+    align-items: center;
 }
 </style>
 {% endblock %}
@@ -105,23 +116,22 @@ p.bold {
     <ul>
       <li>
         <div>
-          <h1>{{ the_post.title }}</h1>
+          <h1 class="verticalCenter">{{ the_post.title }} {{ upvote_image(the_post) }}</h1>
           <p class="post">{{ the_post.content }}</p>
-          <p>By: {{ the_post.get_author() }} at {{ the_post.time_created }} with <span class="votes">{{ the_post.get_votes() }}</span> votes {{ upvote_image(the_post) }}</p>
+          <p>By: {{ the_post.get_author() }} at {{ the_post.time_created }} with <span class="votes">{{ the_post.get_votes() }}</span> votes</p>
         </div>
       </li>
       {% for reply in the_post.get_replies() %}
-      <li><br></li>
       <li>
         <div>
-          <p class="bold">Reply {{ loop.index }} at {{ reply.time_created }}</p>
+          <p class="bold verticalCenter">Reply {{ loop.index }} at {{ reply.time_created }} {{ upvote_image(the_post) }}</p>
           <p class="post">{{ reply.content }}</p>
-          <p>By: {{ reply.get_author() }} with <span class="votes">{{ reply.get_votes() }}</span> votes {{ upvote_image(reply) }}</p>
+          <p>By: {{ reply.get_author() }} with <span class="votes">{{ reply.get_votes() }}</span> votes</p>
         </div>
       </li>
     </ul>
       {% endfor %}
-      <br><br>
+      <br>
       <textarea cols="100" rows="10" name="content" placeholder="Type your post here"></textarea>
       <br><br>
       <button type="submit">Reply to Post</button>
