@@ -87,7 +87,7 @@ class User(GameState):
                 if last_session.time_logged_out:  # Last session successfully logged out
                     session = Session(self.id)  # Simply start a new log in
                 else:
-                    if (datetime.now() - last_session.time_created).seconds > 300:  # Last login wasn't recent
+                    if (datetime.utcnow() - last_session.time_created).seconds > 300:  # Last login wasn't recent
                         last_session.time_logged_out = last_session.time_created + timedelta(minutes=1)
                         session = Session(self.id)
             if session:
@@ -96,7 +96,7 @@ class User(GameState):
         else:  # Logging out
             session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
             if session:
-                session.time_logged_out = datetime.now()
+                session.time_logged_out = datetime.utcnow()
                 session.set_minutes()
 
     @property
