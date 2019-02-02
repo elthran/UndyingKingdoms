@@ -1,5 +1,5 @@
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
@@ -80,8 +80,19 @@ class User(GameState):
     def in_active_session(self, value):
         self._in_active_session = value
         if value:  # Logging in
-            session = Session(self.id)
-            session.save()
+            last_session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
+            if not last_session:  # Never logged in before
+                session = Session(self.id)
+            else:  # Has logged in before
+                if last_session.time_logged_out:  # Last session successfully logged out
+                    session = Session(self.id)  # Simply start a new log in
+                else:
+                    if (datetime.now() - last_session.time_created).seconds > 300:  # Last login wasn't recent
+                        last_session.time_logged_out = last_session.time_created + timedelta(minutes=1)
+                        session = Session(self.id)
+            if session:
+                session.save()
+
         else:  # Logging out
             session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
             if session:
