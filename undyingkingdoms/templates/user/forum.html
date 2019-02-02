@@ -1,109 +1,170 @@
 {% extends "gameplay/layout.html" %}
-{% block content2 %}
-
 {% set user = current_user %}
 
-<form method="POST" accept-charset="UTF-8" role="form">
+{% block title %}Forum: {{ super() }}{% endblock %}
+
+{% block style %}
+<style type="text/css">
+.voteImage {
+    height: 28px;
+    width: 28px;
+    border: solid;
+    border-width: 1px;
+    border-style: outset;
+    border-radius: 6px;
+    margin-left: 0.4em;
+}
+
+.voteImage:hover {
+    box-shadow: 5px 10px 8px #888888;
+}
+
+.upvote {
+    background: url("/static/images/upvote.jpg") top left no-repeat;
+}
+
+.downvote {
+    background: url("/static/images/downvote.jpg") top left no-repeat;
+}
+
+#content {
+    padding-top: 1em;
+}
+
+p.post {
+    padding: 0.3em 1em 0.6em;
+}
+
+p.bold {
+    font-weight: bold;
+}
+
+li {
+    list-style: none;
+    margin-bottom: 1em;
+}
+
+.verticalCenter {
+    display: flex;
+    align-items: center;
+}
+</style>
+{% endblock %}
+
+{% macro upvote_image(post) -%}
+<img id="post_{{ post.id }}" class="voteImage {% if post.get_vote_status(current_user.id) %}upvote{% else %}downvote{% endif %}" src="">
+{%- endmacro %}
+
+{% block content2 %}
+<div id="content">
+  <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
 
     {% if the_thread == 'None' %}  <!-- Show list of all threads -->
     <h1>Forum</h1>
     <table style="border:dotted 1px;">
-        <tr>
-            <th>Thread</th>
-            <th>Author</th>
-            <th>Most Recent Post</th>
-            <th>Number of Posts</th>
-        </tr>
-        {% for thread in forum.threads %}
-        <tr>
-            <td><a href="{{ url_for('forum', thread_id=thread.id, post_id=0) }}">{{ thread.title }}</a></td>
-            <td>{{ thread.get_author() }}</td>
-            <td>{{ thread.get_most_recent_post() }}</td>
-            <td>{{ thread.get_post_count() }}</td>
-        </tr>
-        {% endfor %}
+      <tr>
+        <th>Thread</th>
+        <th>Author</th>
+        <th>Most Recent Post</th>
+        <th>Number of Posts</th>
+      </tr>
+      {% for thread in forum.threads %}
+      <tr>
+        <td><a href="{{ url_for('forum', thread_id=thread.id, post_id=0) }}">{{ thread.title }}</a></td>
+        <td>{{ thread.get_author() }}</td>
+        <td>{{ thread.get_most_recent_post() }}</td>
+        <td>{{ thread.get_post_count() }}</td>
+      </tr>
+      {% endfor %}
     </table>
     {% elif the_post == 'None' %}  <!-- Show list of all posts in that thread -->
     <h1>{{ the_thread.title }}</h1><br>
     <table style="border:dotted 1px;">
-        <tr>
-            <th>Post</th>
-            <th>Author</th>
-            <th>Most Recent Post</th>
-            <th>Number of Replies</th>
-        </tr>
-        {% for post in the_thread.posts if post.parent_post_id == 0 %}
-        <tr>
-            <td><a href="{{ url_for('forum', thread_id=the_thread.id, post_id=post.id) }}">{{ post.title }}</a></td>
-            <td>{{ post.get_author() }}</td>
-            <td>{{ post.time_created }}</td>
-            <td>{{ post.get_reply_count() }}</td>
-        </tr>
-        {% else %}
-        <tr>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        {% endfor %}
+      <tr>
+        <th>Post</th>
+        <th>Author</th>
+        <th>Most Recent Post</th>
+        <th>Number of Replies</th>
+      </tr>
+      {% for post in the_thread.posts if post.parent_post_id == 0 %}
+      <tr>
+        <td><a href="{{ url_for('forum', thread_id=the_thread.id, post_id=post.id) }}">{{ post.title }}</a></td>
+        <td>{{ post.get_author() }}</td>
+        <td>{{ post.time_created }}</td>
+        <td>{{ post.get_reply_count() }}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      {% endfor %}
     </table>
     <br><br>
     <h2>Create New Thread</h2>
-    <ul>
-        <li style="margin-top:5px;">{{ render_field(form.title, placeholder="Title", autofocus="") }}</li>
-        <textarea cols="100" rows="10" type="text" name="content" placeholder="Content"></textarea>
-    </ul>
+    <h2 style="margin-top:5px;">{{ render_field(form.title, placeholder="Title", autofocus="") }}</h2>
+    <br>
+    <textarea cols="100" rows="10" name="content" placeholder="Content"></textarea>
     <br><br>
     <button type="submit">Create Post</button>
     <br><br>
     <a href="{{ url_for('forum', thread_id=0, post_id=0) }}">Return to forum home.</a>
     {% else %}  <!-- Show list of all replies in that post -->
     <ul>
-        <li>
-            <div>
-                <h1>
-                    {{ the_post.title }}
-                    <a href="{{ url_for('upvote', thread_id=the_thread.id, post_id=the_post.id) }}">
-                        {% if the_post.get_vote_status(current_user.id) %}
-                        <img class="resource_icons" src="/static/images/upvote.jpg">
-                        {% else %}
-                        <img class="resource_icons" src="/static/images/downvote.jpg">
-                        {% endif %}
-                    </a>
-                </h1>
-                <h3>{{ the_post.content }}</h3>
-                <h3>By: {{ the_post.get_author() }} at {{ the_post.time_created }} with {{ the_post.get_votes() }} votes</h3>
-            </div>
-        </li>
-        {% for reply in the_post.get_replies() %}
-        <li><br></li>
-        <li>
-            <div>
-                <h3>
-                    Reply {{ loop.index }} at {{ reply.time_created }}
-                    <a href="{{ url_for('upvote', thread_id=the_thread.id, post_id=reply.id) }}">
-                        {% if reply.get_vote_status(current_user.id) %}
-                        <img class="resource_icons" src="/static/images/upvote.jpg">
-                        {% else %}
-                        <img class="resource_icons" src="/static/images/downvote.jpg">
-                        {% endif %}
-                    </a>
-                </h3>
-                <h3>{{ reply.content }}</h3>
-                <h3 style="font-weight:bold;">By: {{ reply.get_author() }} with {{ reply.get_votes() }} votes</h3>
-            </div>
-        </li>
-        {% endfor %}
-        <br><br>
-        <textarea cols="100" rows="10" type="text" name="content" placeholder="Type your post here"></textarea>
-        <br><br>
-        <button type="submit">Reply to Post</button>
-        <br><br>
-        <a href="{{ url_for('forum', thread_id=the_thread.id, post_id=0) }}">Return to {{ the_thread.title }}</a>
+      <li>
+        <div>
+          <h1 class="verticalCenter">{{ the_post.title }} {{ upvote_image(the_post) }}</h1>
+          <p class="post">{{ the_post.content }}</p>
+          <p>By: {{ the_post.get_author() }} at {{ the_post.time_created }} with <span class="votes">{{ the_post.get_votes() }}</span> votes</p>
+        </div>
+      </li>
+      {% for reply in the_post.get_replies() %}
+      <li>
+        <div>
+          <p class="bold verticalCenter">Reply {{ loop.index }} at {{ reply.time_created }} {{ upvote_image(the_post) }}</p>
+          <p class="post">{{ reply.content }}</p>
+          <p>By: {{ reply.get_author() }} with <span class="votes">{{ reply.get_votes() }}</span> votes</p>
+        </div>
+      </li>
     </ul>
+      {% endfor %}
+      <br>
+      <textarea cols="100" rows="10" name="content" placeholder="Type your post here"></textarea>
+      <br><br>
+      <button type="submit">Reply to Post</button>
+      <br><br>
+      <a href="{{ url_for('forum', thread_id=the_thread.id, post_id=0) }}">Return to {{ the_thread.title }}</a>
     {% endif %}
-</form>
+  </form>
+</div>
+{% endblock %}
 
+
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+var votes = $(".votes");
+
+$(".voteImage").each(function (index, element) {
+    var postID = element.id.slice(5);
+
+    $(this).click(function () {
+        $.get("/user/upvote/" + postID, function (ignore, status) {
+            if (status === "success") {
+                $(element).toggleClass("upvote downvote");
+
+                var count = parseInt(votes[index].innerHTML);
+                if ($(element).hasClass("upvote")) {
+                    votes[index].innerHTML = count - 1;
+                } else {
+                    votes[index].innerHTML = count + 1;
+                }
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

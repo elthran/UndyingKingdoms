@@ -4,14 +4,13 @@ from flask_login import login_required, current_user
 from undyingkingdoms import app
 from undyingkingdoms.models.forms.message import MessageForm
 from undyingkingdoms.models.forum import Forum, Thread, Post
+from undyingkingdoms.routes.helpers import in_active_session
 
 
-@login_required
 @app.route('/user/forum/<int:thread_id>/<int:post_id>', methods=['GET', 'POST'])
+@login_required
+@in_active_session
 def forum(thread_id=0, post_id=0):
-    if not current_user.in_active_session:
-        current_user.in_active_session = True
-        
     the_forum = Forum.query.first()
     the_thread = Thread.query.filter_by(id=thread_id).first()
     the_post = Post.query.filter_by(id=post_id).first()
