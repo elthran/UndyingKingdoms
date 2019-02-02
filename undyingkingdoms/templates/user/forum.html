@@ -39,7 +39,7 @@ p.bold {
     font-weight: bold;
 }
 
-li {
+li.bottomPadded {
     list-style: none;
     margin-bottom: 1em;
 }
@@ -114,7 +114,7 @@ li {
     <a href="{{ url_for('forum', thread_id=0, post_id=0) }}">Return to forum home.</a>
     {% else %}  <!-- Show list of all replies in that post -->
     <ul>
-      <li>
+      <li class="bottomPadded">
         <div>
           <h1 class="verticalCenter">{{ the_post.title }} {{ upvote_image(the_post) }}</h1>
           <p class="post">{{ the_post.content }}</p>
@@ -122,9 +122,9 @@ li {
         </div>
       </li>
       {% for reply in the_post.get_replies() %}
-      <li>
+      <li class="bottomPadded">
         <div>
-          <p class="bold verticalCenter">Reply {{ loop.index }} at {{ reply.time_created }} {{ upvote_image(the_post) }}</p>
+          <p class="bold verticalCenter">Reply {{ loop.index }} at {{ reply.time_created }} {{ upvote_image(reply) }}</p>
           <p class="post">{{ reply.content }}</p>
           <p>By: {{ reply.get_author() }} with <span class="votes">{{ reply.get_votes() }}</span> votes</p>
         </div>
