@@ -11,6 +11,7 @@ from undyingkingdoms import app, db
 from undyingkingdoms.models.kingdoms import Kingdom
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.users import User
+from undyingkingdoms.routes.helpers import in_active_session, admin_required
 
 
 class AdminForm(FlaskForm):
@@ -24,13 +25,11 @@ bot_leader_prefix = ["Skri", "Aldar", "Frel", "Eldr", "Toth", "Zon", "Pandish", 
 bot_leader_suffix = ["oth", "ith", "ion", "ilisk", "anth", "ills", "ondo", "alasl"]
 
 
-@login_required
 @app.route('/user/admin/', methods=['GET', 'POST'])
+@login_required
+@in_active_session
+@admin_required
 def admin():
-    if not current_user.in_active_session:
-        current_user.in_active_session = True
-    if current_user.is_admin is not True:
-        return redirect(url_for('overview', kingdom_id=0, county_id=0))
     bot_form = AdminForm()
     kingdoms = Kingdom.query.all()
     if bot_form.validate_on_submit():
