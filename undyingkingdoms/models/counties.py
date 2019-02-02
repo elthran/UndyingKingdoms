@@ -234,14 +234,15 @@ class County(GameState):
         if randint(1, 10) == 10 and self.county_days_in_age > 10:
             self.land += randint(-5, 15)
         if randint(1, 10) == 10:
-            self.armies['peasant'].total += randint(1, 10)
-            self.armies['soldier'].total += randint(1, 7)
-            self.armies['archer'].total += randint(1, 5)
-            self.armies['elite'].total += randint(1, 3)
+            self.armies['peasant'].total += randint(1, 5)
+            self.armies['soldier'].total += randint(1, 3)
+            self.armies['archer'].total += randint(1, 3)
+            self.armies['elite'].total += 1
         if randint(1, 10) > 8:
             self.gold -= 25
         if randint(1, 24) == 24:
-            self.vote = randint(1, len(self.kingdom.counties))
+            pass  # Fails if they vote for county outside their kingdom
+            #self.vote = randint(1, len(self.kingdom.counties))
 
     def update_daily_resources(self):
         self.gold += self.get_gold_change()
@@ -266,6 +267,7 @@ class County(GameState):
                                         "Your county lost {} of its stored grain.".format(amount),
                                         self.kingdom.world.day)
             self.grain_stores -= amount
+            
         elif random_chance == 2 and self.happiness > 90:
             amount = randint(100, 200)
             notification = Notification(self.id,
@@ -273,6 +275,7 @@ class County(GameState):
                                         "Your people hold a feast and offer you {} gold as tribute.".format(amount),
                                         self.kingdom.world.day)
             self.gold += amount
+            
         elif random_chance == 3 and self.buildings['pastures'].total > 0:
             amount = min(randint(3, 6), self.buildings['pastures'].total)
             notification = Notification(self.id,
@@ -280,14 +283,42 @@ class County(GameState):
                                         "Your county has lost {} of its dairy farms.".format(amount),
                                         self.kingdom.world.day)
             self.buildings['pastures'].total -= amount
+            
         elif random_chance == 4 and self.buildings['fields'].total > 0:
-            amount = min(randint(3, 6), self.buildings['fields'].total)
+            amount = min(randint(2, 4), self.buildings['fields'].total)
             notification = Notification(self.id,
                                         "Storms have ravaged your crops",
                                         "A massive storm has destroyed {} of your fields.".format(amount),
                                         self.kingdom.world.day)
             self.buildings['fields'].total -= amount
             self.weather = 'thunderstorm'
+            
+        elif random_chance == 5 and self.buildings['fields'].total > 0:
+            amount = self.buildings['fields'].total * 3
+            notification = Notification(self.id,
+                                        "Booster crops",
+                                        "Due to excellent weather this season, your crops produced an addition {} grain today.".format(amount),
+                                        self.kingdom.world.day)
+            self.grain_stores += amount
+            self.weather = 'lovely'
+            
+        elif random_chance == 6:
+            modifier = 100 - self.hunger
+            amount = min(randint(modifier, modifier + 25), self.population)
+            notification = Notification(self.id,
+                                        "Black Death",
+                                        "A plague has swept over our county, killing {} of our people.".format(amount),
+                                        self.kingdom.world.day)
+            self.population -= amount
+            
+        elif random_chance == 7 and self.buildings['houses'].total > 0:
+            amount = min(randint(2, 4), self.buildings['houses'].total)
+            notification = Notification(self.id,
+                                        "Disaster",
+                                        "A fire has spread in the city burning down {} of your {}.".format(amount, self.buildings['houses'].class_name),
+                                        self.kingdom.world.day)
+            self.buildings['houses'].total -= amount
+            
         if notification:
             notification.save()
         
