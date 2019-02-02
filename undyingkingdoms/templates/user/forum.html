@@ -6,9 +6,12 @@
 {% block style %}
 <style type="text/css">
 .voteImage {
-    height: 25px;
-    width: 26px;
-    border: none;
+    height: 28px;
+    width: 28px;
+    border: solid;
+    border-width: 1px;
+    border-style: outset;
+    border-radius: 6px;
 }
 
 .voteImage:hover {
@@ -26,11 +29,19 @@
 #content {
     padding-top: 1em;
 }
+
+p.post {
+    padding: 1em 1em 0;
+}
+
+p.bold {
+    font-weight: bold;
+}
 </style>
 {% endblock %}
 
 {% macro upvote_image(post) -%}
-<img id="post_{{ post.id }}" class="voteImage {% if the_post.get_vote_status(current_user.id) %}upvote{% else %}downvote{% endif %}">
+<img id="post_{{ post.id }}" class="voteImage {% if post.get_vote_status(current_user.id) %}upvote{% else %}downvote{% endif %}" src="">
 {%- endmacro %}
 
 {% block content2 %}
@@ -94,21 +105,18 @@
     <ul>
       <li>
         <div>
-          <h1>{{ the_post.title }} {{ upvote_image(the_post) }}</h1>
-          <h3>{{ the_post.content }}</h3>
-          <h3>By: {{ the_post.get_author() }} at {{ the_post.time_created }} with {{ the_post.get_votes() }} votes</h3>
+          <h1>{{ the_post.title }}</h1>
+          <p class="post">{{ the_post.content }}</p>
+          <p>By: {{ the_post.get_author() }} at {{ the_post.time_created }} with <span class="votes">{{ the_post.get_votes() }}</span> votes {{ upvote_image(the_post) }}</p>
         </div>
       </li>
       {% for reply in the_post.get_replies() %}
       <li><br></li>
       <li>
         <div>
-          <h3>
-            Reply {{ loop.index }} at {{ reply.time_created }}
-            {{ upvote_image(reply) }}
-          </h3>
-          <h3>{{ reply.content }}</h3>
-          <h3 style="font-weight:bold;">By: {{ reply.get_author() }} with {{ reply.get_votes() }} votes</h3>
+          <p class="bold">Reply {{ loop.index }} at {{ reply.time_created }}</p>
+          <p class="post">{{ reply.content }}</p>
+          <p>By: {{ reply.get_author() }} with <span class="votes">{{ reply.get_votes() }}</span> votes {{ upvote_image(reply) }}</p>
         </div>
       </li>
     </ul>
@@ -128,22 +136,25 @@
 {% block script %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
-function toggleVote(event) {
-    console.log("arg in toggleVote:", event.data.postID);
-    $.get("/user/upvote/" + event.data.postID,
-        function(resp, status) {
-            if (status === "success") {
-                $(event.data.element).toggleClass("upvote downvote");
-            }
-            console.log("response", resp);
-            console.log("status", status);
-    });
-}
+var votes = $(".votes");
 
-$(".voteImage").each(function (ignore, element) {
-    postID = this.id.slice(5);
-    console.log("post id:", postID);
-    $(this).click({"postID": postID, "element": element}, toggleVote);
+$(".voteImage").each(function (index, element) {
+    var postID = element.id.slice(5);
+
+    $(this).click(function () {
+        $.get("/user/upvote/" + postID, function (ignore, status) {
+            if (status === "success") {
+                $(element).toggleClass("upvote downvote");
+
+                var count = parseInt(votes[index].innerHTML);
+                if ($(element).hasClass("upvote")) {
+                    votes[index].innerHTML = count - 1;
+                } else {
+                    votes[index].innerHTML = count + 1;
+                }
+            }
+        });
+    });
 });
 </script>
 {% endblock %}
