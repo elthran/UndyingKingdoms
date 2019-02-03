@@ -12,6 +12,9 @@ import private_config
 
 
 app = Flask(__name__)
+# I can't figure out how to put these in the config file
+app.jinja_env.lstrip_blocks = True
+app.jinja_env.trim_blocks = True
 app.config.from_object('private_config')
 
 if 'liveweb' in socket.gethostname():
