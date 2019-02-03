@@ -1,0 +1,49 @@
+{% extends "gameplay/layout.html" %}
+{% block content2 %}
+
+{% set user = current_user %}
+
+<h1 style="text-align:center;">{{ target_county.name }}</h1>
+
+<h2>Basic Info</h2>
+<ul>
+    <li>Leader: {{ target_county.leader }} ({{ target_county.gender }})</li>
+    <li>Race: {{ target_county.race }}</li>
+    <li>Title: {{ target_county.background }}</li>
+    <li>Population: {{target_county.population }}</li>
+    <li>Land: {{ target_county.land }} acres</li>
+</ul>
+<br>
+<h2>Estimated Military Info</h2>
+{% if user.county.get_thief_report_military(target_county.id) %}
+{% set report = user.county.get_thief_report_military(target_county.id) %}
+(Updated {{ report.get_report_age(user.county.kingdom.world.day) }} days ago)
+<ul>
+    <li>{{target_county.armies['peasant'].class_name }}: {{ report.peasant }}</li>
+    <li>{{target_county.armies['archer'].class_name }}: {{ report.archer }}</li>
+    <li>{{target_county.armies['soldier'].class_name }}: {{ report.soldier }}</li>
+    <li>{{target_county.armies['elite'].class_name }}: {{ report.elite }}</li>
+</ul>
+{% else %}
+No information is known.
+{% endif %}
+<br><br>
+<!-- Checks to see if there should be an attack option Not yourself, and if not teammate if civil war over -->
+{% if target_kingdom.leader == 0 or target_kingdom != current_user.county.kingdom %}
+    <a href="{{ url_for('attack', county_id=target_county.id) }}">Attack</a>
+    <a href="{{ url_for('infiltrate', county_id=target_county.id) }}">Infiltrate</a>
+{% elif target_kingdom.leader != 0 and target_kingdom == current_user.county.kingdom %}
+    <p style="color:green;">Your kingdom is at peace. You can not attack this county.</p>
+{% endif %}
+
+<br><br>
+
+<h1>Send Message:</h1>
+<form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    {{ render_field(form.title, placeholder="Title", autofocus="") }}
+    <textarea cols="100" rows="10" type="text" name="content" placeholder="Content"></textarea>
+    <button type="submit">Send Message</button>
+</form>
+
+{% endblock %}
