@@ -101,6 +101,9 @@ class County(GameState):
         elif self.race == 'Elf':
             buildings = deepcopy(elf_buildings)
             armies = deepcopy(elf_armies)
+        elif self.race == 'Goblin':
+            buildings = deepcopy(elf_buildings)
+            armies = deepcopy(elf_armies)
         self.buildings = buildings
         self.armies = armies
 

@@ -5,7 +5,7 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import County, Kingdom
 from undyingkingdoms.models.forms.initialize import InitializeForm
-from undyingkingdoms.static.metadata import dwarf_armies, human_armies, elf_armies
+from undyingkingdoms.static.metadata import dwarf_armies, human_armies, elf_armies, metadata_races, metadata_backgrounds
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])
@@ -13,13 +13,13 @@ from undyingkingdoms.static.metadata import dwarf_armies, human_armies, elf_armi
 def initialize(template):
     if current_user.county is not None:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
-    genders = ["<Gender>", "Female", "Male"]
-    races = ["<Race>", "Dwarf", "Human", "Elf"]
-    backgrounds = ["<Class>", "Warlord", "Engineer", "Merchant", "Rogue"]
+    genders = ["<Gender>"] + ["Female", "Male"]
+    races = ["<Race>"] + metadata_races
+    backgrounds = ["<Class>"] + metadata_backgrounds
     form = InitializeForm()
     form.gender.choices = [(i, genders[i]) for i in range(len(genders))]
     form.race.choices = [(i, races[i]) for i in range(len(races))]
-    form.title.choices = [(i, backgrounds[i]) for i in range(len(backgrounds))]
+    form.background.choices = [(i, backgrounds[i]) for i in range(len(backgrounds))]
     
     kingdoms = Kingdom.query.all()
     smallest_kingdom = min(kingdoms, key=lambda x: len(x.counties))

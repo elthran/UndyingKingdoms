@@ -106,7 +106,14 @@
                 {% endif %}
                 {{ county.grain_storage_change() }} <img class="resource_icons" src="/static/images/grain_icon.jpg">
             </td>
-            <td>Rations: {{ form.rations }}</td>
+            <td>
+            <ul>
+                <li>Rations: {{ form.rations }}</li>
+                {% if food_consumed_modifier.get(county.race)[1] %}
+                    <li>{{ food_consumed_modifier.get(county.race)[0] }}: {{ food_consumed_modifier.get(county.race)[1] }}%</li>
+                {% endif %}
+            </ul>
+            </td>
             <td>
                 <ul>
                     <li>+ {{ county.get_produced_grain() }} <img class="resource_icons" src="/static/images/grain_icon.jpg"></li>
