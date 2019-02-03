@@ -4,13 +4,14 @@ from undyingkingdoms.static.metadata.metadata_all_races import generic_buildings
 
 
 elf_buildings = deepcopy(generic_buildings)
-elf_buildings['house'].class_name = 'sanctuary'
-# elf_buildings['field'].class_name = 'sanctuary'
-# elf_buildings['houses'].class_name = 'sanctuary'
-# elf_buildings['houses'].class_name = 'sanctuary'
-# elf_buildings['houses'].class_name = 'sanctuary'
-# elf_buildings['houses'].class_name = 'sanctuary'
-# elf_buildings['houses'].class_name = 'sanctuary'
-# elf_buildings['houses'].class_name = 'sanctuary'
-# elf_buildings['houses'].class_name = 'sanctuary'
+# First the strings and descriptions
+elf_buildings['house'].class_name, elf_buildings['house'].class_name_plural = 'sanctuary', 'sanctuaries'
+elf_buildings['field'].class_name, elf_buildings['field'].class_name_plural = 'rice field', 'rice fields'
+elf_buildings['pasture'].class_name, elf_buildings['pasture'].class_name_plural = 'dairy pasture', 'dairy pastures'
+elf_buildings['mill'].class_name, elf_buildings['mill'].class_name_plural = 'lumber mill', 'lumber mills'
+elf_buildings['mine'].class_name, elf_buildings['mine'].class_name_plural = 'iron mine', 'iron mines'
+elf_buildings['fort'].class_name, elf_buildings['fort'].class_name_plural = 'citadel', 'citadels'
+elf_buildings['stables'].class_name, elf_buildings['stables'].class_name_plural = 'elk stables', 'elk stables'
+elf_buildings['guild'].class_name, elf_buildings['guild'].class_name_plural = 'thieves guild', 'thieves guilds'
+elf_buildings['bank'].class_name, elf_buildings['bank'].class_name_plural = 'exchequer', 'exchequers'
 
