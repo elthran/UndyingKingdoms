@@ -38,6 +38,7 @@ class DAU(GameEvent):
     forts = db.Column(db.Integer)
     stables = db.Column(db.Integer)
     guilds = db.Column(db.Integer)
+    banks = db.Column(db.Integer)
 
     def __init__(self, user_id, county_days_in_age, world_age_in_days):
         self.user_id = user_id
@@ -74,6 +75,7 @@ class DAU(GameEvent):
         self.forts = county.buildings['forts'].total
         self.stables = county.buildings['stables'].total
         self.guilds = county.buildings['guilds'].total
+        self.banks = county.buildings['banks'].total
 
     @staticmethod
     def get_sessions(user_id):

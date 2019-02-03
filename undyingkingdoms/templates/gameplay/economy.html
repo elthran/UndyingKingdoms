@@ -32,7 +32,7 @@
                 {% endif %}
                 {{ population_projection }} <img class="resource_icons" src="/static/images/population_icon.jpg">
             </td>
-            <td>{% if county.race == 'Elf' %}Elders: -10%{% else %}-{% endif %}</td>
+            <td>{% if county.race == 'Elf' %}Elders: {{ birth_rate_modifier.get(county.race) }}%{% else %}-{% endif %}</td>
             <td>
                 <ul>
                     <li>Births: {{ county.get_birth_rate() }}</li>
@@ -67,6 +67,7 @@
                 <ul>
                     <li>Taxes: {{ county.get_tax_income() }}</li>
                     <li>Excess Production: {{ county.production // 3 }}</li>
+                    {% if county.buildings['banks'].total > 0 %}<li>Banks: {{ county.get_bank_income() }}</li>{% endif %}
                 </ul>
             </td>
             <td>Military Expenses: {{ county.get_upkeep_costs() }}</td>

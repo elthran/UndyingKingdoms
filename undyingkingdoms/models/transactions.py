@@ -23,6 +23,7 @@ class Transaction(GameEvent):
     forts = db.Column(db.Integer)
     stables = db.Column(db.Integer)
     guilds = db.Column(db.Integer)
+    banks = db.Column(db.Integer)
 
     peasant = db.Column(db.Integer)
     archer = db.Column(db.Integer)
@@ -43,6 +44,7 @@ class Transaction(GameEvent):
         self.forts = 0
         self.stables = 0
         self.guilds = 0
+        self.banks
 
         self.peasant = 0
         self.archer = 0

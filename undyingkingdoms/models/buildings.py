@@ -6,6 +6,7 @@ class Building(GameState):
     county_id = db.Column(db.Integer, db.ForeignKey('county.id', ondelete="CASCADE"), nullable=False)
     base_name = db.Column(db.String(64))
     class_name = db.Column(db.String(64))
+    class_name_plural = db.Column(db.String(64))
     total = db.Column(db.Integer)
     pending = db.Column(db.Integer)
     production_cost = db.Column(db.Integer)
@@ -15,9 +16,10 @@ class Building(GameState):
     output = db.Column(db.Integer)  # How much x it produces
     description = db.Column(db.String(128))
 
-    def __init__(self, base_name, class_name, total, production_cost, labour_maintenance, gold, wood, output, description):
+    def __init__(self, base_name, class_name, class_name_plural, total, production_cost, labour_maintenance, gold, wood, output, description):
         self.base_name = base_name
         self.class_name = class_name
+        self.class_name_plural = class_name_plural
         self.total = total
         self.pending = 0
         self.production_cost = production_cost  # Amount of work to build it

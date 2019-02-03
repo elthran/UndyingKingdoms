@@ -72,7 +72,7 @@ def populate_db():
         user.is_admin = True
         user.is_active = True
         user.save()
-        county = County(1, "Ulthuan", "Elthran", user.id, 'Human', 'Male')
+        county = County(1, "Ulthuan", "Elthran", user.id, 'Elf', 'Male')
         county.save()
         county.vote = county.id
 

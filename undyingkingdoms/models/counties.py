@@ -10,7 +10,8 @@ from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
 from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
-    human_buildings, elf_buildings, elf_armies
+    human_buildings, elf_buildings, elf_armies, birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
+    income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier
 
 from copy import deepcopy
 
@@ -365,7 +366,8 @@ class County(GameState):
         return self.buildings['pastures'].total * self.buildings['pastures'].output
 
     def get_food_to_be_eaten(self):
-        return int(self.population * self.rations)
+        modifier = 1 + food_consumed_modifier.get(self.race, 0) + food_consumed_modifier.get(self.title, 0)
+        return int(self.population * self.rations * modifier)
 
     def grain_storage_change(self):
         food_produced = self.get_produced_dairy() + self.get_produced_grain()
@@ -407,17 +409,14 @@ class County(GameState):
         return max(self.population - self.get_maintenance_workers() - self.get_army_size(), 0)
 
     def get_death_rate(self):
-        modifier = 1
-        death_rate = uniform(1.7, 2.1) / self.hunger
-        return int(death_rate * self.population * modifier)
+        modifier = 1 + death_rate_modifier.get(self.race, 0) + death_rate_modifier.get(self.title, 0)
+        death_rate = (uniform(1.7, 2.1) / self.hunger) * modifier
+        return int(death_rate * self.population)
 
     def get_birth_rate(self):
-        modifier = {"Base": 1}
-        if self.race == 'Elf':
-            modifier['Racial Bonus'] = -0.1
-        modifier = sum(modifier.values())
-        birth_rate = self.buildings['houses'].total * self.buildings['houses'].output
-        return int(birth_rate * modifier * uniform(0.9995, 1.0005))
+        modifier = 1 + birth_rate_modifier.get(self.race, 0) + birth_rate_modifier.get(self.title, 0)
+        birth_rate = self.buildings['houses'].total * self.buildings['houses'].output * modifier
+        return int(birth_rate * uniform(0.9995, 1.0005))
 
     def get_immigration_rate(self):
         return randint(25, 35)
@@ -440,17 +439,19 @@ class County(GameState):
 
     # Resources
     def get_tax_income(self):
-        modifier = {"Base": 1}
-        if self.title == 'Merchant':
-            modifier['Class Bonus'] = 0.1
-        modifier = sum(modifier.values())
-        return int(self.population * (self.tax / 100) * modifier)
+        return int(self.population * (self.tax / 100))
+
+    def get_bank_income(self):
+        return self.buildings['banks'].total * self.buildings['banks'].output
 
     def get_upkeep_costs(self):
         return sum(unit.upkeep * unit.total for unit in self.armies.values()) // 24
 
     def get_gold_change(self):
-        return self.get_tax_income() + (self.production // 3) - self.get_upkeep_costs()
+        modifier = 1 + income_modifier.get(self.race, 0) + income_modifier.get(self.title, 0)
+        income = (self.get_tax_income() + self.get_bank_income() + (self.production // 3)) * modifier
+        revenue = self.get_upkeep_costs()
+        return income - revenue
 
     def get_wood_income(self):
         return self.buildings['mills'].total * self.buildings['mills'].output
@@ -460,16 +461,7 @@ class County(GameState):
 
     # Building
     def get_production_modifier(self):
-        """
-        Returns the modifier for how much production each worker produces.
-        # Think about moving this to its own file or putting into a Race object or something
-        """
-        modifier = {'Base': 1}
-        if self.race == 'Dwarf':
-            modifier['Racial Bonus'] = 0.1
-        if self.title == 'Engineer':
-            modifier['Class Bonus'] = 0.2
-        return sum(modifier.values())
+        return 1 + production_per_worker_modifier.get(self.race, 0) + production_per_worker_modifier.get(self.title, 0)
 
     def get_production(self):
         return max(int(self.get_production_modifier() * self.get_available_workers() / 3), 0)
@@ -510,10 +502,7 @@ class County(GameState):
         params: scoreboard - Looks at total possible power, even for troops who are unavailable
         """
         strength = 0
-        modifier = {'Base': 1}
-        if self.title == 'Warlord':
-            modifier['Class Bonus'] = 0.1
-        modifier = sum(modifier.values())
+        modifier = 1 + offensive_power_modifier.get(self.race, 0) + offensive_power_modifier.get(self.title, 0)
         if army:
             for unit in self.armies.values():
                 if unit.base_name != 'archer':
@@ -527,19 +516,23 @@ class County(GameState):
         return int(strength * modifier)
 
     def get_defensive_strength(self, scoreboard=False):
-        modifier = (self.buildings['forts'].output * self.buildings['forts'].total) / 100 + 1
-        strength = 0
+        # First get base strength of citizens
+        modifier = 1 + defense_per_citizen_modifier.get(self.race, 0) + defense_per_citizen_modifier.get(self.title, 0)
+        strength = (self.population // 20) * modifier
+        # Now add strength of soldiers at home
         for unit in self.armies.values():
             if scoreboard:
                 strength += unit.total * unit.defence
             else:
                 strength += unit.available * unit.defence
-        if self.race == 'Elf':
-            strength += self.population // 10  # Every 15 population is 1 defence power
-        else:
-            strength += self.population // 20  # Every 30 population is 1 defence power
-        strength *= modifier
+        # Lastly, multiply by the defensive building modifier
+        strength *= (self.buildings['forts'].output * self.buildings['forts'].total) / 100 + 1
         return int(strength)
+
+    def get_army_duration(self, army_size):
+        base_duration = 2 + army_size // 25
+        stables_modifier = 100 / (self.buildings['stables'].total * self.buildings['stables'].output + 100)
+        return int(max(base_duration * stables_modifier, 3))
 
     def get_casualties(self, attack_power, army=(), enemy_id=-1, results="Draw"):
         """
@@ -569,12 +562,7 @@ class County(GameState):
             self.population -= min(hit_points_to_be_removed, self.population)
             return casualties
         if army:
-            duration_modifier = {'Base': 1}
-            if self.race == 'Dwarf':
-                duration_modifier['Racial Bonus'] = -0.15
-            duration_modifier['Stables'] = self.buildings['stables'].total * self.buildings['stables'].output / 100
-            duration_modifier = 1 / (1 + sum(duration_modifier.values()))
-            duration = int(max(sum(army.values()) * 0.04, 1) * duration_modifier) + 1
+            duration = self.get_army_duration(sum(army.values()))
             expedition = Expedition(self.id, enemy_id, self.county_days_in_age, self.kingdom.world.day, duration, "attack")
             expedition.save()
             while hit_points_to_be_removed > 0:
@@ -586,7 +574,6 @@ class County(GameState):
                 self.armies[unit].total -= 1
                 casualties += 1
                 army[unit] -= 1
-            print("Surviving army, to be added to traveling:", army)
             for unit in army.keys():
                 self.armies[unit].traveling += army[unit]  # Surviving troops are marked as absent
                 setattr(expedition, unit, army[unit])
