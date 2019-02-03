@@ -42,13 +42,14 @@ class County(GameState):
     gender = db.Column(db.String(16))
     background = db.Column(db.String(32))
     tax = db.Column(db.Integer)
+    _population = db.Column(db.Integer)
     _gold = db.Column(db.Integer)
     _wood = db.Column(db.Integer)
     _iron = db.Column(db.Integer)
     rations = db.Column(db.Float)
     _happiness = db.Column(db.Integer)  # Out of 100
-    _population = db.Column(db.Integer)
     _nourishment = db.Column(db.Integer)  # Out of 100
+    _health = db.Column(db.Integer)  # Out of 100
     weather = db.Column(db.String(32))
     production = db.Column(db.Integer)
     grain_stores = db.Column(db.Integer)
@@ -84,6 +85,7 @@ class County(GameState):
         self._land = 150
         self._nourishment = 75
         self._happiness = 75
+        self._health = 75
         self.tax = 5
         self._gold = 500
         self._wood = 100
@@ -182,6 +184,14 @@ class County(GameState):
         self._nourishment = int(min(max(value, 1), 100))
 
     @property
+    def health(self):
+        return self._health
+
+    @health.setter
+    def health(self, value):
+        self._health = int(min(max(value, 1), 100))
+
+    @property
     def seed(self):
         return self.kingdom.world.day
 
@@ -260,6 +270,21 @@ class County(GameState):
         self.wood += self.get_wood_income()
         self.iron += self.get_iron_income()
         self.happiness += self.get_happiness_change()
+
+    def get_health_change(self):
+        if self.nourishment > 90:
+            return 2
+        elif self.nourishment > 80:
+            return 1
+        elif self.nourishment > 70:
+            return 0
+        elif self.nourishment > 60:
+            return -1
+        elif self.nourishment > 50:
+            return -2
+        elif self.nourishment > 40:
+            return -3
+        return -4
 
     def get_happiness_change(self):
         change = 7 - self.tax
@@ -423,7 +448,7 @@ class County(GameState):
 
     def get_death_rate(self):
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + death_rate_modifier.get(self.background, ("", 0))[1]
-        death_rate = (uniform(1.7, 2.1) / self.nourishment) * modifier
+        death_rate = (uniform(1.7, 2.1) / self.health) * modifier
         return int(death_rate * self.population)
 
     def get_birth_rate(self):
@@ -479,7 +504,8 @@ class County(GameState):
                + production_per_worker_modifier.get(self.background, ("", 0))[1]
 
     def get_production(self):
-        return max(int(self.get_production_modifier() * self.get_available_workers() / 3), 0)
+        happiness_modifier = self.happiness / 100
+        return max(int(self.get_production_modifier() * happiness_modifier * self.get_available_workers() / 3), 0)
 
     def produce_pending_buildings(self):
         """
@@ -719,6 +745,18 @@ class County(GameState):
         if self.happiness < 90:
             return "content"
         return "pleased"
+
+    @property
+    def health_terminology(self):
+        if self.happiness < 20:
+            return "dying of disease"
+        if self.happiness < 50:
+            return "sickly"
+        if self.happiness < 75:
+            return "average"
+        if self.happiness < 90:
+            return "hale"
+        return "perfect health"
 
     @property
     def rations_terminology(self):
