@@ -72,7 +72,7 @@ def populate_db():
         user.is_admin = True
         user.is_active = True
         user.save()
-        county = County(1, "Ulthuan", "Elthran", user.id, 'Elf', 'Male', 'Merchant')
+        county = County(1, "Ulthuan", "Elthran", user.id, 'Goblin', 'Male', 'Merchant')
         county.save()
         county.vote = county.id
 
@@ -81,7 +81,7 @@ def populate_db():
         user.is_admin = True
         user.is_active = True
         user.save()
-        county = County(1, "Northern Wastes", "Haldon", user.id, 'Dwarf', 'Male', 'Rogue')
+        county = County(1, "Northern Wastes", "Haldon", user.id, 'Dwarf', 'Male', 'Merchant')
         county.save()
         county.vote = county.id
 

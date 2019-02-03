@@ -9,11 +9,15 @@ from undyingkingdoms.models.helpers import cached_random
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
-from undyingkingdoms.static.metadata import dwarf_armies, human_armies, dwarf_buildings, \
-    human_buildings, elf_buildings, elf_armies, birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
+from undyingkingdoms.static.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier
 
 from copy import deepcopy
+
+from undyingkingdoms.static.metadata_dwarf import dwarf_buildings, dwarf_armies
+from undyingkingdoms.static.metadata_elf import elf_buildings, elf_armies
+from undyingkingdoms.static.metadata_goblin import goblin_armies, goblin_buildings
+from undyingkingdoms.static.metadata_human import human_buildings, human_armies
 
 
 class County(GameState):
@@ -102,8 +106,8 @@ class County(GameState):
             buildings = deepcopy(elf_buildings)
             armies = deepcopy(elf_armies)
         elif self.race == 'Goblin':
-            buildings = deepcopy(elf_buildings)
-            armies = deepcopy(elf_armies)
+            buildings = deepcopy(goblin_buildings)
+            armies = deepcopy(goblin_armies)
         self.buildings = buildings
         self.armies = armies
 
@@ -457,7 +461,7 @@ class County(GameState):
                    + income_modifier.get(self.background, ("", 0))[1]
         income = (self.get_tax_income() + self.get_bank_income() + (self.production // 3)) * modifier
         revenue = self.get_upkeep_costs()
-        return income - revenue
+        return int(income - revenue)
 
     def get_wood_income(self):
         return self.buildings['mills'].total * self.buildings['mills'].output

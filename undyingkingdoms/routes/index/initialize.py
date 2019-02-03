@@ -5,7 +5,10 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import County, Kingdom
 from undyingkingdoms.models.forms.initialize import InitializeForm
-from undyingkingdoms.static.metadata import dwarf_armies, human_armies, elf_armies, metadata_races, metadata_backgrounds
+from undyingkingdoms.static.metadata import metadata_races, metadata_backgrounds
+from undyingkingdoms.static.metadata_dwarf import dwarf_armies
+from undyingkingdoms.static.metadata_elf import elf_armies
+from undyingkingdoms.static.metadata_human import human_armies
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])
