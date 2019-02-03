@@ -17,7 +17,7 @@
     <br>
     Current Army has <span id="calculatedAttack">0</span> attack power.
     <br>
-    It would be expected to return in <span id="attackDuration">0</span> days.
+    It would be expected to return in roughly <span id="attackDuration">0</span> days.
     <br><br>
     <button type="submit">Attack</button>
     <br><br>
@@ -26,26 +26,29 @@
 </form>
 
 <script type="text/javascript">
-var total_power = 0
-var days_to_return = 0
 {% for unit in county.armies.values() %}
 {% if unit.base_name != 'archer' %}
 document.getElementById('{{ unit.base_name }}').onchange = function() {
     updateAttack();
     updateDuration();
 }
-var {{ unit.base_name }}_amount = document.getElementById("{{ unit.base_name }}")
+var {{ unit.base_name }}_amount = document.getElementById("{{ unit.base_name }}");
 console.log({{ unit.base_name }}_amount);
 {% endif %}
 {% endfor %}
 
 function updateAttack() {
+    var total_power = 0;
     total_power = 0{% for unit in county.armies.values() %}{% if unit.base_name != 'archer' %}  + parseInt({{ unit.base_name }}_amount.value) * parseInt({{ unit.attack }}){% endif %}{% endfor %};
     calculatedAttack.innerHTML = total_power;
 }
 function updateDuration() {
-    days_to_return = 0{% for unit in county.armies.values() %}{% if unit.base_name != 'archer' %}  + parseInt({{ unit.base_name }}_amount.value) * parseInt({{ unit.attack }}){% endif %}{% endfor %};
-    calculatedAttack.innerHTML = total_power;
+    var days_to_return = 0;
+    var total_units = 0;
+    total_units = 0{% for unit in county.armies.values() %}{% if unit.base_name != 'archer' %}  + parseInt({{ unit.base_name }}_amount.value){% endif %}{% endfor %};
+    console.log(total_units);
+    days_to_return = Math.ceil(total_units / 25) + 2;
+    attackDuration.innerHTML = days_to_return;
 }
 
 </script>

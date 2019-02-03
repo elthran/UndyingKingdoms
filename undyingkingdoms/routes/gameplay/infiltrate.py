@@ -7,7 +7,7 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import Infiltration, County, Notification
 from undyingkingdoms.models.forms.infiltrate import InfiltrateForm
-from undyingkingdoms.static.metadata import infiltration_missions, all_buildings
+from undyingkingdoms.static.metadata import infiltration_missions, all_buildings, infiltration_success_modifier
 
 
 @app.route('/gameplay/infiltrate/<int:county_id>', methods=['GET', 'POST'])
@@ -24,7 +24,7 @@ def infiltrate(template, county_id):
     form = InfiltrateForm()
     form.county_id.data = current_user.county.id
     thieves = current_user.county.get_number_of_available_thieves()
-    form.amount.choices = [(i+1, i+1) for i in range(thieves)]
+    form.amount.choices = [(i + 1, i + 1) for i in range(thieves)]
     form.mission.choices = [(index, name) for index, name in enumerate(infiltration_missions)]
 
     if form.validate_on_submit():
@@ -36,10 +36,8 @@ def infiltrate(template, county_id):
         report.save()
 
         chance_of_success = target.get_chance_to_be_successfully_infiltrated() + form.amount.data
-        modifier = {'Base': 1}
-        if current_user.county.title == 'Rogue':
-            modifier['Racial Bonus'] = 0.1
-        chance_of_success *= sum(modifier.values())
+        modifier = 1 + infiltration_success_modifier.get(current_user.county.race, 0) + infiltration_success_modifier.get(current_user.county.title, 0)
+        chance_of_success *= modifier
 
         if chance_of_success >= randint(1, 100):
             report.success = True
@@ -79,7 +77,9 @@ def infiltrate(template, county_id):
                                             "They have found out some secrets regarding our military",
                                             current_user.county.kingdom.world.day)
         else:
-            notification = Notification(target.id, "You caught enemy thieves from {}".format(current_user.county.name), "You caught them before they could accomplish their task", current_user.county.kingdom.world.day)
+            notification = Notification(target.id, "You caught enemy thieves from {}".format(current_user.county.name),
+                                        "You caught them before they could accomplish their task",
+                                        current_user.county.kingdom.world.day)
             report.duration = randint(20, 26)
             report.success = False
         notification.save()
