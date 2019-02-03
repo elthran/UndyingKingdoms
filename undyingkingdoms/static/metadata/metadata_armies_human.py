@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from undyingkingdoms.static.metadata_all_races import generic_buildings, generic_armies
+from undyingkingdoms.static.metadata.metadata_all_races import generic_armies
 
 human_armies = deepcopy(generic_armies)
 # First the strings and descriptions
@@ -27,6 +27,4 @@ human_armies['archer'].iron -= 1
 human_armies['elite'].trainable_per_day += 3
 human_armies['elite'].iron -= 1
 
-human_buildings = generic_buildings
-human_buildings['houses'].class_name = 'log cabin'
 

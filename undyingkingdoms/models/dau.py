@@ -30,15 +30,15 @@ class DAU(GameEvent):
     archers = db.Column(db.Integer)
     elites = db.Column(db.Integer)
     # Building Data
-    houses = db.Column(db.Integer)
-    fields = db.Column(db.Integer)
-    pastures = db.Column(db.Integer)
-    mills = db.Column(db.Integer)
-    mines = db.Column(db.Integer)
-    forts = db.Column(db.Integer)
+    house = db.Column(db.Integer)
+    field = db.Column(db.Integer)
+    pasture = db.Column(db.Integer)
+    mill = db.Column(db.Integer)
+    mine = db.Column(db.Integer)
+    fort = db.Column(db.Integer)
     stables = db.Column(db.Integer)
-    guilds = db.Column(db.Integer)
-    banks = db.Column(db.Integer)
+    guild = db.Column(db.Integer)
+    bank = db.Column(db.Integer)
 
     def __init__(self, user_id, county_days_in_age, world_age_in_days):
         self.user_id = user_id
@@ -67,15 +67,15 @@ class DAU(GameEvent):
         self.archers = county.armies['archer'].total
         self.elites = county.armies['elite'].total
 
-        self.houses = county.buildings['houses'].total
-        self.fields = county.buildings['fields'].total
-        self.pastures = county.buildings['pastures'].total
-        self.mills = county.buildings['mills'].total
-        self.mines = county.buildings['mines'].total
-        self.forts = county.buildings['forts'].total
+        self.house = county.buildings['house'].total
+        self.field = county.buildings['field'].total
+        self.pasture = county.buildings['pasture'].total
+        self.mill = county.buildings['mill'].total
+        self.mine = county.buildings['mine'].total
+        self.fort = county.buildings['fort'].total
         self.stables = county.buildings['stables'].total
-        self.guilds = county.buildings['guilds'].total
-        self.banks = county.buildings['banks'].total
+        self.guild = county.buildings['guild'].total
+        self.bank = county.buildings['bank'].total
 
     @staticmethod
     def get_sessions(user_id):

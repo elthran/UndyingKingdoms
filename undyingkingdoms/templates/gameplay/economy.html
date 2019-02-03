@@ -134,7 +134,7 @@
                 {{ county.get_wood_income() }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
             </td>
             <td>-</td>
-            <td>+ {{ county.get_wood_income() }} from {{ county.buildings['mills'].class_name }}</td>
+            <td>+ {{ county.get_wood_income() }} from {{ county.buildings['mill'].class_name }}</td>
             <td>-</td>
             <td>Lumber is used to build buildings and to equip certain soldiers.</td>
         </tr>
@@ -149,7 +149,7 @@
                 {{ county.get_iron_income() }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
             </td>
             <td>-</td>
-            <td>+ {{ county.get_iron_income() }} from {{ county.buildings['mines'].class_name }}</td>
+            <td>+ {{ county.get_iron_income() }} from {{ county.buildings['mine'].class_name }}</td>
             <td>-</td>
             <td>Iron is used to equip powerful soldiers.</td>
         </tr>

@@ -1,6 +1,6 @@
 from extensions import flask_db as db
 from undyingkingdoms.models.bases import GameEvent
-from undyingkingdoms.static.metadata import all_buildings, all_armies
+from undyingkingdoms.static.metadata.metadata import all_buildings, all_armies
 
 transactions = ["buy", "sell"]
 
@@ -15,15 +15,15 @@ class Transaction(GameEvent):
     wood_spent = db.Column(db.Integer)
     iron_spent = db.Column(db.Integer)
 
-    houses = db.Column(db.Integer)
-    fields = db.Column(db.Integer)
-    pastures = db.Column(db.Integer)
-    mills = db.Column(db.Integer)
-    mines = db.Column(db.Integer)
-    forts = db.Column(db.Integer)
+    house = db.Column(db.Integer)
+    field = db.Column(db.Integer)
+    pasture = db.Column(db.Integer)
+    mill = db.Column(db.Integer)
+    mine = db.Column(db.Integer)
+    fort = db.Column(db.Integer)
     stables = db.Column(db.Integer)
-    guilds = db.Column(db.Integer)
-    banks = db.Column(db.Integer)
+    guild = db.Column(db.Integer)
+    bank = db.Column(db.Integer)
 
     peasant = db.Column(db.Integer)
     archer = db.Column(db.Integer)
@@ -36,15 +36,15 @@ class Transaction(GameEvent):
         self.world_age_in_days = world_age_in_days
         self.activity = activity if activity in transactions else "unknown"
 
-        self.houses = 0
-        self.fields = 0
-        self.pastures = 0
-        self.mills = 0
-        self.mines = 0
-        self.forts = 0
-        self.stables = 0
-        self.guilds = 0
-        self.banks
+        self.house = 0
+        self.field = 0
+        self.pasture = 0
+        self.mill = 0
+        self.mine = 0
+        self.fort = 0
+        self.stable = 0
+        self.guild = 0
+        self.bank
 
         self.peasant = 0
         self.archer = 0

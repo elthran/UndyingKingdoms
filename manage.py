@@ -12,7 +12,7 @@ from private_config import JACOB_TEMPORARY_EMAIL, JACOB_TEMPORARY_ACCOUNT_PASSWO
 from undyingkingdoms import app
 from undyingkingdoms.models import World, Kingdom, County, User
 from undyingkingdoms.models.forum import Forum, Thread
-from undyingkingdoms.static.metadata import kingdom_names
+from undyingkingdoms.static.metadata.metadata import kingdom_names
 
 manager = Manager(app)
 

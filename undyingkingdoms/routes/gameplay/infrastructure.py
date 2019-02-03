@@ -5,7 +5,7 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import World, Transaction
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm
-from undyingkingdoms.static.metadata import all_buildings, game_descriptions
+from undyingkingdoms.static.metadata.metadata import all_buildings, game_descriptions
 
 
 @app.route('/gameplay/infrastructure/', methods=['GET', 'POST'])

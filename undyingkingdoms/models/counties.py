@@ -9,15 +9,19 @@ from undyingkingdoms.models.helpers import cached_random
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
-from undyingkingdoms.static.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
+from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier
 
 from copy import deepcopy
 
-from undyingkingdoms.static.metadata_dwarf import dwarf_buildings, dwarf_armies
-from undyingkingdoms.static.metadata_elf import elf_buildings, elf_armies
-from undyingkingdoms.static.metadata_goblin import goblin_armies, goblin_buildings
-from undyingkingdoms.static.metadata_human import human_buildings, human_armies
+from undyingkingdoms.static.metadata.metadata_armies_dwarf import dwarf_armies
+from undyingkingdoms.static.metadata.metadata_armies_elf import elf_armies
+from undyingkingdoms.static.metadata.metadata_armies_goblin import goblin_armies
+from undyingkingdoms.static.metadata.metadata_armies_human import human_armies
+from undyingkingdoms.static.metadata.metadata_buildings_dwarf import dwarf_buildings
+from undyingkingdoms.static.metadata.metadata_buildings_elf import elf_buildings
+from undyingkingdoms.static.metadata.metadata_buildings_goblin import goblin_buildings
+from undyingkingdoms.static.metadata.metadata_buildings_human import human_buildings
 
 
 class County(GameState):
@@ -283,25 +287,25 @@ class County(GameState):
                                         self.kingdom.world.day)
             self.gold += amount
 
-        elif random_chance == 3 and self.buildings['pastures'].total > 0:
-            amount = min(randint(3, 6), self.buildings['pastures'].total)
+        elif random_chance == 3 and self.buildings['pasture'].total > 0:
+            amount = min(randint(3, 6), self.buildings['pasture'].total)
             notification = Notification(self.id,
                                         "A disease has affected your cattle",
                                         "Your county has lost {} of its dairy farms.".format(amount),
                                         self.kingdom.world.day)
-            self.buildings['pastures'].total -= amount
+            self.buildings['pasture'].total -= amount
 
-        elif random_chance == 4 and self.buildings['fields'].total > 0:
-            amount = min(randint(2, 4), self.buildings['fields'].total)
+        elif random_chance == 4 and self.buildings['field'].total > 0:
+            amount = min(randint(2, 4), self.buildings['field'].total)
             notification = Notification(self.id,
                                         "Storms have ravaged your crops",
                                         "A massive storm has destroyed {} of your fields.".format(amount),
                                         self.kingdom.world.day)
-            self.buildings['fields'].total -= amount
+            self.buildings['field'].total -= amount
             self.weather = 'thunderstorm'
 
-        elif random_chance == 5 and self.buildings['fields'].total > 0:
-            amount = self.buildings['fields'].total * 3
+        elif random_chance == 5 and self.buildings['field'].total > 0:
+            amount = self.buildings['field'].total * 3
             notification = Notification(self.id,
                                         "Booster crops",
                                         "Due to excellent weather this season, your crops produced an addition {} grain today.".format(
@@ -319,15 +323,15 @@ class County(GameState):
                                         self.kingdom.world.day)
             self.population -= amount
 
-        elif random_chance == 7 and self.buildings['houses'].total > 0:
-            amount = min(randint(2, 4), self.buildings['houses'].total)
+        elif random_chance == 7 and self.buildings['house'].total > 0:
+            amount = min(randint(2, 4), self.buildings['house'].total)
             notification = Notification(self.id,
                                         "Disaster",
                                         "A fire has spread in the city burning down {} of your {}.".format(amount,
                                                                                                            self.buildings[
-                                                                                                               'houses'].class_name),
+                                                                                                               'house'].class_name),
                                         self.kingdom.world.day)
-            self.buildings['houses'].total -= amount
+            self.buildings['house'].total -= amount
 
         if notification:
             notification.save()
@@ -369,10 +373,10 @@ class County(GameState):
             self.hunger -= min(hunger_loss, 5)
 
     def get_produced_grain(self):
-        return self.buildings['fields'].total * self.buildings['fields'].output
+        return self.buildings['field'].total * self.buildings['field'].output
 
     def get_produced_dairy(self):
-        return self.buildings['pastures'].total * self.buildings['pastures'].output
+        return self.buildings['pasture'].total * self.buildings['pasture'].output
 
     def get_food_to_be_eaten(self):
         modifier = 1 + food_consumed_modifier.get(self.race, ("", 0))[1] + food_consumed_modifier.get(self.background, ("", 0))[1]
@@ -424,7 +428,7 @@ class County(GameState):
 
     def get_birth_rate(self):
         modifier = 1 + birth_rate_modifier.get(self.race, ("", 0))[1] + birth_rate_modifier.get(self.background, ("", 0))[1]
-        birth_rate = self.buildings['houses'].total * self.buildings['houses'].output * modifier
+        birth_rate = self.buildings['house'].total * self.buildings['house'].output * modifier
         return int(birth_rate * uniform(0.9995, 1.0005))
 
     def get_immigration_rate(self):
@@ -451,7 +455,7 @@ class County(GameState):
         return int(self.population * (self.tax / 100))
 
     def get_bank_income(self):
-        return self.buildings['banks'].total * self.buildings['banks'].output
+        return self.buildings['bank'].total * self.buildings['bank'].output
 
     def get_upkeep_costs(self):
         return sum(unit.upkeep * unit.total for unit in self.armies.values()) // 24
@@ -464,10 +468,10 @@ class County(GameState):
         return int(income - revenue)
 
     def get_wood_income(self):
-        return self.buildings['mills'].total * self.buildings['mills'].output
+        return self.buildings['mill'].total * self.buildings['mill'].output
 
     def get_iron_income(self):
-        return self.buildings['mines'].total * self.buildings['mines'].output
+        return self.buildings['mine'].total * self.buildings['mine'].output
 
     # Building
     def get_production_modifier(self):
@@ -539,7 +543,7 @@ class County(GameState):
             else:
                 strength += unit.available * unit.defence
         # Lastly, multiply by the defensive building modifier
-        strength *= (self.buildings['forts'].output * self.buildings['forts'].total) / 100 + 1
+        strength *= (self.buildings['fort'].output * self.buildings['fort'].total) / 100 + 1
         return int(strength)
 
     def get_army_duration(self, army_size):
@@ -668,7 +672,7 @@ class County(GameState):
 
     # Infiltrations
     def get_number_of_available_thieves(self):
-        total_thieves = self.buildings['guilds'].total
+        total_thieves = self.buildings['guild'].total
         all_current_missions = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
         unavailable_thieves = sum(mission.amount_of_thieves for mission in all_current_missions)
         return total_thieves - unavailable_thieves

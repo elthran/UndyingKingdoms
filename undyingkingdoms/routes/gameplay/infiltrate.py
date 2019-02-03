@@ -1,4 +1,4 @@
-from random import randint, choice
+from random import randint
 
 from flask import redirect, url_for, render_template
 from flask_login import login_required, current_user
@@ -7,7 +7,7 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import Infiltration, County, Notification
 from undyingkingdoms.models.forms.infiltrate import InfiltrateForm
-from undyingkingdoms.static.metadata import infiltration_missions, all_buildings, infiltration_success_modifier
+from undyingkingdoms.static.metadata.metadata import infiltration_missions, infiltration_success_modifier
 
 
 @app.route('/gameplay/infiltrate/<int:county_id>', methods=['GET', 'POST'])
@@ -53,8 +53,8 @@ def infiltrate(template, county_id):
                                             "They stole {} gold from our coffers".format(gold_stolen),
                                             current_user.county.kingdom.world.day)
             elif mission == 'burn crops':
-                crops_burned = min(target.buildings['fields'].total, form.amount.data)
-                target.buildings['fields'].total -= crops_burned
+                crops_burned = min(target.buildings['field'].total, form.amount.data)
+                target.buildings['field'].total -= crops_burned
                 report.crops_burned = crops_burned
                 report.duration = randint(19, 20)
                 notification = Notification(target.id,

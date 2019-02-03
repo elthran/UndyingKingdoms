@@ -1,7 +1,7 @@
 from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.bases import GameState, db
-from undyingkingdoms.static.metadata import kingdom_names
+from undyingkingdoms.static.metadata.metadata import kingdom_names
 
 
 class Kingdom(GameState):

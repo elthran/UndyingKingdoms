@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from undyingkingdoms.static.metadata_all_races import generic_buildings, generic_armies
+from undyingkingdoms.static.metadata.metadata_all_races import generic_armies
 
 goblin_armies = deepcopy(generic_armies)
 # First the strings and descriptions
@@ -37,6 +37,4 @@ goblin_armies['elite'].gold -= 10
 goblin_armies['elite'].iron -= 5
 goblin_armies['elite'].upkeep -= 5
 
-goblin_buildings = generic_buildings
-goblin_buildings['houses'].class_name = 'log cabin'
 
