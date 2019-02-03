@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from undyingkingdoms.static.metadata.metadata_all_races import generic_armies
+from undyingkingdoms.static.metadata.metadata_armies_all import generic_armies
 
 human_armies = deepcopy(generic_armies)
 # First the strings and descriptions
