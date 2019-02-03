@@ -17,12 +17,6 @@ def register(template):
     if form.validate_on_submit() and not User.query.filter_by(email=form.email.data).first():
         user = User(form.username.data, form.email.data, form.password.data)
         user.save()
-        session = Session(user_id=user.id)
-        session.save()
         login_user(user)
-        # Right ow it immediately logs you in.
-        # In the future it will send you an email for confirmation first.
-        session = Session(user_id=user.id)
-        session.save()
         return redirect(url_for('initialize'))
     return render_template(template, form=form)

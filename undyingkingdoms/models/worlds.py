@@ -34,7 +34,7 @@ class World(GameState):
         users = User.query.filter_by(is_bot=False).filter(User.county != None).all()
         for user in users:
             # First check and set their retention
-            user_age = (datetime.now() - user.time_created).days
+            user_age = (datetime.utcnow() - user.time_created).days
             if user.get_last_login().date() == datetime.today().date():
                 retention = 1
             else:

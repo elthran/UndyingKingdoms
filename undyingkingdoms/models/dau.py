@@ -52,7 +52,7 @@ class DAU(GameEvent):
         user = User.query.filter_by(id=user_id).first()
         county = user.county
         
-        self.account_age_in_days = (datetime.now() - user.time_created).days
+        self.account_age_in_days = (datetime.utcnow() - user.time_created).days
         self.county_id = county.id
         self.current_score = user.get_current_leaderboard_score()
         self.land = county.land
@@ -77,11 +77,11 @@ class DAU(GameEvent):
 
     @staticmethod
     def get_sessions(user_id):
-        time_cutoff = datetime.now() - timedelta(hours=4)
+        time_cutoff = datetime.utcnow() - timedelta(hours=4)
         return Session.query.filter_by(user_id=user_id).filter(Session.time_logged_out > time_cutoff).count()
 
     @staticmethod
     def get_minutes_played(user_id):
-        time_cutoff = datetime.now() - timedelta(hours=4)
+        time_cutoff = datetime.utcnow() - timedelta(hours=4)
         sessions = Session.query.filter_by(user_id=user_id).filter(Session.time_logged_out > time_cutoff).all()
         return sum(session.minutes for session in sessions if session.minutes is not None)

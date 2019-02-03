@@ -12,9 +12,9 @@ from scheduler import private_bearer_token
 
 route = "https://undyingkingdoms.pythonanywhere.com/game_clock/advance_age"
 
-if datetime.now().weekday() == 4:
+if datetime.utcnow().weekday() == 4:
     print("Correct weekday for age reset")
-    print("Current time:", datetime.now())
+    print("Current time:", datetime.utcnow())
     r = requests.get(
         route,
         headers={"Authorization": "Bearer " + private_bearer_token.token}

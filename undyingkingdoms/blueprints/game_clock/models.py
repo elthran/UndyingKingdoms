@@ -62,7 +62,7 @@ class BlacklistToken(GameState):
 
     def __init__(self, token):
         self.token = token
-        self.blacklisted_on = datetime.datetime.now()
+        self.blacklisted_on = datetime.datetime.utcnow()
 
     @staticmethod
     def check_blacklist(auth_token):

@@ -14,7 +14,7 @@ from undyingkingdoms.models.forms.message import MessageForm
 @login_required
 def overview(template, kingdom_id=0, county_id=0):
     for user in User.query.filter_by(_in_active_session=True).all():
-        time_since_last_activity = datetime.now() - user.time_modified
+        time_since_last_activity = datetime.utcnow() - user.time_modified
         if time_since_last_activity.total_seconds() > 300:  # A user who hasn't done anything in 5 minutes
             user.in_active_session = False
     if not current_user.in_active_session:
