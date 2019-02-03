@@ -1,7 +1,4 @@
 {% extends "mobile/gameplay/layout.html" %}
-{% set user = current_user %}
-{% set county = current_user.county %}
-{% set kingdom = county.kingdom %}
 
 {% block title %}Infiltration: {{ super() }}{% endblock %}
 
@@ -32,6 +29,9 @@ h2 {
 {% endblock %}
 
 {% block content1 %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
 <div id="content">
   <div id="header">
     <h2>Thieves available: {{ county.get_number_of_available_thieves() }} / {{ county.buildings['guild'].total }}</h2>

@@ -1,7 +1,4 @@
 {% extends "mobile/gameplay/layout.html" %}
-{% set user = current_user %}
-{% set county = current_user.county %}
-{% set kingdom = county.kingdom %}
 
 {% block title %}Military: {{ super() }}{% endblock %}
 
@@ -96,6 +93,9 @@ button {
 {% endset %}
 
 {% block content1 %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
 <div id="content">
 	<div id="header">
 		<h2>Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>

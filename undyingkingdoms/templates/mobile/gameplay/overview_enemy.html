@@ -1,8 +1,32 @@
-{% extends "gameplay/layout.html" %}
-{% block content2 %}
+{% extends "mobile/gameplay/layout.html" %}
 
+{% block title %}Enemy Overview: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+	margin: 1.2em 2em;
+}
+h1 {
+	padding-bottom: 0.4em;
+	text-align: center;
+}
+
+h2 {
+	padding-bottom: 0.3em;
+}
+
+button {
+	width: 100%;
+  height: 2.3em;
+	border-radius: 4px;
+}
+</style>
+{% endblock %}
+
+{% block content1 %}
 {% set user = current_user %}
-
 <h1 style="text-align:center;">{{ target_county.name }}</h1>
 
 <h2>Basic Info</h2>
@@ -45,5 +69,5 @@ No information is known.
     <textarea cols="100" rows="10" type="text" name="content" placeholder="Content"></textarea>
     <button type="submit">Send Message</button>
 </form>
-
+{{ super() }}
 {% endblock %}

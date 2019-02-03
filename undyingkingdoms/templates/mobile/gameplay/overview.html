@@ -1,6 +1,4 @@
 {% extends "mobile/gameplay/layout.html" %}
-{% set user = current_user %}
-{% set county = current_user.county %}
 
 {% block title %}Overview: {{ super() }}{% endblock %}
 
@@ -28,6 +26,8 @@ button {
 {% endblock %}
 
 {% block content1 %}
+{% set user = current_user %}
+{% set county = current_user.county %}
 <div id="content">
 	<h1>{{ county.name }}</h1>
 	<ul>
