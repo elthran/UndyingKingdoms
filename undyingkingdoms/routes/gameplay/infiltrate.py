@@ -36,7 +36,8 @@ def infiltrate(template, county_id):
         report.save()
 
         chance_of_success = target.get_chance_to_be_successfully_infiltrated() + form.amount.data
-        modifier = 1 + infiltration_success_modifier.get(current_user.county.race, 0) + infiltration_success_modifier.get(current_user.county.title, 0)
+        modifier = 1 + infiltration_success_modifier.get(current_user.county.race, ("", 0))[1] \
+                   + infiltration_success_modifier.get(current_user.county.background, ("", 0))[1]
         chance_of_success *= modifier
 
         if chance_of_success >= randint(1, 100):

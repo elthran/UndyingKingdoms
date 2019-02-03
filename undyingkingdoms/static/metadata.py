@@ -2,6 +2,33 @@ from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.buildings import Building
 from undyingkingdoms.models.armies import Army
 
+
+class NameChecker(set):
+    def __getattr__(self, item):
+        if item in self:
+            return item
+        else:
+            raise ValueError('Key {} can not be found'.format(item))
+
+
+metadata_races = NameChecker(
+    [
+        'Human',
+        'Elf',
+        'Dwarf',
+        'Goblin'
+    ]
+)
+
+metadata_backgrounds = NameChecker(
+    [
+        'Warlord',
+        'Engineer',
+        'Merchant',
+        'Rogue'
+    ]
+)
+
 kingdom_names = ["Faenoth", "Aldoroth", "Ecthalion"]
 
 infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust']
@@ -51,14 +78,14 @@ all_achievements = {
 rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (1, "Normal"), (2, "Double"), (3, "Triple")]
 
 # Racial/Class Modifiers (A modifier of 0 means +0%. A modifier of 1 would mean +100%)
-birth_rate_modifier = {'Elf': -0.15}
+birth_rate_modifier = {'Elf': ("Elders", -0.15)}
 death_rate_modifier = {}
-income_modifier = {'Merchant': 0.15}
-offensive_power_modifier = {'Warlord': 0.10}
-infiltration_success_modifier = {'Rogue': 0.10}
-production_per_worker_modifier = {'Dwarf': 0.10, 'Engineer': 0.20}
-defense_per_citizen_modifier = {'Elf': 1.00}
-food_consumed_modifier = {'Dwarf': 0.15}
+income_modifier = {'Merchant': ("", 0.15)}
+offensive_power_modifier = {'Warlord': ("", 0.10)}
+infiltration_success_modifier = {'Rogue': ("", 0.10)}
+production_per_worker_modifier = {'Dwarf': ("", 0.10), 'Engineer': ("", 0.20)}
+defense_per_citizen_modifier = {'Elf': ("", 1.00)}
+food_consumed_modifier = {'Dwarf': ("", 0.15)}
 
 all_buildings = ['houses', 'fields', 'pastures', 'mills', 'mines', 'forts', 'stables', 'guilds', 'banks']
 

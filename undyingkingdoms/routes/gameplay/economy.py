@@ -4,7 +4,7 @@ from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models.forms.economy import EconomyForm
-from undyingkingdoms.static.metadata import rations_terminology, birth_rate_modifier
+from undyingkingdoms.static.metadata import rations_terminology, birth_rate_modifier, income_modifier
 
 
 @app.route('/gameplay/economy/', methods=['GET', 'POST'])
@@ -20,4 +20,4 @@ def economy(template):
         current_user.county.tax = form.tax.data
         current_user.county.rations = form.rations.data
         return redirect(url_for('economy'))
-    return render_template(template, form=form, birth_rate_modifier=birth_rate_modifier)
+    return render_template(template, form=form, birth_rate_modifier=birth_rate_modifier, income_modifier=income_modifier)
