@@ -48,7 +48,7 @@ class County(GameState):
     rations = db.Column(db.Float)
     _happiness = db.Column(db.Integer)  # Out of 100
     _population = db.Column(db.Integer)
-    _hunger = db.Column(db.Integer)  # Out of 100
+    _nourishment = db.Column(db.Integer)  # Out of 100
     weather = db.Column(db.String(32))
     production = db.Column(db.Integer)
     grain_stores = db.Column(db.Integer)
@@ -82,7 +82,7 @@ class County(GameState):
 
         self._population = 500
         self._land = 150
-        self._hunger = 75
+        self._nourishment = 75
         self._happiness = 75
         self.tax = 5
         self._gold = 500
@@ -174,12 +174,12 @@ class County(GameState):
         self._happiness = min(max(value, 1), 100)
 
     @property
-    def hunger(self):
-        return self._hunger
+    def nourishment(self):
+        return self._nourishment
 
-    @hunger.setter
-    def hunger(self, value):
-        self._hunger = int(min(max(value, 1), 100))
+    @nourishment.setter
+    def nourishment(self, value):
+        self._nourishment = int(min(max(value, 1), 100))
 
     @property
     def seed(self):
@@ -315,7 +315,7 @@ class County(GameState):
             self.weather = 'lovely'
 
         elif random_chance == 6:
-            modifier = 100 - self.hunger
+            modifier = 100 - self.nourishment
             amount = min(randint(modifier, modifier + 25), self.population)
             notification = Notification(self.id,
                                         "Black Death",
@@ -336,11 +336,11 @@ class County(GameState):
         if notification:
             notification.save()
 
-    def get_hunger_change(self):
+    def get_nourishment_change(self):
         hungry_people = self.get_food_to_be_eaten() - self.get_produced_dairy() - self.get_produced_grain() - self.grain_stores
         if hungry_people > 0:
-            hunger_loss = (hungry_people // 200) + 1  # 1 plus 1 for every 200 unfed people
-            return - min(hunger_loss, 5)
+            nourishment_loss = (hungry_people // 200) + 1  # 1 plus 1 for every 200 unfed people
+            return - min(nourishment_loss, 5)
         if self.rations == 0:
             unfed_people = self.population
             return int(-(unfed_people // 200) - 1)
@@ -361,16 +361,16 @@ class County(GameState):
         total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores
         food_eaten = self.get_food_to_be_eaten()
         if total_food >= food_eaten:
-            # If you have enough food, you lose it and your hunger changes based on rations
+            # If you have enough food, you lose it and your nourishment changes based on rations
             self.grain_stores += min(self.get_produced_dairy() + self.get_produced_grain() - food_eaten,
                                      self.get_produced_grain())
-            self.hunger += self.get_hunger_change()
+            self.nourishment += self.get_nourishment_change()
         else:
-            # If you don't have enough food, you lose it all and lose hunger based on leftover people
+            # If you don't have enough food, you lose it all and lose nourishment based on leftover people
             self.grain_stores = 0
             hungry_people = food_eaten - total_food
-            hunger_loss = (hungry_people // 200) + 1  # 1 plus 1 for every 200 unfed people
-            self.hunger -= min(hunger_loss, 5)
+            nourishment_loss = (hungry_people // 200) + 1  # 1 plus 1 for every 200 unfed people
+            self.nourishment -= min(nourishment_loss, 5)
 
     def get_produced_grain(self):
         return self.buildings['field'].total * self.buildings['field'].output
@@ -423,7 +423,7 @@ class County(GameState):
 
     def get_death_rate(self):
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + death_rate_modifier.get(self.background, ("", 0))[1]
-        death_rate = (uniform(1.7, 2.1) / self.hunger) * modifier
+        death_rate = (uniform(1.7, 2.1) / self.nourishment) * modifier
         return int(death_rate * self.population)
 
     def get_birth_rate(self):
@@ -697,14 +697,14 @@ class County(GameState):
 
     # Terminology
     @property
-    def hunger_terminology(self):
-        if self.hunger < 20:
+    def nourishment_terminology(self):
+        if self.nourishment < 20:
             return "dying of hunger"
-        if self.hunger < 50:
+        if self.nourishment < 50:
             return "starving"
-        if self.hunger < 75:
+        if self.nourishment < 75:
             return "hungry"
-        if self.hunger < 90:
+        if self.nourishment < 90:
             return "sated"
         return "well nourished"
 

@@ -83,7 +83,7 @@
                 <ul>
                     <li>Taxes: {{ county.get_tax_income() }}</li>
                     <li>Excess Production: {{ county.production // 3 }}</li>
-                    {% if county.buildings['banks'].total > 0 %}<li>Banks: {{ county.get_bank_income() }}</li>{% endif %}
+                    {% if county.buildings['bank'].total > 0 %}<li>Banks: {{ county.get_bank_income() }}</li>{% endif %}
                 </ul>
             </td>
             <td>Military Expenses: {{ county.get_upkeep_costs() }}</td>
@@ -169,19 +169,20 @@
             <td>Happiness affects emigration rate.</td>
         </tr>
         <tr>
-            <td>Hunger</td>
-            <td>{{ county.hunger }}%</td>
-            {% if county.get_hunger_change() >= 0 %}
+            <td>Nourishment</td>
+            <td>{{ county.nourishment }}%</td>
+            {% if county.get_nourishment_change() >= 0 %}
             <td style="color:green;">+
                 {% else %}
             <td style="color:red;">
                 {% endif %}
-                {{ county.get_hunger_change() }}
+                {{ county.get_nourishment_change() }}
             </td>
             <td>-</td>
             <td>-</td>
             <td>-</td>
-            <td>Hunger affects your death rate. Your hunger worsens by 1 for every 200 unfed people.</td>
+            <td>The better nourished your people, the lower your death rate and the less chance they will become sick.
+                Your nourishment decreases by 1% for every 200 unfed people each day.</td>
         </tr>
     </table>
     <br>

@@ -297,20 +297,20 @@ th {
                     <td>Happiness affects emigration rate.</td>
                 </tr>
                 <tr>
-                    <th colspan="2">Hunger</th>
+                    <th colspan="2">Nourishment</th>
                 </tr>
                 <tr>
                     <td>Current</td>
-                    <td>{{ county.hunger }}%</td>
+                    <td>{{ county.nourishment }}%</td>
                 </tr>
                 <tr>
                     <td>Projected Change</td>
-                    {% if county.get_hunger_change() >= 0 %}
+                    {% if county.get_nourishment_change() >= 0 %}
                         <td style="color:green;">+
                     {% else %}
                         <td style="color:red;">
                     {% endif %}
-                        {{ county.get_hunger_change() }}</td>
+                        {{ county.get_nourishment_change() }}</td>
                 </tr>
                 <tr>
                     <td>Modifer</td>
@@ -326,7 +326,7 @@ th {
                 </tr>
                 <tr>
                     <td>Notes</td>
-                    <td>Hunger affects your death rate. Your hunger worsens by 1 for every 200 unfed people.</td>
+                    <td>Nourishment affects your death rate. Your nourishment worsens by 1 for every 200 unfed people.</td>
                 </tr>
             </tbody>
         </table>

@@ -23,7 +23,7 @@ class DAU(GameEvent):
     population = db.Column(db.Integer)
     gold = db.Column(db.Integer)
     happiness = db.Column(db.Integer)
-    hunger = db.Column(db.Integer)
+    nourishment = db.Column(db.Integer)
     # Military data
     peasants = db.Column(db.Integer)
     soldiers = db.Column(db.Integer)
@@ -60,7 +60,7 @@ class DAU(GameEvent):
         self.population = county.population
         self.gold = county.gold
         self.happiness = county.happiness
-        self.hunger = county.hunger
+        self.nourishment = county.nourishment
         
         self.peasants = county.armies['peasant'].total
         self.soldiers = county.armies['soldier'].total
