@@ -14,4 +14,6 @@ elf_buildings['fort'].class_name, elf_buildings['fort'].class_name_plural = 'cit
 elf_buildings['stables'].class_name, elf_buildings['stables'].class_name_plural = 'elk stables', 'elk stables'
 elf_buildings['guild'].class_name, elf_buildings['guild'].class_name_plural = 'thieves guild', 'thieves guilds'
 elf_buildings['bank'].class_name, elf_buildings['bank'].class_name_plural = 'exchequer', 'exchequers'
+elf_buildings['lair'].class_name, elf_buildings['lair'].class_name_plural = 'dragon den', 'dragon dens'
+
 

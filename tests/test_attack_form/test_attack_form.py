@@ -18,20 +18,20 @@ def test_attack_form_validation(app):
         user = User.query.first()
         form = AttackForm()
 
-        peasants = user.county.armies['peasant'].available + 1
-        archers = user.county.armies['archer'].available + 1
-        soldiers = user.county.armies['soldier'].available + 1
-        elites = user.county.armies['elite'].available + 1
+        peasant = user.county.armies['peasant'].available + 1
+        soldier = user.county.armies['soldier'].available + 1
+        elite = user.county.armies['elite'].available + 1
+        monster = user.county.armies['monster'].available + 1
 
-        form.peasant.choices = [(amount, amount) for amount in range(peasants)]
-        form.archer.choices = [(amount, amount) for amount in range(archers)]
-        form.soldier.choices = [(amount, amount) for amount in range(soldiers)]
-        form.elite.choices = [(amount, amount) for amount in range(elites)]
+        form.peasant.choices = [(amount, amount) for amount in range(peasant)]
+        form.soldier.choices = [(amount, amount) for amount in range(soldier)]
+        form.elite.choices = [(amount, amount) for amount in range(elite)]
+        form.monster.choices = [(amount, amount) for amount in range(monster)]
 
         form.peasant.data = 10
-        form.archer.data = 0
         form.soldier.data = 0
         form.elite.data = 0
+        form.monster.data = 0
 
         if not form.validate():
             print(form.errors)

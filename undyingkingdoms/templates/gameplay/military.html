@@ -96,7 +96,7 @@
 <br><br>
 <h2>Expeditions:</h2>
 {% for expedition in county.get_expeditions() %}
-<br>Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite }} troops will return in {{ expedition.duration }} days with {{ expedition.land_acquired }} acres of newly captured land.
+<br>Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite + expedition.monster }} troops will return in {{ expedition.duration }} days with {{ expedition.land_acquired }} acres of newly captured land.
 {% else %}
 You have no troops travelling in foreign lands.
 {% endfor %}

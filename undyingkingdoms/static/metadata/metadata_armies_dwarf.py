@@ -13,6 +13,8 @@ dwarf_armies['archer'].class_name, dwarf_armies['archer'].class_name_plural, dwa
     'archer'].description = 'rifleman', 'riflemen', 'Dwarf riflemen are a powerful defensive force.'
 dwarf_armies['elite'].class_name, dwarf_armies['elite'].class_name_plural, dwarf_armies[
     'elite'].description = 'greybeard', 'greybeards', 'Greybeards are capable of defending, as well as attacking.'
+dwarf_armies['monster'].class_name, dwarf_armies['monster'].class_name_plural, dwarf_armies[
+    'monster'].description = 'manticore', 'manticores', 'Manticores are incredibly powerful monsters.'
 
 # Dwarves: Slightly higher health and iron
 # Peasants

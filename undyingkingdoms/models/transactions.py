@@ -30,6 +30,7 @@ class Transaction(GameEvent):
     archer = db.Column(db.Integer)
     soldier = db.Column(db.Integer)
     elite = db.Column(db.Integer)
+    monster = db.Column(db.Integer)
 
     def __init__(self, county_id, county_days_in_age, world_age_in_days, activity):
         self.county_id = county_id
@@ -52,6 +53,7 @@ class Transaction(GameEvent):
         self.archer = 0
         self.soldier = 0
         self.elite = 0
+        self.monster
 
         self.gold_spent = 0
         self.wood_spent = 0
