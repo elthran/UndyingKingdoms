@@ -13,12 +13,20 @@ h2 {
     height: 40px;
 }
 
+button {
+    background-color: #FFD700;
+    color: #000000;
+    font-weight: 900;
+    cursor: pointer;
+}
+
 button:hover {
-    background-color: lavender;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
 }
 
 button:active {
-    background-color: lightsteelblue;
+    position: relative;
+    top: 1px;
 }
 
 .sidebar {              /* The main sidebar which is always visible when logged in */
