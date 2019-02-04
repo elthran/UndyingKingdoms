@@ -54,32 +54,21 @@ class World(GameState):
 
     def advance_age(self):
         users = User.query.all()
-        top_score = 0
-        top_user = None
-        for user in users:
-            # This is so that only users who played this age
-            if user.county is not None:
-                user.ages_completed += 1
-                this_score = user.get_current_leaderboard_score()
-            if user.is_authenticated:
-                # user.is_authenticated = False
-                # user.save()
-                pass
-            if this_score > top_score:
-                top_score = this_score
-                top_user = user
-        top_user.alpha_wins += 1
-        top_user.save()
+        top_user = sorted(users, key=lambda user: user.get_current_leaderboard_score()).pop()
+
+        # the player actually played this round
+        if top_user.county is not None:
+            top_user.alpha_wins += 1
+            top_user.save()
 
         kingdoms = Kingdom.query.all()
         for kingdom in kingdoms:
             kingdom.leader = 0
+            kingdom.save()
 
         tables = ['county', 'army', 'building', 'notification', 'expedition', 'infiltration', 'chatroom', 'message',
                   'session', 'transaction']
-        for table in tables:
-            helpers.empty_table(db, table)
-            current_app.logger.info("Truncating table `{}`.".format(table))
+        helpers.drop_then_rebuild_tables(db, tables)
         self.age += 1
         self.day = 0
 
