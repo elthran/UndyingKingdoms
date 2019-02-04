@@ -66,7 +66,7 @@ production_per_worker_modifier = {'Dwarf': ("Dwarven Made", 0.10), 'Engineer': (
 defense_per_citizen_modifier = {'Elf': ("Citizen Militia", 1.00)}
 food_consumed_modifier = {'Dwarf': ("Ravenous", 0.15)}
 
-all_armies = ["peasant", "archer", "soldier", "elite"]
+all_armies = ["peasant", "archer", "soldier", "elite", "monster"]
 
 game_descriptions = {"attack": "How much power a unit has when attacking another county.",
                      "defence": "How much power a unit has when defending your county.",

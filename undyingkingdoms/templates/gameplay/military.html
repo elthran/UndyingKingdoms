@@ -41,9 +41,19 @@
             <td>{{ army.traveling }}</td>
             <td>{{ army.currently_training }}</td>
             <td>
-                <input id="{{ army.base_name }}_slider"
-                       type="range" value="0" min="0" max="50" step="1"/>
-                <span id="{{ army.base_name }}_display">0</span>
+                {% if army.base_name == 'monster' %}
+                    {% if county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training <= 0 %}
+                        <input id="{{ army.base_name }}_slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total }}" step="1" hidden/>
+                        <span id="{{ army.base_name }}_display" hidden>0</span>
+                        <span style="color:red;">Requires {{ county.buildings['lair'].class_name_plural.title() }}</span>
+                    {% else %}
+                        <input id="{{ army.base_name }}_slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training }}" step="1"/>
+                        <span id="{{ army.base_name }}_display">0</span>
+                    {% endif %}
+                {% else %}
+                    <input id="{{ army.base_name }}_slider" type="range" value="0" min="0" max="50" step="1"/>
+                    <span id="{{ army.base_name }}_display">0</span>
+                {% endif %}
                 <input id="{{ army.base_name }}_value" name="{{ army.base_name }}" value="0" hidden/>
             </td>
             <td>
