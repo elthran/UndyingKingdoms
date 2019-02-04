@@ -75,6 +75,7 @@ th {
 {% endblock %}
 
 {% set dynamic_cost %}
+{% set county = current_user.county %}
 <div>
 	Gold Cost: <span class="goldCost">0</span>
 	<img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
