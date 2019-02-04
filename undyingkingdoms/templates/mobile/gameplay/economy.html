@@ -1,8 +1,4 @@
 {% extends "mobile/gameplay/layout.html" %}
-{% set user = current_user %}
-{% set county = current_user.county %}
-{% set kingdom = county.kingdom %}
-{% set population_projection = county.get_population_change(prediction=True) %}
 
 {% block title %}Economy: {{ super() }}{% endblock %}
 
@@ -68,6 +64,10 @@ th {
 {% endblock %}
 
 {% block content1 %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+{% set population_projection = county.get_population_change(prediction=True) %}
 <div id="content">
     <div id="header">
         <h1>Economy</h1>

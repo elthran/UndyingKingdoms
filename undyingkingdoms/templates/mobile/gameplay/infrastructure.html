@@ -1,7 +1,4 @@
 {% extends "mobile/gameplay/layout.html" %}
-{% set user = current_user %}
-{% set county = current_user.county %}
-{% set kingdom = county.kingdom %}
 
 {% block title %}Infrastructure: {{ super() }}{% endblock %}
 
@@ -87,6 +84,9 @@ th {
 {% endset %}
 
 {% block content1 %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
 <div id="content">
 	<div id="header">
 		<h2>Total Land: {{ county.land }}</h2>

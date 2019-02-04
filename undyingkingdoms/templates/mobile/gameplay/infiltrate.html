@@ -1,7 +1,4 @@
 {% extends "mobile/gameplay/layout.html" %}
-{% set user = current_user %}
-{% set county = current_user.county %}
-{% set kingdom = county.kingdom %}
 
 {% block title %}Infiltrate: {{ super() }}{% endblock %}
 
@@ -59,6 +56,9 @@ li {
 {% endblock %}
 
 {% block content1 %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
 <div id="content">
   <div id="header">
     <h1>Target: {{ target.name }} led by {{ target.leader }}</h1>

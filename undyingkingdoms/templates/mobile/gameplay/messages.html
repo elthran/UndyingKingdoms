@@ -1,0 +1,64 @@
+{% extends "mobile/gameplay/layout.html" %}
+
+{% block title %}Inbox: {{ super() }} {% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1em;
+}
+
+h1 {
+    text-align: center;
+}
+
+#maxWidthContainer {
+    width: 100%;
+    max-width: 500px;
+}
+
+.spacer {
+    margin-bottom: 1em;
+}
+
+.tab {
+    margin-left: 1em;
+}
+</style>
+{% endblock %}
+
+{% block content1 %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+<div id="content">
+    <h1>Inbox</h1>
+  <div id="maxWidthContainer">
+    <div class="spacer"></div>
+    {% for message in county.messages|sort(attribute='time_created', reverse=True) %}
+    <h2>{{ message.get_author() }} sent you a message:</h2>
+    {% if message.get_age_of_message() == 0 %}
+    <h3 class="tab">{{ message.title }} (Sent today)</h3>
+    {% else %}
+    <h3 class="tab">{{ message.title }} (Sent {{ message.get_age_of_message() }} days ago)</h3>
+    {% endif %}
+    <p class="tab">{{ message.content }}</p>
+    <div class="spacer"></div>
+    {% else %}
+    <p>You have not received any messages.</p>
+    {% endfor %}
+  </div>
+</div>
+{{ super() }}
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script type="text/javascript">
+
+</script>
+{% endblock %}
