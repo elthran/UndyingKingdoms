@@ -1,6 +1,5 @@
 from undyingkingdoms.models.buildings import Building
 
-
 generic_buildings = {'house': Building(base_name='house',
                                        class_name='house',
                                        class_name_plural='houses',
@@ -90,6 +89,15 @@ generic_buildings = {'house': Building(base_name='house',
                                       gold=75,
                                       wood=25,
                                       output=10,
-                                      description="Each {} gives you {} additional gold per day.")
+                                      description="Each {} gives you {} additional gold per day."),
+                     'lair': Building(base_name='lair',
+                                      class_name='lair',
+                                      class_name_plural='lairs',
+                                      total=0,
+                                      production_cost=250,
+                                      labour_maintenance=50,
+                                      gold=500,
+                                      wood=500,
+                                      output=1,
+                                      description="Each {} allows you to capture and train {} monster.")
                      }
-

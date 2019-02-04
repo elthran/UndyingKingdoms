@@ -78,6 +78,7 @@ class DAU(GameEvent):
         self.stables = county.buildings['stables'].total
         self.guild = county.buildings['guild'].total
         self.bank = county.buildings['bank'].total
+        self.lair = county.buildings['lair'].total
 
     @staticmethod
     def get_sessions(user_id):

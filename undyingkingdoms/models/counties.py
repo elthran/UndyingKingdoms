@@ -573,7 +573,7 @@ class County(GameState):
         return int(strength)
 
     def get_army_duration(self, army_size):
-        base_duration = 2 + army_size // 25
+        base_duration = 2 + army_size // 20
         stables_modifier = 100 / (self.buildings['stables'].total * self.buildings['stables'].output + 100)
         return int(max(base_duration * stables_modifier, 3))
 
@@ -605,6 +605,7 @@ class County(GameState):
             self.population -= min(hit_points_to_be_removed, self.population)
             return casualties
         if army:
+            hit_points_lost *= 1.5  # The attacker takes extra casualties
             duration = self.get_army_duration(sum(army.values()))
             expedition = Expedition(self.id, enemy_id, self.county_days_in_age, self.kingdom.world.day, duration,
                                     "attack")

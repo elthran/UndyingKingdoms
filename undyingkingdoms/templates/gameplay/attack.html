@@ -47,7 +47,7 @@ function updateDuration() {
     var total_units = 0;
     total_units = 0{% for unit in county.armies.values() %}{% if unit.base_name != 'archer' %}  + parseInt({{ unit.base_name }}_amount.value){% endif %}{% endfor %};
     console.log(total_units);
-    days_to_return = Math.ceil(total_units / 25) + 2;
+    days_to_return = Math.ceil(total_units / 20) + 2;
     attackDuration.innerHTML = days_to_return;
 }
 

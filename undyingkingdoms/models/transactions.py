@@ -24,6 +24,7 @@ class Transaction(GameEvent):
     stables = db.Column(db.Integer)
     guild = db.Column(db.Integer)
     bank = db.Column(db.Integer)
+    lair = db.Column(db.Integer)
 
     peasant = db.Column(db.Integer)
     archer = db.Column(db.Integer)
@@ -44,7 +45,8 @@ class Transaction(GameEvent):
         self.fort = 0
         self.stable = 0
         self.guild = 0
-        self.bank
+        self.bank = 0
+        self.lair = 0
 
         self.peasant = 0
         self.archer = 0
@@ -54,7 +56,6 @@ class Transaction(GameEvent):
         self.gold_spent = 0
         self.wood_spent = 0
         self.iron_spent = 0
-        self.houses_built = 0
 
     def add_purchase(self, item_name, item_amount, gold_per_item, wood_per_item, iron_per_item):
         if (item_name not in all_buildings) and (item_name not in all_armies):

@@ -13,4 +13,6 @@ dwarf_buildings['fort'].class_name, dwarf_buildings['fort'].class_name_plural = 
 dwarf_buildings['stables'].class_name, dwarf_buildings['stables'].class_name_plural = 'pony stables', 'pony stables'
 dwarf_buildings['guild'].class_name, dwarf_buildings['guild'].class_name_plural = 'thieves den', 'thieves dens'
 dwarf_buildings['bank'].class_name, dwarf_buildings['bank'].class_name_plural = 'vault', 'vaults'
+dwarf_buildings['lair'].class_name, dwarf_buildings['lair'].class_name_plural = 'vault', 'vaults'
+
 
