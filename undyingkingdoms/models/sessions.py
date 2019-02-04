@@ -15,6 +15,5 @@ class Session(GameEvent):
         self.valid = True
 
     def set_minutes(self):
-        print(self.time_logged_out, self.time_created, (self.time_logged_out - self.time_created).seconds)
         self.minutes = (self.time_logged_out - self.time_created).seconds // 60
 

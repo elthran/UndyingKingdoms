@@ -264,6 +264,10 @@ class County(GameState):
         if randint(1, 24) == 24:
             pass  # Fails if they vote for county outside their kingdom
             # self.vote = randint(1, len(self.kingdom.counties))
+        if randint(1, 5) == 5:
+            self.buildings['house'].total += 2
+            self.buildings['field'].total += 1
+            self.buildings['pasture'].total += 1
 
     def update_daily_resources(self):
         self.gold += self.get_gold_change()
@@ -605,7 +609,7 @@ class County(GameState):
             self.population -= min(hit_points_to_be_removed, self.population)
             return casualties
         if army:
-            hit_points_lost *= 1.5  # The attacker takes extra casualties
+            hit_points_lost *= 1.25  # The attacker takes extra casualties
             duration = self.get_army_duration(sum(army.values()))
             expedition = Expedition(self.id, enemy_id, self.county_days_in_age, self.kingdom.world.day, duration,
                                     "attack")

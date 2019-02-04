@@ -35,12 +35,12 @@
             <td>
                 <ul>
                     {% if birth_rate_modifier.get(county.race)[1] %}
-                    <li>{{ birth_rate_modifier.get(county.race)[0] }}: {{ birth_rate_modifier.get(county.race)[1] }}%
+                    <li>{{ birth_rate_modifier.get(county.race)[0] }}: {{ (birth_rate_modifier.get(county.race)[1] * 100)|int }}%
                     </li>
                     {% endif %}
                     {% if birth_rate_modifier.get(county.background)[1] %}
                     <li>{{ birth_rate_modifier.get(county.background)[0] }}: {{
-                        birth_rate_modifier.get(county.background)[1] }}%
+                        (birth_rate_modifier.get(county.background)[1] * 100)|int }}%
                     </li>
                     {% endif %}
                 </ul>
@@ -75,11 +75,11 @@
                     <ul>
                         <li>Tax Rate: {{ form.tax }}%</li>
                         {% if income_modifier.get(county.race)[1] %}
-                        <li>{{ income_modifier.get(county.race)[0] }}: {{ income_modifier.get(county.race)[1] }}%</li>
+                        <li>{{ income_modifier.get(county.race)[0] }}: {{ (income_modifier.get(county.race)[1] * 100)|int }}%</li>
                         {% endif %}
                         {% if income_modifier.get(county.background)[1] %}
                         <li>{{ income_modifier.get(county.background)[0] }}: {{
-                            income_modifier.get(county.background)[1] }}%
+                            (income_modifier.get(county.background)[1] * 100)|int }}%
                         </li>
                         {% endif %}
                     </ul>
@@ -118,7 +118,7 @@
                         <li>Rations: {{ form.rations }}</li>
                         {% if food_consumed_modifier.get(county.race)[1] %}
                         <li>{{ food_consumed_modifier.get(county.race)[0] }}: {{
-                            food_consumed_modifier.get(county.race)[1] }}%
+                            (food_consumed_modifier.get(county.race)[1] * 100)|int }}%
                         </li>
                         {% endif %}
                     </ul>
@@ -132,7 +132,7 @@
                     </ul>
                 </td>
                 <td>Food to be Eaten: {{ county.get_food_to_be_eaten() }}</td>
-                <td>Excess dairy can not be stored in your graneries. If you do not have enough food, your populace will
+                <td>Excess dairy can not be stored in your granaries. If you do not have enough food, your populace will
                     begin to starve.
                 </td>
             </tr>
