@@ -133,10 +133,13 @@ class User(GameState):
 
     def get_current_leaderboard_score(self):
         # TEMPORARY FOR ALPHA. Just a quick way to add some fun
-        score = self.county.land * 10
-        score += self.county.population // 2
-        score += max(self.county.get_offensive_strength(scoreboard=True), self.county.get_defensive_strength(scoreboard=True))
-        return score
+        try:  # if user has no county give 0 score.
+            score = self.county.land * 10
+            score += self.county.population // 2
+            score += max(self.county.get_offensive_strength(scoreboard=True), self.county.get_defensive_strength(scoreboard=True))
+            return score
+        except AttributeError:
+            return 0
 
     def __repr__(self):
         return '<User %r (%r)>' % (self.username, self.id)
