@@ -13,11 +13,17 @@ h2 {
     height: 40px;
 }
 
+input {
+    padding: 1em;
+}
+
 button {
     background-color: #FFD700;
     color: #000000;
     font-weight: 900;
     cursor: pointer;
+    height: 2.6em;
+    min-width: 8em;
 }
 
 button:hover {
