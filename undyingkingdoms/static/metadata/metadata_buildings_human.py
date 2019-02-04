@@ -14,4 +14,6 @@ human_buildings['fort'].class_name, human_buildings['fort'].class_name_plural = 
 human_buildings['stables'].class_name, human_buildings['stables'].class_name_plural = 'stables', 'stables'
 human_buildings['guild'].class_name, human_buildings['guild'].class_name_plural = 'thieves guild', 'thieves guild'
 human_buildings['bank'].class_name, human_buildings['bank'].class_name_plural = 'treasury', 'treasury'
+human_buildings['lair'].class_name, human_buildings['lair'].class_name_plural = 'gryphon aviary', 'gryphon aviaries'
+
 

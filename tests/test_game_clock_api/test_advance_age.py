@@ -1,3 +1,5 @@
+from pprint import pprint
+
 if __name__ == "__main__":
     """Allow running just this test.
 
@@ -18,7 +20,7 @@ from undyingkingdoms.models import World, County
 def test_advance_age(client):
     with client:
         rv_login = login(client, 'haldon@gmail.com', 'brunner')
-        assert "Public Info" in rv_login.data.decode()
+        assert "Calendar" in rv_login.data.decode()
         assert rv_login.status_code == 200
 
         rv_token = client.get('/game_clock/token')

@@ -3,6 +3,7 @@ import socket
 
 from flask import Flask, render_template, send_from_directory
 from flask_sslify import SSLify
+from flask_login import LoginManager
 
 from extensions import flask_db, flask_json, flask_csrf, flask_mobility, flask_mail
 from undyingkingdoms.GeoIP import geo_ip
@@ -37,14 +38,6 @@ app.register_blueprint(geo_ip)
 app.register_blueprint(admin_blueprint)
 app.register_blueprint(game_clock_blueprint)
 
-
-@app.errorhandler(404)
-def not_found(error):
-    print("Error:", error)
-    return render_template('404.html'), 404
-
-
-from flask_login import LoginManager
 from undyingkingdoms.models.users import User
 
 

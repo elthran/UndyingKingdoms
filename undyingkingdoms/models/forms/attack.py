@@ -6,6 +6,7 @@ class AttackForm(FlaskForm):
     peasant = SelectField('peasant', coerce=int)
     soldier = SelectField('soldier', coerce=int)
     elite = SelectField('elite', coerce=int)
+    monster = SelectField('monster', coerce=int)
 
     def validate(self):
         if not FlaskForm.validate(self):
@@ -15,9 +16,10 @@ class AttackForm(FlaskForm):
         return True
 
     def insufficient_troops(self):
-        troops_being_sent = self.peasant.data + self.soldier.data + self.elite.data
+        troops_being_sent = self.peasant.data + self.soldier.data + self.elite.data + self.monster.data
         if troops_being_sent < 15:
             self.peasant.errors.append("Must send at least 25 troops.")
             self.soldier.errors.append("Must send at least 25 troops.")
             self.elite.errors.append("Must send at least 25 troops.")
+            self.monster.errors.append("Must send at least 25 troops.")
             return True

@@ -16,28 +16,35 @@ def attack(county_id):
     enemy = County.query.filter_by(id=county_id).first()
     form = AttackForm()
 
-    peasants = current_user.county.armies['peasant'].available
-    soldiers = current_user.county.armies['soldier'].available
-    elites = current_user.county.armies['elite'].available
+    peasant = current_user.county.armies['peasant'].available
+    soldier = current_user.county.armies['soldier'].available
+    elite = current_user.county.armies['elite'].available
+    monster = current_user.county.armies['monster'].available
 
-    if peasants == 0:
+    if peasant == 0:
         form.peasant.choices = [(0, 0)]
-    elif peasants < 10:
-        form.peasant.choices = [(i, i) for i in range(peasants + 1)]
+    elif peasant < 10:
+        form.peasant.choices = [(i, i) for i in range(peasant + 1)]
     else:
-        form.peasant.choices = [(peasants * i // 10, peasants * i // 10) for i in range(0, 11)]
-    if soldiers == 0:
+        form.peasant.choices = [(peasant * i // 10, peasant * i // 10) for i in range(0, 11)]
+    if soldier == 0:
         form.soldier.choices = [(0, 0)]
-    elif soldiers < 10:
-        form.soldier.choices = [(i, i) for i in range(soldiers + 1)]
+    elif soldier < 10:
+        form.soldier.choices = [(i, i) for i in range(soldier + 1)]
     else:
-        form.soldier.choices = [(soldiers * i // 10, soldiers * i // 10) for i in range(0, 11)]
-    if elites == 0:
+        form.soldier.choices = [(soldier * i // 10, soldier * i // 10) for i in range(0, 11)]
+    if elite == 0:
         form.elite.choices = [(0, 0)]
-    elif elites < 10:
-        form.elite.choices = [(i, i) for i in range(0, elites + 1)]
+    elif elite < 10:
+        form.elite.choices = [(i, i) for i in range(0, elite + 1)]
     else:
-        form.elite.choices = [(elites * i // 10, elites * i // 10) for i in range(0, 11)]
+        form.elite.choices = [(elite * i // 10, elite * i // 10) for i in range(0, 11)]
+    if monster == 0:
+        form.monster.choices = [(0, 0)]
+    elif monster < 10:
+        form.monster.choices = [(i, i) for i in range(0, monster + 1)]
+    else:
+        form.monster.choices = [(monster * i // 10, monster * i // 10) for i in range(0, 11)]
 
     if form.validate_on_submit():
         army = {}

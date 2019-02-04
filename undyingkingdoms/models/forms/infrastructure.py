@@ -16,6 +16,7 @@ class InfrastructureForm(FlaskForm):
     stables = IntegerField('stables', validators=[NumberRange(min=0, max=None)], default=0)
     guild = IntegerField('guild', validators=[NumberRange(min=0, max=None)], default=0)
     bank = IntegerField('bank', validators=[NumberRange(min=0, max=None)], default=0)
+    lair = IntegerField('lair', validators=[NumberRange(min=0, max=None)], default=0)
 
     def validate(self):
         if not FlaskForm.validate(self):
@@ -31,7 +32,7 @@ class InfrastructureForm(FlaskForm):
     def insufficient_gold(self):
         gold_cost = 0
         county = County.query.filter_by(id=self.county_id.data).first()
-        for building in [self.house, self.field, self.pasture, self.mill, self.mine, self.fort, self.stables, self.guild, self.bank]:
+        for building in [self.house, self.field, self.pasture, self.mill, self.mine, self.fort, self.stables, self.guild, self.bank, self.lair]:
             gold_cost += county.buildings[building.name].gold * building.data
         if gold_cost > county.gold:
             self.county_id.errors.append("Not enough gold.")
@@ -40,7 +41,7 @@ class InfrastructureForm(FlaskForm):
     def insufficient_wood(self):
         wood_cost = 0
         county = County.query.filter_by(id=self.county_id.data).first()
-        for building in [self.house, self.field, self.pasture, self.mill, self.mine, self.fort, self.stables, self.guild, self.bank]:
+        for building in [self.house, self.field, self.pasture, self.mill, self.mine, self.fort, self.stables, self.guild, self.bank, self.lair]:
             wood_cost += county.buildings[building.name].wood * building.data
         if wood_cost > county.wood:
             self.county_id.errors.append("Not enough wood.")
@@ -49,7 +50,7 @@ class InfrastructureForm(FlaskForm):
     def insufficient_land(self):
         land_cost = 0
         county = County.query.filter_by(id=self.county_id.data).first()
-        for building in [self.house, self.field, self.pasture, self.mill, self.mine, self.fort, self.stables, self.guild, self.bank]:
+        for building in [self.house, self.field, self.pasture, self.mill, self.mine, self.fort, self.stables, self.guild, self.bank, self.lair]:
             land_cost += building.data
         if land_cost > county.get_available_land():
             self.county_id.errors.append("Not enough land.")

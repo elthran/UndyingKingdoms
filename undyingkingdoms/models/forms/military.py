@@ -11,6 +11,7 @@ class MilitaryForm(FlaskForm):
     archer = IntegerField('archer', validators=[NumberRange(min=0, max=None)], default=0)
     soldier = IntegerField('soldier', validators=[NumberRange(min=0, max=None)], default=0)
     elite = IntegerField('elite', validators=[NumberRange(min=0, max=None)], default=0)
+    monster = IntegerField('monster', validators=[NumberRange(min=0, max=None)], default=0)
 
     def validate(self):
         if not FlaskForm.validate(self):
@@ -21,12 +22,14 @@ class MilitaryForm(FlaskForm):
             return False
         if self.insufficient_iron():
             return False
+        if self.insufficient_lairs():
+            return False
         return True
 
     def insufficient_gold(self):
         gold_cost = 0
         county = County.query.filter_by(id=self.county_id.data).first()
-        for army in [self.peasant, self.archer, self.soldier, self.elite]:
+        for army in [self.peasant, self.archer, self.soldier, self.elite, self.monster]:
             gold_cost += county.armies[army.name].gold * army.data
         if gold_cost > county.gold:
             self.county_id.errors.append("Not enough gold.")
@@ -35,7 +38,7 @@ class MilitaryForm(FlaskForm):
     def insufficient_wood(self):
         wood_cost = 0
         county = County.query.filter_by(id=self.county_id.data).first()
-        for army in [self.peasant, self.archer, self.soldier, self.elite]:
+        for army in [self.peasant, self.archer, self.soldier, self.elite, self.monster]:
             wood_cost += county.armies[army.name].wood * army.data
         if wood_cost > county.wood:
             self.county_id.errors.append("Not enough wood.")
@@ -44,10 +47,19 @@ class MilitaryForm(FlaskForm):
     def insufficient_iron(self):
         iron_cost = 0
         county = County.query.filter_by(id=self.county_id.data).first()
-        for army in [self.peasant, self.archer, self.soldier, self.elite]:
+        for army in [self.peasant, self.archer, self.soldier, self.elite, self.monster]:
             iron_cost += county.armies[army.name].iron * army.data
         if iron_cost > county.iron:
             self.county_id.errors.append("Not enough iron.")
+            return True
+
+    def insufficient_lairs(self):
+        county = County.query.filter_by(id=self.county_id.data).first()
+        max_monsters = county.buildings['lair'].total * county.buildings['lair'].output
+        current_monsters = county.armies['monster'].total + county.armies['monster'].currently_training
+        available = max_monsters - current_monsters
+        if self.monster.data > available:
+            self.county_id.errors.append("Not enough {}.".format(county.buildings['lair'].class_name))
             return True
 
 

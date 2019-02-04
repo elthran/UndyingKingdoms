@@ -7,7 +7,7 @@ from undyingkingdoms.models import World
 def test_advance_day(client):
     with client:
         rv_login = login(client, 'haldon@gmail.com', 'brunner')
-        assert "Public Info" in rv_login.data.decode()
+        assert "Calendar" in rv_login.data.decode()
         assert rv_login.status_code == 200
 
         rv_token = client.get('/game_clock/token')

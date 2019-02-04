@@ -13,4 +13,6 @@ goblin_buildings['fort'].class_name, goblin_buildings['fort'].class_name_plural 
 goblin_buildings['stables'].class_name, goblin_buildings['stables'].class_name_plural = 'wolf kennel', 'wolf kennels'
 goblin_buildings['guild'].class_name, goblin_buildings['guild'].class_name_plural = 'hideout', 'hideouts'
 goblin_buildings['bank'].class_name, goblin_buildings['bank'].class_name_plural = 'storehouse', 'storehouses'
+goblin_buildings['lair'].class_name, goblin_buildings['lair'].class_name_plural = 'wyvern lair', 'wyvern lairs'
+
 

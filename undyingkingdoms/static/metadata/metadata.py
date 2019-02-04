@@ -11,7 +11,7 @@ infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust
 
 rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (1, "Normal"), (2, "Double"), (3, "Triple")]
 
-all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'fort', 'stables', 'guild', 'bank']
+all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'fort', 'stables', 'guild', 'bank', 'lair']
 
 all_achievements = {
     'land': Achievement(name="land", category="reach_x_amount_in_one_age", sub_category="land",
@@ -57,7 +57,7 @@ all_achievements = {
 }
 
 # Racial/Class Modifiers (A modifier of 0 means +0%. A modifier of 1 would mean +100%)
-birth_rate_modifier = {'Elf': ("Elders", -0.15)}
+birth_rate_modifier = {'Elf': ("Elders", -0.15), 'Goblin': ("", 0.15)}
 death_rate_modifier = {}
 income_modifier = {'Merchant': ("Silver Tongue", 0.15)}
 offensive_power_modifier = {'Warlord': ("Relentless", 0.10)}
@@ -66,7 +66,7 @@ production_per_worker_modifier = {'Dwarf': ("Dwarven Made", 0.10), 'Engineer': (
 defense_per_citizen_modifier = {'Elf': ("Citizen Militia", 1.00)}
 food_consumed_modifier = {'Dwarf': ("Ravenous", 0.15)}
 
-all_armies = ["peasant", "archer", "soldier", "elite"]
+all_armies = ["peasant", "archer", "soldier", "elite", "monster"]
 
 game_descriptions = {"attack": "How much power a unit has when attacking another county.",
                      "defence": "How much power a unit has when defending your county.",

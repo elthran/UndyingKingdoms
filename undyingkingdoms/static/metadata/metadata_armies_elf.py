@@ -12,6 +12,8 @@ elf_armies['archer'].class_name, elf_armies['archer'].class_name_plural, elf_arm
     'archer'].description = 'longbowman', 'longbowmen', 'Longbowmen are very effective at defending your county.'
 elf_armies['elite'].class_name, elf_armies['elite'].class_name_plural, elf_armies[
     'elite'].description = 'dragonhelm', 'dragonhelms', 'Dragonhelms are elite cavalry and incredibly adept at attacking enemy counties.'
+elf_armies['monster'].class_name, elf_armies['monster'].class_name_plural, elf_armies[
+    'monster'].description = 'dragon', 'dragons', 'Dragons are incredibly powerful monsters.'
 # Elves: Slightly more damage and wood
 # Peasants
 elf_armies['peasant'].attack += 1
