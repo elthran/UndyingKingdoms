@@ -100,8 +100,8 @@ button {
     <h1>Send Message:</h1>
     <form method="POST" accept-charset="UTF-8" role="form">
       {{ form.csrf_token }}
-      {{ render_field(form.title, placeholder="Title", autofocus="") }}
-      <textarea cols="100" rows="10" name="content" placeholder="Content"></textarea>
+      {{ render_field(form.title, placeholder="Title", autofocus="", maxlength=form.TITLE_SIZE) }}
+      <textarea cols="100" rows="10" name="content" placeholder="Content" maxlength="{{ form.CONTENT_SIZE }}"></textarea>
       <button type="submit">Send Message</button>
     </form>
   </div>
