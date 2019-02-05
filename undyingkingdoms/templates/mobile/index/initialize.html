@@ -31,7 +31,7 @@ button {
     margin-bottom: 1em;
 }
 
-#info {
+.info {
     text-align: left;
     padding: 1em 1.5em;
 }
@@ -45,8 +45,8 @@ button {
 
 {% block content1 %}
 <div>
-  <h2 id="info">The king is dead! The kingdom has fallen into civil war.<br><br>Now is your chance to prove to the kingdom that you should	be the rightful leader.<br><br>Manage your county and strategically secure your position as leader of your kingdom. And once you have taken control,	lead your kingdom in war to become the greatest that the world has ever seen by destroying your neighbours.</h2>
-  <p id="info">
+  <h2 class="info">The king is dead! The kingdom has fallen into civil war.<br><br>Now is your chance to prove to the kingdom that you should	be the rightful leader.<br><br>Manage your county and strategically secure your position as leader of your kingdom. And once you have taken control,	lead your kingdom in war to become the greatest that the world has ever seen by destroying your neighbours.</h2>
+  <p class="info">
     {% if current_user.ages_completed != 0 %}
     Welcome back! A new age has started.<br>Please establish your county to begin.
     {% else %}
