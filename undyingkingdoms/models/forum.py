@@ -28,10 +28,7 @@ class Thread(GameEvent):
         return len(self.posts)
     
     def get_most_recent_post(self):
-        post = Post.query.filter_by(thread_id=self.id).order_by(desc('time_created')).first()
-        if post:
-            return post.time_created
-        return "No posts"
+        return Post.query.filter_by(thread_id=self.id).order_by(desc('time_created')).first()
 
     def get_author(self):
         author = User.query.filter_by(id=self.author_id).first()
@@ -60,6 +57,12 @@ class Post(GameEvent):
 
     def get_replies(self):
         return Post.query.filter_by(parent_post_id=self.id).all()
+
+    def get_most_recent_reply(self):
+        post = Post.query.filter_by(parent_post_id=self.id).order_by(desc('time_created')).first()
+        if post is None:
+            return self
+        return post
 
     def get_author(self):
         author = User.query.filter_by(id=self.author_id).first()
