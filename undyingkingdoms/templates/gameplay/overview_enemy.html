@@ -2,8 +2,16 @@
 
 {% block title %}Overview Enemy: {{ super() }}{% endblock %}
 
-{% block content2 %}
+{% block style %}
+<style type="text/css">
+input {
+    width: 21em;
+    margin-bottom: 0.6em;
+}
+</style>
+{% endblock %}
 
+{% block content2 %}
 {% set user = current_user %}
 
 <h1 style="text-align:center;">{{ target_county.name }}</h1>
@@ -44,8 +52,8 @@ No information is known.
 <h1>Send Message:</h1>
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
-    {{ render_field(form.title, placeholder="Title", autofocus="") }}
-    <textarea cols="100" rows="10" type="text" name="content" placeholder="Content"></textarea>
+    {{ render_field(form.title, placeholder="Title", autofocus="", maxlength=form.TITLE_SIZE) }}
+    <textarea cols="100" rows="10" name="content" placeholder="Content" maxlength="{{ form.CONTENT_SIZE }}"></textarea>
     <button type="submit">Send Message</button>
 </form>
 
