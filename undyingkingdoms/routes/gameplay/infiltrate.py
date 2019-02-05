@@ -9,7 +9,8 @@ from sqlalchemy import desc
 from undyingkingdoms import app
 from undyingkingdoms.models import Infiltration, County, Notification
 from undyingkingdoms.models.forms.infiltrate import InfiltrateForm
-from undyingkingdoms.static.metadata.metadata import infiltration_missions, infiltration_success_modifier
+from undyingkingdoms.static.metadata.metadata import infiltration_missions, infiltration_success_modifier, \
+    amount_of_thieves_modifier
 
 
 @app.route('/gameplay/infiltrate/<int:county_id>', methods=['GET', 'POST'])
@@ -26,6 +27,7 @@ def infiltrate(template, county_id):
     form = InfiltrateForm()
     form.county_id.data = current_user.county.id
     thieves = min(current_user.county.get_number_of_available_thieves(), 3)
+    thieves += amount_of_thieves_modifier.get(current_user.county.race, ("", 0))[1] + amount_of_thieves_modifier.get(current_user.county.background, ("", 0))[1]
     form.amount.choices = [(i + 1, i + 1) for i in range(thieves)]
     form.mission.choices = [(index, name) for index, name in enumerate(infiltration_missions)]
 
