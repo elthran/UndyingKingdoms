@@ -36,7 +36,7 @@ def app():
         user.is_admin = True
         user.is_active = True
         user.save()
-        county = County(1, "Northern Wastes", "Haldon", user.id, 'Dwarf', 'Male', 'Merchant')
+        county = County(1, "Northern Wastes", "Haldon", user.id, 'Dwarf', 'Sir', 'Merchant')
         county.save()
         county.vote = county.id
         test_db.session.commit()

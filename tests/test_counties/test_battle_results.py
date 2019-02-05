@@ -16,7 +16,7 @@ def test_battle_results(app, client):
     with app.app_context():
         user1 = User('user1', 'user1@gmail.com', 'password')
         user1.save()
-        county1 = County(1, "County1", "Leader1", user1.id, "Human", "Male", "Merchant")
+        county1 = County(1, "County1", "Leader1", user1.id, "Human", "Sir", "Merchant")
         county1.save()
         army1 = dict(
             peasant=50,
@@ -28,7 +28,7 @@ def test_battle_results(app, client):
 
         user2 = User('user2', 'user2@gmail.com', 'password')
         user2.save()
-        county2 = County(1, "County2", "Leader2", user2.id, "Human", "Male", "Merchant")
+        county2 = County(1, "County2", "Leader2", user2.id, "Human", "Sir", "Merchant")
         county2.save()
         # create user 1
         # create user 2

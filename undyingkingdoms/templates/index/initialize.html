@@ -14,96 +14,129 @@
     Manage your county and strategically secure your position as leader of your Kingdom. And once you have taken
     control,
     lead your kingdom in war to become the greatest that the world has ever seen by destroying your neighbours.</h1>
+<br><br>
 
 
 <form method="POST" accept-charset="UTF-8" role="form">
     <!-- LoginForm -->
     {{ form.csrf_token }}
-    {{ render_field(form.county, placeholder="Your county's name", autofocus="") }}
-    {{ render_field(form.leader, placeholder="Your leader's name") }}
-    {{ render_field(form.gender, placeholder="Your leader's gender") }}
-    {{ render_field(form.race, placeholder="Your leader's race") }}
-    {{ render_field(form.background, placeholder="Your leader's class") }}
+    <h2>What is your might county known as?</h2><br>
+    {{ render_field(form.county, placeholder="Your county's name", autofocus="") }}<br>
+    <h2>What is the leader of your county named?</h2><br>
+    {{ render_field(form.leader, placeholder="Your leader's name") }}<br>
+    <h2>What titles are your leader known by?</h2><br>
+    {{ render_field(form.gender, placeholder="Your leader's gender") }}<br>
+    <h2>What race of beings inhabit your county?</h2><br>
+    {{ render_field(form.race, placeholder="Your leader's race") }}<br>
+
+    <div id="dwarfDiv" style="display:none;">
+        <h1>Dwarves:</h1>
+        <ul>
+            <li>--- Engineering: +15% Production</li>
+            <li>--- Unending Appetite: Dwarves consume 15% more food each day</li>
+        </ul>
+        <br>
+        <h2>Military:</h2>
+        {% for army in dwarf_armies.values() %}
+        <ul><br>
+            <li>Name: {{ army.class_name.title() }}</li>
+            <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
+                {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+                {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+            <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+        </ul>
+        {% endfor %}
+    </div>
+
+    <div id="humanDiv" style="display:none;">
+        <h1>Humans:</h1>
+        <ul>
+            <li>--- None</li>
+        </ul>
+        <br>
+        <h2>Military:</h2>
+        {% for army in human_armies.values() %}
+        <ul><br>
+            <li>Name: {{ army.class_name.title() }}</li>
+            <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
+                {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+                {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+            <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+        </ul>
+        {% endfor %}
+    </div>
+
+    <div id="elfDiv" style="display:none;">
+        <h1>Elves:</h1>
+        <ul>
+            <li>--- Elders: -15% Population growth</li>
+            <li>--- Citizen Militia: Each non-military citizen adds double their normal defensive value</li>
+        </ul>
+        <br>
+        <h2>Military:</h2>
+        {% for army in elf_armies.values() %}
+        <ul><br>
+            <li>Name: {{ army.class_name.title() }}</li>
+            <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
+                {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+                {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+            <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+        </ul>
+        {% endfor %}
+    </div>
+
+    <div id="goblinDiv" style="display:none;">
+        <h1>Goblins:</h1>
+        <ul>
+            <li>--- Expendable: +10% Population growth</li>
+            <li>--- Infighting: -2 Happiness per day</li>
+        </ul>
+        <br>
+        <h2>Military:</h2>
+        {% for army in goblin_armies.values() %}
+        <ul><br>
+            <li>Name: {{ army.class_name.title() }}</li>
+            <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
+                {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+                {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+            <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+        </ul>
+        {% endfor %}
+    </div>
+
+    <br><br>
+    {{ render_field(form.background, placeholder="Your leader's class") }}<br>
+    <div id="merchantDiv" style="display:none;">
+        <h1>Merchant:</h1>
+        <ul>
+            <li>--- Silver Tongue: +15% on all income</li>
+        </ul>
+    </div>
+
+    <div id="warlordDiv" style="display:none;">
+        <h1>Warlord:</h1>
+        <ul>
+            <li>--- Relentless: +10% offensive military strength</li>
+        </ul>
+    </div>
+
+    <div id="rogueDiv" style="display:none;">
+        <h1>Rogue:</h1>
+        <ul>
+            <li>--- Master of Disguise: +10% chance to infiltrate enemy counties</li>
+        </ul>
+    </div>
+
+    <div id="engineerDiv" style="display:none;">
+        <h1>Engineer:</h1>
+        <ul>
+            <li>--- Craftsman: Workers contribute +20% production</li>
+        </ul>
+    </div>
     <br><br>
     <button type="submit">Establish county</button>
 </form>
-<div id="dwarfDiv" style="display:none;">
-    <h1>Dwarves:</h1>
-<h2>Strengths:</h2>
-    <p>Engineering: +10% Production</p>
-<h2>Weaknesses:</h2>
-    <p>Unending Appetite: Dwarves consume 15% more food each day</p>
-<h3>Military:</h3>
-<ul>
-    {% for army in dwarf_armies.values() %}
-    <li>Name: {{ army.class_name }}</li>
-    <li>Cost: {{ army.gold }} gold, {{ army.wood }} wood, {{ army.iron }} iron</li>
-    <li>Attack: {{ army.attack }}</li>
-    <li>Defense: {{ army.defence }}</li>
-    <li>Health: {{ army.health }}</li>
-    {% endfor %}
-</ul>
-</div>
 
-<div id="humanDiv" style="display:none;">
-<h1>Humans:</h1>
-<h2>Strengths:</h2>
-    <p>None</p>
-<h2>Weaknesses:</h2>
-    <p>None</p>
-<h3>Military:</h3>
-<ul>
-    {% for army in human_armies.values() %}
-    <li>Name: {{ army.class_name }}</li>
-    <li>Cost: {{ army.gold }} gold, {{ army.wood }} wood, {{ army.iron }} iron</li>
-    <li>Attack: {{ army.attack }}</li>
-    <li>Defense: {{ army.defence }}</li>
-    <li>Health: {{ army.health }}</li>
-    {% endfor %}
-</ul>
-</div>
-
-<div id="elfDiv" style="display:none;">
-<h1>Elves:</h1>
-<h2>Strengths:</h2>
-    <p>Civic Duty: Civilians add double defense to county</p>
-<h2>Weaknesses:</h2>
-    <p>Elders: -10% Population growth</p>
-<h3>Military:</h3>
-<ul>
-    {% for army in elf_armies.values() %}
-    <li>Name: {{ army.class_name }}</li>
-    <li>Cost: {{ army.gold }} gold, {{ army.wood }} wood, {{ army.iron }} iron</li>
-    <li>Attack: {{ army.attack }}</li>
-    <li>Defense: {{ army.defence }}</li>
-    <li>Health: {{ army.health }}</li>
-    {% endfor %}
-</ul>
-</div>
-
-<div id="merchantDiv" style="display:none;">
-<h1>Merchant:</h1>
-<h2>Bonus:</h2>
-    <p>+10% gold from all income sources</p>
-</div>
-
-<div id="warlordDiv" style="display:none;">
-<h1>Warlord:</h1>
-<h2>Bonus:</h2>
-    <p>+10% offensive military strength</p>
-</div>
-
-<div id="rogueDiv" style="display:none;">
-<h1>Rogue:</h1>
-<h2>Bonus:</h2>
-    <p>+10% success rate on all infiltrations</p>
-</div>
-
-<div id="engineerDiv" style="display:none;">
-<h1>Engineer:</h1>
-<h2>Bonus:</h2>
-    <p>+20% production from each worker</p>
-</div>
 
 <script type="text/javascript">
 document.getElementById("race").onchange = function () {
@@ -111,20 +144,24 @@ document.getElementById("race").onchange = function () {
     var dwarfDiv = document.getElementById("dwarfDiv");
     var humanDiv = document.getElementById("humanDiv");
     var elfDiv = document.getElementById("elfDiv");
+    var goblinDiv = document.getElementById("goblinDiv");
     dwarfDiv.style.display = "none";
     humanDiv.style.display = "none";
     elfDiv.style.display = "none";
-    if (chosenRace.value === "1") {
+    goblinDiv.style.display = "none";
+    if (chosenRace.value === "3") {
         dwarfDiv.style.display = "block";
-    } else if (chosenRace.value === "2") {
+    } else if (chosenRace.value === "1") {
         humanDiv.style.display = "block";
-    } else if (chosenRace.value === "3") {
+    } else if (chosenRace.value === "2") {
         elfDiv.style.display = "block";
+    } else if (chosenRace.value === "4") {
+        goblinDiv.style.display = "block";
     }
 };
 
-document.getElementById("title").onchange = function () {
-    var chosenTitle = document.getElementById("title");
+document.getElementById("background").onchange = function () {
+    var chosenTitle = document.getElementById("background");
     var merchantDiv = document.getElementById("merchantDiv");
     var warlordDiv = document.getElementById("warlordDiv");
     var rogueDiv = document.getElementById("rogueDiv");
@@ -143,6 +180,8 @@ document.getElementById("title").onchange = function () {
         engineerDiv.style.display = "block";
     }
 };
+
+
 
 </script>
 

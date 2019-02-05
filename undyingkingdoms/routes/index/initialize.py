@@ -8,6 +8,7 @@ from undyingkingdoms.models.forms.initialize import InitializeForm
 from undyingkingdoms.static.metadata.metadata import metadata_races, metadata_backgrounds
 from undyingkingdoms.static.metadata.metadata_armies_dwarf import dwarf_armies
 from undyingkingdoms.static.metadata.metadata_armies_elf import elf_armies
+from undyingkingdoms.static.metadata.metadata_armies_goblin import goblin_armies
 from undyingkingdoms.static.metadata.metadata_armies_human import human_armies
 
 
@@ -16,7 +17,7 @@ from undyingkingdoms.static.metadata.metadata_armies_human import human_armies
 def initialize(template):
     if current_user.county is not None:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
-    genders = ["<Gender>"] + ["Female", "Male"]
+    genders = ["<Title>"] + ["Sir", "Lady"]
     races = ["<Race>"] + metadata_races
     backgrounds = ["<Class>"] + metadata_backgrounds
     form = InitializeForm()
@@ -41,4 +42,5 @@ def initialize(template):
     return render_template(template, form=form,
                            dwarf_armies=dwarf_armies,
                            human_armies=human_armies,
-                           elf_armies=elf_armies)
+                           elf_armies=elf_armies,
+                           goblin_armies=goblin_armies)

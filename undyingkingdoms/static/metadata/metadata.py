@@ -57,12 +57,13 @@ all_achievements = {
 }
 
 # Racial/Class Modifiers (A modifier of 0 means +0%. A modifier of 1 would mean +100%)
-birth_rate_modifier = {'Elf': ("Elders", -0.15), 'Goblin': ("Expendable", 0.15)}
+happiness_modifier = {'Goblin': ("Infighting", -2)}
+birth_rate_modifier = {'Elf': ("Elders", -0.15), 'Goblin': ("Expendable", 0.10)}
 death_rate_modifier = {}
 income_modifier = {'Merchant': ("Silver Tongue", 0.15)}
 offensive_power_modifier = {'Warlord': ("Relentless", 0.10)}
 infiltration_success_modifier = {'Rogue': ("Master of Disguise", 0.10)}
-production_per_worker_modifier = {'Dwarf': ("Dwarven Made", 0.10), 'Engineer': ("", 0.20)}
+production_per_worker_modifier = {'Dwarf': ("Dwarven Made", 0.15), 'Engineer': ("Craftsman", 0.20)}
 defense_per_citizen_modifier = {'Elf': ("Citizen Militia", 1.00)}
 food_consumed_modifier = {'Dwarf': ("Ravenous", 0.15)}
 

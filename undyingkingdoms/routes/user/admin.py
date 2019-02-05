@@ -41,7 +41,7 @@ def admin():
             user.save()
             county = County(smallest_kingdom.id, "{}{}".format(choice(bot_county_prefix), choice(bot_county_suffix)),
                             "{}{}".format(choice(bot_leader_prefix), choice(bot_leader_suffix)), user.id,
-                            choice(["Human", "Elf", "Dwarf"]), choice(["Male", "Female"]),
+                            choice(["Human", "Elf", "Dwarf"]), choice(["Sir", "Lady"]),
                             choice(["Engineer", "Warlord", "Rogue", "Merchant"]))
             county.save()
             county.vote = county.id

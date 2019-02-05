@@ -10,7 +10,8 @@ from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
-    income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier
+    income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
+    happiness_modifier
 
 from copy import deepcopy
 
@@ -292,7 +293,8 @@ class County(GameState):
 
     def get_happiness_change(self):
         change = 7 - self.tax
-        return change
+        modifier = happiness_modifier.get(self.race, ("", 0))[1] + happiness_modifier.get(self.background, ("", 0))[1]
+        return change + modifier
 
     def update_weather(self):
         self.weather = choice(self.weather_choices)

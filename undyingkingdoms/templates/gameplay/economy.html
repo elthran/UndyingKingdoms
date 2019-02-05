@@ -38,7 +38,8 @@
             <td>
                 <ul>
                     {% if birth_rate_modifier.get(county.race)[1] %}
-                    <li>({{ county.race }}) {{ birth_rate_modifier.get(county.race)[0] }}: {{ (birth_rate_modifier.get(county.race)[1] * 100)|int }}%
+                    <li>({{ county.race }}) {{ birth_rate_modifier.get(county.race)[0] }}: {{
+                        (birth_rate_modifier.get(county.race)[1] * 100)|int }}%
                     </li>
                     {% endif %}
                     {% if birth_rate_modifier.get(county.background)[1] %}
@@ -78,7 +79,9 @@
                     <ul>
                         <li>Tax Rate: {{ form.tax }}%</li>
                         {% if income_modifier.get(county.race)[1] %}
-                        <li>({{ county.race }}) {{ income_modifier.get(county.race)[0] }}: {{ (income_modifier.get(county.race)[1] * 100)|int }}%</li>
+                        <li>({{ county.race }}) {{ income_modifier.get(county.race)[0] }}: {{
+                            (income_modifier.get(county.race)[1] * 100)|int }}%
+                        </li>
                         {% endif %}
                         {% if income_modifier.get(county.background)[1] %}
                         <li>({{ county.background }}) {{ income_modifier.get(county.background)[0] }}: {{
@@ -179,9 +182,22 @@
                     {% endif %}
                     {{ county.get_happiness_change() }} <img class="resource_icons" src="/static/images/heart_icon.jpg">
                 </td>
-                <td>-</td>
+                <td>
+                    {% if happiness_modifier.get(county.race)[1] %}
+                    ({{ county.race }}) {{ happiness_modifier.get(county.race)[0] }}: {{
+                    happiness_modifier.get(county.race)[1] }}
+                    {% endif %}
+                </td>
                 <td>+7 baseline</td>
-                <td>-{{ county.tax }} from taxes</td>
+                <td><ul>
+                    <li>{% if happiness_modifier.get(county.race)[1] %}
+                        {{ happiness_modifier.get(county.race)[0] }}: {{
+                        happiness_modifier.get(county.race)[1] }}
+                        {% endif %}
+                    </li>
+                    <li>Taxes: -{{ county.tax }}</li>
+                </ul>
+                </td>
                 <td>Happiness affects emigration rate and how productive your workers are. If they become too unhappy,
                     they may start to question your rule.
                 </td>
@@ -216,7 +232,7 @@
                 <td style="color:green;">Positive
                     {% elif county.get_health_change() == 0 %}
                 <td>None
-                {% else %}
+                    {% else %}
                 <td style="color:red;">Negative
                     {% endif %}
                 </td>
