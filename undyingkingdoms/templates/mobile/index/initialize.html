@@ -5,112 +5,122 @@
 {% block style %}
 <style type="text/css">
 div {
-	text-align: center;
+    text-align: center;
 }
 
 p, ul {
-	padding-left: 0.6em;
+    padding-left: 0.6em;
+}
+
+form {
+    text-align: left;
 }
 
 .form-control {
-	width: 240px;
-	height: 2em;
-	margin-bottom: 4px;
-	padding-left: 0.6em;
+    width: 240px;
+    height: 2em;
+    margin-bottom: 4px;
+    padding-left: 0.6em;
 }
 
 button {
-	width: 240px;
-  height: 2.3em;
-	border-radius: 4px;
-	margin-top: 1em;
-	margin-bottom: 1em;
+    width: 240px;
+    height: 2.3em;
+    border-radius: 4px;
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
 
 #info {
-	text-align: left;
-	padding: 1em 1.5em;
+    text-align: left;
+    padding: 1em 1.5em;
 }
 
 .data {
-	text-align: left;
-	padding: 0.5em 1.5em 0;
+    text-align: left;
+    padding: 0.5em 1.5em 0;
 }
 </style>
 {% endblock %}
 
 {% block content1 %}
 <div>
-	<h2 id="info">The king is dead! The kingdom has fallen into civil war.<br><br>Now is your chance to prove to the kingdom that you should	be the rightful leader.<br><br>Manage your county and strategically secure your position as leader of your kingdom. And once you have taken control,	lead your kingdom in war to become the greatest that the world has ever seen by destroying your neighbours.</h2>
-	<p id="info">
-	{% if current_user.ages_completed != 0 %}
-	Welcome back! A new age has started.<br>Please establish your county to begin.
-	{% else %}
-	Welcome to the game!<br>To start, please establish your county
-	{% endif %}
-	</p>
-	<form method="POST" accept-charset="UTF-8" role="form" id="initForm">
-		<!-- LoginForm -->
-		{{ form.csrf_token }}
-		{{ render_field(form.county, placeholder="Your county's name", autofocus="") }}
-		{{ render_field(form.leader, placeholder="Your leader's name") }}
-		{{ render_field(form.gender, placeholder="Your leader's gender") }}
-		{{ render_field(form.race, placeholder="Your leader's race") }}
-	</form>
-	<div class="data" id="dwarfDiv" style="display:none;">
-		<h1>Dwarves:</h1>
-		<h2>Strengths:</h2>
-		<p>Engineering: +10% Production</p>
-		<h2>Weaknesses:</h2>
-		<p>Short Stature: Army returns 15% slower</p>
-		<h3>Military:</h3>
-		<ul>
-			{% for army in dwarf_armies.values() %}
-			<li>Name: {{ army.class_name }}</li>
-			<li>Cost: {{ army.gold }} gold, {{ army.wood }} wood, {{ army.iron }} iron</li>
-			<li>Attack: {{ army.attack }}</li>
-			<li>Defense: {{ army.defence }}</li>
-			<li>Health: {{ army.health }}</li>
-			{% endfor %}
-		</ul>
-	</div>
+  <h2 id="info">The king is dead! The kingdom has fallen into civil war.<br><br>Now is your chance to prove to the kingdom that you should	be the rightful leader.<br><br>Manage your county and strategically secure your position as leader of your kingdom. And once you have taken control,	lead your kingdom in war to become the greatest that the world has ever seen by destroying your neighbours.</h2>
+  <p id="info">
+    {% if current_user.ages_completed != 0 %}
+    Welcome back! A new age has started.<br>Please establish your county to begin.
+    {% else %}
+    Welcome to the game!<br>To start, please establish your county
+    {% endif %}
+  </p>
+  <form method="POST" accept-charset="UTF-8" role="form" id="initForm">
+    <!-- LoginForm -->
+    {{ form.csrf_token }}
+    <p>What is your might county known as?</p>
+    {{ render_field(form.county, placeholder="Your county's name", autofocus="") }}<br>
+    <p>What is the leader of your county named?</p>
+    {{ render_field(form.leader, placeholder="Your leader's name") }}
+    <p>What titles are your leader known by?</p>
+    {{ render_field(form.gender, placeholder="Your leader's gender") }}
+    <p>What race of beings inhabit your county?</p>
+    {{ render_field(form.race, placeholder="Your leader's race") }}
+    <p>What discipline does your leader follow?</p>
+    {{ render_field(form.background, placeholder="Your leader's class") }}
+  </form>
+  <div class="data" id="dwarfDiv" style="display:none;">
+    <h1>Dwarves:</h1>
+    <h2>Strengths:</h2>
+    <p>Engineering: +10% Production</p>
+    <h2>Weaknesses:</h2>
+    <p>Short Stature: Army returns 15% slower</p>
+    <h3>Military:</h3>
+    <ul>
+      {% for army in dwarf_armies.values() %}
+      <li>Name: {{ army.class_name }}</li>
+      <li>Cost: {{ army.gold }} gold, {{ army.wood }} wood, {{ army.iron }} iron</li>
+      <li>Attack: {{ army.attack }}</li>
+      <li>Defense: {{ army.defence }}</li>
+      <li>Health: {{ army.health }}</li>
+      {% endfor %}
+    </ul>
+  </div>
 
-	<div class="data" id="humanDiv" style="display:none;">
-		<h1>Humans:</h1>
-		<h2>Strengths:</h2>
-		<p>None</p>
-		<h2>Weaknesses:</h2>
-		<p>None</p>
-		<h3>Military:</h3>
-		<ul>
-			{% for army in human_armies.values() %}
-			<li>Name: {{ army.class_name }}</li>
-			<li>Cost: {{ army.gold }} gold, {{ army.wood }} wood, {{ army.iron }} iron</li>
-			<li>Attack: {{ army.attack }}</li>
-			<li>Defense: {{ army.defence }}</li>
-			<li>Health: {{ army.health }}</li>
-			{% endfor %}
-		</ul>
-	</div>
+  <div class="data" id="humanDiv" style="display:none;">
+    <h1>Humans:</h1>
+    <h2>Strengths:</h2>
+    <p>None</p>
+    <h2>Weaknesses:</h2>
+    <p>None</p>
+    <h3>Military:</h3>
+    <ul>
+      {% for army in human_armies.values() %}
+      <li>Name: {{ army.class_name }}</li>
+      <li>Cost: {{ army.gold }} gold, {{ army.wood }} wood, {{ army.iron }} iron</li>
+      <li>Attack: {{ army.attack }}</li>
+      <li>Defense: {{ army.defence }}</li>
+      <li>Health: {{ army.health }}</li>
+      {% endfor %}
+    </ul>
+  </div>
 
-	<div class="data" id="elfDiv" style="display:none;">
-		<h1>Elves:</h1>
-		<h2>Strengths:</h2>
-		<p>Civic Duty: Civilians add double defense to county</p>
-		<h2>Weaknesses:</h2>
-		<p>Elders: -10% Population growth</p>
-		<h3>Military:</h3>
-		<ul>
-			{% for army in elf_armies.values() %}
-			<li>Name: {{ army.class_name }}</li>
-			<li>Cost: {{ army.gold }} gold, {{ army.wood }} wood, {{ army.iron }} iron</li>
-			<li>Attack: {{ army.attack }}</li>
-			<li>Defense: {{ army.defence }}</li>
-			<li>Health: {{ army.health }}</li>
-			{% endfor %}
-		</ul>
-	</div>
-	<button type="submit" form="initForm">Establish county</button>
+  <div class="data" id="elfDiv" style="display:none;">
+    <h1>Elves:</h1>
+    <h2>Strengths:</h2>
+    <p>Civic Duty: Civilians add double defense to county</p>
+    <h2>Weaknesses:</h2>
+    <p>Elders: -10% Population growth</p>
+    <h3>Military:</h3>
+    <ul>
+      {% for army in elf_armies.values() %}
+      <li>Name: {{ army.class_name }}</li>
+      <li>Cost: {{ army.gold }} gold, {{ army.wood }} wood, {{ army.iron }} iron</li>
+      <li>Attack: {{ army.attack }}</li>
+      <li>Defense: {{ army.defence }}</li>
+      <li>Health: {{ army.health }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <button type="submit" form="initForm">Establish county</button>
 </div>
 
 <script type="text/javascript">
