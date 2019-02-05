@@ -14,11 +14,11 @@
 }
 
 #header {
-        width: 500px;
-        margin: auto;
+    width: 500px;
+    margin: auto;
 }
 
-#form {
+form {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -59,29 +59,29 @@ button {
 
 {% block content1 %}
 <div id="content">
-    <div id="header">
-        <h1>Welcome to Undying Kingdoms</h1>
-        <h2>Take charge of your county and become the rightful ruler of your kingdom. Then take over the world!</h2>
-        <br>
-    </div>
-    <form id="form" method="POST" accept-charset="UTF-8" role="form">
-        <!-- LoginForm -->
-        {{ form.csrf_token }}
-        {{ render_field(form.email, placeholder="Your Email Address", autofocus="") }}
-        {{ render_field(form.password, placeholder="Password") }}
-        <p>
-            <input type="checkbox" name="remember" value="1"> Remember Me
-        </p>
-        <br>
-        <button type="submit">Sign in</button>
-        <br><br>
-        <a class="center" role="button" href="/register">New user? Create account here.</a>
-    </form>
-    <div id="footer">
-        <br><br>
-        <p>The game is currently in early stages of Alpha (0.0.04)</p>
-        <p>This round of testing will end on February 7th, 2019, at 19:30 PST.</p>
-    </div>
+  <div id="header">
+    <h1>Welcome to Undying Kingdoms</h1>
+    <h2>Take charge of your county and become the rightful ruler of your kingdom. Then take over the world!</h2>
+    <br>
+  </div>
+  <form method="POST" accept-charset="UTF-8" role="form">
+    <!-- LoginForm -->
+    {{ form.csrf_token }}
+    {{ render_field(form.email, placeholder="Your Email Address", autofocus="") }}
+    {{ render_field(form.password, placeholder="Password") }}
+    <p>
+      <input type="checkbox" name="remember" value="1"> Remember Me
+    </p>
+    <br>
+    <button type="submit">Sign in</button>
+    <br><br>
+    <a class="center" role="button" href="/register">New user? Create account here.</a>
+  </form>
+  <div id="footer">
+    <br><br>
+    <p>The game is currently in early stages of Alpha (0.0.04)</p>
+    <p>This round of testing will end on February 7th, 2019, at 19:30 PST.</p>
+  </div>
 </div>
 {% endblock %}
 
