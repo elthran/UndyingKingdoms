@@ -57,7 +57,7 @@ all_achievements = {
 }
 
 # Racial/Class Modifiers (A modifier of 0 means +0%. A modifier of 1 would mean +100%)
-birth_rate_modifier = {'Elf': ("Elders", -0.15), 'Goblin': ("", 0.15)}
+birth_rate_modifier = {'Elf': ("Elders", -0.15), 'Goblin': ("Expendable", 0.15)}
 death_rate_modifier = {}
 income_modifier = {'Merchant': ("Silver Tongue", 0.15)}
 offensive_power_modifier = {'Warlord': ("Relentless", 0.10)}

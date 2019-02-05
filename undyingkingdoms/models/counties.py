@@ -723,7 +723,12 @@ class County(GameState):
         return [expedition for expedition in expeditions if expedition.duration > 0]
 
     def get_chance_to_be_successfully_infiltrated(self):
-        reduction = 10 + (self.get_number_of_available_thieves() * 3500 / self.land) ** 0.7
+        buffer_time = datetime.utcnow() - timedelta(hours=12)
+        operations_on_target = Infiltration.query.filter_by(target_id=self.id).filter_by(success=True).filter(
+            Infiltration.time_created > buffer_time).count()
+        print(operations_on_target, buffer_time)
+        reduction = 10 + (self.get_number_of_available_thieves() * 3500 / self.land) ** 0.7 + (10 * operations_on_target)
+        print(reduction)
         return max(int(100 - reduction), 10)
 
     # Terminology

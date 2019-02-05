@@ -18,7 +18,7 @@
             <th>Topic</th>
             <th>Current</th>
             <th style="width:100px;">Projected Change</th>
-            <th style="width:175px;">Modifiers</th>
+            <th style="width:225px;">Modifiers</th>
             <th style="width:175px;">Projected Growth</th>
             <th style="width:175px;">Projected Losses</th>
             <th>Notes</th>
@@ -38,11 +38,11 @@
             <td>
                 <ul>
                     {% if birth_rate_modifier.get(county.race)[1] %}
-                    <li>{{ birth_rate_modifier.get(county.race)[0] }}: {{ (birth_rate_modifier.get(county.race)[1] * 100)|int }}%
+                    <li>({{ county.race }}) {{ birth_rate_modifier.get(county.race)[0] }}: {{ (birth_rate_modifier.get(county.race)[1] * 100)|int }}%
                     </li>
                     {% endif %}
                     {% if birth_rate_modifier.get(county.background)[1] %}
-                    <li>{{ birth_rate_modifier.get(county.background)[0] }}: {{
+                    <li>({{ county.background }}) {{ birth_rate_modifier.get(county.background)[0] }}: {{
                         (birth_rate_modifier.get(county.background)[1] * 100)|int }}%
                     </li>
                     {% endif %}
@@ -78,10 +78,10 @@
                     <ul>
                         <li>Tax Rate: {{ form.tax }}%</li>
                         {% if income_modifier.get(county.race)[1] %}
-                        <li>{{ income_modifier.get(county.race)[0] }}: {{ (income_modifier.get(county.race)[1] * 100)|int }}%</li>
+                        <li>({{ county.race }}) {{ income_modifier.get(county.race)[0] }}: {{ (income_modifier.get(county.race)[1] * 100)|int }}%</li>
                         {% endif %}
                         {% if income_modifier.get(county.background)[1] %}
-                        <li>{{ income_modifier.get(county.background)[0] }}: {{
+                        <li>({{ county.background }}) {{ income_modifier.get(county.background)[0] }}: {{
                             (income_modifier.get(county.background)[1] * 100)|int }}%
                         </li>
                         {% endif %}
@@ -120,7 +120,7 @@
                     <ul>
                         <li>Rations: {{ form.rations }}</li>
                         {% if food_consumed_modifier.get(county.race)[1] %}
-                        <li>{{ food_consumed_modifier.get(county.race)[0] }}: {{
+                        <li>({{ county.race }}) {{ food_consumed_modifier.get(county.race)[0] }}: {{
                             (food_consumed_modifier.get(county.race)[1] * 100)|int }}%
                         </li>
                         {% endif %}

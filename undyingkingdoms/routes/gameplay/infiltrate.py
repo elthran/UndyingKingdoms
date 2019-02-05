@@ -1,8 +1,10 @@
+from datetime import datetime, timedelta
 from random import randint
 
 from flask import redirect, url_for, render_template
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
+from sqlalchemy import desc
 
 from undyingkingdoms import app
 from undyingkingdoms.models import Infiltration, County, Notification
@@ -23,12 +25,11 @@ def infiltrate(template, county_id):
 
     form = InfiltrateForm()
     form.county_id.data = current_user.county.id
-    thieves = current_user.county.get_number_of_available_thieves()
+    thieves = min(current_user.county.get_number_of_available_thieves(), 3)
     form.amount.choices = [(i + 1, i + 1) for i in range(thieves)]
     form.mission.choices = [(index, name) for index, name in enumerate(infiltration_missions)]
 
     if form.validate_on_submit():
-
         mission = infiltration_missions[form.mission.data]
         report = Infiltration(current_user.county.id, target.id, current_user.county.county_days_in_age,
                               current_user.county.kingdom.world.day,
