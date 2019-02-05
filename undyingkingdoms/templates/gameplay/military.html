@@ -1,4 +1,7 @@
 {% extends "gameplay/layout.html" %}
+
+{% title block %}Military: {{ super() }}{% endblock %}
+
 {% block content2 %}
 
 {% set user = current_user %}
