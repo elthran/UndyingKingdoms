@@ -24,10 +24,11 @@ class World(GameState):
         self.day = 0
 
     def advance_day(self):
-        for county in County.query.all():
-            county.advance_day()
-            if county.user.is_bot:
-                county.temporary_bot_tweaks()
+        if self.day >= 0:
+            for county in County.query.all():
+                county.advance_day()
+                if county.user.is_bot:
+                    county.temporary_bot_tweaks()
         self.day += 1
 
     def advance_24h_analytics(self):
@@ -70,7 +71,7 @@ class World(GameState):
                   'session', 'transaction']
         helpers.drop_then_rebuild_tables(db, tables)
         self.age += 1
-        self.day = 0
+        self.day = -12
 
     @staticmethod
     def export_data_to_csv():
