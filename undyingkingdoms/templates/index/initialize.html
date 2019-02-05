@@ -1,4 +1,7 @@
 {% extends "layout.html" %}
+
+{% block title %}Initialize: {{ super() }}{% endblock %}
+
 {% block content1 %}
 {% if current_user.ages_completed != 0 %}
 (Welcome back! A new age has started. Please establish your county to begin.)
