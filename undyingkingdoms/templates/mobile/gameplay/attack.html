@@ -1,0 +1,124 @@
+{% extends "mobile/gameplay/layout.html" %}
+
+{% block title %}Attack: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1em;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#header {
+    width: 100%;
+    max-width: 360px;
+}
+
+h1 {
+    margin-bottom: 1em;
+}
+
+h2 {
+    margin-bottom: 0.4em;
+}
+
+#footer {
+    width: 100%;
+    max-width: 360px;
+}
+
+button {
+    width: 100%;
+}
+
+select {
+    padding: 0.3em;
+    border-radius: 5px;
+}
+
+.tab {
+    margin-left: 1em;
+}
+
+.spacer {
+    margin-bottom: 1em;
+}
+</style>
+{% endblock %}
+
+{% block content1 %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+<div id="content">
+  <form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    <h1>Build Company</h1><br>
+    <div id="header">
+      <h2>Attack power available: {{ county.get_offensive_strength(county=county) }}</h2><br>
+      <ul>
+      {% for army in county.armies.values() %}
+        {% if army.base_name != 'archer' %}
+          <li class="spacer">{{ army.class_name.capitalize() }}: {{ form[army.base_name] }} (Available: {{ army.available }} / {{ army.total }})
+            <p class="tab">(Attack Power: {{ army.attack }} per troop)</p>
+          </li>
+        {% endif %}
+      {% endfor %}
+      </ul>
+    </div>
+    <div id="footer">
+      <p>Current Army has <span id="calculatedAttack">0</span> attack power.</p>
+      <p>It would be expected to return in roughly <span id="attackDuration">0</span> days.</p>
+      <br>
+      <button type="submit">Attack</button>
+      <br><br>
+      <p>Note: You will typically lose around 20% of any soldiers sent. However, if your army is
+        much weaker,
+        then your troops will take heavy casualties. Conversely, if you greatly overpower them you will lose very
+        few troops.</p>
+    </div>
+  </form>
+</div>
+{{ super() }}
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+{% set county = current_user.county %}
+<script type="text/javascript">
+{% for unit in county.armies.values() %}
+{% if unit.base_name != 'archer' %}
+document.getElementById('{{ unit.base_name }}').onchange = function() {
+    updateAttack();
+    updateDuration();
+}
+var {{ unit.base_name }}_amount = document.getElementById("{{ unit.base_name }}");
+console.log({{ unit.base_name }}_amount);
+{% endif %}
+{% endfor %}
+
+function updateAttack() {
+    var total_power = 0;
+    total_power = 0{% for unit in county.armies.values() %}{% if unit.base_name != 'archer' %}  + parseInt({{ unit.base_name }}_amount.value) * parseInt({{ unit.attack }}){% endif %}{% endfor %};
+    calculatedAttack.innerHTML = total_power;
+}
+function updateDuration() {
+    var days_to_return = 0;
+    var total_units = 0;
+    total_units = 0{% for unit in county.armies.values() %}{% if unit.base_name != 'archer' %}  + parseInt({{ unit.base_name }}_amount.value){% endif %}{% endfor %};
+    console.log(total_units);
+    days_to_return = Math.ceil(total_units / 20) + 2;
+    attackDuration.innerHTML = days_to_return;
+}
+
+</script>
+{% endblock %}

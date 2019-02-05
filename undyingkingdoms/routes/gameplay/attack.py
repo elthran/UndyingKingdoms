@@ -1,16 +1,18 @@
 from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
+from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models import County
 from undyingkingdoms.models.forms.attack import AttackForm
+from undyingkingdoms.routes.helpers import in_active_session
 
 
 @app.route('/gameplay/attack/<int:county_id>/', methods=['GET', 'POST'])
+@mobile_template('{mobile/}gameplay/attack.html')
 @login_required
-def attack(county_id):
-    if not current_user.in_active_session:
-        current_user.in_active_session = True
+@in_active_session
+def attack(template, county_id):
     if county_id == current_user.county.id:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
     enemy = County.query.filter_by(id=county_id).first()
@@ -51,8 +53,12 @@ def attack(county_id):
         for unit in current_user.county.armies.values():
             if unit.base_name != 'archer':
                 if unit.total < form.data[unit.base_name]:
-                    return render_template('gameplay/attack.html', enemy=enemy, form=form)
+                    return render_template(template, enemy=enemy, form=form)
                 army[unit.base_name] = form.data[unit.base_name]
         results = current_user.county.battle_results(army, enemy)
-        return render_template('gameplay/attack_results.html', results=results)
-    return render_template('gameplay/attack.html', enemy=enemy, form=form)
+
+        # Would like to move to a attack_results route of some kind.
+        # Ugly hack to return '{mobile/}gameplay/attack_results.html'
+        template = '_results.'.join(template.split('.'))
+        return render_template(template, results=results)
+    return render_template(template, enemy=enemy, form=form)

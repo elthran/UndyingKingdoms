@@ -1,0 +1,31 @@
+{% extends "mobile/gameplay/layout.html" %}
+
+{% block title %}Attack Results: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+	display: flex;
+	flex-direction: column;
+	align-self: center;
+	margin: 1em;
+}
+</style>
+{% endblock %}
+
+{% block content1 %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+<div id="content">
+  <p>{{ results }}.</p>
+</div>
+{{ super() }}
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script type="text/javascript">
+</script>
+{% endblock %}
