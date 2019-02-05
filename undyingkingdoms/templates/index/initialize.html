@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% title block %}Initialize: {{ super() }}{% endblock %}
+{% block title %}Initialize: {{ super() }}{% endblock %}
 
 {% block content1 %}
 {% if current_user.ages_completed != 0 %}
