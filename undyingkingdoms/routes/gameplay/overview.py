@@ -38,5 +38,4 @@ def overview(template, kingdom_id=0, county_id=0):
     # Would like to move to a view_enemy route of some kind.
     # Ugly hack to return '{mobile/}gameplay/overview_enemy.html'
     template = '_enemy.'.join(template.split('.'))
-    print(template)
     return render_template(template, target_kingdom=target_kingdom, target_county=target_county, form=form)
