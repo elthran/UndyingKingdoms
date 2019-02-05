@@ -110,13 +110,13 @@ th {
 </div>
 {% endset %}
 
-{% macro select_field(size) %}
+{% set select_field %}
 <select class="select">
   {% for n in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20] %}
    <option value="{{ n }}">{{ n }}</option>
   {% endfor %}
 </select>
-{% endmacro %}
+{% endset %}
 
 {% block content1 %}
 {% set user = current_user %}
@@ -163,7 +163,7 @@ th {
         <td>To Be Built</td>
         <td>
           {{ dynamic_cost }}
-          {{ select_field(20) }}
+          {{ select_field }}
           <input class="value" name="{{ building.base_name }}" value="0" hidden/>
           <button class="submitButton" type="submit">Build <span class="display">0</span></button>
         </td>
@@ -235,7 +235,6 @@ function updateGold() {
     goldCosts.each(function (ignore, element) {
         var sum = 0;
         selects.each(function (index, element) {
-            console.log(element.value);
             sum += element.value * buildingGoldCosts[index].innerHTML;
         });
         element.innerHTML = sum;

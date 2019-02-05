@@ -13,8 +13,8 @@
 }
 
 #header {
-		width: 280px;
-		margin: auto;
+        width: 280px;
+        margin: auto;
 }
 
 #tableForm {
@@ -22,8 +22,24 @@
     justify-content: center;
 }
 
+#productionTable {     /* The tables which display your infrastructure/military and let you build */
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid;
+}
+
+#productionTable th, td {
+    border: 1px dotted;
+    padding:4px;
+}
+
+#productionTable td:first-child {
+    width: 30%;
+    max-width: 100px;
+}
+
 th {
-		font-weight: bold;
+    font-weight: bold;
     font-size: 1.3em;
 }
 
@@ -64,8 +80,10 @@ button {
     margin-top: 0.3em;
 }
 
-.slider {
+.select {
     margin-top: 0.3em;
+    padding: 0.8em;
+    border-radius: 5px;
 }
 
 #invisibleDataFields {
@@ -73,8 +91,8 @@ button {
 }
 
 #footer {
-		max-width: 450px;
-		margin: auto;
+    max-width: 450px;
+    margin: auto;
 }
 </style>
 {% endblock %}
@@ -82,149 +100,162 @@ button {
 {% set dynamic_cost %}
 {% set county = current_user.county %}
 <div>
-	Gold Cost: <span class="goldCost">0</span>
-	<img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
-	Wood Cost: <span class="woodCost">0</span>
-	<img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
-	Iron Cost: <span class="ironCost">0</span>
-	<img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"><br>
-	Happiness Cost: <span class="happinessCost">0</span>
-	<img class="resource_icons" src="/static/images/heart_icon.jpg">
+  Gold Cost: <span class="goldCost">0</span>
+  <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
+  Wood Cost: <span class="woodCost">0</span>
+  <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
+  Iron Cost: <span class="ironCost">0</span>
+  <img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"><br>
+  Happiness Cost: <span class="happinessCost">0</span>
+  <img class="resource_icons" src="/static/images/heart_icon.jpg">
 </div>
 {% endset %}
+
+{% macro select_field(size) %}
+<select class="select">
+  {% for n in range(size) %}
+  <option value="{{ n }}">{{ n }}</option>
+  {% endfor %}
+  {% for n in range(size, size*2, 3) %}
+  <option value="{{ n }}">{{ n }}</option>
+  {% endfor %}
+  {% for n in range(size*2, size*3+1, 5) %}
+  <option value="{{ n }}">{{ n }}</option>
+  {% endfor %}
+</select>
+{% endmacro %}
 
 {% block content1 %}
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 <div id="content">
-	<div id="header">
-		<h2>Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>
-		<h2>Defensive Power: {{ county.get_defensive_strength() }}</h2>
-		<h2>Recruitable Peasants: {{ county.get_available_workers() }} </h2>
-		<div class="spacer"></div>
-	</div>
-	<form id="tableForm" method="POST" accept-charset="UTF-8" role="form">
-		{{ form.csrf_token }}
-		<table class="production_table">
-			{% for army in county.armies.values() %}
-			<tr>
-				<th colspan="2">{{ army.class_name.title() }}</th>
-			</tr>
-			<tr>
-				<td>Available</td>
-				<td>{{ army.available }}</td>
-			</tr>
-			<tr>
-				<td>In Foreign Lands</td>
-				<td>{{ army.traveling }}</td>
-			</tr>
-			<tr>
-				<td>In Training</td>
-				<td>{{ army.currently_training }}</td>
-			</tr>
-			<tr>
-				<td>Train</td>
-				<td>
-					{{ dynamic_cost }}
-					<input class="slider"
-					       type="range" value="0" min="0" max="50" step="1"/>
-					<input class="value" name="{{ army.base_name }}" value="0" hidden/>
-					<button class="submitButton" type="submit">Build <span class="display">0</span></button>
-				</td>
-			</tr>
-			<tr>
-				<td>Cost</td>
-				<td>
-					{% if army.gold %}
-						<span class="buildingGoldCost">{{ army.gold }}</span>
-						<img class="resource_icons" src="/static/images/gold_icon.jpg">
-					{% endif %}
-					{% if army.wood %}
-						<span class="buildingWoodCost">{{ army.wood }}</span>
-						<img class="resource_icons" src="/static/images/wood_icon.jpg">
-					{% endif %}
-					{% if army.iron %}
-						<span class="buildingIronCost">{{ army.iron }}</span>
-						<img class="resource_icons" src="/static/images/iron_icon.jpg">
-					{% endif %}
-					{% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
-				</td>
-			</tr>
-			<tr>
-				<td>Trainable Per Day</td>
-				<td>{{ army.trainable_per_day }}</td>
-			</tr>
-			<tr>
-				<td>
-					<div class="tooltipMobile">Attack<span class="tooltipTextMobile">{{ meta_data["attack"] }}</span></div>
-				</td>
-				<td>{{ army.attack }}</td>
-			</tr>
-			<tr>
-				<td>
-					<div class="tooltipMobile">Defence<span class="tooltipTextMobile">{{ meta_data["defence"] }}</span></div>
-				</td>
-				<td>{{ army.defence }}</td>
-			</tr>
-			<tr>
-				<td>
-					<div class="tooltipMobile">Health<span class="tooltipTextMobile">{{ meta_data["health"] }}</span></div>
-				</td>
-				<td>{{ army.health }}</td>
-			</tr>
-			<tr>
-				<td>
-					<div class="tooltipMobile">Upkeep<span class="tooltipTextMobile">{{ meta_data["upkeep"] }}</span></div>
-				</td>
-				<td>{{ army.upkeep }}</td>
-			</tr>
-			<tr>
-				<td>Description</td>
-				<td>{{ army.description }}</td>
-			</tr>
-			{% endfor %}
-			<tr>
-				<th colspan="2">Total</th>
-			</tr>
-			<tr>
-				<td>Available</td>
-				<td>{{ county.get_available_army_size() }}</td>
-			</tr>
-			<tr>
-				<td>In Foreign Lands</td>
-				<td>{{ county.get_unavailable_army_size() }}</td>
-			</tr>
-			<tr>
-				<td>In Training</td>
-				<td>{{ county.get_training_army_size() }}</td>
-			</tr>
-			<tr>
-				<td>
-					<div class="tooltipMobile">Upkeep<span class="tooltipTextMobile">{{ meta_data["upkeep"] }}</span></div>
-				</td>
-				<td>
-					<div class="tooltipMobile">{{ county.get_upkeep_costs() }}<span class="tooltipTextMobile">{{ meta_data["upkeep_daily"] }}</span>
-					</div>
-				</td>
-			</tr>
-		</table>
-	</form>
-	<div id="footer">
-		<div class="spacer"></div>
-		<h2>Expeditions:</h2>
-		{% for expedition in county.get_expeditions() %}
-			<br>Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite }} troops will return in {{ expedition.duration }} days with {{ expedition.land_acquired }} acres of newly captured land.
-		{% else %}
-			You have no troops travelling in foreign lands.
-		{% endfor %}
-	</div>
+  <div id="header">
+    <h2>Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>
+    <h2>Defensive Power: {{ county.get_defensive_strength() }}</h2>
+    <h2>Recruitable Peasants: {{ county.get_available_workers() }} </h2>
+    <div class="spacer"></div>
+  </div>
+  <form id="tableForm" method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    <table id="productionTable">
+      {% for army in county.armies.values() %}
+      <tr>
+        <th colspan="2">{{ army.class_name.title() }}</th>
+      </tr>
+      <tr>
+        <td>Available</td>
+        <td>{{ army.available }}</td>
+      </tr>
+      <tr>
+        <td>In Foreign Lands</td>
+        <td>{{ army.traveling }}</td>
+      </tr>
+      <tr>
+        <td>In Training</td>
+        <td>{{ army.currently_training }}</td>
+      </tr>
+      <tr>
+        <td>Train</td>
+        <td>
+          {{ dynamic_cost }}
+          {{ select_field(army.trainable_per_day) }}
+          <input class="value" name="{{ army.base_name }}" value="0" hidden/>
+          <button class="submitButton" type="submit">Build <span class="display">0</span></button>
+        </td>
+      </tr>
+      <tr>
+        <td>Cost</td>
+        <td>
+          {% if army.gold %}
+          <span class="buildingGoldCost">{{ army.gold }}</span>
+          <img class="resource_icons" src="/static/images/gold_icon.jpg">
+          {% endif %}
+          {% if army.wood %}
+          <span class="buildingWoodCost">{{ army.wood }}</span>
+          <img class="resource_icons" src="/static/images/wood_icon.jpg">
+          {% endif %}
+          {% if army.iron %}
+          <span class="buildingIronCost">{{ army.iron }}</span>
+          <img class="resource_icons" src="/static/images/iron_icon.jpg">
+          {% endif %}
+          {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td>Trainable Per Day</td>
+        <td>{{ army.trainable_per_day }}</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="tooltipMobile">Attack<span class="tooltipTextMobile">{{ meta_data["attack"] }}</span></div>
+        </td>
+        <td>{{ army.attack }}</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="tooltipMobile">Defence<span class="tooltipTextMobile">{{ meta_data["defence"] }}</span></div>
+        </td>
+        <td>{{ army.defence }}</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="tooltipMobile">Health<span class="tooltipTextMobile">{{ meta_data["health"] }}</span></div>
+        </td>
+        <td>{{ army.health }}</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="tooltipMobile">Upkeep<span class="tooltipTextMobile">{{ meta_data["upkeep"] }}</span></div>
+        </td>
+        <td>{{ army.upkeep }}</td>
+      </tr>
+      <tr>
+        <td>Description</td>
+        <td>{{ army.description }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <th colspan="2">Total</th>
+      </tr>
+      <tr>
+        <td>Available</td>
+        <td>{{ county.get_available_army_size() }}</td>
+      </tr>
+      <tr>
+        <td>In Foreign Lands</td>
+        <td>{{ county.get_unavailable_army_size() }}</td>
+      </tr>
+      <tr>
+        <td>In Training</td>
+        <td>{{ county.get_training_army_size() }}</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="tooltipMobile">Upkeep<span class="tooltipTextMobile">{{ meta_data["upkeep"] }}</span></div>
+        </td>
+        <td>
+          <div class="tooltipMobile">{{ county.get_upkeep_costs() }}<span class="tooltipTextMobile">{{ meta_data["upkeep_daily"] }}</span>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </form>
+  <div id="footer">
+    <div class="spacer"></div>
+    <h2>Expeditions:</h2>
+    {% for expedition in county.get_expeditions() %}
+    <br>Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite }} troops will return in {{ expedition.duration }} days with {{ expedition.land_acquired }} acres of newly captured land.
+    {% else %}
+    You have no troops travelling in foreign lands.
+    {% endfor %}
+  </div>
 </div>
 <div id="invisibleDataFields">
-    <span id="population">{{ county.population }}</span>
-    <span id="totalGold">{{ county.gold }}</span>
-    <span id="totalWood">{{ county.wood }}</span>
-	<span id="totalIron">{{ county.iron }}</span>
+  <span id="population">{{ county.population }}</span>
+  <span id="totalGold">{{ county.gold }}</span>
+  <span id="totalWood">{{ county.wood }}</span>
+  <span id="totalIron">{{ county.iron }}</span>
 </div>
 {{ super() }}
 {% endblock %}
@@ -232,7 +263,7 @@ button {
 {% block script %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
-var sliders = $(".slider");
+var selects = $(".select");
 var submitButtons = $(".submitButton");
 var goldCosts = $(".goldCost");
 var woodCosts = $(".woodCost");
@@ -251,7 +282,7 @@ var population = parseInt($("#population").text());
 function updateGold() {
     goldCosts.each(function (ignore, element) {
         var sum = 0;
-        sliders.each(function (index, element) {
+        selects.each(function (index, element) {
             sum += element.value * buildingGoldCosts[index].innerHTML;
         });
         element.innerHTML = sum;
@@ -261,7 +292,7 @@ function updateGold() {
 function updateWood() {
     woodCosts.each(function (ignore, element) {
         var sum = 0;
-        sliders.each(function (index, element) {
+        selects.each(function (index, element) {
             sum += element.value * buildingWoodCosts[index].innerHTML;
         });
         element.innerHTML = sum;
@@ -271,7 +302,7 @@ function updateWood() {
 function updateIron() {
     ironCosts.each(function (ignore, element) {
         var sum = 0;
-        sliders.each(function (index, element) {
+        selects.each(function (index, element) {
             sum += element.value * buildingIronCosts[index].innerHTML;
         });
         element.innerHTML = sum;
@@ -281,7 +312,7 @@ function updateIron() {
 function updateHappiness() {
     happinessCosts.each(function (ignore, element) {
         var sum = 0;
-        sliders.each(function (ignore, element) {
+        selects.each(function (ignore, element) {
             sum += parseInt(element.value);
         });
         element.innerHTML = Math.ceil(sum / population * 100);
@@ -293,7 +324,7 @@ function updateCosts() {
     updateWood();
     updateIron();
     updateHappiness();
-    sliders.each(function (index) {
+    selects.each(function (index) {
         var goldCost = goldCosts[index];
         var woodCost = woodCosts[index];
         var ironCost = ironCosts[index];
@@ -326,7 +357,7 @@ function updateCosts() {
 }
 
 
-sliders.each(function (index) {
+selects.each(function (index) {
     $(this).change(function () {
         displays[index].innerHTML = $(this).val();
         values[index].value = $(this).val();
