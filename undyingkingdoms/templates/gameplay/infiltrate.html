@@ -17,7 +17,8 @@
     {{ form.csrf_token }}
     <h2>What type of mission would you like to do?</h2>
     {{ form.mission }}<br>
-    <h2>How many thieves would you like to send? (Each extra thief increases chance of success by 1%)</h2>
+    <h2>How many thieves would you like to send?</h2>
+    <p>(Each extra thief increases chance of success by 1% but repeatedly infiltrating the same county lowers your success rate)</p>
     {{ form.amount }}<br>
     <h2>Estimated Time to Return:</h2><br>
     Your thieves would be ready after about <span id="thiefDuration">6</span> days.

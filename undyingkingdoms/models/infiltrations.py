@@ -39,15 +39,13 @@ class Infiltration(GameEvent):
         self.success = None
         self.duration = 24
 
-        self.pilfer_amount = 0
-
         self.peasant = 0
         self.archer = 0
         self.soldier = 0
         self.elite = 0
 
         self.crops_burned = 0
-
+        self.pilfer_amount = 0
         self.distrust = 0
 
     def get_troop_report(self, county, enemy_county, amount_sent):

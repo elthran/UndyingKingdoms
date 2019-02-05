@@ -26,3 +26,6 @@ class InfiltrateForm(FlaskForm):
         if thieves_being_sent < 1:
             self.amount.errors.append("You must send at least one thief.")
             return True
+        if thieves_being_sent > 3:
+            self.amount.errors.append("You can not send more than 3 thieves at a time.")
+            return True
