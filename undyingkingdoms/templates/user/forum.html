@@ -1,5 +1,4 @@
 {% extends "gameplay/layout.html" %}
-{% set user = current_user %}
 
 {% block title %}Forum: {{ super() }}{% endblock %}
 
@@ -55,6 +54,16 @@ li.bottomPadded {
 <img id="post_{{ post.id }}" class="voteImage {% if post.get_vote_status(current_user.id) %}upvote{% else %}downvote{% endif %}" src="">
 {%- endmacro %}
 
+{% macro most_recent_post_element(post) %}
+<td>
+  {% if post %}
+    {{ post.time_created }} by {{ post.get_author() }}
+  {% else %}
+    No posts
+  {% endif %}
+</td>
+{% endmacro %}
+
 {% block content2 %}
 <div id="content">
   <form method="POST" accept-charset="UTF-8" role="form">
@@ -70,12 +79,13 @@ li.bottomPadded {
         <th>Number of Posts</th>
       </tr>
       {% for thread in forum.threads %}
-      <tr>
-        <td><a href="{{ url_for('forum', thread_id=thread.id, post_id=0) }}">{{ thread.title }}</a></td>
-        <td>{{ thread.get_author() }}</td>
-        <td>{{ thread.get_most_recent_post() }}</td>
-        <td>{{ thread.get_post_count() }}</td>
-      </tr>
+        {% set most_recent_post = thread.get_most_recent_post() %}
+        <tr>
+          <td><a href="{{ url_for('forum', thread_id=thread.id, post_id=0) }}">{{ thread.title }}</a></td>
+          <td>{{ thread.get_author() }}</td>
+          {{ most_recent_post_element(most_recent_post) }}
+          <td>{{ thread.get_post_count() }}</td>
+        </tr>
       {% endfor %}
     </table>
     {% elif the_post == 'None' %}  <!-- Show list of all posts in that thread -->
@@ -88,19 +98,20 @@ li.bottomPadded {
         <th>Number of Replies</th>
       </tr>
       {% for post in the_thread.posts if post.parent_post_id == 0 %}
-      <tr>
-        <td><a href="{{ url_for('forum', thread_id=the_thread.id, post_id=post.id) }}">{{ post.title }}</a></td>
-        <td>{{ post.get_author() }}</td>
-        <td>{{ post.time_created }}</td>
-        <td>{{ post.get_reply_count() }}</td>
-      </tr>
+        {% set most_recent_reply = post.get_most_recent_reply() %}
+        <tr>
+          <td><a href="{{ url_for('forum', thread_id=the_thread.id, post_id=post.id) }}">{{ post.title }}</a></td>
+          <td>{{ post.get_author() }}</td>
+          {{ most_recent_post_element(most_recent_reply) }}
+          <td>{{ post.get_reply_count() }}</td>
+        </tr>
       {% else %}
-      <tr>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-      </tr>
+        <tr>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
       {% endfor %}
     </table>
     <br><br>
