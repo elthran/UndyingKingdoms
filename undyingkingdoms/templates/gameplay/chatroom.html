@@ -6,22 +6,35 @@
 {{ super() }}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/toggleSwitch.css') }}">
 <style type="text/css">
+#layout-content {
+    display: flex;
+    justify-content: space-around;
+}
+
+#chatroom {
+    /*margin-left: calc();*/
+}
+
 #header {
     display: flex;
     justify-content: space-between;
-    max-width: 760px;
     padding-top: 1em;
     margin-bottom: 1em;
+}
+
+#chat-div {
+    border:solid 1px;
+    min-height: 300px;
+    min-width: 600px;
 }
 </style>
 {% endblock %}
 
 {% block content2 %}
-
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
-<div id="body">
+<div id="chatroom">
   <div id="header">
     <h1>Discussion</h1>
     <label class="switch">
@@ -32,7 +45,7 @@
       </div>
     </label>
   </div>
-  <div style="border:solid 1px;width:auto;min-height:300px;margin-left:250px;margin-right:250px;">
+  <div id="chat-div">
     <ul id="chatlist">
     </ul>
   </div>
@@ -45,6 +58,8 @@
     <button id="send" type="submit">Say</button>
   </form>
 </div>
+<!-- balances sidebar from layout.html -->
+<div id="balance-column"></div>
 {% endblock %}
 
 {% block script %}

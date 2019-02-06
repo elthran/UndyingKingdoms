@@ -35,17 +35,6 @@ button:active {
     top: 1px;
 }
 
-.sidebar {              /* The main sidebar which is always visible when logged in */
-    width: auto;
-    height: 1250px;
-    float: left;
-    margin-right: 50px;
-    padding: 15px;
-    line-height: 30px;
-    border: solid;
-    font-size: 20px;
-}
-
 .production_table {     /* The tables which display your infrastructure/military and let you build */
     width: auto;
     border: 1px solid;
