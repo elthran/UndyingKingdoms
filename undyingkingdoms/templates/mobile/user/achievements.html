@@ -1,0 +1,65 @@
+{% extends "mobile/gameplay/layout.html" %}
+
+{% block title %}Achievements: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/mobileStyle.css') }}">
+<style type="text/css">
+h1 {
+    margin-bottom: 0.6em;
+}
+
+#header {
+    max-width: 320px;
+    margin-bottom: 1em;
+}
+
+.tooltipTextMobile {
+    /* Position the tooltip */
+    top: 100%;
+    left: 50%;
+    margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
+.maxWidth {
+    max-width: 400px;
+}
+</style>
+{% endblock %}
+
+{% block content1 %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+<div id="content">
+  <h1>Lifetime Achievements Across All Ages:</h1>
+  <div id="header">
+    <h2>Achievement Points:
+      <span class="tooltipMobile">{{ user.achievement_points }}
+        <span class="tooltipTextMobile">These are permanent and can be used to unlock cool new features.</span>
+      </span>
+    </h2>
+  </div>
+  <br><br>
+  <ul class="maxWidth">
+    {% for achievement in achievements %}
+    <li>
+      <h2>{{ achievement.display_title }}</h2>
+      <h3>{{ achievement.description }}</h3>
+      {% if achievement.category == 'reach_x_amount_in_one_age' %}
+      <p>Current progress: {{ achievement.current_tier }} / {{ achievement.maximum_tier }}</p>
+      <p>{{ achievement.get_earned_required_amount_message() }} {{ achievement.get_next_required_amount_message() }}</p>
+      {% elif achievement.category == 'class_leader' %}
+      <p>Current progress:
+        {% if achievement.current_tier == 0 %}Incomplete
+        {% else %}Complete{% endif %}
+      </p>
+      {% endif %}
+    </li>
+    <li><br></li>
+    {% endfor %}
+  </ul>
+</div>
+{{ super() }}
+{% endblock %}
