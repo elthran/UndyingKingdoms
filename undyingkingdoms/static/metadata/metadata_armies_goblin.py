@@ -20,7 +20,7 @@ goblin_armies['peasant'].gold -= 1
 goblin_armies['peasant'].iron -= 1
 goblin_armies['peasant'].upkeep -= 1
 # Soldiers
-goblin_armies['soldier'].attack -= 1
+goblin_armies['soldier'].defence -= 1
 goblin_armies['soldier'].health -= 1
 goblin_armies['soldier'].gold -= 5
 goblin_armies['soldier'].iron -= 2
