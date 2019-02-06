@@ -137,7 +137,7 @@ function updateCosts() {
 }
 
 {% for building in county.buildings.values() %}
-    {{ building.base_name }}_slider.onchange = function() {
+    {{ building.base_name }}_slider.oninput = function() {
         {{ building.base_name }}_display.innerHTML = this.value;
         {{ building.base_name }}_value.value = this.value;
         updateCosts();

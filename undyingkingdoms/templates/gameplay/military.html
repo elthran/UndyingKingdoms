@@ -2,118 +2,151 @@
 
 {% block title %}Military: {{ super() }}{% endblock %}
 
-{% block content2 %}
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+    padding-top: 1em;
+}
 
+input {
+    padding: 0.5em 0 0;
+}
+</style>
+{% endblock %}
+
+<!--max(min(x * 3, 25), 10)-->
+{% macro normalized_size(x) %}
+{{ ([([(x * 3), 25] | sort)[0], 10] | sort)[-1] }}
+{% endmacro %}
+
+{% block content2 %}
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
-
-<br><br><br><br>
-<h2>Current Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>
-<h2>Current Defensive Power: {{ county.get_defensive_strength() }}</h2>
-<h2>{{ county.get_available_workers() }} workers available for training</h2>
-<form method="POST" accept-charset="UTF-8" role="form">
+<div id="content">
+  <h2>Current Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>
+  <h2>Current Defensive Power: {{ county.get_defensive_strength() }}</h2>
+  <h2>{{ county.get_available_workers() }} workers available for training</h2>
+  <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
     <table class="production_table">
-        <tr>
-            <th>Name</th>
-            <th>Available</th>
-            <th>In Foreign Lands</th>
-            <th>In Training</th>
-            <th style="width:175px;">Train</th>
-            <th style="width:125px;">Cost</th>
-            <th>Trainable Per Day</th>
-            <th>
-                <div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div>
-            </th>
-            <th>
-                <div class="tooltip">Defence<span class="tooltipText">{{ meta_data["defence"] }}</span></div>
-            </th>
-            <th>
-                <div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div>
-            </th>
-            <th>
-                <div class="tooltip">Upkeep<span class="tooltipText">{{ meta_data["upkeep"] }}</span></div>
-            </th>
-            <th>Description</th>
-        </tr>
-        {% for army in county.armies.values() %}
-        <tr>
-            <td>{{ army.class_name.title() }}</td>
-            <td>{{ army.available }}</td>
-            <td>{{ army.traveling }}</td>
-            <td>{{ army.currently_training }}</td>
-            <td>
-                {% if army.base_name == 'monster' %}
-                    {% if county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training <= 0 %}
-                        <input id="{{ army.base_name }}_slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total }}" step="1" hidden/>
-                        <span id="{{ army.base_name }}_display" hidden>0</span>
-                        <span style="color:red;">Requires {{ county.buildings['lair'].class_name_plural.title() }}</span>
-                    {% else %}
-                        <input id="{{ army.base_name }}_slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training }}" step="1"/>
-                        <span id="{{ army.base_name }}_display">0</span>
-                    {% endif %}
-                {% else %}
-                    <input id="{{ army.base_name }}_slider" type="range" value="0" min="0" max="50" step="1"/>
-                    <span id="{{ army.base_name }}_display">0</span>
-                {% endif %}
-                <input id="{{ army.base_name }}_value" name="{{ army.base_name }}" value="0" hidden/>
-            </td>
-            <td>
-                {% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif
-                %}
-                {% if army.wood %}{{ army.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif
-                %}
-                {% if army.iron %}{{ army.iron }}<img class="resource_icons" src="/static/images/iron_icon.jpg">{% endif
-                %}
-                {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
-            </td>
-            <td>{{ army.trainable_per_day }}</td>
-            <td>{{ army.attack }}</td>
-            <td>{{ army.defence }}</td>
-            <td>{{ army.health }}</td>
-            <td>{{ army.upkeep }}</td>
-            <td>{{ army.description }}</td>
-        </tr>
-        {% endfor %}
-        <tr style="font-weight:bold;">
-            <td>Total</td>
-            <td>{{ county.get_available_army_size() }}</td>
-            <td>{{ county.get_unavailable_army_size() }}</td>
-            <td>-</td>
-            <td>-</td>
-            <td>{{ county.get_training_army_size() }}</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>
-                <div class="tooltip">{{ county.get_upkeep_costs() }}<span class="tooltipText">{{ meta_data["upkeep_daily"] }}</span>
-                </div>
-            </td>
-            <td>-</td>
-        </tr>
+      <tr>
+        <th>Name</th>
+        <th>Available</th>
+        <th>In Foreign Lands</th>
+        <th>In Training</th>
+        <th style="width:175px;">Train</th>
+        <th style="width:125px;">Cost</th>
+        <th>Trainable Per Day</th>
+        <th>
+          <div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div>
+        </th>
+        <th>
+          <div class="tooltip">Defence<span class="tooltipText">{{ meta_data["defence"] }}</span></div>
+        </th>
+        <th>
+          <div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div>
+        </th>
+        <th>
+          <div class="tooltip">Upkeep<span class="tooltipText">{{ meta_data["upkeep"] }}</span></div>
+        </th>
+        <th>Description</th>
+      </tr>
+      {% for army in county.armies.values() %}
+        <!--(list | sort)[0] replicates min()-->
+        {% set slider_size = normalized_size(army.trainable_per_day) | int %}
+      <tr>
+        <td>{{ army.class_name.title() }}</td>
+        <td>{{ army.available }}</td>
+        <td>{{ army.traveling }}</td>
+        <td>{{ army.currently_training }}</td>
+        <td>
+          {% if army.base_name == 'monster' %}
+          {% if county.buildings['lair'].total - county.armies['monster'].total -
+          county.armies['monster'].currently_training <= 0 %}
+          <input id="{{ army.base_name }}_slider" type="range" value="0" min="0"
+                 max="{{ county.buildings['lair'].total - county.armies['monster'].total }}" step="1" hidden/>
+          <span id="{{ army.base_name }}_display" hidden>0</span>
+          <span style="color:red;">Requires {{ county.buildings['lair'].class_name_plural.title() }}</span>
+          {% else %}
+          <input id="{{ army.base_name }}_slider" type="range" value="0" min="0"
+                 max="{{ county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training }}"
+                 step="1"/>
+          <span id="{{ army.base_name }}_display">0</span>
+          {% endif %}
+          {% else %}
+          <input id="{{ army.base_name }}_slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
+          <span id="{{ army.base_name }}_display">0</span>
+          {% endif %}
+          <input id="{{ army.base_name }}_value" name="{{ army.base_name }}" value="0" hidden/>
+        </td>
+        <td>
+          {% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif
+          %}
+          {% if army.wood %}{{ army.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif
+          %}
+          {% if army.iron %}{{ army.iron }}<img class="resource_icons" src="/static/images/iron_icon.jpg">{% endif
+          %}
+          {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
+        </td>
+        <td>{{ army.trainable_per_day }}</td>
+        <td>{{ army.attack }}</td>
+        <td>{{ army.defence }}</td>
+        <td>{{ army.health }}</td>
+        <td>{{ army.upkeep }}</td>
+        <td>{{ army.description }}</td>
+      </tr>
+      {% endfor %}
+      <tr style="font-weight:bold;">
+        <td>Total</td>
+        <td>{{ county.get_available_army_size() }}</td>
+        <td>{{ county.get_unavailable_army_size() }}</td>
+        <td>-</td>
+        <td>-</td>
+        <td>{{ county.get_training_army_size() }}</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>
+          <div class="tooltip">{{ county.get_upkeep_costs() }}<span
+              class="tooltipText">{{ meta_data["upkeep_daily"] }}</span>
+          </div>
+        </td>
+        <td>-</td>
+      </tr>
     </table>
     <br>
     Gold Cost: <span id="goldCost">0</span>
-      <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
+    <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons"
+                                                                                             src="/static/images/gold_icon.jpg"><br>
     Wood Cost: <span id="woodCost">0</span>
-      <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
+    <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons"
+                                                                                             src="/static/images/wood_icon.jpg"><br>
     Iron Cost: <span id="ironCost">0</span>
-      <img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"><br>
+    <img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons"
+                                                                                             src="/static/images/iron_icon.jpg"><br>
     Happiness Cost: <span id="happinessCost">0</span>
-      <img class="resource_icons" src="/static/images/heart_icon.jpg">
+    <img class="resource_icons" src="/static/images/heart_icon.jpg">
     <br><br>
-    <button id="submitButton" type="submit">Build</button><br>
-</form>
-<br><br>
-<h2>Expeditions:</h2>
-{% for expedition in county.get_expeditions() %}
-<br>Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite + expedition.monster }} troops will return in {{ expedition.duration }} days with {{ expedition.land_acquired }} acres of newly captured land.
-{% else %}
-You have no troops travelling in foreign lands.
-{% endfor %}
+    <button id="submitButton" type="submit">Build</button>
+    <br>
+  </form>
+  <br><br>
+  <h2>Expeditions:</h2>
+  {% for expedition in county.get_expeditions() %}
+  <br>Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite + expedition.monster }} troops will
+  return in {{ expedition.duration }} days with {{ expedition.land_acquired }} acres of newly captured land.
+  {% else %}
+  You have no troops travelling in foreign lands.
+  {% endfor %}
+</div>
+{% endblock %}
 
+{% block script %}
+{{ super() }}
+{% set county = current_user.county %}
 <script type="text/javascript">
 var submitButton = document.getElementById('submitButton');
 
@@ -166,11 +199,19 @@ function updateCosts() {
 }
 
 {% for unit in county.armies.values() %}
-    {{ unit.base_name }}_slider.onchange = function() {
-        {{ unit.base_name }}_display.innerHTML = this.value;
-        {{ unit.base_name }}_value.value = this.value;
-        updateCosts();
-    }
+{% set train_size = unit.trainable_per_day %}
+{% set max_size = normalized_size(unit.trainable_per_day) | int %}
+{% set p = train_size * 0.0032 %}
+
+{{ unit.base_name }}_slider.oninput = function() {
+    // value mapping list
+    {{ train_size }}
+    {{ p }}
+    var valMap = [{% for n in range(max_size+1) %}{{ (p*n*n + n) | int }}{{ ", " if not loop.last }}{% endfor %}];
+    {{ unit.base_name }}_display.innerHTML = valMap[this.value];
+    {{ unit.base_name }}_value.value = valMap[this.value];
+    updateCosts();
+}
 {% endfor %}
 
 </script>
