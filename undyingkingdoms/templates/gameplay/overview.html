@@ -10,7 +10,7 @@
 <ul>
     <li>Leader: {{ county.leader }} ({{ county.gender }})</li>
     <li>Race: {{ county.race }}</li>
-    <li>Title: {{ county.title }}</li>
+    <li>Title: {{ county.background }}</li>
     <li>Land: {{ county.land }} acres</li>
     {% if county.kingdom.world.day < 0 %}
     <li>Calendar Day: 0 <span style="color:red;">(This age will begin in {{ county.kingdom.world.day|abs }} hours)</span></li>
