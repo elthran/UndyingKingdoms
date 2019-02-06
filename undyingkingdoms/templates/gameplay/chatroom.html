@@ -132,5 +132,10 @@ $(window).on("blur", function () {
 
 // Pull chat date once page loads
 $(document).ready(updateChat());
+
+// Reload chat if toggle button is clicked
+$('.switch').on('click', function () {
+    updateChat();
+});
 </script>
 {% endblock %}
