@@ -1,0 +1,192 @@
+{% extends "mobile/gameplay/layout.html" %}
+
+{% block title %}Forum: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+.vote-image {
+    min-height: 28px;
+    min-width: 28px;
+    border: solid;
+    border-width: 1px;
+    border-style: outset;
+    border-radius: 6px;
+    margin-left: 0.4em;
+}
+
+.vote-image:hover {
+    box-shadow: 5px 10px 8px #888888;
+}
+
+.upvote {
+    background: url("/static/images/upvote.jpg") top left no-repeat;
+}
+
+.downvote {
+    background: url("/static/images/downvote.jpg") top left no-repeat;
+}
+
+p.post {
+    padding: 0.3em 1em 0.6em;
+}
+
+p.bold {
+    font-weight: bold;
+}
+
+li {
+    list-style: none;
+}
+
+.vertical-center {
+    display: flex;
+    align-items: center;
+}
+
+textarea {
+    height: 14em;
+}
+
+.height-8-em {
+    height: 8em;
+}
+
+</style>
+{% endblock %}
+
+{% macro upvote_image(post) -%}
+<img id="post_{{ post.id }}" class="vote-image {% if post.get_vote_status(current_user.id) %}upvote{% else %}downvote{% endif %}" src="">
+{%- endmacro %}
+
+{% macro most_recent_post_element(post) %}
+<td>
+  {% if post %}
+    {{ post.time_created }}<br>by {{ post.get_author() }}
+  {% else %}
+    No posts
+  {% endif %}
+</td>
+{% endmacro %}
+
+{% block content1 %}
+<div id="content">
+  <form class="max-width-500" method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+
+    {% if the_thread == 'None' %}
+    <!-- Show list of all threads -->
+    <h1>Forum</h1>
+    <table class="border-dotted width-100-percent max-width-500">
+      <tr>
+        <th>Thread</th>
+        <th>Author</th>
+        <th>Most Recent Post</th>
+        <th>Number of Posts</th>
+      </tr>
+      {% for thread in forum.threads %}
+        {% set most_recent_post = thread.get_most_recent_post() %}
+        <tr>
+          <td><a href="{{ url_for('forum', thread_id=thread.id, post_id=0) }}">{{ thread.title }}</a></td>
+          <td>{{ thread.get_author() }}</td>
+          {{ most_recent_post_element(most_recent_post) }}
+          <td>{{ thread.get_post_count() }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+    {% elif the_post == 'None' %}
+    <!-- Show list of all posts in that thread -->
+    <h1>{{ the_thread.title }}</h1><br>
+    <table id="post-table" class="border-dotted bottom-spacer-1 width-100-percent max-width-500">
+      {% for post in the_thread.posts if post.parent_post_id == 0 %}
+        {% set most_recent_reply = post.get_most_recent_reply() %}
+        <tr>
+          <td class="dont-break-out" colspan="2">
+            <a href="{{ url_for('forum', thread_id=the_thread.id, post_id=post.id) }}">{{ post.title }}</a>
+          </td>
+        </tr>
+        <tr>
+          <td>Author</td>
+          <td>{{ post.get_author() }}</td>
+        </tr>
+        <tr>
+          <td>Most Recent Post</td>
+          {{ most_recent_post_element(most_recent_reply) }}
+        </tr>
+        <tr>
+          <td>Number of Replies</td>
+          <td>{{ post.get_reply_count() }}</td>
+        </tr>
+      {% else %}
+        <tr>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
+      {% endfor %}
+    </table>
+    <br><br>
+    <h2>Create New Thread</h2>
+    <div class="max-width-500 top-spacer-point-6 bottom-spacer-point-6 width-100-percent">
+      {{ render_field(form.title, placeholder="Title", autofocus="", class="bottom-spacer-point-6 width-100-percent", maxlength=form.TITLE_SIZE) }}
+      <textarea class="width-100-percent" name="content" placeholder="Content" maxlength="{{ form.CONTENT_SIZE }}"></textarea>
+    </div>
+    <button class="max-width-500 bottom-spacer-1" type="submit">Create Post</button>
+    <a href="{{ url_for('forum', thread_id=0, post_id=0) }}">Return to forum home.</a>
+    {% else %}
+    <!-- Show list of all replies in that post -->
+      <ul>
+        <li class="bottom-spacer-1">
+          <div>
+            <h1 class="vertical-center dont-break-out">{{ the_post.title }} {{ upvote_image(the_post) }}</h1>
+            <p class="post dont-break-out">{{ the_post.content }}</p>
+            <p>By: {{ the_post.get_author() }} at {{ the_post.time_created }} with <span class="votes">{{ the_post.get_votes() }}</span> votes</p>
+          </div>
+        </li>
+        {% for reply in the_post.get_replies() %}
+          <li class="bottom-spacer-1">
+            <div>
+              <p class="bold vertical-center dont-break-out">Reply {{ loop.index }} at {{ reply.time_created }} {{ upvote_image(reply) }}</p>
+              <p class="post dont-break-out">{{ reply.content }}</p>
+              <p>By: {{ reply.get_author() }} with <span class="votes">{{ reply.get_votes() }}</span> votes</p>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+      <textarea class="width-100-percent height-8-em" name="content" placeholder="Type your reply here" maxlength="{{ form.CONTENT_SIZE }}"></textarea>
+      <button class="top-spacer-1 bottom-spacer-1" type="submit">Reply to Post</button>
+      <br><br>
+      <a class="bottom-spacer-1" href="{{ url_for('forum', thread_id=the_thread.id, post_id=0) }}">Return to {{ the_thread.title }}</a>
+    {% endif %}
+  </form>
+</div>
+{{ super() }}
+{% endblock %}
+
+
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+var votes = $(".votes");
+
+$(".vote-image").each(function (index, element) {
+    var postID = element.id.slice(5);
+
+    $(this).click(function () {
+        $.get("/user/upvote/" + postID, function (ignore, status) {
+            if (status === "success") {
+                $(element).toggleClass("upvote downvote");
+
+                var count = parseInt(votes[index].innerHTML);
+                if ($(element).hasClass("upvote")) {
+                    votes[index].innerHTML = count - 1;
+                } else {
+                    votes[index].innerHTML = count + 1;
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

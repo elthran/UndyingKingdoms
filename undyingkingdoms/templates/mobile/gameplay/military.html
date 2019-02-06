@@ -47,13 +47,13 @@ th {
     margin-bottom: 1em;
 }
 
-.tooltipMobile {
+.tooltip-mobile {
     position: relative;
     display: inline-block;
     border-bottom: 1px dotted black;
 }
 
-.tooltipMobile .tooltipTextMobile {
+.tooltip-mobile .tooltip-text-mobile {
     visibility: hidden;
     width: 12.5em;
     background-color: black;
@@ -69,7 +69,7 @@ th {
     left: 105%;
 }
 
-.tooltipMobile:hover .tooltipTextMobile {
+.tooltip-mobile:hover .tooltip-text-mobile {
     visibility: visible;
 }
 
@@ -196,25 +196,25 @@ button {
       </tr>
       <tr>
         <td>
-          <div class="tooltipMobile">Attack<span class="tooltipTextMobile">{{ meta_data["attack"] }}</span></div>
+          <div class="tooltip-mobile">Attack<span class="tooltip-text-mobile">{{ meta_data["attack"] }}</span></div>
         </td>
         <td>{{ army.attack }}</td>
       </tr>
       <tr>
         <td>
-          <div class="tooltipMobile">Defence<span class="tooltipTextMobile">{{ meta_data["defence"] }}</span></div>
+          <div class="tooltip-mobile">Defence<span class="tooltip-text-mobile">{{ meta_data["defence"] }}</span></div>
         </td>
         <td>{{ army.defence }}</td>
       </tr>
       <tr>
         <td>
-          <div class="tooltipMobile">Health<span class="tooltipTextMobile">{{ meta_data["health"] }}</span></div>
+          <div class="tooltip-mobile">Health<span class="tooltip-text-mobile">{{ meta_data["health"] }}</span></div>
         </td>
         <td>{{ army.health }}</td>
       </tr>
       <tr>
         <td>
-          <div class="tooltipMobile">Upkeep<span class="tooltipTextMobile">{{ meta_data["upkeep"] }}</span></div>
+          <div class="tooltip-mobile">Upkeep<span class="tooltip-text-mobile">{{ meta_data["upkeep"] }}</span></div>
         </td>
         <td>{{ army.upkeep }}</td>
       </tr>
@@ -240,10 +240,10 @@ button {
       </tr>
       <tr>
         <td>
-          <div class="tooltipMobile">Upkeep<span class="tooltipTextMobile">{{ meta_data["upkeep"] }}</span></div>
+          <div class="tooltip-mobile">Upkeep<span class="tooltip-text-mobile">{{ meta_data["upkeep"] }}</span></div>
         </td>
         <td>
-          <div class="tooltipMobile">{{ county.get_upkeep_costs() }}<span class="tooltipTextMobile">{{ meta_data["upkeep_daily"] }}</span>
+          <div class="tooltip-mobile">{{ county.get_upkeep_costs() }}<span class="tooltip-text-mobile">{{ meta_data["upkeep_daily"] }}</span>
           </div>
         </td>
       </tr>
