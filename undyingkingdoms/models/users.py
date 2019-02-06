@@ -125,11 +125,11 @@ class User(GameState):
                 achievement.current_tier += 1
                 self.achievement_points += achievement.points_rewarded
 
-    def get_last_login(self):
+    def get_last_logout(self):
         session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
         if session is None:
-            return self.time_created
-        return session.time_created
+            return False
+        return session.time_logged_out
 
     def get_current_leaderboard_score(self):
         # TEMPORARY FOR ALPHA. Just a quick way to add some fun

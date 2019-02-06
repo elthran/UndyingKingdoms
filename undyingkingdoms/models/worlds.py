@@ -36,7 +36,7 @@ class World(GameState):
         for user in users:
             # First check and set their retention
             user_age = (datetime.utcnow() - user.time_created).days
-            if user.get_last_login().date() == datetime.today().date():
+            if user.get_last_logout() and user.get_last_logout().date() == datetime.today().date():
                 retention = 1
             else:
                 retention = 0
