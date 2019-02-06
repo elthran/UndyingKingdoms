@@ -4,6 +4,7 @@
 
 {% block style %}
 {{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/toggleSwitch.css') }}">
 <style type="text/css">
 #body {
     display: flex;
@@ -12,10 +13,13 @@
     margin: 1.2em 1em;
 }
 
+#header {
+    display: flex;
+    justify-content: space-between;
+}
 
 h1 {
-    padding-bottom: 0.4em;
-    text-align: center;
+    margin-bottom: 0;
 }
 
 #chatDiv {
@@ -60,7 +64,16 @@ button {
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 <div id="body">
-  <h1>Discussion</h1>
+  <div id="header">
+    <h1>Discussion</h1>
+    <label class="switch">
+      <input id="toggle-switch" type="checkbox">
+      <div class="slider round">
+        <span class="on">global</span>
+        <span class="off">kingdom</span>
+      </div>
+    </label>
+  </div>
   <div id=chatDiv>
     <ul id="chatlist" class="dont-break-out">
     </ul>
@@ -101,6 +114,7 @@ function sendMessage() {
         headers: {"X-CSRF-TOKEN": $("#csrf_token").val()}
     });
 
+    console.log("Toggle value", $("#toggle-switch").val());
     $.post("/gameplay/chatroom/", {
         content: $("#content").val(),
         updateOnly: false
