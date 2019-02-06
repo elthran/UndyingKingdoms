@@ -159,7 +159,15 @@ button {
         <td>Train</td>
         <td>
           {{ dynamic_cost }}
-          {{ select_field(army.trainable_per_day) }}
+          <!--This code should be dynamic JS but isn't-->
+          {% if army.base_name == 'monster' %}
+            {% if county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training <= 0 %}
+              {{ select_field(0) }}
+              <span style="color:red;">Requires {{ county.buildings['lair'].class_name_plural.title() }}</span>
+            {% endif %}
+          {% else %}
+            {{ select_field(army.trainable_per_day) }}
+          {% endif %}
           <input class="value" name="{{ army.base_name }}" value="0" hidden/>
           <button class="submitButton" type="submit">Build <span class="display">0</span></button>
         </td>
