@@ -4,7 +4,6 @@
 
 {% block style %}
 {{ super() }}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/mobileStyle.css') }}">
 <style type="text/css">
 h1 {
     margin-bottom: 0.6em;
@@ -15,14 +14,14 @@ h1 {
     margin-bottom: 1em;
 }
 
-.tooltipTextMobile {
+.tooltip-text-mobile {
     /* Position the tooltip */
     top: 100%;
     left: 50%;
     margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
 }
 
-.maxWidth {
+.max-width-400 {
     max-width: 400px;
 }
 </style>
@@ -36,13 +35,13 @@ h1 {
   <h1>Lifetime Achievements Across All Ages:</h1>
   <div id="header">
     <h2>Achievement Points:
-      <span class="tooltipMobile">{{ user.achievement_points }}
-        <span class="tooltipTextMobile">These are permanent and can be used to unlock cool new features.</span>
+      <span class="tooltip-mobile">{{ user.achievement_points }}
+        <span class="tooltip-text-mobile">These are permanent and can be used to unlock cool new features.</span>
       </span>
     </h2>
   </div>
   <br><br>
-  <ul class="maxWidth">
+  <ul class="max-width-400">
     {% for achievement in achievements %}
     <li>
       <h2>{{ achievement.display_title }}</h2>

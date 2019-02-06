@@ -66,13 +66,13 @@ th {
 .tab {
     margin-left: 0.5em;
 }
-.tooltipMobile {
+.tooltip-mobile {
     position: relative;
     display: inline-block;
     border-bottom: 1px dotted black;
 }
 
-.tooltipMobile .tooltipTextMobile {
+.tooltip-mobile .tooltip-text-mobile {
     visibility: hidden;
     width: 300px;
     background-color: black;
@@ -89,7 +89,7 @@ th {
     margin-left: -125px; /* Use half of the width (120/2 = 60), to center the tooltip */
 }
 
-.tooltipMobile:hover .tooltipTextMobile {
+.tooltip-mobile:hover .tooltip-text-mobile {
     visibility: visible;
 }
 
@@ -129,8 +129,8 @@ th {
     <h2>Daily Production:
       {{ county.get_production()|int }} <img class="resource_icons" src="/static/images/prod_icon.jpg">
       <br><span class="tab">
-          (<span class="tooltipMobile">{{ county.get_available_workers() }} available workers
-                  <span class="tooltipTextMobile">{{ meta_data["available_workers"] }}</span>
+          (<span class="tooltip-mobile">{{ county.get_available_workers() }} available workers
+                  <span class="tooltip-text-mobile">{{ meta_data["available_workers"] }}</span>
           </span>)
           </span>
     </h2>
