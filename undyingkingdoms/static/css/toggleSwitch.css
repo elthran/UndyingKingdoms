@@ -14,7 +14,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ca2222;
+  background-color: CornflowerBlue;
   -webkit-transition: .4s;
   transition: .4s;
 }
@@ -32,7 +32,7 @@
 }
 
 input:checked + .slider {
-  background-color: #2ab934;
+  background-color: BlueViolet;
 }
 
 input:focus + .slider {

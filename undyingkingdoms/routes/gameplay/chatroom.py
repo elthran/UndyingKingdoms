@@ -15,14 +15,22 @@ class ChatRoomAPI(MethodView):
     def get(self, template):
         form = MessageForm()
         chat = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id).all()
-        return render_template(template, form=form, chat=chat)
+        return render_template(template, form=form, chat=chat, global_chat_on=current_user.global_chat_on)
 
     @login_required
     @in_active_session
     def post(self):
         form = MessageForm()
-        chat = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id).all()
-        if request.form['updateOnly'] == 'true':
+
+        is_global = request.form['isGlobal'] == 'true'
+        update_only = request.form['updateOnly'] == 'true'
+        current_user.global_chat_on = is_global
+
+        if update_only:
+            if is_global:
+                chat = Chatroom.query.filter_by(is_global=True).all()
+            else:
+                chat = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id, is_global=False).all()
             return jsonify(dict(
                 status='success',
                 message='Here is the latest data.',
@@ -30,7 +38,7 @@ class ChatRoomAPI(MethodView):
                 csrf=form.csrf_token.current_token,
             ))
         elif form.validate_on_submit():
-            message = Chatroom(current_user.county.kingdom_id, current_user.county.id, form.content.data)
+            message = Chatroom(current_user.county.kingdom_id, current_user.county.id, form.content.data, is_global=is_global)
             message.save()
             return jsonify(dict(
                 status='success',

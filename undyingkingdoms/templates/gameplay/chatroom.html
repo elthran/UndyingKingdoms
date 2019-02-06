@@ -2,23 +2,52 @@
 
 {% block title %}Town Hall: {{ super() }}{% endblock %}
 
+{% block style %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/toggleSwitch.css') }}">
+<style type="text/css">
+#header {
+    display: flex;
+    justify-content: space-between;
+    max-width: 760px;
+    padding-top: 1em;
+    margin-bottom: 1em;
+}
+</style>
+{% endblock %}
+
 {% block content2 %}
 
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
-<h1>Discussion</h1>
-<div style="border:solid 1px;width:auto;min-height:300px;margin-left:250px;margin-right:250px;">
-<ul id="chatlist">
-</ul>
+<div id="body">
+  <div id="header">
+    <h1>Discussion</h1>
+    <label class="switch">
+      <input id="toggle-switch" type="checkbox" {% if global_chat_on %}checked{%endif %}>
+      <div class="slider round">
+        <span class="on">global</span>
+        <span class="off">kingdom</span>
+      </div>
+    </label>
+  </div>
+  <div style="border:solid 1px;width:auto;min-height:300px;margin-left:250px;margin-right:250px;">
+    <ul id="chatlist">
+    </ul>
+  </div>
+  <br>
+  <form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    <input style="width: 300px;" autofocus="" class="form-control " id="content" name="content"
+           placeholder="Public to your kingdom" required type="text" value="">
+    <br><br>
+    <button id="send" type="submit">Say</button>
+  </form>
 </div>
-<br>
-<form method="POST" accept-charset="UTF-8" role="form">
-	{{ form.csrf_token }}
-	<input style="width: 300px;" autofocus="" class="form-control " id="content" name="content" placeholder="Public to your kingdom" required type="text" value="">
-  <br><br>
-  <button id="send" type="submit">Say</button>
-</form>
+{% endblock %}
+
+{% block script %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
 function formatDate(date) {
@@ -44,7 +73,8 @@ function sendMessage() {
 
     $.post("/gameplay/chatroom/", {
         content: $("#content").val(),
-        updateOnly: false
+        updateOnly: false,
+        isGlobal: $("#toggle-switch").prop("checked")
     }, function (resp, status) {
         if (status === "success") {
             $("#content").val("");
@@ -67,7 +97,8 @@ function updateChat() {
 
     $.post("/gameplay/chatroom/", {
         message: "",
-        updateOnly: true
+        updateOnly: true,
+        isGlobal: $("#toggle-switch").prop("checked")
     }, function (resp, status) {
         if (status === "success") {
             $("#csrf_token").val(resp.csrf);
@@ -85,7 +116,7 @@ var clock = {
     handle: null,
     run: function () {
         updateChat();  // run immediately on focus, then every x seconds.
-        return setInterval(updateChat, 3000);
+        return setInterval(updateChat, 4000);
     }
 };
 

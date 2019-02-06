@@ -67,7 +67,7 @@ button {
   <div id="header">
     <h1>Discussion</h1>
     <label class="switch">
-      <input id="toggle-switch" type="checkbox">
+      <input id="toggle-switch" type="checkbox" {% if global_chat_on %}checked{%endif %}>
       <div class="slider round">
         <span class="on">global</span>
         <span class="off">kingdom</span>
@@ -114,10 +114,10 @@ function sendMessage() {
         headers: {"X-CSRF-TOKEN": $("#csrf_token").val()}
     });
 
-    console.log("Toggle value", $("#toggle-switch").val());
     $.post("/gameplay/chatroom/", {
         content: $("#content").val(),
-        updateOnly: false
+        updateOnly: false,
+        isGlobal: $("#toggle-switch").prop("checked")
     }, function (resp, status) {
         if (status === "success") {
             $("#content").val("");
@@ -140,7 +140,8 @@ function updateChat() {
 
     $.post("/gameplay/chatroom/", {
         message: "",
-        updateOnly: true
+        updateOnly: true,
+        isGlobal: $("#toggle-switch").prop("checked")
     }, function (resp, status) {
         if (status === "success") {
             $("#csrf_token").val(resp.csrf);
@@ -158,7 +159,7 @@ var clock = {
     handle: null,
     run: function () {
         updateChat();  // run immediately on focus, then every x seconds.
-        return setInterval(updateChat, 3000);
+        return setInterval(updateChat, 4000);
     }
 };
 
