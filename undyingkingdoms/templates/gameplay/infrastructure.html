@@ -2,80 +2,95 @@
 
 {% block title %}Infrastructure: {{ super() }}{% endblock %}
 
-{% block content2 %}
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+    padding-top: 1em;
+}
 
+input {
+    padding: 0.5em 0 0;
+}
+</style>
+{% endblock %}
+
+{% block content2 %}
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
-
-<br><br><br><br>
-<h2>Total Land: {{ county.land }}</h2>
-<h2>Available Land: {{ county.get_available_land() }}</h2>
-<h2>Daily Production:
+<div id="content">
+  <h2>Total Land: {{ county.land }}</h2>
+  <h2>Available Land: {{ county.get_available_land() }}</h2>
+  <h2>Daily Production:
     {{ county.get_production()|int }} <img class="resource_icons" src="/static/images/prod_icon.jpg">
-    (<div class="tooltip">{{ county.get_available_workers() }} available workers
+    (<span class="tooltip">{{ county.get_available_workers() }} available workers
         <span class="tooltipText">{{ meta_data["available_workers"] }}</span>
-    </div>)
-</h2>
-<h2>Current Resources:
+    </span>)
+  </h2>
+  <h2>Current Resources:
     {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">
     {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
     {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
-</h2>
-<br>
-<form method="POST" accept-charset="UTF-8" role="form">
+  </h2>
+  <br>
+  <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
     <table class="production_table">
-        <tr>
-            <th style="width:150px;">Name</th>
-            <th>Owned</th>
-            <th style="width:175px;">To Be Built</th>
-            <th>Under Construction</th>
-            <th style="width:150px;">Cost</th>
-            <th style="width:150px;">Workers Employed</th>
-            <th>Description</th>
-        </tr>
-        {% for building in county.buildings.values() %}
-        <tr>
-            <td>{{ building.class_name.title() }}</td>
-            <td>{{ building.total }}</td>
-            <td>
-                <input id="{{ building.base_name }}_slider" type="range" value="0" min="0" max="20" step="1" />
-                <span id="{{ building.base_name }}_display">0</span>
-                <input id="{{ building.base_name }}_value" name="{{ building.base_name }}" value="0" hidden/>
-            </td>
-            <td>{{ building.pending }}</td>
-            <td>
-                {{ building.production_cost }}<img class="resource_icons" src="/static/images/prod_icon.jpg">
-                {% if building.gold %}{{ building.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif %}
-                {% if building.wood %}{{ building.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif %}
-            </td>
-            <td>{{ building.labour_maintenance * building.total }} ({{ building.labour_maintenance }} each)</td>
-            <td>{{ building.description }}</td>
-        </tr>
-        {% endfor %}
-        <tr style="font-weight:bold;">
-            <td style="width:150px;">Total</td>
-            <td>{{ county.buildings.values()|sum(attribute='total') }}</td>
-            <td>-</td>
-            <td>{{ county.buildings.values()|sum(attribute='pending') }}</td>
-            <td style="width:150px;">-</td>
-            <td style="width:150px;">{{ county.get_maintenance_workers() }}</td>
-            <td>-</td>
-        </tr>
+      <tr>
+        <th style="width:150px;">Name</th>
+        <th>Owned</th>
+        <th style="width:175px;">To Be Built</th>
+        <th>Under Construction</th>
+        <th style="width:150px;">Cost</th>
+        <th style="width:150px;">Workers Employed</th>
+        <th>Description</th>
+      </tr>
+      {% for building in county.buildings.values() %}
+      <tr>
+        <td>{{ building.class_name.title() }}</td>
+        <td>{{ building.total }}</td>
+        <td>
+          <input id="{{ building.base_name }}_slider" type="range" value="0" min="0" max="20" step="1" />
+          <span id="{{ building.base_name }}_display">0</span>
+          <input id="{{ building.base_name }}_value" name="{{ building.base_name }}" value="0" hidden/>
+        </td>
+        <td>{{ building.pending }}</td>
+        <td>
+          {{ building.production_cost }}<img class="resource_icons" src="/static/images/prod_icon.jpg">
+          {% if building.gold %}{{ building.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif %}
+          {% if building.wood %}{{ building.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif %}
+        </td>
+        <td>{{ building.labour_maintenance * building.total }} ({{ building.labour_maintenance }} each)</td>
+        <td>{{ building.description }}</td>
+      </tr>
+      {% endfor %}
+      <tr style="font-weight:bold;">
+        <td style="width:150px;">Total</td>
+        <td>{{ county.buildings.values()|sum(attribute='total') }}</td>
+        <td>-</td>
+        <td>{{ county.buildings.values()|sum(attribute='pending') }}</td>
+        <td style="width:150px;">-</td>
+        <td style="width:150px;">{{ county.get_maintenance_workers() }}</td>
+        <td>-</td>
+      </tr>
     </table>
     <br>
     Gold Cost: <span id="goldCost">0</span>
-      <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
+    <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
     Wood Cost: <span id="woodCost">0</span>
-      <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
+    <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
     Land Required: <span id="landCost">0</span> / {{ county.get_available_land() }}
     <br><br>
     <br><button id="submitButton" type="submit">Build</button><br>
-</form>
+  </form>
+</div>
+{% endblock %}
 
+{% block script %}
+{{ super() }}
+{% set county = current_user.county %}
 <script type="text/javascript">
-
 var submitButton = document.getElementById('submitButton');
 
 {% for building in county.buildings.values() %}
@@ -130,6 +145,5 @@ function updateCosts() {
 {% endfor %}
 button = document.getElementById('submit');
 </script>
-
 {% endblock %}
 
