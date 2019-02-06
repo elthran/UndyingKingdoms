@@ -4,6 +4,7 @@
 
 {% block style %}
 {{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/toggleSwitch.css') }}">
 <style type="text/css">
 #body {
     display: flex;
@@ -12,10 +13,13 @@
     margin: 1.2em 1em;
 }
 
+#header {
+    display: flex;
+    justify-content: space-between;
+}
 
 h1 {
-    padding-bottom: 0.4em;
-    text-align: center;
+    margin-bottom: 0;
 }
 
 #chatDiv {
@@ -60,7 +64,16 @@ button {
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 <div id="body">
-  <h1>Discussion</h1>
+  <div id="header">
+    <h1>Discussion</h1>
+    <label class="switch">
+      <input id="toggle-switch" type="checkbox" {% if global_chat_on %}checked{%endif %}>
+      <div class="slider round">
+        <span class="on">global</span>
+        <span class="off">kingdom</span>
+      </div>
+    </label>
+  </div>
   <div id=chatDiv>
     <ul id="chatlist" class="dont-break-out">
     </ul>
@@ -103,7 +116,8 @@ function sendMessage() {
 
     $.post("/gameplay/chatroom/", {
         content: $("#content").val(),
-        updateOnly: false
+        updateOnly: false,
+        isGlobal: $("#toggle-switch").prop("checked")
     }, function (resp, status) {
         if (status === "success") {
             $("#content").val("");
@@ -126,7 +140,8 @@ function updateChat() {
 
     $.post("/gameplay/chatroom/", {
         message: "",
-        updateOnly: true
+        updateOnly: true,
+        isGlobal: $("#toggle-switch").prop("checked")
     }, function (resp, status) {
         if (status === "success") {
             $("#csrf_token").val(resp.csrf);
@@ -144,7 +159,7 @@ var clock = {
     handle: null,
     run: function () {
         updateChat();  // run immediately on focus, then every x seconds.
-        return setInterval(updateChat, 3000);
+        return setInterval(updateChat, 4000);
     }
 };
 
@@ -160,5 +175,10 @@ $(window).on("blur", function () {
 
 // Pull chat date once page loads
 $(document).ready(updateChat());
+
+// Reload chat if toggle button is clicked
+$('.switch').on('click', function () {
+    updateChat();
+});
 </script>
 {% endblock %}

@@ -7,11 +7,13 @@ class Chatroom(GameState):
     kingdom_id = db.Column(db.Integer)
     county_id = db.Column(db.Integer)
     content = db.Column(db.String(512))
+    is_global = db.Column(db.Boolean, default=False)
 
-    def __init__(self, kingdom_id, county_id, content):
+    def __init__(self, kingdom_id, county_id, content, is_global=False):
         self.kingdom_id = kingdom_id
         self.county_id = county_id
         self.content = content
+        self.is_global = is_global
 
     def get_county_leader_name(self):
         county = County.query.filter_by(id=self.county_id).first()
