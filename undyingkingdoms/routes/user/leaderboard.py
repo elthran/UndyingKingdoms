@@ -1,15 +1,17 @@
 from flask import render_template
 from flask_login import login_required, current_user
+from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app, User
+from undyingkingdoms.routes.helpers import in_active_session
 
 
-@login_required
 @app.route('/user/leaderboard/', methods=['GET', 'POST'])
-def leaderboard():
-    if not current_user.in_active_session:
-        current_user.in_active_session = True
+@mobile_template('{mobile/}user/leaderboard.html')
+@login_required
+@in_active_session
+def leaderboard(template):
     users = User.query.all()
     current_users = [user for user in users if user.county is not None]
     sorted_users = sorted(current_users, key=lambda user: user.get_current_leaderboard_score(), reverse=True)
-    return render_template('user/leaderboard.html', users=sorted_users)
+    return render_template(template, users=sorted_users)
