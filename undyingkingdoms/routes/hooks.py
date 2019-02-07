@@ -14,5 +14,5 @@ def session_commit(response):
     except DatabaseError:
         db.session.rollback()
         raise
-    # session.remove() is called for you by flask-sqlalchemy
+    # db.session.remove() # is called for you by flask-sqlalchemy
     return response
