@@ -9,11 +9,6 @@
     width: 100%;
     max-width: 500px;
 }
-
-<!--h2 {-->
-    <!--text-align: left;-->
-    <!--width: 100%;-->
-<!--}-->
 </style>
 {% endblock %}
 
@@ -21,7 +16,7 @@
 <div id="content">
   <h1>Alpha Testing Leaderboard</h1>
   <div id="body">
-    <h2 class="bottom-spacer-point-3">Current Age (Day {{ current_user.county.kingdom.world.day }} / 168):</h2>
+    <h2 class="bottom-spacer-dot-3">Current Age (Day {{ current_user.county.kingdom.world.day }} / 168):</h2>
     <ul>
       {% for user in users %}
       {% if user.county and user.is_bot != True %}
@@ -32,7 +27,7 @@
       {% endfor %}
     </ul>
     <br>
-    <h2 class="bottom-spacer-point-3">All Time Best:</h2>
+    <h2 class="bottom-spacer-dot-3">All Time Best:</h2>
     <ul>
       {% for user in users|sort(attribute='alpha_wins', reverse=True) %}
       {% if user.county and user.is_bot != True %}
@@ -41,7 +36,7 @@
       {% endfor %}
     </ul>
     <br>
-    <h2 class="bottom-spacer-point-3">Total Rounds Completed: {{ users[0].county.kingdom.world.age - 1 }}</h2>
+    <h2 class="bottom-spacer-dot-3">Total Rounds Completed: {{ users[0].county.kingdom.world.age - 1 }}</h2>
   </div>
 </div>
 {{ super() }}

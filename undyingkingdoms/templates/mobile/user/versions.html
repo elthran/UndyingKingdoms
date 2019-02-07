@@ -1,101 +1,130 @@
-{% extends "gameplay/layout.html" %}
+{% extends "mobile/gameplay/layout.html" %}
 
 {% block title %}Versions: {{ super() }}{% endblock %}
 
-{% block content2 %}
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#body {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 0.6em;
+}
 
-<h1>New Updates for Version 0.0.05 (Feb. 5)</h1><br>
-<h2>New Race: Goblins</h2><br>
-<h2>New Building: Banks</h2><br>
-<h2>New County Factor: Health</h2><br>
-<h2>New Feature: Monsters</h2><br>
-<ul>
-    <li>New building, lairs, limits how many monsters you can train</li>
-    <li>Each race has their own unique and devastating monster to use in combat</li>
-</ul>
-<h2>Balance Changes</h2><br>
-<ul>
-    <li>Attacking now has slightly higher casualties than defending</li>
-    <li>Attacks now have a longer duration (+1 day per 20 troops who survive), so you can not spam attacks</li>
-    <li>Getting infiltrated multiple times in one day reduces the success rate of each consecutive attempt</li>
-    <li>Limit of 3 thieves per infiltration mission</li>
-    <li>Game Reset buffer: Each new age pauses the game for 12 hours. You can buy tyhings and change settings, but the clock won't advance.
-        This relieves the pressure of needing to check in as soon as the game launches to have an advantage.</li>
-</ul>
-<h2>UI Improvements</h2><br>
-<ul>
-    <li>More interactive results on construct/attack pages</li>
-    <li>New county initialization page</li>
-    <li>Website now supports mobile on more pages</li>
-    <li>Race/Class bonuses now appear on relevant pages</li>
-</ul>
+h1 {
+    margin: 0.6em 0 0.3em;
+}
 
-<br><br>
-<br><br>
-<h1>Updates for Version 0.0.04 (Jan. 31)</h1>
-<br>
-<h2>UI Improvements</h2>
-<br>
-<ul>
-    <li>Buying buildings and troops now properly updates total cost before you buy</li>
-    <li>New login page</li>
-    <li>Website now supports mobile on most pages</li>
-    <li>News feed can now show old news</li>
-</ul>
-<h2>New Class Features</h2>
-<ul>
-    <li>Each county leader can choose a class: the leader's class affects what their county excels at</li>
-    <li>Starting with four classes:</li>
-    <li> - Warlord</li>
-    <li> - Rogue</li>
-    <li> - Engineer</li>
-    <li> - Merchant</li>
-</ul>
-<h2>Balance Changes</h2>
-<ul>
-    <li>Attacking with a much weaker/strong army no longer decimates your army, but instead has them flee</li>
-    <li>Thief durations for missions has been adjusted. Getting caught has a much larger penalty.</li>
-    <li>Building costs updated. Thieves guilds are now more costly; houses and food production are cheaper</li>
-</ul>
-<h2>Bug Fixes</h2>
-<ul>
-    <li>Thieves are now working as intended and return as intended</li>
-    <li>Leaderboard now properly adds score from traveling armies</li>
-</ul>
+h2 {
+    margin: 0.3em 0;
+}
 
-<br><br>
-<h1>Previous Updates from Version 0.0.03 (Jan. 24)</h1>
-<br>
-<h2>New Infiltration mechanic</h2>
-<ul>
-    <li>You now get 1 thief per thieves guild</li>
-    <li>You can send thieves on various missions: stealing gold, burning crops, spying</li>
-    <li>Thieves not on active missions will protect against enemy thieves</li>
-</ul>
-<h2>Inbox System</h2>
-<ul>
-    <li>You will now be able to send messages to other players directly</li>
-</ul>
-<h2>New Racial Features</h2>
-<ul>
-    <li>Each race will have several strengths/weaknesses, as well as different troop types</li>
-    <li>The county creation page will give some detail about races</li>
-</ul>
-<h2>Balance Changes</h2>
-<ul>
-    <li>Land gained from attacking is now proportional to your land. So attacking counties weaker than you gains very little land.</li>
-    <li>Nourishment has become more meaningful.</li>
-    <li>Excess production now gives much less gold</li>
-</ul>
-<h2>Quality of Life Changes</h2>
-<ul>
-    <li>Added happiness and nourishment breakdowns to the economy page so you can better manage your county</li>
-    <li>Attack page now lets you select troops in 10% increments, rather than listing every possible number of troops</li>
-    <li>Chatroom (Townhall) now auto-refreshes every few seconds and is more user-friendly</li>
-</ul>
-<h2>Bug Fixes</h2>
-<ul>
-    <li>You can no longer attack yourself (not sure why anyone was trying to do that!)</li>
-</ul>
+#body > ul {
+    margin-left: 1em;
+}
 
+#content > h1 {
+    margin-top: 0;
+}
+</style>
+{% endblock %}
+
+{% block content1 %}
+<div id="content">
+  <h1>New Updates for&nbsp;Version&nbsp;0.0.05 (Feb.&nbsp;5)</h1>
+  <div id="body">
+    <h2>New Race: Goblins</h2>
+    <h2>New Building: Banks</h2>
+    <h2>New County Factor: Health</h2>
+    <h2>New Feature: Monsters</h2>
+    <ul>
+      <li>New building, lairs, limits how many monsters you can train</li>
+      <li>Each race has their own unique and devastating monster to use in combat</li>
+    </ul>
+    <h2>Balance Changes</h2>
+    <ul>
+      <li>Attacking now has slightly higher casualties than defending</li>
+      <li>Attacks now have a longer duration (+1 day per 20 troops who survive), so you can not spam attacks</li>
+      <li>Getting infiltrated multiple times in one day reduces the success rate of each consecutive attempt</li>
+      <li>Limit of 3 thieves per infiltration mission</li>
+      <li>Game Reset buffer: Each new age pauses the game for 12 hours. You can buy tyhings and change settings,
+        but
+        the clock won't advance.
+        This relieves the pressure of needing to check in as soon as the game launches to have an advantage.
+      </li>
+    </ul>
+    <h2>UI Improvements</h2>
+    <ul>
+      <li>More interactive results on construct/attack pages</li>
+      <li>New county initialization page</li>
+      <li>Website now supports mobile on more pages</li>
+      <li>Race/Class bonuses now appear on relevant pages</li>
+    </ul>
+    <h1>Updates for&nbsp;Version&nbsp;0.0.04 (Jan.&nbsp;31)</h1>
+    <h2>UI Improvements</h2>
+    <ul>
+      <li>Buying buildings and troops now properly updates total cost before you buy</li>
+      <li>New login page</li>
+      <li>Website now supports mobile on most pages</li>
+      <li>News feed can now show old news</li>
+    </ul>
+    <h2>New Class Features</h2>
+    <ul>
+      <li>Each county leader can choose a class: the leader's class affects what their county excels at</li>
+      <li>Starting with four classes:</li>
+      <li> - Warlord</li>
+      <li> - Rogue</li>
+      <li> - Engineer</li>
+      <li> - Merchant</li>
+    </ul>
+    <h2>Balance Changes</h2>
+    <ul>
+      <li>Attacking with a much weaker/strong army no longer decimates your army, but instead has them flee</li>
+      <li>Thief durations for missions has been adjusted. Getting caught has a much larger penalty.</li>
+      <li>Building costs updated. Thieves guilds are now more costly; houses and food production are cheaper</li>
+    </ul>
+    <h2>Bug Fixes</h2>
+    <ul>
+      <li>Thieves are now working as intended and return as intended</li>
+      <li>Leaderboard now properly adds score from traveling armies</li>
+    </ul>
+    <h1>Previous Updates from&nbsp;Version&nbsp;0.0.03 (Jan.&nbsp;24)</h1>
+    <h2>New Infiltration mechanic</h2>
+    <ul>
+      <li>You now get 1 thief per thieves guild</li>
+      <li>You can send thieves on various missions: stealing gold, burning crops, spying</li>
+      <li>Thieves not on active missions will protect against enemy thieves</li>
+    </ul>
+    <h2>Inbox System</h2>
+    <ul>
+      <li>You will now be able to send messages to other players directly</li>
+    </ul>
+    <h2>New Racial Features</h2>
+    <ul>
+      <li>Each race will have several strengths/weaknesses, as well as different troop types</li>
+      <li>The county creation page will give some detail about races</li>
+    </ul>
+    <h2>Balance Changes</h2>
+    <ul>
+      <li>Land gained from attacking is now proportional to your land. So attacking counties weaker than you gains
+        very little land.
+      </li>
+      <li>Nourishment has become more meaningful.</li>
+      <li>Excess production now gives much less gold</li>
+    </ul>
+    <h2>Quality of Life Changes</h2>
+    <ul>
+      <li>Added happiness and nourishment breakdowns to the economy page so you can better manage your county</li>
+      <li>Attack page now lets you select troops in 10% increments, rather than listing every possible number of
+        troops
+      </li>
+      <li>Chatroom (Townhall) now auto-refreshes every few seconds and is more user-friendly</li>
+    </ul>
+    <h2>Bug Fixes</h2>
+    <ul>
+      <li>You can no longer attack yourself (not sure why anyone was trying to do that!)</li>
+    </ul>
+  </div>
+</div>
+{{ super() }}
 {% endblock %}
