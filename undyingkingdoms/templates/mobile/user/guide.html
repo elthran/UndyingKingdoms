@@ -1,0 +1,43 @@
+{% extends "mobile/gameplay/layout.html" %}
+
+{% block title %}Guide: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#body {
+    width: 100%;
+    max-width: 500px;
+}
+
+h2 {
+    text-align: left;
+    width: 100%;
+}
+</style>
+{% endblock %}
+
+{% block content1 %}
+<div id="content">
+  <h1>Basics</h1>
+  <div id="body">
+    <h2>Counties</h2>
+    <p class="bottom-spacer-point-6 tab-1">Each county is controlled by a player. The goal of the game is to manage and grow your county, while gaining
+      political influence by communicating with
+      other counties in your kingdom.</p>
+
+    <h2>Kingdoms</h2>
+    <p class="bottom-spacer-point-6 tab-1">Each kingdom is a group of counties. At the beginning of an age, each kingdom is in civil war as the counties vie
+      for dominance. Once one player
+      has secured power and crowned monarch, the civil war ends and the kingdom becomes united. At this point in the
+      game the purpose is to become the strongest kingdom.</p>
+
+    <h2>Time</h2>
+    <p class="tab-1">Each real-world hour ends one game day. At the end of each game day many things change such as the weather, your
+      county's population, your taxes are collected, etc.
+      While the game is in testing, each real-world week constitutes an 'Age' of the game. At the end of each Age, the
+      game resets (though your achievements remain).</p>
+  </div>
+</div>
+{{ super() }}
+{% endblock %}
