@@ -2,13 +2,70 @@
 
 {% block title %}Admin: {{ super() }}{% endblock %}
 
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 40%;
+    margin-top: 1em;
+}
+
+.bottom-spacer-1 {
+    margin-bottom: 1em;
+}
+
+#body {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+}
+
+button {
+    width: 100%;
+    margin-bottom: 0.6em;
+}
+
+.top-spacer-1 {
+    margin-top: 1em;
+}
+</style>
+{% endblock %}
+
 {% block content2 %}
+<div id="content">
+  <h1 class="bottom-spacer-1">Admin Tools</h1>
+  <div id="body">
+    <button value="bots 3" type="submit">Add 3 bot counties</button>
+    <button value="drop" disabled="disabled">Drop Tables</button>
+    <button value="create" disabled="disabled">Create All</button>
+    <div class="top-spacer-1">
+      <p>JSON response:</p>
+      <pre id="response">None yet, push a button ...</pre>
+    </div>
+  </div>
+</div>
+{% endblock %}
 
-<form method="POST" accept-charset="UTF-8" role="form">
-    {{ form.csrf_token }}
-    {{ form.tax }}
-        <button type="submit">Add 3 bot counties</button>
-    <br>
-</form>
+{% block script %}
+{{ super() }}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+// submit button.value to admin route as json.
+// return response and print it on page.
+function displayResponse(resp, status) {
+	$("#response").innerHTML = resp.data;
+}
 
+
+$("button").each(function (ignore, element) {
+    var tool_id = $(element).val();
+    console.log(tool_id);
+    $(element).click(function () {
+        $.get("{{ url_for('admin.home_api') }}?tool_id=" + tool_id, displayResponse, "json");
+    });
+});
+</script>
 {% endblock %}

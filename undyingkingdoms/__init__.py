@@ -7,10 +7,8 @@ from flask_login import LoginManager
 
 from extensions import flask_db, flask_json, flask_csrf, flask_mobility, flask_mail
 from undyingkingdoms.GeoIP import geo_ip
-from undyingkingdoms.admin import admin_blueprint
+from undyingkingdoms.blueprints.admin import admin_blueprint
 from undyingkingdoms.blueprints.game_clock import game_clock_blueprint
-import private_config
-
 
 app = Flask(__name__)
 # I can't figure out how to put these in the config file
@@ -69,7 +67,6 @@ def import_routes():
     import undyingkingdoms.routes.user.guide
     import undyingkingdoms.routes.user.leaderboard
     import undyingkingdoms.routes.user.versions
-    import undyingkingdoms.routes.user.admin
     import undyingkingdoms.routes.hooks
 
 

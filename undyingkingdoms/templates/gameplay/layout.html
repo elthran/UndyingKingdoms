@@ -2,7 +2,7 @@
 
 {% block style %}
 <style type="text/css">
-#body {
+#layout-body {
     display: flex;
     margin: 1em;
 }
@@ -27,7 +27,7 @@
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
-<div id="body">
+<div id="layout-body">
   <div id="sidebar">
     <ul style="text-align:center;">
       <li><h1>Gameplay</h1></li>
@@ -46,7 +46,7 @@
       <li><a href="{{ url_for('guide') }}">New&nbsp;Player&nbsp;Guide</a></li>
       <li><a href="{{ url_for('leaderboard') }}">Leaderboard</a></li>
       <li><a href="{{ url_for('versions') }}">Read&nbsp;About&nbsp;Updates</a></li>
-      {% if user.is_admin %}<li><a href="{{ url_for('admin') }}">Admin</a></li>{% endif %}
+      {% if user.is_admin %}<li><a href="{{ url_for('admin.home_api') }}">Admin</a></li>{% endif %}
       <li><a href="{{ url_for('logout') }}">Logout</a></li>
       <li><br><br><br></li>
     </ul>
