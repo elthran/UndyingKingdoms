@@ -17,6 +17,14 @@ class BaseConfig:
     BCRYPT_LOG_ROUNDS = 13
     THREADS_PER_PAGE = 2
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # I don't know what these do but we might need them at some point.
+    # from server show global variables like '%connections%';
+    SQLALCHEMY_POOL_SIZE = 5000
+    SQLALCHEMY_POOL_RECYCLE = 30 * 60  # 30 minutes, sounded reasonable?
+    # sounded reasonable, maybe should be same as SQLALCHEMY_POOL_RECYCLE
+    SQLALCHEMY_POOL_TIMEOUT = 30
+
     CSRF_ENABLED = True
     CSRF_SESSION_KEY = private_config.CSRF_SESSION_KEY
     JWT_ALGORITHM = 'HS256'
