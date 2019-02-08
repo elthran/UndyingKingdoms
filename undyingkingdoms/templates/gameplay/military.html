@@ -164,7 +164,7 @@ var values = $(".value");
 
 var buildingGoldCosts = $(".buildingGoldCost");
 var buildingWoodCosts = $(".buildingWoodCost");
-var buildingIronCosts = $(".buildingWoodCost");
+var buildingIronCosts = $(".buildingIronCost");
 
 var submitButton = $("#submitButton");
 var goldCost = $("#goldCost");
@@ -198,6 +198,7 @@ function updateIron() {
     var sum = 0;
     sliders.each(function (index, element) {
         sum += element.value * buildingIronCosts[index].innerHTML;
+        console.log(sum);
     });
     ironCost.html(sum);
 }
