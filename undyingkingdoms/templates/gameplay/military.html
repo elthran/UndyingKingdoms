@@ -12,18 +12,21 @@
 input {
     padding: 0.5em 0 0;
 }
+
+#invisibleDataFields {
+    display: none;
+}
 </style>
 {% endblock %}
-
-<!--max(min(x * 3, 25), 10)-->
-{% macro normalized_size(x) %}
-{{ ([([(x * 3), 25] | sort)[0], 10] | sort)[-1] }}
-{% endmacro %}
 
 {% block content2 %}
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
+<!--min(each cost)-->
+{% macro max_trainable_by_cost(army) %}
+{{ ([county.gold // army.gold, county.wood // army.wood, county.iron // army.iron] | sort)[0] }}
+{% endmacro %}
 <div id="content">
   <h2>Current Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>
   <h2>Current Defensive Power: {{ county.get_defensive_strength() }}</h2>
@@ -37,7 +40,7 @@ input {
         <th>In Foreign Lands</th>
         <th>In Training</th>
         <th style="width:175px;">Train</th>
-        <th style="width:125px;">Cost</th>
+        <th style="min-width:125px;">Cost</th>
         <th>Trainable Per Day</th>
         <th>
           <div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div>
@@ -54,8 +57,9 @@ input {
         <th>Description</th>
       </tr>
       {% for army in county.armies.values() %}
+        <!-- {{ [county.gold // army.gold, county.wood // army.wood, county.iron // army.iron] }} -->
         <!--(list | sort)[0] replicates min()-->
-        {% set slider_size = normalized_size(army.trainable_per_day) | int %}
+        {% set slider_size = max_trainable_by_cost(army) | int %}
       <tr>
         <td>{{ army.class_name.title() }}</td>
         <td>{{ army.available }}</td>
@@ -63,31 +67,34 @@ input {
         <td>{{ army.currently_training }}</td>
         <td>
           {% if army.base_name == 'monster' %}
-          {% if county.buildings['lair'].total - county.armies['monster'].total -
-          county.armies['monster'].currently_training <= 0 %}
-          <input id="{{ army.base_name }}_slider" type="range" value="0" min="0"
-                 max="{{ county.buildings['lair'].total - county.armies['monster'].total }}" step="1" hidden/>
-          <span id="{{ army.base_name }}_display" hidden>0</span>
-          <span style="color:red;">Requires {{ county.buildings['lair'].class_name_plural.title() }}</span>
+          {% if county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training <= 0 %}
+            <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total }}" step="1" hidden/>
+            <span class="display" hidden>0</span>
+            <span style="color:red;">Requires {{ county.buildings['lair'].class_name_plural.title() }}</span>
           {% else %}
-          <input id="{{ army.base_name }}_slider" type="range" value="0" min="0"
-                 max="{{ county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training }}"
-                 step="1"/>
-          <span id="{{ army.base_name }}_display">0</span>
+            <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training }}"
+                   step="1"/>
+            <span class="display">0</span>
           {% endif %}
           {% else %}
-          <input id="{{ army.base_name }}_slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
-          <span id="{{ army.base_name }}_display">0</span>
+            <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
+            <span class="display">0</span>
           {% endif %}
-          <input id="{{ army.base_name }}_value" name="{{ army.base_name }}" value="0" hidden/>
+          <input class="value" name="{{ army.base_name }}" value="0" hidden/>
         </td>
         <td>
-          {% if army.gold %}{{ army.gold }}<img class="resource_icons" src="/static/images/gold_icon.jpg">{% endif
-          %}
-          {% if army.wood %}{{ army.wood }}<img class="resource_icons" src="/static/images/wood_icon.jpg">{% endif
-          %}
-          {% if army.iron %}{{ army.iron }}<img class="resource_icons" src="/static/images/iron_icon.jpg">{% endif
-          %}
+          {% if army.gold %}
+            <span class="buildingGoldCost">{{ army.gold }}</span>
+            <img class="resource_icons" src="/static/images/gold_icon.jpg">
+          {% endif %}
+          {% if army.wood %}
+            <span class="buildingWoodCost">{{ army.wood }}</span>
+            <img class="resource_icons" src="/static/images/wood_icon.jpg">
+          {% endif %}
+          {% if army.iron %}
+            <span class="buildingIronCost">{{ army.iron }}</span>
+            <img class="resource_icons" src="/static/images/iron_icon.jpg">
+          {% endif %}
           {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
         </td>
         <td>{{ army.trainable_per_day }}</td>
@@ -119,14 +126,11 @@ input {
     </table>
     <br>
     Gold Cost: <span id="goldCost">0</span>
-    <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons"
-                                                                                             src="/static/images/gold_icon.jpg"><br>
+    <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
     Wood Cost: <span id="woodCost">0</span>
-    <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons"
-                                                                                             src="/static/images/wood_icon.jpg"><br>
+    <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
     Iron Cost: <span id="ironCost">0</span>
-    <img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons"
-                                                                                             src="/static/images/iron_icon.jpg"><br>
+    <img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons"  src="/static/images/iron_icon.jpg"><br>
     Happiness Cost: <span id="happinessCost">0</span>
     <img class="resource_icons" src="/static/images/heart_icon.jpg">
     <br><br>
@@ -142,78 +146,110 @@ input {
   You have no troops travelling in foreign lands.
   {% endfor %}
 </div>
+<div id="invisibleDataFields">
+  <span id="population">{{ county.population }}</span>
+  <span id="totalGold">{{ county.gold }}</span>
+  <span id="totalWood">{{ county.wood }}</span>
+  <span id="totalIron">{{ county.iron }}</span>
+</div>
 {% endblock %}
 
 {% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 {{ super() }}
-{% set county = current_user.county %}
 <script type="text/javascript">
-var submitButton = document.getElementById('submitButton');
+var sliders = $(".slider");
+var displays = $(".display");
+var values = $(".value");
 
-{% for unit in county.armies.values() %}
-    var {{ unit.base_name }}_slider = document.getElementById('{{ unit.base_name }}_slider');
-    {{ unit.base_name }}_display = document.getElementById('{{ unit.base_name }}_display');
-{% endfor %}
+var buildingGoldCosts = $(".buildingGoldCost");
+var buildingWoodCosts = $(".buildingWoodCost");
+var buildingIronCosts = $(".buildingWoodCost");
+
+var submitButton = $("#submitButton");
+var goldCost = $("#goldCost");
+var woodCost = $("#woodCost");
+var ironCost = $("#ironCost");
+var happinessCost = $("#happinessCost");
+
+
+var totalGold = parseInt($("#totalGold").text());
+var totalWood = parseInt($("#totalWood").text());
+var totalIron = parseInt($("#totalIron").text());
+var population = parseInt($("#population").text());
 
 function updateGold() {
-    goldCost.innerHTML = 0{% for unit in county.armies.values() %} + {{ unit.base_name }}_slider.value * {{ unit.gold }}{% endfor %};
+    var sum = 0;
+    sliders.each(function (index, element) {
+        sum += element.value * buildingGoldCosts[index].innerHTML;
+    });
+    goldCost.html(sum);
 }
+
 function updateWood() {
-    woodCost.innerHTML = 0{% for unit in county.armies.values() %} + {{ unit.base_name }}_slider.value * {{ unit.wood }}{% endfor %};
+    var sum = 0;
+    sliders.each(function (index, element) {
+        sum += element.value * buildingWoodCosts[index].innerHTML;
+    });
+    woodCost.html(sum);
 }
+
 function updateIron() {
-    ironCost.innerHTML = 0{% for unit in county.armies.values() %} + {{ unit.base_name }}_slider.value * {{ unit.iron }}{% endfor %};
+    var sum = 0;
+    sliders.each(function (index, element) {
+        sum += element.value * buildingIronCosts[index].innerHTML;
+    });
+    ironCost.html(sum);
 }
+
 function updateHappiness() {
-    happinessCost.innerHTML = Math.ceil((parseInt(0){% for unit in county.armies.values() %} +
-    parseInt({{ unit.base_name }}_slider.value){% endfor %}) * 100 / {{ county.population }});
+    var sum = 0;
+    sliders.each(function (ignore, element) {
+        sum += parseInt(element.value);
+    });
+    happinessCost.html(Math.ceil(sum / population * 100));
 }
+
 function updateCosts() {
     updateGold();
     updateWood();
     updateIron();
     updateHappiness();
-    var gold = parseInt(goldCost.innerHTML);
-    if (gold > {{ county.gold }}) {
-        goldCost.style.color = 'red';
+
+    var gold = parseInt(goldCost.text());
+    var wood = parseInt(woodCost.text());
+    var iron = parseInt(ironCost.text());
+
+    if (gold > totalGold) {
+        goldCost.css("color", "red");
     } else {
-        goldCost.style.color = 'green';
+        goldCost.css("color", "green");
     }
-    var wood = parseInt(woodCost.innerHTML);
-    if (wood > {{ county.wood }}) {
-        woodCost.style.color = 'red';
+
+    if (wood > totalWood) {
+        woodCost.css("color", "red");
     } else {
-        woodCost.style.color = 'green';
+        woodCost.css("color", "green");
     }
-    var iron = parseInt(ironCost.innerHTML);
-    if (iron > {{ county.iron }}) {
-        ironCost.style.color = 'red';
+    if (iron > totalIron) {
+        ironCost.css("color", "red");
     } else {
-        ironCost.style.color = 'green';
+        ironCost.css("color", "green");
     }
-    if (gold <= {{ county.gold }} && wood <= {{ county.wood }} && iron <= {{ county.iron }}) {
-        submitButton.disabled = false;
+    if (gold <= totalGold && wood <= totalWood && iron <= totalIron) {
+        submitButton.prop("disabled", false);
     } else {
-        submitButton.disabled = true;
+        submitButton.prop("disabled", true);
     }
 }
 
-{% for unit in county.armies.values() %}
-{% set train_size = unit.trainable_per_day %}
-{% set max_size = normalized_size(unit.trainable_per_day) | int %}
-{% set p = train_size * 0.0032 %}
 
-{{ unit.base_name }}_slider.oninput = function() {
-    // value mapping list
-    {{ train_size }}
-    {{ p }}
-    var valMap = [{% for n in range(max_size+1) %}{{ (p*n*n + n) | int }}{{ ", " if not loop.last }}{% endfor %}];
-    {{ unit.base_name }}_display.innerHTML = valMap[this.value];
-    {{ unit.base_name }}_value.value = valMap[this.value];
-    updateCosts();
-}
-{% endfor %}
-
+sliders.each(function (index, element) {
+    $(element).on("input", function () {
+        displays[index].innerHTML = $(element).val();
+        values[index].value = $(element).val();
+        updateCosts();
+    });
+});
 </script>
-
 {% endblock %}
