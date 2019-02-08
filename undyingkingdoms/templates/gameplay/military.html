@@ -75,15 +75,15 @@ input {
         <td>{{ army.currently_training }}</td>
         <td>
           {% if army.base_name == 'monster' %}
-          {% if county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training <= 0 %}
-            <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total }}" step="1" hidden/>
-            <span class="display" hidden>0</span>
-            <span style="color:red;">Requires {{ county.buildings['lair'].class_name_plural.title() }}</span>
-          {% else %}
-            <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training }}"
-                   step="1"/>
-            <span class="display">0</span>
-          {% endif %}
+            {% if county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training <= 0 %}
+              <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total }}" step="1" hidden/>
+              <span class="display" hidden>0</span>
+              <span style="color:red;">Requires {{ county.buildings['lair'].class_name_plural.title() }}</span>
+            {% else %}
+              <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training }}"
+                     step="1"/>
+              <span class="display">0</span>
+            {% endif %}
           {% else %}
             <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
             <span class="display">0</span>
