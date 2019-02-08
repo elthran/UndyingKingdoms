@@ -94,6 +94,11 @@ button {
     max-width: 450px;
     margin: auto;
 }
+
+#requiresBuilding {
+    color: red;
+    margin: 0.6em;
+}
 </style>
 {% endblock %}
 
@@ -156,14 +161,13 @@ button {
           <!--This code should be dynamic JS but isn't-->
           {% if army.base_name == 'monster' %}
             {% if county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training <= 0 %}
-              {{ select_field(army) }}
-              <span style="color:red;">Requires {{ county.buildings['lair'].class_name_plural.title() }}</span>
+              <div id="requiresBuilding">Requires {{ county.buildings['lair'].class_name_plural.title() }}</div>
             {% endif %}
           {% else %}
             {{ select_field(army) }}
+            <button class="submitButton" type="submit">Build <span class="display">0</span></button>
           {% endif %}
           <input class="value" name="{{ army.base_name }}" value="0" hidden/>
-          <button class="submitButton" type="submit">Build <span class="display">0</span></button>
         </td>
       </tr>
       <tr>
