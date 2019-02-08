@@ -35,6 +35,12 @@ button:active {
     top: 1px;
 }
 
+button[disabled], button[disabled]:active {
+		background-color: #DCDCDC;
+		position: static;
+		top: 0;
+}
+
 .production_table {     /* The tables which display your infrastructure/military and let you build */
     width: auto;
     border: 1px solid;

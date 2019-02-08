@@ -1,0 +1,55 @@
+from random import choice
+from uuid import uuid4
+
+from flask import jsonify
+
+from undyingkingdoms.models import World
+from .metadata import bot_county_prefix, bot_county_suffix, bot_leader_prefix, bot_leader_suffix
+from undyingkingdoms.models.notifications import Notification
+from undyingkingdoms.models.counties import County
+from undyingkingdoms.models.users import User
+from undyingkingdoms.models.kingdoms import Kingdom
+
+def create_bots(n=3):
+    kingdoms = Kingdom.query.all()
+
+    for i in range(n):
+        smallest_kingdom = min(kingdoms, key=lambda x: len(x.counties))
+        bot_name = uuid4()
+        user = User("bot_{}".format(bot_name),
+                    "bot_{}@gmail.com".format(bot_name),
+                    "1234")
+        user.is_bot = True
+        user.save()
+        county = County(
+            smallest_kingdom.id, "{}{}".format(
+                choice(bot_county_prefix),
+                choice(bot_county_suffix)),
+            "{}{}".format(
+                choice(bot_leader_prefix),
+                choice(bot_leader_suffix)),
+            user.id,
+            choice(["Human", "Elf", "Dwarf"]),
+            choice(["Sir", "Lady"]),
+            choice(["Engineer", "Warlord", "Rogue", "Merchant"]))
+        county.save()
+        county.vote = county.id
+    return jsonify(
+        status="success",
+        message=f"Successfully create {n} bots."
+    )
+
+def get_current_users():
+    users = User.query.all()
+    return (user for user in users if user.county)
+
+
+def create_notification(message):
+    world = World.query.first()
+    for user in get_current_users():
+        notification = Notification(user.id, "Admin Update", message, world.day)
+        notification.save()
+    return jsonify(
+        status="success",
+        message=f"Successfully sent notice '{message}' to all active users."
+    )

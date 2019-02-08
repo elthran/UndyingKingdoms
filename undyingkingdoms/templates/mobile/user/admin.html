@@ -1,4 +1,4 @@
-{% extends "gameplay/layout.html" %}
+{% extends "mobile/gameplay/layout.html" %}
 
 {% block title %}Admin: {{ super() }}{% endblock %}
 
@@ -7,21 +7,9 @@
 <style type="text/css">
 #content {
     display: flex;
-    flex-flow: row wrap;
-    align-content: stretch;
-    margin-top: 1em;
-    max-width: 50em;
-}
-
-#left-column {
-    display: flex;
     flex-direction: column;
-    align-items: center;
-}
-
-#right-column {
-    margin: 6.1em 1em;
-    min-width: 400px;
+    align-content: center;
+    margin-top: 1em;
 }
 
 .bottom-spacer-1 {
@@ -31,7 +19,8 @@
 #body {
     display: flex;
     flex-direction: column;
-    min-width: 300px;
+    width: 100%;
+    max-width: 32em;
 }
 
 button {
@@ -48,7 +37,7 @@ button {
     border: 1px solid;
     border-radius: 4px;
     width: 100%;
-    min-width: 500px;
+    min-width: 18em;
     min-height: 2.6em;
 }
 
@@ -62,19 +51,15 @@ input {
 </style>
 {% endblock %}
 
-{% block content2 %}
+{% block content1 %}
 <div id="content">
-  <div id="left-column">
-    <h1 class="bottom-spacer-1">Admin Tools</h1>
-    <div id="body">
-      <button value="bots 3">Add 3 bot counties</button>
-      <button value="notification">Send a notification to all users.</button>
-      <button value="drop" disabled="disabled">Drop Tables</button>
-      <button value="create" disabled="disabled">Create All</button>
-    </div>
-  </div>
-  <div id="right-column">
-      <input id="notice" type="text" name="notice" placeholder="Notification to send ..">
+  <h1 class="bottom-spacer-1">Admin Tools</h1>
+  <div id="body">
+    <button value="bots 3">Add 3 bot counties</button>
+    <input class="top-spacer-1 bottom-spacer-dot-3" id="notice" type="text" name="notice" placeholder="Notification to send ..">
+    <button class="bottom-spacer-2" value="notification">Send a notification to all users.</button>
+    <button value="drop" disabled="disabled">Drop Tables</button>
+    <button value="create" disabled="disabled">Create All</button>
   </div>
   <div class="top-spacer-1">
     <p>JSON response:</p>
@@ -83,6 +68,7 @@ input {
     </div>
   </div>
 </div>
+{{ super() }}
 {% endblock %}
 
 {% block script %}
