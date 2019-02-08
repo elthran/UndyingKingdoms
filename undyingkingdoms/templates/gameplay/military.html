@@ -25,7 +25,6 @@ input {
     display: flex;
     justify-content: space-around;
     width: 10em;
-    width: 100%; /* Width of the outside container */
 }
 
 /* The slider itself */
@@ -129,7 +128,7 @@ input {
             {% endif %}
           {% else %}
             <div class="slide-container">
-              <input class="slider" style="width:{{ slider_size + 0.8 }}em;" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
+              <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
             </div>
             <span class="display">0</span>
           {% endif %}
@@ -263,6 +262,10 @@ function updateHappiness() {
     happinessCost.html(Math.ceil(sum / population * 100));
 }
 
+function calcSliderWidth(size) {
+    return Math.min(size + 0.8, 10) + "em";
+}
+
 function resizeRemaining(gold, wood, iron) {
     // console.log(sliders);
     sliders.each(function (index, element) {
@@ -278,7 +281,7 @@ function resizeRemaining(gold, wood, iron) {
         var size = parseInt(element.value) + remaining;
         // need to include current element.value + current_max - remaining?
         $(element).prop("max", size);
-        $(element).css("width", size + 0.8 + "em")
+        $(element).css("width", calcSliderWidth(size));
         if (size === 0) {
             $(element).addClass("slider-disabled");
         } else {
@@ -324,7 +327,8 @@ function updateCosts() {
 }
 
 sliders.each(function (index, element) {
-    // $(element).css("width", $(element).prop("max") + "em")
+    var size = parseInt($(element).prop("max"));
+    $(element).css("width", calcSliderWidth(size));
     $(element).on("input", function () {
         displays[index].innerHTML = $(element).val();
         values[index].value = $(element).val();
