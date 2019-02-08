@@ -7,10 +7,19 @@
 <style type="text/css">
 #content {
     display: flex;
+    margin-top: 1em;
+    max-width: 50em;
+}
+
+#left-column {
+    display: flex;
     flex-direction: column;
     align-items: center;
-    margin-right: 40%;
-    margin-top: 1em;
+}
+
+#right-column {
+    margin: 6.1em 1em;
+    width: 100%;
 }
 
 .bottom-spacer-1 {
@@ -31,20 +40,43 @@ button {
 .top-spacer-1 {
     margin-top: 1em;
 }
+
+#response-box {
+    padding: 0.6em;
+    border: 1px solid;
+    border-radius: 4px;
+    min-height: 2.6em;
+}
+
+pre {
+    margin-top: 0.2em;
+}
+
+input {
+    width: 100%;
+}
 </style>
 {% endblock %}
 
 {% block content2 %}
 <div id="content">
-  <h1 class="bottom-spacer-1">Admin Tools</h1>
-  <div id="body">
-    <button value="bots 3" type="submit">Add 3 bot counties</button>
-    <button value="drop" disabled="disabled">Drop Tables</button>
-    <button value="create" disabled="disabled">Create All</button>
-    <div class="top-spacer-1">
-      <p>JSON response:</p>
-      <pre id="response">None yet, push a button ...</pre>
+  <div id="left-column">
+    <h1 class="bottom-spacer-1">Admin Tools</h1>
+    <div id="body">
+      <button value="bots 3">Add 3 bot counties</button>
+      <button value="notification">Send a notification to all users.</button>
+      <button value="drop" disabled="disabled">Drop Tables</button>
+      <button value="create" disabled="disabled">Create All</button>
+      <div class="top-spacer-1">
+        <p>JSON response:</p>
+        <div id="response-box">
+          <!-- new responses appear here -->
+        </div>
+      </div>
     </div>
+  </div>
+  <div id="right-column">
+      <input id="notice" type="text" name="notice" placeholder="Notification to send ..">
   </div>
 </div>
 {% endblock %}
@@ -53,18 +85,51 @@ button {
 {{ super() }}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
-// submit button.value to admin route as json.
-// return response and print it on page.
-function displayResponse(resp, status) {
-	$("#response").innerHTML = resp.data;
+function formatDate(date) {
+    var hours = ("0" + date.getHours()).slice(-2);
+    var minutes = ("0" + date.getMinutes()).slice(-2);
+    var seconds = ("0" + date.getSeconds()).slice(-2);
+
+    return hours + ":" + minutes + ":" + seconds;
 }
 
+function build_element(content) {
+    // <pre> (13:27:26) Test message</pre>
+    var date = new Date();
+    return $("<pre></pre>").text(
+        "(" + formatDate(date) + ") " + " " + content
+    );
+}
 
+function displayResponse(resp, status) {
+    if (status === "success") {
+        $("#response-box").prepend(build_element(resp.message));
+    }
+}
+
+// submit button.value to admin route as json.
+// return response and print it on page.
 $("button").each(function (ignore, element) {
     var tool_id = $(element).val();
-    console.log(tool_id);
+    var url = "{{ url_for('admin.home_api') }}";
     $(element).click(function () {
-        $.get("{{ url_for('admin.home_api') }}?tool_id=" + tool_id, displayResponse, "json");
+        if (tool_id === "notification") {
+            var data = {
+                tool_id: tool_id,
+                message: $("#notice").val()
+            };
+            console.log(data);
+            $.ajax({
+                url: url,
+                type: "post",
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=utf-8',
+                dataType: "json",
+                success: displayResponse
+            });
+        } else {
+            $.get(url + "?tool_id=" + tool_id, displayResponse, "json");
+        }
     });
 });
 </script>

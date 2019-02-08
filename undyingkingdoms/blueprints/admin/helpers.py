@@ -3,7 +3,9 @@ from uuid import uuid4
 
 from flask import jsonify
 
+from undyingkingdoms.models import World
 from .metadata import bot_county_prefix, bot_county_suffix, bot_leader_prefix, bot_leader_suffix
+from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.users import User
 from undyingkingdoms.models.kingdoms import Kingdom
@@ -33,6 +35,21 @@ def create_bots(n=3):
         county.save()
         county.vote = county.id
     return jsonify(
-        status="succes",
+        status="success",
         message=f"Successfully create {n} bots."
+    )
+
+def get_current_users():
+    users = User.query.all()
+    return  [user for user in users if user.county is not None]
+
+
+def create_notification(message):
+    world = World.query.first()
+    for user in get_current_users():
+        notification = Notification(user.id, "Admin Update", message, world.day)
+        notification.save()
+    return jsonify(
+        status="success",
+        message=f"Successfully notice '{message}' to all active users."
     )
