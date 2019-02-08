@@ -5,17 +5,121 @@
 {% block style %}
 {{ super() }}
 <style type="text/css">
+#content {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    margin-top: 1em;
+}
 
+.bottom-spacer-1 {
+    margin-bottom: 1em;
+}
+
+#body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 32em;
+}
+
+button {
+    width: 100%;
+    margin-bottom: 0.6em;
+}
+
+.top-spacer-1 {
+    margin-top: 1em;
+}
+
+#response-box {
+    padding: 0.6em;
+    border: 1px solid;
+    border-radius: 4px;
+    width: 100%;
+    min-width: 18em;
+    min-height: 2.6em;
+}
+
+pre {
+    margin-top: 0.2em;
+}
+
+input {
+    width: 100%;
+}
 </style>
 {% endblock %}
 
 {% block content1 %}
 <div id="content">
-  <form method="POST" accept-charset="UTF-8" role="form">
-    {{ form.csrf_token }}
-    {{ form.tax }}
-    <button type="submit">Add 3 bot counties</button>
-    <br>
-  </form>
+  <h1 class="bottom-spacer-1">Admin Tools</h1>
+  <div id="body">
+    <button value="bots 3">Add 3 bot counties</button>
+    <input class="top-spacer-1 bottom-spacer-dot-3" id="notice" type="text" name="notice" placeholder="Notification to send ..">
+    <button class="bottom-spacer-2" value="notification">Send a notification to all users.</button>
+    <button value="drop" disabled="disabled">Drop Tables</button>
+    <button value="create" disabled="disabled">Create All</button>
+  </div>
+  <div class="top-spacer-1">
+    <p>JSON response:</p>
+    <div id="response-box">
+      <!-- new responses appear here -->
+    </div>
+  </div>
 </div>
+{{ super() }}
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+function formatDate(date) {
+    var hours = ("0" + date.getHours()).slice(-2);
+    var minutes = ("0" + date.getMinutes()).slice(-2);
+    var seconds = ("0" + date.getSeconds()).slice(-2);
+
+    return hours + ":" + minutes + ":" + seconds;
+}
+
+function build_element(content) {
+    // <pre> (13:27:26) Test message</pre>
+    var date = new Date();
+    return $("<p></p>").text(
+        "(" + formatDate(date) + ") " + " " + content
+    );
+}
+
+function displayResponse(resp, status) {
+    if (status === "success") {
+        $("#response-box").prepend(build_element(resp.message));
+    }
+}
+
+// submit button.value to admin route as json.
+// return response and print it on page.
+$("button").each(function (ignore, element) {
+    var tool_id = $(element).val();
+    var url = "{{ url_for('admin.home_api') }}";
+    $(element).click(function () {
+        if (tool_id === "notification") {
+            var data = {
+                "tool_id": tool_id,
+                message: $("#notice").val()
+            };
+            $.ajax({
+                "url": url,
+                type: "post",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: displayResponse
+            });
+        } else {
+            $.get(url + "?tool_id=" + tool_id, displayResponse, "json");
+        }
+    });
+});
+</script>
 {% endblock %}

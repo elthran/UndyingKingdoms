@@ -100,7 +100,7 @@ function formatDate(date) {
 function build_element(content) {
     // <pre> (13:27:26) Test message</pre>
     var date = new Date();
-    return $("<pre></pre>").text(
+    return $("<p></p>").text(
         "(" + formatDate(date) + ") " + " " + content
     );
 }
