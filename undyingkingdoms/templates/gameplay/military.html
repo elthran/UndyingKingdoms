@@ -16,6 +16,14 @@ input {
 #invisibleDataFields {
     display: none;
 }
+
+#costCol {
+    min-width: 9.07em;
+}
+
+.slider {
+    width: 10em;
+}
 </style>
 {% endblock %}
 
@@ -39,8 +47,8 @@ input {
         <th>Available</th>
         <th>In Foreign Lands</th>
         <th>In Training</th>
-        <th style="width:175px;">Train</th>
-        <th style="min-width:125px;">Cost</th>
+        <th>Train</th>
+        <th id="costCol">Cost</th>
         <th>Trainable Per Day</th>
         <th>
           <div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div>
