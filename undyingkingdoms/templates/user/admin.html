@@ -7,6 +7,8 @@
 <style type="text/css">
 #content {
     display: flex;
+    flex-flow: row wrap;
+    align-content: stretch;
     margin-top: 1em;
     max-width: 50em;
 }
@@ -19,7 +21,7 @@
 
 #right-column {
     margin: 6.1em 1em;
-    width: 100%;
+    min-width: 400px;
 }
 
 .bottom-spacer-1 {
@@ -45,6 +47,8 @@ button {
     padding: 0.6em;
     border: 1px solid;
     border-radius: 4px;
+    width: 100%;
+    min-width: 500px;
     min-height: 2.6em;
 }
 
@@ -67,16 +71,16 @@ input {
       <button value="notification">Send a notification to all users.</button>
       <button value="drop" disabled="disabled">Drop Tables</button>
       <button value="create" disabled="disabled">Create All</button>
-      <div class="top-spacer-1">
-        <p>JSON response:</p>
-        <div id="response-box">
-          <!-- new responses appear here -->
-        </div>
-      </div>
     </div>
   </div>
   <div id="right-column">
       <input id="notice" type="text" name="notice" placeholder="Notification to send ..">
+  </div>
+  <div class="top-spacer-1">
+    <p>JSON response:</p>
+    <div id="response-box">
+      <!-- new responses appear here -->
+    </div>
   </div>
 </div>
 {% endblock %}
@@ -115,15 +119,14 @@ $("button").each(function (ignore, element) {
     $(element).click(function () {
         if (tool_id === "notification") {
             var data = {
-                tool_id: tool_id,
+                "tool_id": tool_id,
                 message: $("#notice").val()
             };
-            console.log(data);
             $.ajax({
-                url: url,
+                "url": url,
                 type: "post",
                 data: JSON.stringify(data),
-                contentType: 'application/json; charset=utf-8',
+                contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: displayResponse
             });

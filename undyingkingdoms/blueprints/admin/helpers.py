@@ -41,7 +41,7 @@ def create_bots(n=3):
 
 def get_current_users():
     users = User.query.all()
-    return  [user for user in users if user.county is not None]
+    return (user for user in users if user.county)
 
 
 def create_notification(message):
@@ -51,5 +51,5 @@ def create_notification(message):
         notification.save()
     return jsonify(
         status="success",
-        message=f"Successfully notice '{message}' to all active users."
+        message=f"Successfully sent notice '{message}' to all active users."
     )
