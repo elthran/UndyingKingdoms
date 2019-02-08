@@ -120,8 +120,7 @@ button {
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
-{% macro select_field(army) %}
-{% set size = ([county.gold // army.gold, county.wood // army.wood, county.iron // army.iron] | sort)[0] %}
+{% macro select_field(size) %}
   <select class="select">
   {% for n in range(size+1) %}
   <option value="{{ n }}">{{ n }}</option>
@@ -159,12 +158,16 @@ button {
         <td>
           {{ dynamic_cost }}
           <!--This code should be dynamic JS but isn't-->
+          {% set size = ([county.gold // army.gold, county.wood // army.wood, county.iron // army.iron] | sort)[0] %}
           {% if army.base_name == 'monster' %}
-            {% if county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training <= 0 %}
+            {% set monsters_available = county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training %}
+            {% if monsters_available <= 0 %}
               <div id="requiresBuilding">Requires {{ county.buildings['lair'].class_name_plural.title() }}</div>
+            {% else %}
+              {{ select_field(monsters_available) }}
             {% endif %}
           {% else %}
-            {{ select_field(army) }}
+            {{ select_field(size) }}
             <button class="submitButton" type="submit">Build <span class="display">0</span></button>
           {% endif %}
           <input class="value" name="{{ army.base_name }}" value="0" hidden/>
