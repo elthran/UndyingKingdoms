@@ -39,15 +39,10 @@ def create_bots(n=3):
         message=f"Successfully create {n} bots."
     )
 
-def get_current_users():
-    users = User.query.all()
-    return (user for user in users if user.county)
-
-
 def create_notification(message):
     world = World.query.first()
-    for user in get_current_users():
-        notification = Notification(user.id, "Admin Update", message, world.day)
+    for county in County.query.all():
+        notification = Notification(county.id, "Admin Update", message, world.day)
         notification.save()
     return jsonify(
         status="success",
