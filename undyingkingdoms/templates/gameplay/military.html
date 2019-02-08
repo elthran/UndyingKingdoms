@@ -23,6 +23,46 @@ input {
 
 .slider {
     width: 10em;
+    margin: 1em 0 1em;
+}
+
+.slidecontainer {
+  width: 100%; /* Width of the outside container */
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 0.1em; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+  padding: 0.1em 0 0.1em;
+  min-width: 10em;
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 0.4em; /* Set a specific slider handle width */
+  height: 1.5em; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 0.4em; /* Set a specific slider handle width */
+  height: 1.5em; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider-disabled::-moz-range-thumb, .slider-disabled::-webkit-slider-thumb  {
+    background: grey;
 }
 </style>
 {% endblock %}
@@ -76,16 +116,22 @@ input {
         <td>
           {% if army.base_name == 'monster' %}
             {% if county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training <= 0 %}
-              <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total }}" step="1" hidden/>
+              <div class="slider-container">
+                <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total }}" step="1" hidden/>
+              </div>
               <span class="display" hidden>0</span>
               <span style="color:red;">Requires {{ county.buildings['lair'].class_name_plural.title() }}</span>
             {% else %}
-              <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training }}"
+              <div class="slider-container">
+                <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training }}"
                      step="1"/>
+              </div>
               <span class="display">0</span>
             {% endif %}
           {% else %}
-            <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
+            <div class="slider-container">
+              <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
+            </div>
             <span class="display">0</span>
           {% endif %}
           <input class="value" name="{{ army.base_name }}" value="0" hidden/>
@@ -206,7 +252,6 @@ function updateIron() {
     var sum = 0;
     sliders.each(function (index, element) {
         sum += element.value * buildingIronCosts[index].innerHTML;
-        console.log(sum);
     });
     ironCost.html(sum);
 }
@@ -217,6 +262,31 @@ function updateHappiness() {
         sum += parseInt(element.value);
     });
     happinessCost.html(Math.ceil(sum / population * 100));
+}
+
+function resizeRemaining(gold, wood, iron) {
+    // console.log(sliders);
+    sliders.each(function (index, element) {
+        var goldPrice = buildingGoldCosts[index].innerHTML;
+        var woodPrice = buildingWoodCosts[index].innerHTML;
+        var ironPrice = buildingIronCosts[index].innerHTML;
+        var remaining = Math.max(Math.floor(Math.min(
+            (totalGold - gold) / goldPrice,
+            (totalWood - wood) / woodPrice,
+            (totalIron - iron) / ironPrice
+        )), 0);
+
+        var size = parseInt(element.value) + remaining;
+        // need to include current element.value + current_max - remaining?
+        $(element).prop("max", size);
+        if (size === 0) {
+            $(element).addClass("slider-disabled");
+        } else {
+            $(element).removeClass("slider-disabled");
+        }
+        console.log(size);
+    });
+    // return remaining;
 }
 
 function updateCosts() {
@@ -250,8 +320,9 @@ function updateCosts() {
     } else {
         submitButton.prop("disabled", true);
     }
-}
 
+    resizeRemaining(gold, wood, iron);
+}
 
 sliders.each(function (index, element) {
     $(element).on("input", function () {
