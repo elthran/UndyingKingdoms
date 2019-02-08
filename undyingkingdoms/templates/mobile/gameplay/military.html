@@ -94,6 +94,11 @@ button {
     max-width: 450px;
     margin: auto;
 }
+
+#requiresBuilding {
+    color: red;
+    margin: 0.6em;
+}
 </style>
 {% endblock %}
 
@@ -111,24 +116,18 @@ button {
 </div>
 {% endset %}
 
-{% macro select_field(size) %}
-<select class="select">
-  {% for n in range(size) %}
-  <option value="{{ n }}">{{ n }}</option>
-  {% endfor %}
-  {% for n in range(size, size*2, 3) %}
-  <option value="{{ n }}">{{ n }}</option>
-  {% endfor %}
-  {% for n in range(size*2, size*3+1, 5) %}
-  <option value="{{ n }}">{{ n }}</option>
-  {% endfor %}
-</select>
-{% endmacro %}
-
 {% block content1 %}
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
+{% macro select_field(army) %}
+{% set size = ([county.gold // army.gold, county.wood // army.wood, county.iron // army.iron] | sort)[0] %}
+  <select class="select">
+  {% for n in range(size+1) %}
+  <option value="{{ n }}">{{ n }}</option>
+  {% endfor %}
+</select>
+{% endmacro %}
 <div id="content">
   <div id="header">
     <h2>Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>
@@ -162,14 +161,13 @@ button {
           <!--This code should be dynamic JS but isn't-->
           {% if army.base_name == 'monster' %}
             {% if county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training <= 0 %}
-              {{ select_field(0) }}
-              <span style="color:red;">Requires {{ county.buildings['lair'].class_name_plural.title() }}</span>
+              <div id="requiresBuilding">Requires {{ county.buildings['lair'].class_name_plural.title() }}</div>
             {% endif %}
           {% else %}
-            {{ select_field(army.trainable_per_day) }}
+            {{ select_field(army) }}
+            <button class="submitButton" type="submit">Build <span class="display">0</span></button>
           {% endif %}
           <input class="value" name="{{ army.base_name }}" value="0" hidden/>
-          <button class="submitButton" type="submit">Build <span class="display">0</span></button>
         </td>
       </tr>
       <tr>
@@ -281,7 +279,7 @@ var displays = $(".display");
 var values = $(".value");
 var buildingGoldCosts = $(".buildingGoldCost");
 var buildingWoodCosts = $(".buildingWoodCost");
-var buildingIronCosts = $(".buildingWoodCost");
+var buildingIronCosts = $(".buildingIronCost");
 var totalGold = parseInt($("#totalGold").text());
 var totalWood = parseInt($("#totalWood").text());
 var totalIron = parseInt($("#totalIron").text());
