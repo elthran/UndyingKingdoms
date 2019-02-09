@@ -380,9 +380,15 @@ class County(GameState):
             notification.save()
 
     def get_nourishment_change(self):
-        hungry_people = self.get_food_to_be_eaten() - self.get_produced_dairy() - self.get_produced_grain() - self.grain_stores
+        hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
+        print("Hungry people:", hungry_people)
         if hungry_people <= 0:
-            return 1
+            if self.rations == 0:
+                return -6
+            elif self.rations < 1:
+                return int(- 1 / self.rations - 1)
+            else:
+                return 1
         else:
             return (hungry_people // 200) + 1
 
