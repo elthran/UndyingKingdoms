@@ -336,6 +336,9 @@ function updateCosts() {
 
 sliders.each(function (index, element) {
     var size = parseInt($(element).prop("max"));
+    if (size === 0) {
+        $(element).addClass("slider-disabled");
+    }
     $(element).css("width", calcSliderWidth(size));
     $(element).on("input", function () {
         displays[index].innerHTML = $(element).val();
