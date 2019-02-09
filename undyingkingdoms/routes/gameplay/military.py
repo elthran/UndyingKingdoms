@@ -34,7 +34,11 @@ def military(template):
                                          wood_per_item=county.armies[army].wood,
                                          iron_per_item=county.armies[army].iron)
         transaction.save()
-        # You lose 1 happiness for each 1% of population you force into military.
-        county.happiness -= (total_trained * 100 // county.population) + 1
+        if county.background == 'Warlord':
+            happiness_penalty = 0
+        else:
+            # You lose 1 happiness for each 0.5% of population you force into military.
+            happiness_penalty = (total_trained * 200 // county.population) + 1
+        county.happiness -= happiness_penalty
         return redirect(url_for('military'))
     return render_template(template, form=form, meta_data=game_descriptions)

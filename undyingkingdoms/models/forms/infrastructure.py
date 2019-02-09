@@ -17,7 +17,6 @@ class InfrastructureForm(FlaskForm):
     guild = IntegerField('guild', validators=[NumberRange(min=0, max=None)], default=0)
     bank = IntegerField('bank', validators=[NumberRange(min=0, max=None)], default=0)
     lair = IntegerField('lair', validators=[NumberRange(min=0, max=None)], default=0)
-    
 
     def validate(self):
         if not FlaskForm.validate(self):
