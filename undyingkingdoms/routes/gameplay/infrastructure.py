@@ -35,7 +35,7 @@ def infrastructure(template):
         transaction.save()
         return redirect(url_for('infrastructure'))
 
-      excess_worker_form = ExcessProductionForm(goal=county.production_choice)
+    excess_worker_form = ExcessProductionForm(goal=county.production_choice)
     goal_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
     excess_worker_form.goal.choices = [(pairing[0], pairing[1]) for pairing in goal_choices]
     if request.args.get('id') == 'excess' and excess_worker_form.validate_on_submit():
