@@ -59,9 +59,13 @@ input {
   cursor: pointer; /* Cursor on hover */
 }
 
-.slider-disabled::-moz-range-thumb, .slider-disabled::-webkit-slider-thumb  {
+.slider-disabled::-moz-range-thumb  {
     background: grey;
 }
+
+ .slider-disabled::-webkit-slider-thumb {
+    background: grey;
+ }
 </style>
 {% endblock %}
 
