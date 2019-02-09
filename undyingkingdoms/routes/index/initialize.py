@@ -22,7 +22,7 @@ def initialize(template):
     races = ["<Race>"] + metadata_races
     backgrounds = ["<Class>"] + metadata_backgrounds
     form = InitializeForm()
-    form.title.choices = [(i, titles[i]) for i in range(len(players_titles))]
+    form.title.choices = [(i, titles[i]) for i in range(players_titles)]
     form.race.choices = [(i, races[i]) for i in range(len(races))]
     form.background.choices = [(i, backgrounds[i]) for i in range(len(backgrounds))]
     

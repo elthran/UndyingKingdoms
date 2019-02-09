@@ -76,9 +76,9 @@ input {
                 <td>{{ building.pending }}</td>
                 <td>
                     {{ building.production_cost }}<img class="resource_icons" src="/static/images/prod_icon.jpg">
-                    {% if building.gold %}{{ building.gold }}<img class="resource_icons"
+                    {% if building.gold_cost %}{{ building.gold_cost }}<img class="resource_icons"
                                                                   src="/static/images/gold_icon.jpg">{% endif %}
-                    {% if building.wood %}{{ building.wood }}<img class="resource_icons"
+                    {% if building.wood_cost %}{{ building.wood_cost }}<img class="resource_icons"
                                                                   src="/static/images/wood_icon.jpg">{% endif %}
                 </td>
                 <td>{{ building.workers_employed * building.total }} ({{ building.workers_employed }} each)</td>
