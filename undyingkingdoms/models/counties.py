@@ -299,7 +299,7 @@ class County(GameState):
     def get_happiness_change(self):
         change = 7 - self.tax
         if self.production_choice == 3:
-            change += self.temporary_prod_value(self.production_choice)
+            change += self.get_excess_production_value(self.production_choice)
         modifier = happiness_modifier.get(self.race, ("", 0))[1] + happiness_modifier.get(self.background, ("", 0))[1]
         return change + modifier
 
@@ -395,7 +395,7 @@ class County(GameState):
             return (hungry_people // 200) + 1
 
     def update_food(self):
-        total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores
+        total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores + self.get_excess_worker_produced_food()
         food_eaten = self.get_food_to_be_eaten()
         if total_food >= food_eaten:
             # If you have enough food, you lose it and your nourishment changes based on rations
@@ -413,18 +413,20 @@ class County(GameState):
         return self.buildings['field'].total * self.buildings['field'].output
 
     def get_produced_dairy(self):
+        return self.buildings['pasture'].total * self.buildings['pasture'].output
+
+    def get_excess_worker_produced_food(self):
         if self.production_choice == 2:
-            excess_worker_food = self.temporary_prod_value(self.production_choice)
+            return self.get_excess_production_value(self.production_choice)
         else:
-            excess_worker_food = 0
-        return self.buildings['pasture'].total * self.buildings['pasture'].output + excess_worker_food
+            return 0
 
     def get_food_to_be_eaten(self):
         modifier = 1 + food_consumed_modifier.get(self.race, ("", 0))[1] + food_consumed_modifier.get(self.background, ("", 0))[1]
         return int((self.population - self.get_unavailable_army_size()) * self.rations * modifier)
 
     def grain_storage_change(self):
-        food_produced = self.get_produced_dairy() + self.get_produced_grain()
+        food_produced = self.get_produced_dairy() + self.get_produced_grain() + self.get_excess_worker_produced_food()
         food_delta = food_produced - self.get_food_to_be_eaten()
         if food_delta > 0:  # If you have food left over, save it with a max of how much grain you produced
             return min(food_delta, self.get_produced_grain())
@@ -506,7 +508,7 @@ class County(GameState):
         modifier = 1 + income_modifier.get(self.race, ("", 0))[1] \
                    + income_modifier.get(self.background, ("", 0))[1]
         if self.production_choice == 0:
-            excess_worker_income = self.temporary_prod_value(self.production_choice)
+            excess_worker_income = self.get_excess_production_value(self.production_choice)
         else:
             excess_worker_income = 0
         income = (self.get_tax_income() + self.get_bank_income() + excess_worker_income) * modifier
@@ -530,27 +532,21 @@ class County(GameState):
         """
         return max(int(self.get_production_modifier() * self.get_available_workers()), 0)
     
-    def get_excess_production_value(self):
+    def get_excess_production_value(self, value=-1):
         """
         Users the excess production towards completing a task
         """
-        if self.production_choice == 0:  # Gold
+        if value == -1:
+            excess_worker_choice = self.production_choice
+        else:
+            excess_worker_choice = value
+        if excess_worker_choice == 0:  # Gold
             return self.get_excess_production() // 14
-        if self.production_choice == 1:  # Land
+        if excess_worker_choice == 1:  # Land
             return self.get_excess_production()
-        if self.production_choice == 2:  # Food
+        if excess_worker_choice == 2:  # Food
             return self.get_excess_production() // 7
-        if self.production_choice == 3:  # Happiness
-            return 1
-
-    def temporary_prod_value(self, value=-1):
-        if value == 0:  # Gold
-            return self.get_excess_production() // 10
-        if value == 1:  # Land
-            return self.get_excess_production()
-        if value == 2:  # Food
-            return self.get_excess_production() // 5
-        if value == 3:  # Happiness
+        if excess_worker_choice == 3:  # Happiness
             return 1
         
     def apply_excess_production_value(self):
