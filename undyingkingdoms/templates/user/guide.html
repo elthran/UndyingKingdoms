@@ -5,8 +5,34 @@
 {% block style %}
 {{ super() }}
 <style type="text/css">
-.raceDiv {
+#content {
+    margin-bottom: 2.3em;
+}
+.side-spacer {
+    margin: 0 0.3em 0;
+}
+
+.compare-div {
+    display: flex;
     margin-top: 1em;
+    border: 1px solid;
+    border-radius: 4px
+}
+
+.top-spacer-1 {
+    margin-top: 1em;
+}
+
+.top-spacer-dot-6 {
+    margin-top: 0.6em;
+}
+
+.top-spacer-dot-3 {
+    margin-top: 0.3em;
+}
+
+#modifiers-spacer {
+    min-height: 3em;
 }
 </style>
 {% endblock %}
@@ -25,146 +51,44 @@
   <h2>Time</h2>
   <p>Each real-world hour ends one game day. At the end of each game day many things change such as the weather, your county's population, your taxes are collected, etc.
     While the game is in testing, each real-world week constitutes an 'Age' of the game. At the end of each Age, the game resets (though your achievements remain).</p>
-
-  {% for race in races.Race.unique() %}
-  <div class="raceDiv">
-    <h1>{{ race }}</h1>
-    <ul>
-    {% set select = races['Race'] == race %}
-    {% for row in races.loc[select, 'Modifier Description'] %}
-      <li>--- {{ row }}</li>
-    {% endfor %}
-    </ul>
-    <br>
-    <h2>Military:</h2>
-    {% set select = armies.Race == race %}
-    {% set army = armies.loc[select].reset_index() %}
-    {% for i in range(army | length) %}
-      <ul>
-        <li>Name: {{ army.loc[i, 'Class Name'].title() }}</li>
-        <li>Cost: {{ army.Gold[i] }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
-        {{ army.Wood[i] }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
-        {{ army.Iron[i] }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
-        <li>Attack/Defence/Health: {{ army.Attack[i] }}/{{ army.Defence[i] }}/{{ army.Health[i] }}</li>
-      </ul>
+  <div class="compare-div">
+    {% for background in races.Background.dropna().unique() %}
+      <div class="side-spacer">
+        <h1>{{ background }}:</h1>
+        <ul>
+          {% set select = races.Background == background %}
+          {% for row in races.loc[select, 'Modifier Description'].dropna() %}
+            <li>--- {{ row }}</li>
+          {% endfor %}
+        </ul>
+      </div>
     {% endfor %}
   </div>
-  {% endfor %}
-
-  {% raw %}
-    <ul>
-      <li>Name: {{ army.class_name.title() }}</li>
-      <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
-        {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
-        {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
-      <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
-    </ul>
-    {% endraw %}
-
-{% raw %}
-{% set raceDivs %}
-<!--Consider building a macro/for loop for these-->
-  <div id="dwarfDiv" style="display:none;">
-    <h1>Dwarves:</h1>
-    <ul>
-      <li>--- Engineering: +15% Production</li>
-      <li>--- Unending Appetite: Dwarves consume 15% more food each day</li>
-    </ul>
-    <br>
-    <h2>Military:</h2>
-    {% for army in dwarf_armies.values() %}
-    <ul>
-      <li>Name: {{ army.class_name.title() }}</li>
-      <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
-        {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
-        {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
-      <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
-    </ul>
+  <div class="compare-div">
+    {% for race in races.Race.dropna().unique() %}
+      <div class="side-spacer">
+        <h1>{{ race }}</h1>
+        <ul id="modifiers-spacer">
+        {% set select = races.Race == race %}
+        {% for row in races.loc[select, 'Modifier Description'].dropna() %}
+          <li>--- {{ row }}</li>
+        {% endfor %}
+        </ul>
+        <br>
+        <h2>Military:</h2>
+        {% set select = armies.Race == race %}
+        {% set army = armies.loc[select].reset_index() %}
+        {% for i in range(army | length) %}
+          <ul>
+            <li class="top-spacer-1">Name: {{ army.loc[i, 'Class Name'].title() }}</li>
+            <li class="top-spacer-dot-3">Cost: {{ army.Gold[i] }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
+            {{ army.Wood[i] }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+            {{ army.Iron[i] }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+            <li class="top-spacer-dot-3">Attack/Defence/Health: {{ army.Attack[i] }}/{{ army.Defence[i] }}/{{ army.Health[i] }}</li>
+          </ul>
+        {% endfor %}
+      </div>
     {% endfor %}
   </div>
-  <div id="humanDiv" style="display:none;">
-    <h1>Humans:</h1>
-    <ul>
-      <li>--- None</li>
-    </ul>
-    <br>
-    <h2>Military:</h2>
-    {% for army in human_armies.values() %}
-    <ul>
-      <li>Name: {{ army.class_name.title() }}</li>
-      <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
-        {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
-        {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
-      <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
-    </ul>
-    {% endfor %}
-  </div>
-  <div id="elfDiv" style="display:none;">
-    <h1>Elves:</h1>
-    <ul>
-      <li>--- Elders: -15% Population growth</li>
-      <li>--- Citizen Militia: Each non-military citizen adds double their normal defensive value</li>
-    </ul>
-    <br>
-    <h2>Military:</h2>
-    {% for army in elf_armies.values() %}
-    <ul>
-      <li>Name: {{ army.class_name.title() }}</li>
-      <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
-        {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
-        {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
-      <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
-    </ul>
-    {% endfor %}
-  </div>
-  <div id="goblinDiv" style="display:none;">
-    <h1>Goblins:</h1>
-    <ul>
-      <li>--- Expendable: +10% Population growth</li>
-      <li>--- Infighting: -2 Happiness per day</li>
-    </ul>
-    <br>
-    <h2>Military:</h2>
-    {% for army in goblin_armies.values() %}
-    <ul>
-      <li>Name: {{ army.class_name.title() }}</li>
-      <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
-        {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
-        {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
-      <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
-    </ul>
-    {% endfor %}
-  </div>
-  {% endset %}
-
-  {% set leaderClassDivs %}
-  <!--Consider building a macro/for loop for these-->
-  <div id="merchantDiv" style="display:none;">
-    <h1>Merchant:</h1>
-    <ul>
-      <li>--- Silver Tongue: +15% on all income</li>
-    </ul>
-  </div>
-  <div id="warlordDiv" style="display:none;">
-    <h1>Warlord:</h1>
-    <ul>
-      <li>--- Relentless: +15% offensive military strength</li>
-    </ul>
-  </div>
-  <div id="rogueDiv" style="display:none;">
-    <h1>Rogue:</h1>
-    <ul>
-      <li>--- Master of Disguise: +10% chance to infiltrate enemy counties</li>
-      <li>--- Army of Shadows: Can send up to 2 additional thieves per mission</li>
-    </ul>
-  </div>
-  <div id="engineerDiv" style="display:none;">
-    <h1>Engineer:</h1>
-    <ul>
-      <li>--- Craftsman: Workers contribute +20% production</li>
-    </ul>
-  </div>
-  {% endset %}
-  {% endraw %}
 </div>
 {% endblock %}
