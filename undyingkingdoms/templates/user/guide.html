@@ -2,21 +2,157 @@
 
 {% block title %}Guide: {{ super() }}{% endblock %}
 
+{% block style %}
+{{ super() }}
+<style type="text/css">
+.raceDiv {
+    margin-top: 1em;
+}
+</style>
+{% endblock %}
+
 {% block content2 %}
+<div id="content">
+  <h1>Basics</h1>
+  <h2>Counties</h2>
+  <p>Each county is controlled by a player. The goal of the game is to manage and grow your county, while gaining political influence by communicating with
+    other counties in your kingdom.</p>
 
-<h1>Basics</h1>
+  <h2>Kingdoms</h2>
+  <p>Each kingdom is a group of counties. At the beginning of an age, each kingdom is in civil war as the counties vie for dominance. Once one player
+    has secured power and crowned monarch, the civil war ends and the kingdom becomes united. At this point in the game the purpose is to become the strongest kingdom.</p>
 
-<h2>Counties</h2>
-<p>Each county is controlled by a player. The goal of the game is to manage and grow your county, while gaining political influence by communicating with
-other counties in your kingdom.</p>
-
-<h2>Kingdoms</h2>
-<p>Each kingdom is a group of counties. At the beginning of an age, each kingdom is in civil war as the counties vie for dominance. Once one player
-has secured power and crowned monarch, the civil war ends and the kingdom becomes united. At this point in the game the purpose is to become the strongest kingdom.</p>
-
-<h2>Time</h2>
-<p>Each real-world hour ends one game day. At the end of each game day many things change such as the weather, your county's population, your taxes are collected, etc.
+  <h2>Time</h2>
+  <p>Each real-world hour ends one game day. At the end of each game day many things change such as the weather, your county's population, your taxes are collected, etc.
     While the game is in testing, each real-world week constitutes an 'Age' of the game. At the end of each Age, the game resets (though your achievements remain).</p>
 
+  {% for race in races.Race.unique() %}
+  <div class="raceDiv">
+    <h1>{{ race }}</h1>
+    <ul>
+      {% set select = races['Race'] == race %}
+      {% for row in races.loc[select, 'Modifier Description'] %}
+      <li>--- {{ row }}</li>
+      {% endfor %}
+    </ul>
+    <br>
+    <h2>Military:</h2>
+    {% for army in armies %}
+    <ul>
+      <li>Name: {{ army.class_name.title() }}</li>
+      <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
+        {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+        {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+      <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+    </ul>
+    {% endfor %}
+  </div>
+  {% endfor %}
 
+{% raw %}
+{% set raceDivs %}
+<!--Consider building a macro/for loop for these-->
+  <div id="dwarfDiv" style="display:none;">
+    <h1>Dwarves:</h1>
+    <ul>
+      <li>--- Engineering: +15% Production</li>
+      <li>--- Unending Appetite: Dwarves consume 15% more food each day</li>
+    </ul>
+    <br>
+    <h2>Military:</h2>
+    {% for army in dwarf_armies.values() %}
+    <ul>
+      <li>Name: {{ army.class_name.title() }}</li>
+      <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
+        {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+        {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+      <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+    </ul>
+    {% endfor %}
+  </div>
+  <div id="humanDiv" style="display:none;">
+    <h1>Humans:</h1>
+    <ul>
+      <li>--- None</li>
+    </ul>
+    <br>
+    <h2>Military:</h2>
+    {% for army in human_armies.values() %}
+    <ul>
+      <li>Name: {{ army.class_name.title() }}</li>
+      <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
+        {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+        {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+      <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+    </ul>
+    {% endfor %}
+  </div>
+  <div id="elfDiv" style="display:none;">
+    <h1>Elves:</h1>
+    <ul>
+      <li>--- Elders: -15% Population growth</li>
+      <li>--- Citizen Militia: Each non-military citizen adds double their normal defensive value</li>
+    </ul>
+    <br>
+    <h2>Military:</h2>
+    {% for army in elf_armies.values() %}
+    <ul>
+      <li>Name: {{ army.class_name.title() }}</li>
+      <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
+        {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+        {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+      <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+    </ul>
+    {% endfor %}
+  </div>
+  <div id="goblinDiv" style="display:none;">
+    <h1>Goblins:</h1>
+    <ul>
+      <li>--- Expendable: +10% Population growth</li>
+      <li>--- Infighting: -2 Happiness per day</li>
+    </ul>
+    <br>
+    <h2>Military:</h2>
+    {% for army in goblin_armies.values() %}
+    <ul>
+      <li>Name: {{ army.class_name.title() }}</li>
+      <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
+        {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+        {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+      <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+    </ul>
+    {% endfor %}
+  </div>
+  {% endset %}
+
+  {% set leaderClassDivs %}
+  <!--Consider building a macro/for loop for these-->
+  <div id="merchantDiv" style="display:none;">
+    <h1>Merchant:</h1>
+    <ul>
+      <li>--- Silver Tongue: +15% on all income</li>
+    </ul>
+  </div>
+  <div id="warlordDiv" style="display:none;">
+    <h1>Warlord:</h1>
+    <ul>
+      <li>--- Relentless: +15% offensive military strength</li>
+    </ul>
+  </div>
+  <div id="rogueDiv" style="display:none;">
+    <h1>Rogue:</h1>
+    <ul>
+      <li>--- Master of Disguise: +10% chance to infiltrate enemy counties</li>
+      <li>--- Army of Shadows: Can send up to 2 additional thieves per mission</li>
+    </ul>
+  </div>
+  <div id="engineerDiv" style="display:none;">
+    <h1>Engineer:</h1>
+    <ul>
+      <li>--- Craftsman: Workers contribute +20% production</li>
+    </ul>
+  </div>
+  {% endset %}
+  {% endraw %}
+</div>
 {% endblock %}

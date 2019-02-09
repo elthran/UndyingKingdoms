@@ -1,8 +1,11 @@
+import pandas as pd
+
 from flask import render_template
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
+from undyingkingdoms.static import metadata
 from undyingkingdoms.routes.helpers import in_active_session
 
 
@@ -11,4 +14,5 @@ from undyingkingdoms.routes.helpers import in_active_session
 @login_required
 @in_active_session
 def guide(template):
-    return render_template(template)
+    races = pd.read_excel('undyingkingdoms/static/metadata/all.xlsx', sheet_name='Modifiers')
+    return render_template(template, races=races)
