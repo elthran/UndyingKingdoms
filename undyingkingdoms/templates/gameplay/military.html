@@ -165,9 +165,9 @@ input {
         <td>Total</td>
         <td>{{ county.get_available_army_size() }}</td>
         <td>{{ county.get_unavailable_army_size() }}</td>
-        <td>-</td>
-        <td>-</td>
         <td>{{ county.get_training_army_size() }}</td>
+        <td>-</td>
+        <td>-</td>
         <td>-</td>
         <td>-</td>
         <td>-</td>
@@ -263,7 +263,11 @@ function updateHappiness() {
     sliders.each(function (ignore, element) {
         sum += parseInt(element.value);
     });
-    happinessCost.html(Math.ceil(sum / population * 100));
+    if ('{{ current_user.county.background }}' == 'Warlord') {
+      happinessCost.html(0);
+    } else {
+      happinessCost.html(Math.ceil(sum / population * 100));
+    }
 }
 
 function calcSliderWidth(size) {

@@ -23,18 +23,9 @@ input {
 {% set kingdom = county.kingdom %}
 
 <div id="content">
-    <h2>Total Land: {{ county.land }}</h2>
-    <h2>Available Land: {{ county.get_available_land() }}</h2>
-    <h2>Population: {{ county.population }}</h2>
-    <ul>
-        <li>Employed: {{ county.get_employed_workers() }}</li>
-        <li>Military: {{ county.get_army_size() }} (Of these, {{ county.get_unavailable_army_size() }} are in enemy
-            lands and don't require food)
-        </li>
-        <li>Unemployed: {{ county.get_available_workers() }} (These workers can be ordered to do any of the tasks
-            below)
-        </li>
-    </ul>
+    <h2>Available Land: {{ county.get_available_land() }} / {{ county.land }}</h2><br>
+    <h2>Unemployed Citizens : {{ county.get_available_workers() }} / {{ county.population }}</h2><br>
+    <p>You may assign a task to your idle population. </p>
 
     <form action="{{ url_for('infrastructure') + '?id=excess' }}" method="POST" accept-charset="UTF-8">
         {{ excess_worker_form.csrf_token }}
@@ -43,7 +34,6 @@ input {
     </form>
 
     <span id="excessProductionDescription"></span>
-
 
 
     <h2>Current Resources:
@@ -176,7 +166,6 @@ function updateCosts() {
     {{ building.base_name }}_value.value = this.value;
     updateCosts();
 };
-
 {% endfor %}
 
 var goalChoice = document.getElementById('goal');
@@ -190,6 +179,7 @@ goalChoice.oninput = function() {
         goalDescription.innerHTML = 'Your idle citizens will be forced to forage for food.';
     } else if (goalChoice.value == 3) {
         goalDescription.innerHTML = 'Your idle citizens will be allowed to relax.';
+
     }
 };
 
