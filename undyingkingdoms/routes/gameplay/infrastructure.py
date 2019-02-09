@@ -4,7 +4,7 @@ from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models import World, Transaction
-from undyingkingdoms.models.forms.infrastructure import InfrastructureForm
+from undyingkingdoms.models.forms.infrastructure import InfrastructureForm, ExcessProductionForm
 from undyingkingdoms.static.metadata.metadata import all_buildings, game_descriptions
 
 
@@ -16,6 +16,7 @@ def infrastructure(template):
         current_user.in_active_session = True
     county = current_user.county
     world = World.query.filter_by(id=county.kingdom.world_id).first()
+    
     form = InfrastructureForm()
     form.county_id.data = county.id
     if form.validate_on_submit():
@@ -32,5 +33,13 @@ def infrastructure(template):
                                          iron_per_item=0)
         transaction.save()
         return redirect(url_for('infrastructure'))
+    
+    form2 = ExcessProductionForm()
+    goal_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
+    form2.goal.choices = [(pairing[0], pairing[1]) for pairing in goal_choices]
+    if form2.validate_on_submit():
+        county.production_choice = form.goal.data
+        return redirect(url_for('infrastructure'))
+    
     return render_template(template, form=form, meta_data=game_descriptions)
 

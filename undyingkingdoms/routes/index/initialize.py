@@ -17,11 +17,11 @@ from undyingkingdoms.static.metadata.metadata_armies_human import human_armies
 def initialize(template):
     if current_user.county is not None:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
-    genders = ["<Title>"] + ["Sir", "Lady"]
+    titles = ["<Title>"] + ["Sir", "Lady"]
     races = ["<Race>"] + metadata_races
     backgrounds = ["<Class>"] + metadata_backgrounds
     form = InitializeForm()
-    form.gender.choices = [(i, genders[i]) for i in range(len(genders))]
+    form.title.choices = [(i, titles[i]) for i in range(len(titles))]
     form.race.choices = [(i, races[i]) for i in range(len(races))]
     form.background.choices = [(i, backgrounds[i]) for i in range(len(backgrounds))]
     
@@ -34,7 +34,7 @@ def initialize(template):
                         form.leader.data,
                         current_user.id,
                         races[form.race.data],
-                        genders[form.gender.data],
+                        titles[form.title.data],
                         backgrounds[form.background.data])
         county.save()
         county.vote = county.id

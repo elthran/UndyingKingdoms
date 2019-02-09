@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField
+from wtforms import IntegerField, SelectField
 from wtforms.validators import NumberRange
 
 from undyingkingdoms.models.counties import County
@@ -55,3 +55,7 @@ class InfrastructureForm(FlaskForm):
         if land_cost > county.get_available_land():
             self.county_id.errors.append("Not enough land.")
             return True
+        
+        
+class ExcessProductionForm(FlaskForm):
+    goal = SelectField('Goal', coerce=int)

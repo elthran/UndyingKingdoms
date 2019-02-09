@@ -8,7 +8,7 @@
 {% set county = current_user.county %}
 <h1 style="text-align:center;">{{ county.name }}</h1>
 <ul>
-    <li>Leader: {{ county.leader }} ({{ county.gender }})</li>
+    <li>Leader: {{ county.title }} {{ county.leader }}</li>
     <li>Race: {{ county.race }}</li>
     <li>Title: {{ county.background }}</li>
     <li>Land: {{ county.land }} acres</li>

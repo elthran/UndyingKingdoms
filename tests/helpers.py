@@ -8,12 +8,12 @@ def register(client, username, email, password):
     ), follow_redirects=True)
 
 
-def initialize(client, county, leader, gender, race, background):
+def initialize(client, county, leader, title, race, background):
     """Initialize a user."""
     return client.post('/initialize/', data=dict(
         county=county,
         leader=leader,
-        gender=gender,
+        title=title,
         race=race,
         background=background
     ), follow_redirects=True)
