@@ -21,13 +21,10 @@ input {
     min-width: 9.07em;
 }
 
-.slider {
+.slide-container {
+    display: flex;
+    justify-content: space-around;
     width: 10em;
-    margin: 1em 0 1em;
-}
-
-.slidecontainer {
-  width: 100%; /* Width of the outside container */
 }
 
 /* The slider itself */
@@ -41,7 +38,8 @@ input {
   -webkit-transition: .2s; /* 0.2 seconds transition on hover */
   transition: opacity .2s;
   padding: 0.1em 0 0.1em;
-  min-width: 10em;
+  margin: 1em 0 1em;
+  width: 10em;
 }
 
 /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
@@ -116,20 +114,20 @@ input {
         <td>
           {% if army.base_name == 'monster' %}
             {% if county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training <= 0 %}
-              <div class="slider-container">
+              <div class="slide-container">
                 <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total }}" step="1" hidden/>
               </div>
               <span class="display" hidden>0</span>
               <span style="color:red;">Requires {{ county.buildings['lair'].class_name_plural.title() }}</span>
             {% else %}
-              <div class="slider-container">
+              <div class="slide-container">
                 <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training }}"
                      step="1"/>
               </div>
               <span class="display">0</span>
             {% endif %}
           {% else %}
-            <div class="slider-container">
+            <div class="slide-container">
               <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
             </div>
             <span class="display">0</span>
@@ -264,6 +262,10 @@ function updateHappiness() {
     happinessCost.html(Math.ceil(sum / population * 100));
 }
 
+function calcSliderWidth(size) {
+    return Math.min(size + 0.8, 10) + "em";
+}
+
 function resizeRemaining(gold, wood, iron) {
     // console.log(sliders);
     sliders.each(function (index, element) {
@@ -279,12 +281,12 @@ function resizeRemaining(gold, wood, iron) {
         var size = parseInt(element.value) + remaining;
         // need to include current element.value + current_max - remaining?
         $(element).prop("max", size);
+        $(element).css("width", calcSliderWidth(size));
         if (size === 0) {
             $(element).addClass("slider-disabled");
         } else {
             $(element).removeClass("slider-disabled");
         }
-        console.log(size);
     });
     // return remaining;
 }
@@ -325,6 +327,8 @@ function updateCosts() {
 }
 
 sliders.each(function (index, element) {
+    var size = parseInt($(element).prop("max"));
+    $(element).css("width", calcSliderWidth(size));
     $(element).on("input", function () {
         displays[index].innerHTML = $(element).val();
         values[index].value = $(element).val();
