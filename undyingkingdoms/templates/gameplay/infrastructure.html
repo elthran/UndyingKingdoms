@@ -27,7 +27,7 @@ input {
     <h2>Available Land: {{ county.get_available_land() }}</h2>
     <h2>Population: {{ county.population }}</h2>
     <ul>
-        <li>Employed: {{ county.get_maintenance_workers() }}</li>
+        <li>Employed: {{ county.get_employed_workers() }}</li>
         <li>Military: {{ county.get_army_size() }} (Of these, {{ county.get_unavailable_army_size() }} are in enemy
             lands and don't require food)
         </li>
@@ -37,8 +37,8 @@ input {
     </ul>
 
     <form method="POST" accept-charset="UTF-8" role="form">
-        {{ form2.csrf_token }}
-        {{ form2.goal }}
+        {{ excess_worker_form.csrf_token }}
+        {{ excess_worker_form.goal }}
         <button type="submit" id="choiceSubmit">Update</button>
     </form>
 
@@ -46,12 +46,6 @@ input {
     The result would be + <span id="excessProductionAmount"></span>
 
 
-    <h2>Daily Production:
-        {{ county.get_production()|int }} <img class="resource_icons" src="/static/images/prod_icon.jpg">
-        (<span class="tooltip">{{ county.get_available_workers() }} available workers
-        <span class="tooltipText">{{ meta_data["available_workers"] }}</span>
-    </span>)
-    </h2>
     <h2>Current Resources:
         {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">
         {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
@@ -59,7 +53,7 @@ input {
     </h2>
     <br>
     <form method="POST" accept-charset="UTF-8" role="form">
-        {{ form.csrf_token }}
+        {{ build_form.csrf_token }}
         <table class="production_table">
             <tr>
                 <th style="width:150px;">Name</th>
@@ -87,7 +81,7 @@ input {
                     {% if building.wood %}{{ building.wood }}<img class="resource_icons"
                                                                   src="/static/images/wood_icon.jpg">{% endif %}
                 </td>
-                <td>{{ building.labour_maintenance * building.total }} ({{ building.labour_maintenance }} each)</td>
+                <td>{{ building.workers_employed * building.total }} ({{ building.workers_employed }} each)</td>
                 <td>{{ building.description }}</td>
             </tr>
             {% endfor %}
@@ -97,7 +91,7 @@ input {
                 <td>-</td>
                 <td>{{ county.buildings.values()|sum(attribute='pending') }}</td>
                 <td style="width:150px;">-</td>
-                <td style="width:150px;">{{ county.get_maintenance_workers() }}</td>
+                <td style="width:150px;">{{ county.get_employed_workers() }}</td>
                 <td>-</td>
             </tr>
         </table>
@@ -111,7 +105,7 @@ input {
         Land Required: <span id="landCost">0</span> / {{ county.get_available_land() }}
         <br><br>
         <br>
-        <button id="submitButton" type="submit">Build</button>
+        <button id="buildSubmit" type="submit">Build</button>
         <br>
     </form>
 </div>
@@ -121,7 +115,7 @@ input {
 {{ super() }}
 {% set county = current_user.county %}
 <script type="text/javascript">
-var submitButton = document.getElementById('submitButton');
+var submitButton = document.getElementById('buildSubmit');
 
 {% for building in county.buildings.values() %}
     var {{ building.base_name }}_slider = document.getElementById('{{ building.base_name }}_slider');
@@ -129,10 +123,10 @@ var submitButton = document.getElementById('submitButton');
 {% endfor %}
 
 function updateGold() {
-    goldCost.innerHTML = 0{% for building in county.buildings.values() %} + {{ building.base_name }}_slider.value * {{ building.gold }}{% endfor %};
+    goldCost.innerHTML = 0{% for building in county.buildings.values() %} + {{ building.base_name }}_slider.value * {{ building.gold_cost }}{% endfor %};
 }
 function updateWood() {
-    woodCost.innerHTML = 0{% for building in county.buildings.values() %} + {{ building.base_name }}_slider.value * {{ building.wood }}{% endfor %};
+    woodCost.innerHTML = 0{% for building in county.buildings.values() %} + {{ building.base_name }}_slider.value * {{ building.wood_cost }}{% endfor %};
 }
 function updateLand() {
     landCost.innerHTML = 0{% for building in county.buildings.values() %} + parseInt({{ building.base_name }}_slider.value){% endfor %};
@@ -174,14 +168,19 @@ function updateCosts() {
     }
 {% endfor %}
 
-button = document.getElementById('submit');
+button = document.getElementById('choiceSubmit');
 
 var goalChoice = document.getElementById('goal');
 var goalDescription = document.getElementById('excessProductionDescription');
 var goalAmount = document.getElementById('excessProductionAmount');
 goalChoice.oninput = function() {
-    goalDescription.innerHTML = this.value;
-    goalAmount.innerHTML = '3 happiness'
+    if goalChoice.value === 1 {
+        goalDescription.innerHTML = 'gold';
+        goalAmount.innerHTML = '3 gold';
+    } else {
+        goalDescription.innerHTML = 'land';
+        goalAmount.innerHTML = '3 land';
+    }
 }
 
 

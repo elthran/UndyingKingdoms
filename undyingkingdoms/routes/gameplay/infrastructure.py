@@ -17,29 +17,31 @@ def infrastructure(template):
     county = current_user.county
     world = World.query.filter_by(id=county.kingdom.world_id).first()
     
-    form = InfrastructureForm()
-    form.county_id.data = county.id
-    if form.validate_on_submit():
+    build_form = InfrastructureForm()
+    build_form.county_id.data = county.id
+    if build_form.validate_on_submit():
         transaction = Transaction(county.id, county.county_days_in_age, world.day, "buy")
         for building in all_buildings:
-            if form.data[building] > 0:
-                county.gold -= form.data[building] * county.buildings[building].gold
-                county.wood -= form.data[building] * county.buildings[building].wood
-                county.buildings[building].pending += form.data[building]
+            if build_form.data[building] > 0:
+                county.gold -= build_form.data[building] * county.buildings[building].gold_cost
+                county.wood -= build_form.data[building] * county.buildings[building].wood_cost
+                county.buildings[building].pending += build_form.data[building]
                 transaction.add_purchase(item_name=building,
-                                         item_amount=form.data[building],
-                                         gold_per_item=county.buildings[building].gold,
-                                         wood_per_item=county.buildings[building].wood,
+                                         item_amount=build_form.data[building],
+                                         gold_per_item=county.buildings[building].gold_cost,
+                                         wood_per_item=county.buildings[building].wood_cost,
                                          iron_per_item=0)
         transaction.save()
         return redirect(url_for('infrastructure'))
-    
-    form2 = ExcessProductionForm()
+
+    excess_worker_form = ExcessProductionForm(goal=county.production_choice)
     goal_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
-    form2.goal.choices = [(pairing[0], pairing[1]) for pairing in goal_choices]
-    if form2.validate_on_submit():
-        county.production_choice = form.goal.data
+    excess_worker_form.goal.choices = [(pairing[0], pairing[1]) for pairing in goal_choices]
+    if excess_worker_form.validate_on_submit():
+        county.production_choice = excess_worker_form.goal.data
+        print("Choice:", county.production_choice)
         return redirect(url_for('infrastructure'))
     
-    return render_template(template, form=form, meta_data=game_descriptions)
+    return render_template(template, build_form=build_form,
+                           excess_worker_form=excess_worker_form, meta_data=game_descriptions)
 

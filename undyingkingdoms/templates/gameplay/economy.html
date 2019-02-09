@@ -93,7 +93,6 @@
                 <td>
                     <ul>
                         <li>Taxes: {{ county.get_tax_income() }}</li>
-                        <li>Excess Production: {{ county.production // 3 }}</li>
                         {% if county.buildings['bank'].total > 0 %}
                         <li>Banks: {{ county.get_bank_income() }}</li>
                         {% endif %}

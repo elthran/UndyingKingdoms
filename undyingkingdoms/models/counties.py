@@ -103,7 +103,7 @@ class County(GameState):
         self.immigration = 0
         self.emigration = 0
         
-        self.production_choice = 1
+        self.production_choice = 0
         self.produce_land = 0
 
         buildings = None
@@ -381,24 +381,10 @@ class County(GameState):
 
     def get_nourishment_change(self):
         hungry_people = self.get_food_to_be_eaten() - self.get_produced_dairy() - self.get_produced_grain() - self.grain_stores
-        if hungry_people > 0:
-            nourishment_loss = (hungry_people // 200) + 1  # 1 plus 1 for every 200 unfed people
-            return - min(nourishment_loss, 5)
-        if self.rations == 0:
-            unfed_people = self.population
-            return int(-(unfed_people // 200) - 1)
-        elif self.rations == 0.25:
-            unfed_people = self.population // (4 / 3)
-            return int(-(unfed_people // 200) - 1)
-        elif self.rations == 0.5:
-            unfed_people = self.population // 2
-            return int(-(unfed_people // 200) - 1)
-        elif self.rations == 1:
+        if hungry_people <= 0:
             return 1
-        elif self.rations == 2:
-            return 2
-        elif self.rations == 3:
-            return 4
+        else:
+            return (hungry_people // 200) + 1
 
     def update_food(self):
         total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores
@@ -452,17 +438,17 @@ class County(GameState):
     def get_unavailable_army_size(self):
         return sum(army.traveling for army in self.armies.values())
 
-    def get_maintenance_workers(self):
+    def get_employed_workers(self):
         """
         Returns the population who are maintaining current buildings.
         """
-        return sum(building.labour_maintenance * building.total for building in self.buildings.values())
+        return sum(building.workers_employed * building.total for building in self.buildings.values())
 
     def get_available_workers(self):
         """
         Returns the population with no current duties.
         """
-        return max(self.population - self.get_maintenance_workers() - self.get_army_size(), 0)
+        return max(self.population - self.get_employed_workers() - self.get_army_size(), 0)
 
     def get_death_rate(self):
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + death_rate_modifier.get(self.background, ("", 0))[1]
@@ -532,27 +518,27 @@ class County(GameState):
         """
         Users the excess production towards completing a task
         """
-        if self.production_choice == 'gold':
+        if self.production_choice == 0:  # Gold
             return self.get_excess_production() // 4
-        if self.production_choice == 'land':
+        if self.production_choice == 1:  # Land
             return self.get_excess_production()
-        if self.production_choice == 'food':
+        if self.production_choice == 2:  # Food
             return self.get_excess_production() // 2
-        if self.production_choice == 'happiness':
+        if self.production_choice == 3:  # Happiness
             return 2
         
     def apply_excess_production_value(self):
-        if self.production_choice == 'gold':
+        if self.production_choice == 0:
             self.gold += self.get_excess_production_value()
-        if self.production_choice == 'land':
+        if self.production_choice == 1:
             self.produce_land += self.get_excess_production_value()
             # Every 1000 production towards land gives you one acre
             if self.produce_land > 1500:
                 self.produce_land -= 1500
                 self.land += 1
-        if self.production_choice == 'food':
+        if self.production_choice == 2:
             self.grain_stores += self.get_excess_production_value()
-        if self.production_choice == 'happiness':
+        if self.production_choice == 3:
             self.happiness += self.get_excess_production_value()
 
     def produce_pending_buildings(self):

@@ -33,7 +33,7 @@ class InfrastructureForm(FlaskForm):
         gold_cost = 0
         county = County.query.filter_by(id=self.county_id.data).first()
         for building in [self.house, self.field, self.pasture, self.mill, self.mine, self.fort, self.stables, self.guild, self.bank, self.lair]:
-            gold_cost += county.buildings[building.name].gold * building.data
+            gold_cost += county.buildings[building.name].gold_cost * building.data
         if gold_cost > county.gold:
             self.county_id.errors.append("Not enough gold.")
             return True
@@ -42,7 +42,7 @@ class InfrastructureForm(FlaskForm):
         wood_cost = 0
         county = County.query.filter_by(id=self.county_id.data).first()
         for building in [self.house, self.field, self.pasture, self.mill, self.mine, self.fort, self.stables, self.guild, self.bank, self.lair]:
-            wood_cost += county.buildings[building.name].wood * building.data
+            wood_cost += county.buildings[building.name].wood_cost * building.data
         if wood_cost > county.wood:
             self.county_id.errors.append("Not enough wood.")
             return True
