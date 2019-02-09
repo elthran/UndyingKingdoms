@@ -267,9 +267,10 @@ class County(GameState):
             self.armies['elite'].total += 1
         if randint(1, 10) > 8:
             self.gold -= 25
-        if randint(1, 24) == 24:
-            pass  # Fails if they vote for county outside their kingdom
-            # self.vote = randint(1, len(self.kingdom.counties))
+        if randint(1, 12) == 12 and self.kingdom.leader == 0:
+            friendly_counties = County.query.filter_by(kingdom_id=self.kingdom_id).all()
+            self.vote = choice(friendly_counties).id
+            self.kingdom.count_votes()
         if randint(1, 5) == 5:
             self.buildings['house'].total += 2
             self.buildings['field'].total += 1
@@ -383,7 +384,6 @@ class County(GameState):
 
     def get_nourishment_change(self):
         hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
-        print("Hungry people:", hungry_people)
         if hungry_people <= 0:
             if self.rations == 0:
                 return -6
@@ -569,7 +569,6 @@ class County(GameState):
         """
         buildings_to_be_built = 3 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
                                 + buildings_built_per_day_modifier.get(self.background, ("", 0))[1]
-        print("To build:", buildings_to_be_built)
         while buildings_to_be_built > 0:
             buildings_to_be_built -= 1
             queue = [building for building in self.buildings.values() if building.pending > 0]
@@ -781,9 +780,7 @@ class County(GameState):
         buffer_time = datetime.utcnow() - timedelta(hours=12)
         operations_on_target = Infiltration.query.filter_by(target_id=self.id).filter_by(success=True).filter(
             Infiltration.time_created > buffer_time).count()
-        print(operations_on_target, buffer_time)
         reduction = 10 + (self.get_number_of_available_thieves() * 3500 / self.land) ** 0.7 + (10 * operations_on_target)
-        print(reduction)
         return max(int(100 - reduction), 10)
 
     # Terminology
