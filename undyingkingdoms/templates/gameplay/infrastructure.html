@@ -42,7 +42,7 @@ input {
         {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
     </h2>
     <br>
-    <form action="{{ url_for('infrastructure') + '?id=excess' }}" method="POST" accept-charset="UTF-8">
+    <form action="{{ url_for('infrastructure') + '?id=build' }}" method="POST" accept-charset="UTF-8">
         {{ build_form.csrf_token }}
         <table class="production_table">
             <tr>
