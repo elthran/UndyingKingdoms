@@ -30,14 +30,21 @@
   <div class="raceDiv">
     <h1>{{ race }}</h1>
     <ul>
-      {% set select = races['Race'] == race %}
-      {% for row in races.loc[select, 'Modifier Description'] %}
+    {% set select = races['Race'] == race %}
+    {% for row in races.loc[select, 'Modifier Description'] %}
       <li>--- {{ row }}</li>
-      {% endfor %}
+    {% endfor %}
     </ul>
     <br>
     <h2>Military:</h2>
-    {% for army in armies %}
+    {% set select = armies.Race == race %}
+    {% for name in armies.loc[select, "Class Name Plural"]: %}
+      {{ army }}
+    {% endfor %}
+  </div>
+  {% endfor %}
+
+  {% raw %}
     <ul>
       <li>Name: {{ army.class_name.title() }}</li>
       <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
@@ -45,9 +52,7 @@
         {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
       <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
     </ul>
-    {% endfor %}
-  </div>
-  {% endfor %}
+    {% endraw %}
 
 {% raw %}
 {% set raceDivs %}
