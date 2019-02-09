@@ -38,8 +38,15 @@
     <br>
     <h2>Military:</h2>
     {% set select = armies.Race == race %}
-    {% for name in armies.loc[select, "Class Name Plural"]: %}
-      {{ army }}
+    {% set army = armies.loc[select].reset_index() %}
+    {% for i in range(army | length) %}
+      <ul>
+        <li>Name: {{ army.loc[i, 'Class Name'].title() }}</li>
+        <li>Cost: {{ army.Gold[i] }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
+        {{ army.Wood[i] }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+        {{ army.Iron[i] }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+        <li>Attack/Defence/Health: {{ army.Attack[i] }}/{{ army.Defence[i] }}/{{ army.Health[i] }}</li>
+      </ul>
     {% endfor %}
   </div>
   {% endfor %}
