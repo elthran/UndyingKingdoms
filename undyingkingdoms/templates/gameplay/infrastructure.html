@@ -42,8 +42,8 @@ input {
         <button type="submit" id="choiceSubmit">Update</button>
     </form>
 
-    <span id="excessProductionDescription"></span><br>
-    The result would be + <span id="excessProductionAmount"></span>
+    <span id="excessProductionDescription"></span>
+
 
 
     <h2>Current Resources:
@@ -178,20 +178,22 @@ function updateCosts() {
 };
 
 {% endfor %}
-var button = document.getElementById("choiceSubmit");
-var goalChoice = document.getElementById("goal");
-var goalDescription = document.getElementById("excessProductionDescription");
-var goalAmount = document.getElementById("excessProductionAmount");
-goalChoice.oninput = function () {
-    console.log(goalChoice);
-    if (goalChoice.value === 1) {
-        goalDescription.innerHTML = "gold";
-        goalAmount.innerHTML = "3 gold";
-    } else {
-        goalDescription.innerHTML = "land";
-        goalAmount.innerHTML = "3 land";
+
+var goalChoice = document.getElementById('goal');
+var goalDescription = document.getElementById('excessProductionDescription');
+goalChoice.oninput = function() {
+    if (goalChoice.value == 0) {
+        goalDescription.innerHTML = 'Your idle citizens will be forced to work, earning your county additional gold per day.';
+    } else if (goalChoice.value == 1) {
+        goalDescription.innerHTML = 'Your idle citizens will be forced to reclaim overgrown land surrounding your county.';
+    } else if (goalChoice.value == 2) {
+        goalDescription.innerHTML = 'Your idle citizens will be forced to forage for food.';
+    } else if (goalChoice.value == 3) {
+        goalDescription.innerHTML = 'Your idle citizens will be allowed to relax.';
     }
 };
+
 </script>
+
 {% endblock %}
 
