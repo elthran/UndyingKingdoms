@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, request
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
@@ -19,7 +19,9 @@ def infrastructure(template):
     
     build_form = InfrastructureForm()
     build_form.county_id.data = county.id
-    if build_form.validate_on_submit():
+
+    if request.args.get('id') == 'build' and build_form.validate_on_submit():
+        print('build form passed validation')
         transaction = Transaction(county.id, county.county_days_in_age, world.day, "buy")
         for building in all_buildings:
             if build_form.data[building] > 0:
@@ -37,7 +39,7 @@ def infrastructure(template):
     excess_worker_form = ExcessProductionForm(goal=county.production_choice)
     goal_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
     excess_worker_form.goal.choices = [(pairing[0], pairing[1]) for pairing in goal_choices]
-    if excess_worker_form.validate_on_submit():
+    if request.args.get('id') == 'excess' and excess_worker_form.validate_on_submit():
         county.production_choice = excess_worker_form.goal.data
         print("Choice:", county.production_choice)
         return redirect(url_for('infrastructure'))
