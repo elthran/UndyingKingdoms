@@ -8,14 +8,14 @@
 {% set county = current_user.county %}
 <h1 style="text-align:center;">{{ county.name }}</h1>
 <ul>
-    <li>Leader: {{ county.leader }} ({{ county.gender }})</li>
+    <li>Leader: {{ county.title }} {{ county.leader }}</li>
     <li>Race: {{ county.race }}</li>
     <li>Title: {{ county.background }}</li>
     <li>Land: {{ county.land }} acres</li>
     {% if county.kingdom.world.day < 0 %}
     <li>Calendar Day: 0 <span style="color:red;">(This age will begin in {{ county.kingdom.world.day|abs }} hours)</span></li>
     {% else %}
-    <li>Calendar: Day {{ county.kingdom.world.day }} (This round of testing will end on day 168)</li>
+    <li>Calendar: Day {{ county.kingdom.world.day }} <span style="color:red;">(This round of testing will end on day 93)</span></li>
     {% endif %}
     <li>Stored Grain: {{ county.grain_stores }} <img class="resource_icons" src="/static/images/grain_icon.jpg"></li>
     <li>Coffers: {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"></li>
@@ -26,8 +26,7 @@
 </ul>
 <br>
 {% if county.county_days_in_age < 1 %}
-<p style="color:red;">Please visit <a href="{{ url_for('versions') }}">versions</a> to see what has changed.</p>
-<p style="color:red;">Due to server troubles we have had to end the previous round earlier. Sorry for any inconvenience. This round is paused temporarily to allow everyone to catch up.</p>
+<p style="color:red;" id="serverMessageToPlayers"></p>
 {% endif %}
 <h2>News</h2>
 <ul>

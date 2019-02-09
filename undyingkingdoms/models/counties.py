@@ -11,7 +11,7 @@ from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
-    happiness_modifier
+    happiness_modifier, buildings_built_per_day_modifier
 
 from copy import deepcopy
 
@@ -40,7 +40,7 @@ class County(GameState):
 
     _land = db.Column(db.Integer)
     race = db.Column(db.String(32))
-    gender = db.Column(db.String(16))
+    title = db.Column(db.String(16))
     background = db.Column(db.String(32))
     tax = db.Column(db.Integer)
     _population = db.Column(db.Integer)
@@ -52,12 +52,15 @@ class County(GameState):
     _nourishment = db.Column(db.Integer)  # Out of 100
     _health = db.Column(db.Integer)  # Out of 100
     weather = db.Column(db.String(32))
-    production = db.Column(db.Integer)
     grain_stores = db.Column(db.Integer)
     notifications = db.relationship('Notification', backref='county')
 
     expeditions = db.relationship('Expedition', backref='county')
     infiltrations = db.relationship('Infiltration', backref='county')
+    
+    # Excess Production
+    production_choice = db.Column(db.Integer)  # the current setting the user chose
+    produce_land = db.Column(db.Integer)  # Progress towards next land
 
     births = db.Column(db.Integer)
     deaths = db.Column(db.Integer)
@@ -70,13 +73,13 @@ class County(GameState):
                              collection_class=attribute_mapped_collection('base_name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
 
-    def __init__(self, kingdom_id, name, leader, user_id, race, gender, background):
+    def __init__(self, kingdom_id, name, leader, user_id, race, title, background):
         self.name = name
         self.leader = leader
         self.user_id = user_id
         self.kingdom_id = kingdom_id
         self.race = race
-        self.gender = gender
+        self.title = title
         self.background = background
         self.county_days_in_age = 0
         self.vote = None
@@ -92,7 +95,6 @@ class County(GameState):
         self._wood = 100
         self._iron = 25
         self.rations = 1
-        self.production = 0  # How many buildings you can build per day
         self.grain_stores = 500
         self.weather = "Sunny"
 
@@ -100,6 +102,9 @@ class County(GameState):
         self.deaths = 0
         self.immigration = 0
         self.emigration = 0
+        
+        self.production_choice = 0
+        self.produce_land = 0
 
         buildings = None
         armies = None
@@ -224,9 +229,9 @@ class County(GameState):
         Add a WORLD. Tracks day. Has game clock.
         """
         self.update_daily_resources()
-        self.production = self.get_production()
         self.produce_pending_buildings()
         self.produce_pending_armies()
+        self.apply_excess_production_value()
         self.update_food()
         self.update_population()
         self.update_weather()  # Is before random events because they can affect weather
@@ -293,6 +298,8 @@ class County(GameState):
 
     def get_happiness_change(self):
         change = 7 - self.tax
+        if self.production_choice == 3:
+            change += self.get_excess_production_value(self.production_choice)
         modifier = happiness_modifier.get(self.race, ("", 0))[1] + happiness_modifier.get(self.background, ("", 0))[1]
         return change + modifier
 
@@ -346,8 +353,8 @@ class County(GameState):
             self.weather = 'lovely'
 
         elif random_chance == 6:
-            modifier = 100 - self.nourishment
-            amount = min(randint(modifier, modifier + 25), self.population)
+            modifier = (101 - self.nourishment) // 20 + 1  # Percent of people who will die (1% -> 5%)
+            amount = modifier * self.population
             notification = Notification(self.id,
                                         "Black Death",
                                         "A plague has swept over our county, killing {} of our people.".format(amount),
@@ -364,32 +371,31 @@ class County(GameState):
                                         self.kingdom.world.day)
             self.buildings['house'].total -= amount
 
+        elif random_chance == 8:
+            amount = min(randint(3, 7), self.nourishment)
+            notification = Notification(self.id,
+                                        "Sickness",
+                                        "A disease has spread throughout your lands, lowering your county's health by {}.".format(amount), self.kingdom.world.day)
+            self.nourishment -= amount
+
         if notification:
             notification.save()
 
     def get_nourishment_change(self):
-        hungry_people = self.get_food_to_be_eaten() - self.get_produced_dairy() - self.get_produced_grain() - self.grain_stores
-        if hungry_people > 0:
-            nourishment_loss = (hungry_people // 200) + 1  # 1 plus 1 for every 200 unfed people
-            return - min(nourishment_loss, 5)
-        if self.rations == 0:
-            unfed_people = self.population
-            return int(-(unfed_people // 200) - 1)
-        elif self.rations == 0.25:
-            unfed_people = self.population // (4 / 3)
-            return int(-(unfed_people // 200) - 1)
-        elif self.rations == 0.5:
-            unfed_people = self.population // 2
-            return int(-(unfed_people // 200) - 1)
-        elif self.rations == 1:
-            return 1
-        elif self.rations == 2:
-            return 2
-        elif self.rations == 3:
-            return 4
+        hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
+        print("Hungry people:", hungry_people)
+        if hungry_people <= 0:
+            if self.rations == 0:
+                return -6
+            elif self.rations < 1:
+                return int(- 1 / self.rations - 1)
+            else:
+                return 1
+        else:
+            return (hungry_people // 200) + 1
 
     def update_food(self):
-        total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores
+        total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores + self.get_excess_worker_produced_food()
         food_eaten = self.get_food_to_be_eaten()
         if total_food >= food_eaten:
             # If you have enough food, you lose it and your nourishment changes based on rations
@@ -409,12 +415,18 @@ class County(GameState):
     def get_produced_dairy(self):
         return self.buildings['pasture'].total * self.buildings['pasture'].output
 
+    def get_excess_worker_produced_food(self):
+        if self.production_choice == 2:
+            return self.get_excess_production_value(self.production_choice)
+        else:
+            return 0
+
     def get_food_to_be_eaten(self):
         modifier = 1 + food_consumed_modifier.get(self.race, ("", 0))[1] + food_consumed_modifier.get(self.background, ("", 0))[1]
-        return int(self.population * self.rations * modifier)
+        return int((self.population - self.get_unavailable_army_size()) * self.rations * modifier)
 
     def grain_storage_change(self):
-        food_produced = self.get_produced_dairy() + self.get_produced_grain()
+        food_produced = self.get_produced_dairy() + self.get_produced_grain() + self.get_excess_worker_produced_food()
         food_delta = food_produced - self.get_food_to_be_eaten()
         if food_delta > 0:  # If you have food left over, save it with a max of how much grain you produced
             return min(food_delta, self.get_produced_grain())
@@ -440,17 +452,17 @@ class County(GameState):
     def get_unavailable_army_size(self):
         return sum(army.traveling for army in self.armies.values())
 
-    def get_maintenance_workers(self):
+    def get_employed_workers(self):
         """
         Returns the population who are maintaining current buildings.
         """
-        return sum(building.labour_maintenance * building.total for building in self.buildings.values())
+        return sum(building.workers_employed * building.total for building in self.buildings.values())
 
     def get_available_workers(self):
         """
         Returns the population with no current duties.
         """
-        return max(self.population - self.get_maintenance_workers() - self.get_army_size(), 0)
+        return max(self.population - self.get_employed_workers() - self.get_army_size(), 0)
 
     def get_death_rate(self):
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + death_rate_modifier.get(self.background, ("", 0))[1]
@@ -462,7 +474,8 @@ class County(GameState):
         birth_rate = self.buildings['house'].total * self.buildings['house'].output * modifier
         return int(birth_rate * uniform(0.9995, 1.0005))
 
-    def get_immigration_rate(self):
+    @staticmethod
+    def get_immigration_rate():
         return randint(25, 35)
 
     def get_emigration_rate(self):
@@ -494,7 +507,11 @@ class County(GameState):
     def get_gold_change(self):
         modifier = 1 + income_modifier.get(self.race, ("", 0))[1] \
                    + income_modifier.get(self.background, ("", 0))[1]
-        income = (self.get_tax_income() + self.get_bank_income() + (self.production // 3)) * modifier
+        if self.production_choice == 0:
+            excess_worker_income = self.get_excess_production_value(self.production_choice)
+        else:
+            excess_worker_income = 0
+        income = (self.get_tax_income() + self.get_bank_income() + excess_worker_income) * modifier
         revenue = self.get_upkeep_costs()
         return int(income - revenue)
 
@@ -505,27 +522,63 @@ class County(GameState):
         return self.buildings['mine'].total * self.buildings['mine'].output
 
     # Building
-    def get_production_modifier(self):
+    def get_production_modifier(self):  # Modifiers your excess production
         return 1 + production_per_worker_modifier.get(self.race, ("", 0))[1] \
                + production_per_worker_modifier.get(self.background, ("", 0))[1]
 
-    def get_production(self):
-        happiness_modifier = self.happiness / 100
-        return max(int(self.get_production_modifier() * happiness_modifier * self.get_available_workers() / 3), 0)
+    def get_excess_production(self):
+        """
+        Returns the amount of excess production you get each turn
+        """
+        return max(int(self.get_production_modifier() * self.get_available_workers()), 0)
+    
+    def get_excess_production_value(self, value=-1):
+        """
+        Users the excess production towards completing a task
+        """
+        if value == -1:
+            excess_worker_choice = self.production_choice
+        else:
+            excess_worker_choice = value
+        if excess_worker_choice == 0:  # Gold
+            return self.get_excess_production() // 14
+        if excess_worker_choice == 1:  # Land
+            return self.get_excess_production()
+        if excess_worker_choice == 2:  # Food
+            return self.get_excess_production() // 7
+        if excess_worker_choice == 3:  # Happiness
+            return 1
+        
+    def apply_excess_production_value(self):
+        if self.production_choice == 0:
+            self.gold += self.get_excess_production_value()
+        if self.production_choice == 1:
+            self.produce_land += self.get_excess_production_value()
+            # Every 1000 production towards land gives you one acre
+            if self.produce_land > 2000:
+                self.produce_land -= 2000
+                self.land += 1
+        if self.production_choice == 2:
+            self.grain_stores += self.get_excess_production_value()
+        if self.production_choice == 3:
+            self.happiness += self.get_excess_production_value()
 
     def produce_pending_buildings(self):
         """
         Gets a list of all buildings which can be built today. Builds it. Then recalls function.
         """
-        queue = [building for building in self.buildings.values()
-                 if building.pending > 0
-                 and building.production_cost <= self.production]
-        if queue and self.production > 0:
-            building = choice(queue)
-            building.pending -= 1
-            building.total += 1
-            self.production -= building.production_cost
-            self.produce_pending_buildings()
+        buildings_to_be_built = 3 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
+                                + buildings_built_per_day_modifier.get(self.background, ("", 0))[1]
+        print("To build:", buildings_to_be_built)
+        while buildings_to_be_built > 0:
+            buildings_to_be_built -= 1
+            queue = [building for building in self.buildings.values() if building.pending > 0]
+            if queue:
+                building = choice(queue)
+                building.pending -= 1
+                building.total += 1
+            else:
+                break
 
     def produce_pending_armies(self):
         """
@@ -761,18 +814,19 @@ class County(GameState):
     @property
     def health_terminology(self):
         if self.happiness < 20:
-            return "dying of disease"
+            return "diseased"
         if self.happiness < 50:
             return "sickly"
         if self.happiness < 75:
             return "average"
         if self.happiness < 90:
             return "hale"
-        return "perfect health"
+        return "perfect"
 
     @property
     def rations_terminology(self):
-        terminology_dictionary = {0: "None", 0.25: "Quarter", 0.5: "Half", 1: "Normal", 2: "Double", 3: "Triple"}
+        terminology_dictionary = {0: "None", 0.25: "Quarter", 0.5: "Half", 0.75: "Three Quarters",
+                                  1: "Normal", 1.5: "One-and-a-half", 2: "Double", 3: "Triple"}
         return terminology_dictionary[self.rations]
 
     def __repr__(self):

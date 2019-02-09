@@ -15,13 +15,13 @@
     <h2>Resources</h2>
     <table class="production_table">
         <tr>
-            <th>Topic</th>
-            <th>Current</th>
-            <th style="width:100px;">Projected Change</th>
-            <th style="width:225px;">Modifiers</th>
-            <th style="width:175px;">Projected Growth</th>
-            <th style="width:175px;">Projected Losses</th>
-            <th>Notes</th>
+            <th style="width:50px;">Topic</th>
+            <th style="width:50px;">Current</th>
+            <th style="width:75px;">Projected Change</th>
+            <th style="width:200px;">Modifiers</th>
+            <th style="width:180px;">Projected Growth</th>
+            <th style="width:180px;">Projected Losses</th>
+            <th style="width:225px;">Notes</th>
         </tr>
         <br>
         <ul>
@@ -36,30 +36,26 @@
                 {{ population_projection }} <img class="resource_icons" src="/static/images/population_icon.jpg">
             </td>
             <td>
-                <ul>
-                    {% if birth_rate_modifier.get(county.race)[1] %}
-                    <li>({{ county.race }}) {{ birth_rate_modifier.get(county.race)[0] }}: {{
-                        (birth_rate_modifier.get(county.race)[1] * 100)|int }}%
-                    </li>
-                    {% endif %}
-                    {% if birth_rate_modifier.get(county.background)[1] %}
-                    <li>({{ county.background }}) {{ birth_rate_modifier.get(county.background)[0] }}: {{
-                        (birth_rate_modifier.get(county.background)[1] * 100)|int }}%
-                    </li>
-                    {% endif %}
-                </ul>
+                {% if birth_rate_modifier.get(county.race)[1] %}
+                <li>
+                    <div class="tooltip">{{ birth_rate_modifier.get(county.race)[0] }}: {{
+                        (birth_rate_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Bonus: {{ county.race }}</span>
+                    </div>
+                </li>
+                {% endif %}
+                {% if birth_rate_modifier.get(county.background)[1] %}
+                <li>({{ county.background }}) {{ birth_rate_modifier.get(county.background)[0] }}: {{
+                    (birth_rate_modifier.get(county.background)[1] * 100)|int }}%
+                </li>
+                {% endif %}
             </td>
             <td>
-                <ul>
-                    <li>Births: {{ county.get_birth_rate() }}</li>
-                    <li>Immigration: {{ county.get_immigration_rate() }}</li>
-                </ul>
+                <li>Births: {{ county.get_birth_rate() }}</li>
+                <li>Immigration: {{ county.get_immigration_rate() }}</li>
             </td>
             <td>
-                <ul>
-                    <li>Deaths: {{ county.get_death_rate() }}</li>
-                    <li>Emigration: {{ county.get_emigration_rate() }}</li>
-                </ul>
+                <li>Deaths: {{ county.get_death_rate() }}</li>
+                <li>Emigration: {{ county.get_emigration_rate() }}</li>
             </td>
             <td>Raise happiness to lower the amount of emigrants leaving your county.</td>
             </tr>
@@ -76,30 +72,34 @@
                     <img class="resource_icons" src="/static/images/gold_icon.jpg">
                 </td>
                 <td>
-                    <ul>
-                        <li>Tax Rate: {{ form.tax }}%</li>
-                        {% if income_modifier.get(county.race)[1] %}
-                        <li>({{ county.race }}) {{ income_modifier.get(county.race)[0] }}: {{
-                            (income_modifier.get(county.race)[1] * 100)|int }}%
-                        </li>
-                        {% endif %}
-                        {% if income_modifier.get(county.background)[1] %}
-                        <li>({{ county.background }}) {{ income_modifier.get(county.background)[0] }}: {{
-                            (income_modifier.get(county.background)[1] * 100)|int }}%
-                        </li>
-                        {% endif %}
-                    </ul>
+                    <li>Tax Rate: {{ form.tax }}%</li>
+                    {% if income_modifier.get(county.race)[1] %}
+                    <li>
+                        <div class="tooltip">{{ income_modifier.get(county.race)[0] }}: {{
+                            (income_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Bonus: {{ county.race }}</span>
+                        </div>
+                    </li>
+                    {% endif %}
+                    {% if income_modifier.get(county.background)[1] %}
+                    <li>
+                        <div class="tooltip">{{ income_modifier.get(county.background)[0] }}: {{
+                            (income_modifier.get(county.background)[1] * 100)|int }}%<span class="tooltipText">Class Bonus: {{ county.background }}</span>
+                        </div>
+                    </li>
+                    {% endif %}
                 </td>
                 <td>
-                    <ul>
-                        <li>Taxes: {{ county.get_tax_income() }}</li>
-                        <li>Excess Production: {{ county.production // 3 }}</li>
-                        {% if county.buildings['bank'].total > 0 %}
-                        <li>Banks: {{ county.get_bank_income() }}</li>
-                        {% endif %}
-                    </ul>
+                    <li>Taxes: {{ county.get_tax_income() }}</li>
+                    {% if county.buildings['bank'].total > 0 %}
+                    <li>Banks: {{ county.get_bank_income() }}</li>
+                    {% endif %}
+                    {% if county.production_choice == 0 %}
+                    <li>Overworking: + {{ county.get_excess_production_value(0) }}</li>
+                    {% endif %}
                 </td>
-                <td>Military Expenses: {{ county.get_upkeep_costs() }}</td>
+                <td>
+                    <li>Military Expenses: {{ county.get_upkeep_costs() }}</li>
+                </td>
                 {% if county.tax < 7 %}
                 <td style="color:green;">Your current tax rate has a positive
                     {% elif county.tax == 7 %}
@@ -117,27 +117,33 @@
                     {% else %}
                 <td style="color:red;">
                     {% endif %}
-                    {{ county.grain_storage_change() }} <img class="resource_icons" src="/static/images/grain_icon.jpg">
+                    {{ county.grain_storage_change()|int }} <img class="resource_icons"
+                                                                 src="/static/images/grain_icon.jpg">
                 </td>
                 <td>
-                    <ul>
-                        <li>Rations: {{ form.rations }}</li>
-                        {% if food_consumed_modifier.get(county.race)[1] %}
-                        <li>({{ county.race }}) {{ food_consumed_modifier.get(county.race)[0] }}: {{
-                            (food_consumed_modifier.get(county.race)[1] * 100)|int }}%
-                        </li>
-                        {% endif %}
-                    </ul>
+                    <li>Rations: {{ form.rations }}</li>
+                    {% if food_consumed_modifier.get(county.race)[1] %}
+                    <li>
+                        <div class="tooltip">{{ food_consumed_modifier.get(county.race)[0] }}: {{
+                            (food_consumed_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Bonus: {{ county.race }}</span>
+                        </div>
+                    </li>
+                    {% endif %}
                 </td>
                 <td>
-                    <ul>
-                        <li>+ {{ county.get_produced_grain() }} <img class="resource_icons"
-                                                                     src="/static/images/grain_icon.jpg"></li>
-                        <li>+ {{ county.get_produced_dairy() }} <img class="resource_icons"
-                                                                     src="/static/images/dairy_icon.jpg"></li>
-                    </ul>
+                    <li>Fields: + {{ county.get_produced_grain() }} <img class="resource_icons"
+                                                                         src="/static/images/grain_icon.jpg"></li>
+                    <li>Pastures: + {{ county.get_produced_dairy() }} <img class="resource_icons"
+                                                                           src="/static/images/dairy_icon.jpg"></li>
+                    {% if county.production_choice == 2 %}
+                    <li>Foraging: + {{ county.get_excess_production_value(2) }} <img class="resource_icons"
+                                                                                     src="/static/images/dairy_icon.jpg">
+                    </li>
+                    {% endif %}
                 </td>
-                <td>Food to be Eaten: {{ county.get_food_to_be_eaten() }}</td>
+                <td>
+                    <li>To be Eaten: {{ county.get_food_to_be_eaten() }}</li>
+                </td>
                 <td>Excess dairy can not be stored in your granaries. If you do not have enough food, your populace will
                     begin to starve.
                 </td>
@@ -153,7 +159,10 @@
                     {{ county.get_wood_income() }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
                 </td>
                 <td>-</td>
-                <td>+ {{ county.get_wood_income() }} from {{ county.buildings['mill'].class_name }}</td>
+                <td>
+                    <li>{{ county.buildings['mill'].class_name_plural.title() }}: + {{ county.get_wood_income() }} <img
+                            class="resource_icons" src="/static/images/wood_icon.jpg"></li>
+                </td>
                 <td>-</td>
                 <td>Lumber is used to build buildings and to equip certain soldiers.</td>
             </tr>
@@ -168,7 +177,10 @@
                     {{ county.get_iron_income() }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
                 </td>
                 <td>-</td>
-                <td>+ {{ county.get_iron_income() }} from {{ county.buildings['mine'].class_name }}</td>
+                <td>
+                    <li>{{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.get_iron_income() }} <img
+                            class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+                </td>
                 <td>-</td>
                 <td>Iron is used to equip powerful soldiers.</td>
             </tr>
@@ -182,21 +194,25 @@
                     {% endif %}
                     {{ county.get_happiness_change() }} <img class="resource_icons" src="/static/images/heart_icon.jpg">
                 </td>
+                <td>-</td>
                 <td>
-                    {% if happiness_modifier.get(county.race)[1] %}
-                    ({{ county.race }}) {{ happiness_modifier.get(county.race)[0] }}: {{
-                    happiness_modifier.get(county.race)[1] }}
+                    <li>Natural: +7 <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>
+                    {% if county.production_choice == 3 %}
+                    <li>Relax: + {{ county.get_excess_production_value(3) }} <img class="resource_icons"
+                                                                                  src="/static/images/heart_icon.jpg">
+                    </li>
                     {% endif %}
                 </td>
-                <td>+7 baseline</td>
-                <td><ul>
-                    <li>{% if happiness_modifier.get(county.race)[1] %}
-                        {{ happiness_modifier.get(county.race)[0] }}: {{
-                        happiness_modifier.get(county.race)[1] }}
-                        {% endif %}
+                <td>
+                    {% if happiness_modifier.get(county.race)[0] %}
+                    <li>
+                        <div class="tooltip">{{ happiness_modifier.get(county.race)[0] }}: {{
+                            happiness_modifier.get(county.race)[1] }}<span class="tooltipText">Racial Bonus: {{ county.race }}</span>
+                        </div>
+                        <img class="resource_icons" src="/static/images/heart_icon.jpg">
                     </li>
-                    <li>Taxes: -{{ county.tax }}</li>
-                </ul>
+                    {% endif %}
+                    <li>Taxes: -{{ county.tax }} <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>
                 </td>
                 <td>Happiness affects emigration rate and how productive your workers are. If they become too unhappy,
                     they may start to question your rule.

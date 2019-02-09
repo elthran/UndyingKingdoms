@@ -1,7 +1,10 @@
 from undyingkingdoms.models.achievements import Achievement
 
+# Current price balance: 1 iron == 2 wood == 4 gold == 8 food
+
 
 metadata_races = ['Human', 'Elf', 'Dwarf', 'Goblin']
+metadata_titles = ['Sir', 'Dame', 'Lord', 'Lady', 'Baron', 'Baroness', 'Duke', 'Duchess', 'Prince', 'Princess']
 
 metadata_backgrounds = ['Warlord', 'Engineer', 'Merchant', 'Rogue']
 
@@ -9,7 +12,8 @@ kingdom_names = ["Faenoth", "Aldoroth", "Ecthalion"]
 
 infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust']
 
-rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (1, "Normal"), (2, "Double"), (3, "Triple")]
+rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (0.75, "Three-Quarters"), (1, "Normal"),
+                       (1.5, "One-and-a-half"), (2, "Double"), (3, "Triple")]
 
 all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'fort', 'stables', 'guild', 'bank', 'lair']
 
@@ -57,16 +61,17 @@ all_achievements = {
 }
 
 # Racial/Class Modifiers (A modifier of 0 means +0%. A modifier of 1 would mean +100%)
-happiness_modifier = {'Goblin': ("Infighting", -2)}
-birth_rate_modifier = {'Elf': ("Elders", -0.15), 'Goblin': ("Expendable", 0.10)}
+happiness_modifier = {'Goblin': ("Infighting", -1)}
+birth_rate_modifier = {'Elf': ("Elders", -0.15), 'Goblin': ("Expendable", 0.15)}
 death_rate_modifier = {}
 income_modifier = {'Merchant': ("Silver Tongue", 0.15)}
 offensive_power_modifier = {'Warlord': ("Relentless", 0.15)}
-infiltration_success_modifier = {'Rogue': ("Master of Disguise", 0.10)}
+infiltration_success_modifier = {'Rogue': ("Master of Disguise", 0.15), 'Goblin': ("Sneaky", 0.10)}
 amount_of_thieves_modifier = {'Rogue': ("Army of Shadows", 2)}
-production_per_worker_modifier = {'Dwarf': ("Dwarven Made", 0.15), 'Engineer': ("Craftsman", 0.20)}
+production_per_worker_modifier = {'Dwarf': ("Dwarven Steel", 0.15), 'Engineer': ("Artisan", 0.20)}
 defense_per_citizen_modifier = {'Elf': ("Citizen Militia", 1.00)}
 food_consumed_modifier = {'Dwarf': ("Ravenous", 0.15)}
+buildings_built_per_day_modifier = {'Engineer': ("Craftsman", 2)}
 
 all_armies = ["peasant", "archer", "soldier", "elite", "monster"]
 
