@@ -27,7 +27,7 @@ input {
     <h2>Unemployed Citizens : {{ county.get_available_workers() }} / {{ county.population }}</h2><br>
     <p>You may assign a task to your idle population. </p>
 
-    <form method="POST" accept-charset="UTF-8" role="form">
+    <form action="{{ url_for('infrastructure') + '?id=excess' }}" method="POST" accept-charset="UTF-8">
         {{ excess_worker_form.csrf_token }}
         {{ excess_worker_form.goal }}
         <button type="submit" id="choiceSubmit">Update</button>
@@ -42,7 +42,7 @@ input {
         {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
     </h2>
     <br>
-    <form method="POST" accept-charset="UTF-8" role="form">
+    <form action="{{ url_for('infrastructure') + '?id=excess' }}" method="POST" accept-charset="UTF-8">
         {{ build_form.csrf_token }}
         <table class="production_table">
             <tr>
@@ -105,43 +105,53 @@ input {
 {{ super() }}
 {% set county = current_user.county %}
 <script type="text/javascript">
-var submitButton = document.getElementById('buildSubmit');
+var submitButton = document.getElementById("buildSubmit");
+var goldCost = document.getElementById("goldCost");
+var woodCost = document.getElementById("woodCost");
+var landCost = document.getElementById("landCost");
 
 {% for building in county.buildings.values() %}
-    var {{ building.base_name }}_slider = document.getElementById('{{ building.base_name }}_slider');
-    {{ building.base_name }}_display = document.getElementById('{{ building.base_name }}_display');
+var {{ building.base_name }}_slider = document.getElementById("{{ building.base_name }}_slider");
+var {{ building.base_name }}_display = document.getElementById("{{ building.base_name }}_display");
+var {{ building.base_name }}_value = document.getElementById("{{ building.base_name }}_value");
 {% endfor %}
 
 function updateGold() {
-    goldCost.innerHTML = 0{% for building in county.buildings.values() %} + {{ building.base_name }}_slider.value * {{ building.gold_cost }}{% endfor %};
+    goldCost.innerHTML = 0{% for building in county.buildings.values() %} +
+    {{ building.base_name }}_slider.value * {{ building.gold_cost }}{% endfor %};
 }
+
 function updateWood() {
-    woodCost.innerHTML = 0{% for building in county.buildings.values() %} + {{ building.base_name }}_slider.value * {{ building.wood_cost }}{% endfor %};
+    woodCost.innerHTML = 0{% for building in county.buildings.values() %} +
+    {{ building.base_name }}_slider.value * {{ building.wood_cost }}{% endfor %};
 }
+
 function updateLand() {
-    landCost.innerHTML = 0{% for building in county.buildings.values() %} + parseInt({{ building.base_name }}_slider.value){% endfor %};
+    landCost.innerHTML = 0{% for building in county.buildings.values() %} +
+    parseInt({{ building.base_name }}_slider.value){% endfor %};
 }
+
 function updateCosts() {
     updateGold();
     updateWood();
     updateLand();
     var gold = parseInt(goldCost.innerHTML);
     if (gold > {{ county.gold }}) {
-        goldCost.style.color = 'red';
+        goldCost.style.color = "red";
     } else {
-        goldCost.style.color = 'green';
+        goldCost.style.color = "green";
     }
     var wood = parseInt(woodCost.innerHTML);
     if (wood > {{ county.wood }}) {
-        woodCost.style.color = 'red';
+        woodCost.style.color = "red";
     } else {
-        woodCost.style.color = 'green';
+        woodCost.style.color = "green";
     }
     var land = parseInt(landCost.innerHTML);
     if (land > {{ county.get_available_land() }}) {
-        landCost.style.color = 'red';
+        landCost.style.color = "red";
     } else {
-        landCost.style.color = 'green';
+        landCost.style.color = "green";
     }
     if (gold <= {{ county.gold }} && wood <= {{ county.wood }} && land <= {{ county.get_available_land() }}) {
         submitButton.disabled = false;
@@ -151,13 +161,12 @@ function updateCosts() {
 }
 
 {% for building in county.buildings.values() %}
-    {{ building.base_name }}_slider.oninput = function() {
-        {{ building.base_name }}_display.innerHTML = this.value;
-        {{ building.base_name }}_value.value = this.value;
-        updateCosts();
-    }
+{{ building.base_name }}_slider.oninput = function () {
+    {{ building.base_name }}_display.innerHTML = this.value;
+    {{ building.base_name }}_value.value = this.value;
+    updateCosts();
+};
 {% endfor %}
-
 button = document.getElementById('choiceSubmit');
 
 var goalChoice = document.getElementById('goal');
@@ -171,10 +180,10 @@ goalChoice.oninput = function() {
         goalDescription.innerHTML = 'Your idle citizens will be forced to forage for food.';
     } else if (goalChoice.value == 3) {
         goalDescription.innerHTML = 'Your idle citizens will be allowed to relax.';
+
+
     }
-}
-
-
+};
 </script>
 {% endblock %}
 
