@@ -167,13 +167,12 @@ function updateCosts() {
     updateCosts();
 };
 {% endfor %}
-button = document.getElementById('choiceSubmit');
 
 var goalChoice = document.getElementById('goal');
 var goalDescription = document.getElementById('excessProductionDescription');
 goalChoice.oninput = function() {
     if (goalChoice.value == 0) {
-        goalDescription.innerHTML = 'Your idle citizens will be forced to work, earning your county an additional X gold per day.';
+        goalDescription.innerHTML = 'Your idle citizens will be forced to work, earning your county additional gold per day.';
     } else if (goalChoice.value == 1) {
         goalDescription.innerHTML = 'Your idle citizens will be forced to reclaim overgrown land surrounding your county.';
     } else if (goalChoice.value == 2) {
@@ -181,9 +180,10 @@ goalChoice.oninput = function() {
     } else if (goalChoice.value == 3) {
         goalDescription.innerHTML = 'Your idle citizens will be allowed to relax.';
 
-
     }
 };
+
 </script>
+
 {% endblock %}
 
