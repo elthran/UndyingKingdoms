@@ -4,6 +4,7 @@ from undyingkingdoms.models.achievements import Achievement
 
 
 metadata_races = ['Human', 'Elf', 'Dwarf', 'Goblin']
+metadata_titles = ['Sir', 'Dame', 'Lord', 'Lady', 'Baron', 'Baroness', 'Duke', 'Duchess', 'Prince', 'Princess']
 
 metadata_backgrounds = ['Warlord', 'Engineer', 'Merchant', 'Rogue']
 
