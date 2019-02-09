@@ -1,3 +1,4 @@
+import math
 from datetime import datetime, timedelta
 from random import choice, uniform, randint
 
@@ -384,15 +385,15 @@ class County(GameState):
 
     def get_nourishment_change(self):
         hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
-        if hungry_people <= 0:
+        if hungry_people <= 0:  # You fed everyone
             if self.rations == 0:
                 return -6
             elif self.rations < 1:
                 return int(- 1 / self.rations - 1)
             else:
-                return 1
-        else:
-            return (hungry_people // 200) + 1
+                return int(self.rations * 2)
+        else:  # You can't feed everyone
+            return -((hungry_people // 200) + 1)
 
     def update_food(self):
         total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores + self.get_excess_worker_produced_food()
