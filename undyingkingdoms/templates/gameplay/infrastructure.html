@@ -109,6 +109,9 @@ var submitButton = document.getElementById("buildSubmit");
 var goldCost = document.getElementById("goldCost");
 var woodCost = document.getElementById("woodCost");
 var landCost = document.getElementById("landCost");
+window.onload = function() {
+  updateGoals();
+};
 
 {% for building in county.buildings.values() %}
 var {{ building.base_name }}_slider = document.getElementById("{{ building.base_name }}_slider");
@@ -171,17 +174,25 @@ function updateCosts() {
 var goalChoice = document.getElementById('goal');
 var goalDescription = document.getElementById('excessProductionDescription');
 goalChoice.oninput = function() {
-    if (goalChoice.value == 0) {
-        goalDescription.innerHTML = 'Your idle citizens will be forced to work, earning your county additional gold per day.';
-    } else if (goalChoice.value == 1) {
-        goalDescription.innerHTML = 'Your idle citizens will be forced to reclaim overgrown land surrounding your county.';
-    } else if (goalChoice.value == 2) {
-        goalDescription.innerHTML = 'Your idle citizens will be forced to forage for food.';
-    } else if (goalChoice.value == 3) {
-        goalDescription.innerHTML = 'Your idle citizens will be allowed to relax.';
-
-    }
+    updateGoals();
 };
+
+function updateGoals() {
+    if (goalChoice.value == 0) {
+        var goalAmount = {{ county.temporary_prod_value(0) }};
+        goalDescription.innerHTML = 'Your idle citizens will be forced to work, earning your county additional ' + goalAmount + ' gold per day.';
+    } else if (goalChoice.value == 1) {
+        var goalAmount = {{ county.temporary_prod_value(1) }};
+        var landReclaimed = {{ county.produce_land }};
+        goalDescription.innerHTML = 'Your idle citizens will be forced to reclaim overgrown land surrounding your county. You are currently ' + landReclaimed + ' / 2000 square meters towards reclaiming an acre. You will advance ' + goalAmount + ' square meters each day.';
+    } else if (goalChoice.value == 2) {
+        var goalAmount = {{ county.temporary_prod_value(2) }};
+        goalDescription.innerHTML = 'Your idle citizens will be forced to forage for food, gaining enough for ' + goalAmount + ' people each day.';
+    } else if (goalChoice.value == 3) {
+        var goalAmount = {{ county.temporary_prod_value(3) }};
+        goalDescription.innerHTML = 'Your idle citizens will be allowed to relax, gaining ' + goalAmount + ' happiness per day.';
+    }
+}
 
 </script>
 

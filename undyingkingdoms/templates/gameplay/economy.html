@@ -96,6 +96,9 @@
                         {% if county.buildings['bank'].total > 0 %}
                         <li>Banks: {{ county.get_bank_income() }}</li>
                         {% endif %}
+                        {% if county.production_choice == 0 %}
+                        <li>Overworking: + {{ county.temporary_prod_value(0) }}</li>
+                        {% endif %}
                     </ul>
                 </td>
                 <td>Military Expenses: {{ county.get_upkeep_costs() }}</td>
@@ -130,10 +133,14 @@
                 </td>
                 <td>
                     <ul>
-                        <li>+ {{ county.get_produced_grain() }} <img class="resource_icons"
+                        <li>Fields: + {{ county.get_produced_grain() }} <img class="resource_icons"
                                                                      src="/static/images/grain_icon.jpg"></li>
-                        <li>+ {{ county.get_produced_dairy() }} <img class="resource_icons"
+                        <li>Pastures: + {{ county.get_produced_dairy() }} <img class="resource_icons"
                                                                      src="/static/images/dairy_icon.jpg"></li>
+                        {% if county.production_choice == 2 %}
+                        <li>Foraging: + {{ county.temporary_prod_value(2) }} <img class="resource_icons"
+                                                                     src="/static/images/dairy_icon.jpg"></li>
+                        {% endif %}
                     </ul>
                 </td>
                 <td>Food to be Eaten: {{ county.get_food_to_be_eaten() }}</td>
@@ -188,13 +195,18 @@
                     {% endif %}
                 </td>
                 <td>+7 baseline</td>
-                <td><ul>
+                <td>
+                    <ul>
                     <li>{% if happiness_modifier.get(county.race)[1] %}
                         {{ happiness_modifier.get(county.race)[0] }}: {{
                         happiness_modifier.get(county.race)[1] }}
                         {% endif %}
                     </li>
                     <li>Taxes: -{{ county.tax }}</li>
+                        {% if county.production_choice == 3 %}
+                        <li>Relax: + {{ county.temporary_prod_value(3) }} <img class="resource_icons"
+                                                                     src="/static/images/heart_icon.jpg"></li>
+                        {% endif %}
                 </ul>
                 </td>
                 <td>Happiness affects emigration rate and how productive your workers are. If they become too unhappy,

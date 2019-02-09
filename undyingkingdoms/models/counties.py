@@ -373,7 +373,7 @@ class County(GameState):
             amount = min(randint(3, 7), self.nourishment)
             notification = Notification(self.id,
                                         "Sickness",
-                                        "A disease has spread throughout your lands, lowering your county's health by {}.".format(amount, self.kingdom.world.day))
+                                        "A disease has spread throughout your lands, lowering your county's health by {}.".format(amount), self.kingdom.world.day)
             self.nourishment -= amount
 
         if notification:
@@ -525,13 +525,23 @@ class County(GameState):
         Users the excess production towards completing a task
         """
         if self.production_choice == 0:  # Gold
-            return self.get_excess_production() // 6
+            return self.get_excess_production() // 14
         if self.production_choice == 1:  # Land
             return self.get_excess_production()
         if self.production_choice == 2:  # Food
-            return self.get_excess_production() // 3
+            return self.get_excess_production() // 7
         if self.production_choice == 3:  # Happiness
-            return 2
+            return 1
+
+    def temporary_prod_value(self, value=-1):
+        if value == 0:  # Gold
+            return self.get_excess_production() // 10
+        if value == 1:  # Land
+            return self.get_excess_production()
+        if value == 2:  # Food
+            return self.get_excess_production() // 5
+        if value == 3:  # Happiness
+            return 1
         
     def apply_excess_production_value(self):
         if self.production_choice == 0:
