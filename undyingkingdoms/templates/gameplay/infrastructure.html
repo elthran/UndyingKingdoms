@@ -23,18 +23,9 @@ input {
 {% set kingdom = county.kingdom %}
 
 <div id="content">
-    <h2>Total Land: {{ county.land }}</h2>
-    <h2>Available Land: {{ county.get_available_land() }}</h2>
-    <h2>Population: {{ county.population }}</h2>
-    <ul>
-        <li>Employed: {{ county.get_employed_workers() }}</li>
-        <li>Military: {{ county.get_army_size() }} (Of these, {{ county.get_unavailable_army_size() }} are in enemy
-            lands and don't require food)
-        </li>
-        <li>Unemployed: {{ county.get_available_workers() }} (These workers can be ordered to do any of the tasks
-            below)
-        </li>
-    </ul>
+    <h2>Available Land: {{ county.get_available_land() }} / {{ county.land }}</h2><br>
+    <h2>Unemployed Citizens : {{ county.get_available_workers() }} / {{ county.population }}</h2><br>
+    <p>You may assign a task to your idle population. </p>
 
     <form method="POST" accept-charset="UTF-8" role="form">
         {{ excess_worker_form.csrf_token }}
@@ -42,8 +33,7 @@ input {
         <button type="submit" id="choiceSubmit">Update</button>
     </form>
 
-    <span id="excessProductionDescription"></span><br>
-    The result would be + <span id="excessProductionAmount"></span>
+    <span id="excessProductionDescription"></span>
 
 
     <h2>Current Resources:
@@ -172,14 +162,15 @@ button = document.getElementById('choiceSubmit');
 
 var goalChoice = document.getElementById('goal');
 var goalDescription = document.getElementById('excessProductionDescription');
-var goalAmount = document.getElementById('excessProductionAmount');
 goalChoice.oninput = function() {
-    if goalChoice.value === 1 {
-        goalDescription.innerHTML = 'gold';
-        goalAmount.innerHTML = '3 gold';
-    } else {
-        goalDescription.innerHTML = 'land';
-        goalAmount.innerHTML = '3 land';
+    if goalChoice.value == 0 {
+        goalDescription.innerHTML = 'Your idle citizens will be forced to reclaim overgrown land surrounding your county.';
+    } else if goalChoice.value == 1 {
+        goalDescription.innerHTML = 'Your idle citizens will be forced to work, earning your county an additional X gold per day.';
+    } else if goalChoice.value == 2 {
+        goalDescription.innerHTML = 'Your idle citizens will be forced to forage for food.';
+    } else if goalChoice.value == 3 {
+        goalDescription.innerHTML = 'Your idle citizens will be allowed to relax.';
     }
 }
 

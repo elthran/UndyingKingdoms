@@ -545,9 +545,11 @@ class County(GameState):
         """
         Gets a list of all buildings which can be built today. Builds it. Then recalls function.
         """
-        buildings_to_be_built = 1 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
+        buildings_to_be_built = 3 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
                                 + buildings_built_per_day_modifier.get(self.background, ("", 0))[1]
+        print("To build:", buildings_to_be_built)
         while buildings_to_be_built > 0:
+            buildings_to_be_built -= 1
             queue = [building for building in self.buildings.values() if building.pending > 0]
             if queue:
                 building = choice(queue)

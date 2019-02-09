@@ -19,6 +19,11 @@ def infrastructure(template):
     
     build_form = InfrastructureForm()
     build_form.county_id.data = county.id
+
+    excess_worker_form = ExcessProductionForm(goal=county.production_choice)
+    goal_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
+    excess_worker_form.goal.choices = [(pairing[0], pairing[1]) for pairing in goal_choices]
+
     if build_form.validate_on_submit():
         transaction = Transaction(county.id, county.county_days_in_age, world.day, "buy")
         for building in all_buildings:
@@ -33,15 +38,10 @@ def infrastructure(template):
                                          iron_per_item=0)
         transaction.save()
         return redirect(url_for('infrastructure'))
-
-    excess_worker_form = ExcessProductionForm(goal=county.production_choice)
-    goal_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
-    excess_worker_form.goal.choices = [(pairing[0], pairing[1]) for pairing in goal_choices]
     if excess_worker_form.validate_on_submit():
         county.production_choice = excess_worker_form.goal.data
-        print("Choice:", county.production_choice)
         return redirect(url_for('infrastructure'))
-    
+
     return render_template(template, build_form=build_form,
                            excess_worker_form=excess_worker_form, meta_data=game_descriptions)
 
