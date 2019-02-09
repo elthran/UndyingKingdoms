@@ -12,7 +12,7 @@ from scheduler import private_bearer_token
 
 route = "https://undyingkingdoms.pythonanywhere.com/game_clock/advance_age"
 
-if datetime.utcnow().weekday() == 4:
+if datetime.utcnow().weekday() == 2:
     print("Correct weekday for age reset")
     print("Current time:", datetime.utcnow())
     r = requests.get(

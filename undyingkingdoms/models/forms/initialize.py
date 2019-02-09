@@ -9,7 +9,7 @@ class InitializeForm(FlaskForm):
                                                Length(min=2, max=20)])
     leader = StringField('Leader', validators=[DataRequired(message='You must enter a name for your leader.'),
                                                Length(min=2, max=20)])
-    gender = SelectField('Gender', coerce=int, validators=[NoneOf([0], message='Must choose gender.')])
+    title = SelectField('Title', coerce=int, validators=[NoneOf([0], message='Must choose title.')])
     race = SelectField('Race', coerce=int, validators=[NoneOf([0], message='Must choose race.')])
     background = SelectField('Background', coerce=int, validators=[NoneOf([0], message='Must choose background.')])
 

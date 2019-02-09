@@ -1,7 +1,7 @@
 from undyingkingdoms.models.armies import Army
 
 generic_armies = {'peasant': Army(base_name='peasant',
-                                  class_name='peeasant',
+                                  class_name='peasant',
                                   class_name_plural='peasants',
                                   total=25,
                                   trainable_per_day=25,
