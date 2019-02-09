@@ -818,14 +818,14 @@ class County(GameState):
     @property
     def health_terminology(self):
         if self.happiness < 20:
-            return "dying of disease"
+            return "diseased"
         if self.happiness < 50:
             return "sickly"
         if self.happiness < 75:
             return "average"
         if self.happiness < 90:
             return "hale"
-        return "perfect health"
+        return "perfect"
 
     @property
     def rations_terminology(self):
