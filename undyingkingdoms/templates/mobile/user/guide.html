@@ -14,6 +14,25 @@ h2 {
     text-align: left;
     width: 100%;
 }
+
+#content {
+    margin-bottom: 2.3em;
+}
+.side-spacer {
+    margin: 0 0.3em 0;
+}
+
+.compare-div {
+    display: flex;
+    flex-flow: wrap;
+    margin-top: 1em;
+    border: 1px solid;
+    border-radius: 4px
+}
+
+strong {
+    font-weight: bold;
+}
 </style>
 {% endblock %}
 
@@ -37,6 +56,53 @@ h2 {
       county's population, your taxes are collected, etc.
       While the game is in testing, each real-world week constitutes an 'Age' of the game. At the end of each Age, the
       game resets (though your achievements remain).</p>
+  </div>
+  <div id="all-compares">
+    <div class="compare-div">
+      {% for background in races.Background.dropna().unique() %}
+      <div class="side-spacer">
+        <h2 class="top-spacer-dot-3">{{ background }}:</h2>
+        <ul>
+          {% set select = races.Background == background %}
+          {% for row in races.loc[select, 'Modifier Description'].dropna() %}
+          <li>--- {{ row }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+      <div class="bottom-spacer-dot-6"></div>
+    </div>
+    <div class="compare-div">
+      {% for race in races.Race.dropna().unique() %}
+      <div class="side-spacer">
+        <h2 class="top-spacer-dot-3">{{ race }}</h2>
+        <ul>
+          {% set select = races.Race == race %}
+          {% for row in races.loc[select, 'Modifier Description'].dropna() %}
+          <li>--- {{ row }}</li>
+          {% endfor %}
+        </ul>
+        <div class="top-spacer-dot-6"></div>
+        <strong>Military:</strong>
+        <div class="bottom-spacer-dot-3"></div>
+        {% set select = armies.Race == race %}
+        {% set army = armies.loc[select].reset_index() %}
+        {% for i in range(army | length) %}
+        <ul>
+          <li>Name: {{ army.loc[i, 'Class Name'].title() }}</li>
+          <li class="top-spacer-dot-3">Cost: {{ army.Gold[i] }} <img class="resource_icons"
+                                                                     src="/static/images/gold_icon.jpg">,
+            {{ army.Wood[i] }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+            {{ army.Iron[i] }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+          <li class="top-spacer-dot-3">Attack/Defence/Health: {{ army.Attack[i] }}/{{ army.Defence[i] }}/{{
+            army.Health[i] }}
+          </li>
+        </ul>
+        {% endfor %}
+        <div class="bottom-spacer-1"></div>
+      </div>
+      {% endfor %}
+    </div>
   </div>
 </div>
 {{ super() }}

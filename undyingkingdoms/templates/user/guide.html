@@ -2,21 +2,93 @@
 
 {% block title %}Guide: {{ super() }}{% endblock %}
 
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+    margin-bottom: 2.3em;
+}
+.side-spacer {
+    margin: 0 0.3em 0;
+}
+
+.compare-div {
+    display: flex;
+    margin-top: 1em;
+    border: 1px solid;
+    border-radius: 4px
+}
+
+.top-spacer-1 {
+    margin-top: 1em;
+}
+
+.top-spacer-dot-6 {
+    margin-top: 0.6em;
+}
+
+.top-spacer-dot-3 {
+    margin-top: 0.3em;
+}
+
+.modifiers-spacer {
+    min-height: 3em;
+}
+</style>
+{% endblock %}
+
 {% block content2 %}
+<div id="content">
+  <h1>Basics</h1>
+  <h2>Counties</h2>
+  <p>Each county is controlled by a player. The goal of the game is to manage and grow your county, while gaining political influence by communicating with
+    other counties in your kingdom.</p>
 
-<h1>Basics</h1>
+  <h2>Kingdoms</h2>
+  <p>Each kingdom is a group of counties. At the beginning of an age, each kingdom is in civil war as the counties vie for dominance. Once one player
+    has secured power and crowned monarch, the civil war ends and the kingdom becomes united. At this point in the game the purpose is to become the strongest kingdom.</p>
 
-<h2>Counties</h2>
-<p>Each county is controlled by a player. The goal of the game is to manage and grow your county, while gaining political influence by communicating with
-other counties in your kingdom.</p>
-
-<h2>Kingdoms</h2>
-<p>Each kingdom is a group of counties. At the beginning of an age, each kingdom is in civil war as the counties vie for dominance. Once one player
-has secured power and crowned monarch, the civil war ends and the kingdom becomes united. At this point in the game the purpose is to become the strongest kingdom.</p>
-
-<h2>Time</h2>
-<p>Each real-world hour ends one game day. At the end of each game day many things change such as the weather, your county's population, your taxes are collected, etc.
+  <h2>Time</h2>
+  <p>Each real-world hour ends one game day. At the end of each game day many things change such as the weather, your county's population, your taxes are collected, etc.
     While the game is in testing, each real-world week constitutes an 'Age' of the game. At the end of each Age, the game resets (though your achievements remain).</p>
-
-
+  <div class="compare-div">
+    {% for background in races.Background.dropna().unique() %}
+      <div class="side-spacer">
+        <h1>{{ background }}:</h1>
+        <ul>
+          {% set select = races.Background == background %}
+          {% for row in races.loc[select, 'Modifier Description'].dropna() %}
+            <li>--- {{ row }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="compare-div">
+    {% for race in races.Race.dropna().unique() %}
+      <div class="side-spacer">
+        <h1>{{ race }}</h1>
+        <ul class="modifiers-spacer">
+        {% set select = races.Race == race %}
+        {% for row in races.loc[select, 'Modifier Description'].dropna() %}
+          <li>--- {{ row }}</li>
+        {% endfor %}
+        </ul>
+        <br>
+        <h2>Military:</h2>
+        {% set select = armies.Race == race %}
+        {% set army = armies.loc[select].reset_index() %}
+        {% for i in range(army | length) %}
+          <ul>
+            <li class="top-spacer-1">Name: {{ army.loc[i, 'Class Name'].title() }}</li>
+            <li class="top-spacer-dot-3">Cost: {{ army.Gold[i] }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
+            {{ army.Wood[i] }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+            {{ army.Iron[i] }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+            <li class="top-spacer-dot-3">Attack/Defence/Health: {{ army.Attack[i] }}/{{ army.Defence[i] }}/{{ army.Health[i] }}</li>
+          </ul>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}
