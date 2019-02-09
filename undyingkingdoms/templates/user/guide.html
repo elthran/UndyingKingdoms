@@ -31,7 +31,7 @@
     margin-top: 0.3em;
 }
 
-#modifiers-spacer {
+.modifiers-spacer {
     min-height: 3em;
 }
 </style>
@@ -68,7 +68,7 @@
     {% for race in races.Race.dropna().unique() %}
       <div class="side-spacer">
         <h1>{{ race }}</h1>
-        <ul id="modifiers-spacer">
+        <ul class="modifiers-spacer">
         {% set select = races.Race == race %}
         {% for row in races.loc[select, 'Modifier Description'].dropna() %}
           <li>--- {{ row }}</li>

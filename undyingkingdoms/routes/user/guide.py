@@ -13,6 +13,8 @@ from undyingkingdoms.routes.helpers import in_active_session
 @login_required
 @in_active_session
 def guide(template):
+
+    # these should get generated here too ...
     races = pd.read_excel('undyingkingdoms/static/metadata/modifiers.xlsx', sheet_name='Modifiers', index_col=0)
     armies = pd.read_excel('undyingkingdoms/static/metadata/armies.xlsx', sheet_name='Armies', index_col=0)
     return render_template(template, races=races, armies=armies)
