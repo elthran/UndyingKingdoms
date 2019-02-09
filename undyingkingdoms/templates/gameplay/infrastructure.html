@@ -65,7 +65,6 @@ input {
                 </td>
                 <td>{{ building.pending }}</td>
                 <td>
-                    {{ building.production_cost }}<img class="resource_icons" src="/static/images/prod_icon.jpg">
                     {% if building.gold_cost %}{{ building.gold_cost }}<img class="resource_icons"
                                                                   src="/static/images/gold_icon.jpg">{% endif %}
                     {% if building.wood_cost %}{{ building.wood_cost }}<img class="resource_icons"
@@ -94,6 +93,7 @@ input {
                                                                                                  src="/static/images/wood_icon.jpg"><br>
         Land Required: <span id="landCost">0</span> / {{ county.get_available_land() }}
         <br><br>
+        Each day, up to {% if county.background == 'Engineer' %}5{% else %}3{% endif %} buildings in your queue will be built.
         <br>
         <button id="buildSubmit" type="submit">Build</button>
         <br>

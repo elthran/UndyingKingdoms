@@ -15,7 +15,7 @@
     {% if county.kingdom.world.day < 0 %}
     <li>Calendar Day: 0 <span style="color:red;">(This age will begin in {{ county.kingdom.world.day|abs }} hours)</span></li>
     {% else %}
-    <li>Calendar: Day {{ county.kingdom.world.day }} (This round of testing will end on day 168)</li>
+    <li>Calendar: Day {{ county.kingdom.world.day }} <span style="color:red;">(This round of testing will end on day 93)</span></li>
     {% endif %}
     <li>Stored Grain: {{ county.grain_stores }} <img class="resource_icons" src="/static/images/grain_icon.jpg"></li>
     <li>Coffers: {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"></li>
