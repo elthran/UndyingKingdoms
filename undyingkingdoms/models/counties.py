@@ -298,6 +298,8 @@ class County(GameState):
 
     def get_happiness_change(self):
         change = 7 - self.tax
+        if self.production_choice == 3:
+            change += self.temporary_prod_value(self.production_choice)
         modifier = happiness_modifier.get(self.race, ("", 0))[1] + happiness_modifier.get(self.background, ("", 0))[1]
         return change + modifier
 
@@ -411,7 +413,11 @@ class County(GameState):
         return self.buildings['field'].total * self.buildings['field'].output
 
     def get_produced_dairy(self):
-        return self.buildings['pasture'].total * self.buildings['pasture'].output
+        if self.production_choice == 2:
+            excess_worker_food = self.temporary_prod_value(self.production_choice)
+        else:
+            excess_worker_food = 0
+        return self.buildings['pasture'].total * self.buildings['pasture'].output + excess_worker_food
 
     def get_food_to_be_eaten(self):
         modifier = 1 + food_consumed_modifier.get(self.race, ("", 0))[1] + food_consumed_modifier.get(self.background, ("", 0))[1]
@@ -499,7 +505,11 @@ class County(GameState):
     def get_gold_change(self):
         modifier = 1 + income_modifier.get(self.race, ("", 0))[1] \
                    + income_modifier.get(self.background, ("", 0))[1]
-        income = (self.get_tax_income() + self.get_bank_income()) * modifier
+        if self.production_choice == 0:
+            excess_worker_income = self.temporary_prod_value(self.production_choice)
+        else:
+            excess_worker_income = 0
+        income = (self.get_tax_income() + self.get_bank_income() + excess_worker_income) * modifier
         revenue = self.get_upkeep_costs()
         return int(income - revenue)
 
