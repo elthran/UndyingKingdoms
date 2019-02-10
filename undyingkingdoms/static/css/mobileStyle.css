@@ -120,3 +120,7 @@ button {
 .tab-1 {
 		margin-left: 1em;
 }
+
+.invisible {
+    display: none;
+}

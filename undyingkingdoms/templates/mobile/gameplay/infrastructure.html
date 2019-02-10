@@ -97,6 +97,26 @@ th {
     padding: 0.8em;
     border-radius: 5px;
 }
+
+.column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.left-align {
+    margin-right: auto;
+}
+
+#idle-pop-div {
+    margin: 1em 0 1.6em;
+    padding: 0 1em 0;
+}
+
+.other-select {
+    padding: 0.8em;
+    border-radius: 5px;
+}
 </style>
 {% endblock %}
 
@@ -106,7 +126,11 @@ th {
   Gold Cost: <span class="goldCost">0</span>
   <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
   Wood Cost: <span class="woodCost">0</span>
-  <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
+  <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
+  Land Required: <span class="landCost">0</span>&nbsp;/&nbsp;{{ county.get_available_land() }}
+  <br><br>
+  Each day, up to {% if county.background == "Engineer" %}5{% else %}3{% endif %} buildings in your queue will be built.
+  <br>
 </div>
 {% endset %}
 
@@ -124,27 +148,37 @@ th {
 {% set kingdom = county.kingdom %}
 <div id="content">
   <div id="header">
-    <h2>Total Land: {{ county.land }}</h2>
-    <h2>Available Land: {{ county.get_available_land() }}</h2>
-    <h2>Daily Production:
-      {{ county.get_production()|int }} <img class="resource_icons" src="/static/images/prod_icon.jpg">
-      <br><span class="tab">
-          (<span class="tooltip-mobile">{{ county.get_available_workers() }} available workers
-                  <span class="tooltip-text-mobile">{{ meta_data["available_workers"] }}</span>
-          </span>)
-          </span>
-    </h2>
+    <h2>Available Land: <span id="avaiableLand">{{ county.get_available_land() }}</span>&nbsp;/&nbsp;{{ county.land }}</h2>
+    <h2>Citizens Avaiable: {{ county.get_available_workers() }}&nbsp;/&nbsp;{{ county.population }}</h2>
     <h2>Current Resources:
-      <br><span class="tab">
-          <span id="totalGold">{{ county.gold }}</span> <img class="resource_icons" src="/static/images/gold_icon.jpg">
-          <span id="totalWood">{{ county.wood }}</span> <img class="resource_icons" src="/static/images/wood_icon.jpg">
-          {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
-          </span>
+      <br>
+      <span class="tab">
+      <span id="totalGold">{{ county.gold }}</span> <img class="resource_icons" src="/static/images/gold_icon.jpg">
+      <span id="totalWood">{{ county.wood }}</span> <img class="resource_icons" src="/static/images/wood_icon.jpg">
+      {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
+      </span>
     </h2>
   </div>
+  <div class="column max-width-400" id="idle-pop-div">
+    <p class="left-align">You may assign a task to your idle population. </p>
+    <div class="top-spacer-dot-6"></div>
+    <form id="" action="{{ url_for("infrastructure") + "?id=excess" }}" method="POST" accept-charset="UTF-8">
+        {{ excess_worker_form.csrf_token }}
+        {{ excess_worker_form.goal(class="other-select width-100-percent") }}
+        <button class="width-100-percent" type="submit" id="choiceSubmit">Update</button>
+    </form>
+    <div class="invisible">
+      <span id="goldProduced">{{ county.get_excess_production_value(0) }}</span>
+      <span id="landProduced">{{ county.get_excess_production_value(1) }}</span>
+      <span id="landReclaimed">{{ county.produce_land }}</span>
+      <span id="foodProduced">{{ county.get_excess_production_value(2) }}</span>
+      <span id="happinessProduced">{{ county.get_excess_production_value(3) }}</span>
+    </div>
+    <span id="excessProductionDescription" class="top-spacer-dot-6"></span>
+  </div>
   <br>
-  <form id="tableForm" method="POST" accept-charset="UTF-8">
-    {{ form.csrf_token }}
+  <form id="tableForm" action="{{ url_for("infrastructure") + "?id=build" }}" method="POST" accept-charset="UTF-8">
+    {{ build_form.csrf_token }}
     <table id="productionTable">
       <tbody>
       {% for building in county.buildings.values() %}
@@ -171,16 +205,13 @@ th {
       <tr>
         <td>Cost</td>
         <td>
-          {{ building.production_cost }}<img class="resource_icons" src="/static/images/prod_icon.jpg">
-          {% if building.gold %}<span class="buildingGoldCost">{{ building.gold }}</span><img class="resource_icons" src="/static/images/gold_icon.jpg">{%
-          endif %}
-          {% if building.wood %}<span class="buildingWoodCost">{{ building.wood }}</span><img class="resource_icons" src="/static/images/wood_icon.jpg">{%
-          endif %}
+          <span class="buildingGoldCost">{{ building.gold_cost }}</span><img class="resource_icons" src="/static/images/gold_icon.jpg">
+          <span class="buildingWoodCost">{{ building.wood_cost }}</span><img class="resource_icons" src="/static/images/wood_icon.jpg">
         </td>
       </tr>
       <tr>
         <td>Workers Employed</td>
-        <td>{{ building.labour_maintenance * building.total }} ({{ building.labour_maintenance }} each)</td>
+        <td>{{ building.workers_employed * building.total }} ({{ building.workers_employed }} each)</td>
       </tr>
       <tr>
         <td>Description</td>
@@ -192,23 +223,19 @@ th {
       </tr>
       <tr>
         <td>Owned</td>
-        <td>{{ county.buildings.values()|sum(attribute='total') }}</td>
+        <td>{{ county.buildings.values()|sum(attribute="total") }}</td>
       </tr>
       <tr>
         <td>Under Construction</td>
-        <td>{{ county.buildings.values()|sum(attribute='pending') }}</td>
+        <td>{{ county.buildings.values()|sum(attribute="pending") }}</td>
       </tr>
       <tr>
         <td>To Be Built</td>
         <td>-</td>
       </tr>
       <tr>
-        <td>Cost</td>
-        <td style="width:150px;">-</td>
-      </tr>
-      <tr>
         <td>Workers Employed</td>
-        <td style="width:150px;">{{ county.get_maintenance_workers() }}</td>
+        <td style="width:150px;">{{ county.get_employed_workers() }}</td>
       </tr>
       </tbody>
     </table>
@@ -224,12 +251,16 @@ var selects = $(".select");
 var submitButtons = $(".submitButton");
 var goldCosts = $(".goldCost");
 var woodCosts = $(".woodCost");
+var landCosts = $(".landCost");
+
 var displays = $(".display");
 var values = $(".value");
 var buildingGoldCosts = $(".buildingGoldCost");
 var buildingWoodCosts = $(".buildingWoodCost");
+// var buildingLandCosts = $(".buildingLandCost");  // not being used yet.
 var totalGold = parseInt($("#totalGold").text());
 var totalWood = parseInt($("#totalWood").text());
+var avaiableLand = parseInt($("#avaiableLand").text());
 
 function updateGold() {
     goldCosts.each(function (ignore, element) {
@@ -251,26 +282,49 @@ function updateWood() {
     });
 }
 
+function updateLand() {
+    landCosts.each(function (ignore, element) {
+        var sum = 0;
+        selects.each(function (ignore, element) {
+            // at some point the 1 will be a land cost.
+            sum += parseInt(element.value) * 1;
+        });
+        element.innerHTML = sum;
+    });
+}
+
 function updateCosts() {
     updateGold();
     updateWood();
+    updateLand();
+
     selects.each(function (index) {
         var goldCost = goldCosts[index];
         var woodCost = woodCosts[index];
-
+        var landCost = landCosts[index];
         var gold = parseInt(goldCost.innerHTML);
+        var wood = parseInt(woodCost.innerHTML);
+        var land = parseInt(landCost.innerHTML);
+
         if (gold > totalGold) {
             goldCost.style.color = "red";
         } else {
             goldCost.style.color = "green";
         }
-        var wood = parseInt(woodCost.innerHTML);
+
         if (wood > totalWood) {
             woodCost.style.color = "red";
         } else {
             woodCost.style.color = "green";
         }
-        if (gold <= totalGold && wood <= totalWood) {
+
+        if (land > avaiableLand) {
+            landCost.style.color = "red";
+        } else {
+            landCost.style.color = "green";
+        }
+
+        if (gold <= totalGold && wood <= totalWood && land <= avaiableLand) {
             submitButtons[index].disabled = false;
         } else {
             submitButtons[index].disabled = true;
@@ -279,13 +333,58 @@ function updateCosts() {
 }
 
 
-selects.each(function (index) {
-    $(this).change(function () {
-        displays[index].innerHTML = $(this).val();
-        values[index].value = $(this).val();
+selects.each(function (index, element) {
+    $(element).change(function () {
+        displays[index].innerHTML = $(element).val();
+        values[index].value = $(element).val();
         updateCosts();
     });
 });
+
+var goalChoice = $("#goal");
+var goalDescription = $("#excessProductionDescription");
+var goldProduced = $("#goldProduced").text();
+var landProduced = $("#landProduced").text();
+var landReclaimed = $("#landReclaimed").text();
+var foodProduced = $("#foodProduced").text();
+var happinessProduced = $("#happinessProduced").text();
+
+// This data should be listed in the metatdata somewhere.
+function updateGoals() {
+    if (goalChoice.val() === "0") {
+        goalDescription.text(
+            "Your idle citizens will be forced to work, " +
+            "earning your county an additional " + foodProduced +
+            " gold per day."
+        );
+    } else if (goalChoice.val() === "1") {
+        goalDescription.html(
+            "Your idle citizens will be forced to reclaim " +
+            "overgrown land surrounding your county.<br>You are currently " +
+            landReclaimed + " / 2000 square meters towards reclaiming an " +
+            "acre. You will advance " + landProduced +
+            " square meters each day."
+        );
+    } else if (goalChoice.val() === "2") {
+        goalDescription.text(
+            "Your idle citizens will be forced to forage " +
+            "for food, gaining enough for " + foodProduced +
+            " people each day."
+        );
+    } else if (goalChoice.val() === "3") {
+        goalDescription.html(
+            "Your idle citizens will be allowed to relax,<br>" +
+            "gaining " + happinessProduced + " happiness per day."
+        );
+    }
+}
+
+goalChoice.change(function () {
+    updateGoals()
+});
+
+// Pull chat date once page loads
+$(document).ready(updateGoals());
 </script>
 {% endblock %}
 
