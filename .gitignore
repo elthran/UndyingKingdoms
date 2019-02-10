@@ -9,3 +9,4 @@ env/
 *.pyc
 undyingkingdoms/routes/gameplay/testing_page.py
 *scratchpad*
+.ipynb_checkpoints
