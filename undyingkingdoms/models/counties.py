@@ -33,7 +33,7 @@ class County(GameState):
     leader = db.Column(db.String(128))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
-    county_days_in_age = db.Column(db.Integer)
+    county_age = db.Column(db.Integer)
     vote = db.Column(db.Integer)
     last_vote_date = db.Column(db.DateTime)
 
@@ -82,7 +82,7 @@ class County(GameState):
         self.race = race
         self.title = title
         self.background = background
-        self.county_days_in_age = 0
+        self.county_age = 0
         self.vote = None
         self.last_vote_date = None
 
@@ -256,10 +256,10 @@ class County(GameState):
         for infiltration in infiltrations:
             infiltration.duration -= 1
 
-        self.county_days_in_age += 1
+        self.county_age += 1
 
     def temporary_bot_tweaks(self):
-        if randint(1, 10) == 10 and self.county_days_in_age > 10:
+        if randint(1, 10) == 10 and self.county_age > 10:
             self.land += randint(-5, 15)
         if randint(1, 10) == 10:
             self.armies['peasant'].total += randint(1, 5)
@@ -312,7 +312,7 @@ class County(GameState):
         random_chance = randint(1, 200)
         notification = None
         if random_chance == 1 and self.grain_stores > 0:
-            amount = min(self.county_days_in_age * randint(1, 2), self.grain_stores)
+            amount = min(self.county_age * randint(1, 2), self.grain_stores)
             notification = Notification(self.id,
                                         "Rats have gotten into your grain silos",
                                         "Your county lost {} of its stored grain.".format(amount),
@@ -568,7 +568,7 @@ class County(GameState):
         """
         Gets a list of all buildings which can be built today. Builds it. Then recalls function.
         """
-        buildings_to_be_built = 3 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
+        buildings_to_be_built = 2 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
                                 + buildings_built_per_day_modifier.get(self.background, ("", 0))[1]
         while buildings_to_be_built > 0:
             buildings_to_be_built -= 1
@@ -666,8 +666,7 @@ class County(GameState):
         if army:
             hit_points_lost *= 1.25  # The attacker takes extra casualties
             duration = self.get_army_duration(sum(army.values()))
-            expedition = Expedition(self.id, enemy_id, self.county_days_in_age, self.kingdom.world.day, duration,
-                                    "attack")
+            expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, self.county_age, duration, "attack")
             expedition.save()
             while hit_points_to_be_removed > 0:
                 army = {key: value for key, value in army.items() if value > 0}  # Remove dead troops

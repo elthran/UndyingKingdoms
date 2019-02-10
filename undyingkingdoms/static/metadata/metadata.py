@@ -71,7 +71,7 @@ amount_of_thieves_modifier = {'Rogue': ("Army of Shadows", 2)}
 production_per_worker_modifier = {'Dwarf': ("Dwarven Steel", 0.15), 'Engineer': ("Artisan", 0.20)}
 defense_per_citizen_modifier = {'Elf': ("Citizen Militia", 1.00)}
 food_consumed_modifier = {'Dwarf': ("Ravenous", 0.15)}
-buildings_built_per_day_modifier = {'Engineer': ("Craftsman", 2)}
+buildings_built_per_day_modifier = {'Engineer': ("Craftsman", 1)}
 
 all_armies = ["peasant", "archer", "soldier", "elite", "monster"]
 

@@ -20,7 +20,7 @@ def military(template):
     form.county_id.data = county.id
     if form.validate_on_submit():
         total_trained = 0
-        transaction = Transaction(county.id, county.county_days_in_age, world.day, "buy")
+        transaction = Transaction(county.id, county.county_age, world.day, "buy")
         for army in all_armies:
             if form.data[army] > 0:
                 total_trained += form.data[army]
