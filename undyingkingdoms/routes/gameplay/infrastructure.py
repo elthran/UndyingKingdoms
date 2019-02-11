@@ -1,26 +1,58 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models import World, Transaction
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm, ExcessProductionForm
+from undyingkingdoms.routes.helpers import in_active_session
 from undyingkingdoms.static.metadata.metadata import all_buildings, game_descriptions
 
 
-@app.route('/gameplay/infrastructure/', methods=['GET', 'POST'])
+def max_buildable_by_cost(county, building):
+    max_size = min(
+        county.gold // building.gold_cost,
+        county.wood // building.wood_cost,
+        # eventually the 1 will be a land cost.
+        county.get_available_land () // 1
+    )
+    return max_size
+
+
+@app.route('/gameplay/infrastructure/', methods=['GET'])
 @mobile_template('{mobile/}gameplay/infrastructure.html')
 @login_required
+@in_active_session
 def infrastructure(template):
-    if not current_user.in_active_session:
-        current_user.in_active_session = True
     county = current_user.county
-    world = World.query.filter_by(id=county.kingdom.world_id).first()
-    
+
     build_form = InfrastructureForm()
     build_form.county_id.data = county.id
 
-    if request.args.get('id') == 'build' and build_form.validate_on_submit():
+    excess_worker_form = ExcessProductionForm(goal=county.production_choice)
+    goal_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
+    excess_worker_form.goal.choices = [(pairing[0], pairing[1]) for pairing in goal_choices]
+
+    return render_template(
+        template,
+        build_form=build_form,
+        excess_worker_form=excess_worker_form,
+        meta_data=game_descriptions,
+        max_buildable_by_cost=max_buildable_by_cost
+    )
+
+
+@app.route('/gameplay/infrastructure/build/', methods=['POST'])
+@login_required
+@in_active_session
+def build_buildings():
+    county = current_user.county
+    world = World.query.filter_by(id=county.kingdom.world_id).first()
+
+    build_form = InfrastructureForm()
+    build_form.county_id.data = county.id
+
+    if build_form.validate_on_submit():
         transaction = Transaction(county.id, county.county_days_in_age, world.day, "buy")
         for building in all_buildings:
             if build_form.data[building] > 0:
@@ -33,16 +65,32 @@ def infrastructure(template):
                                          wood_per_item=county.buildings[building].wood_cost,
                                          iron_per_item=0)
         transaction.save()
-        return redirect(url_for('infrastructure'))
+        return jsonify(dict(
+            status="success",
+            message="You purchased x buildings ..."
+        ))
+    return jsonify(dict(
+        status="fail",
+        message="You build form failed to pass validation."
+    ))
 
+
+@app.route('/gameplay/infrastructure/allocate/', methods=['POST'])
+@login_required
+@in_active_session
+def allocate_workers():
+    county = current_user.county
     excess_worker_form = ExcessProductionForm(goal=county.production_choice)
     goal_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
     excess_worker_form.goal.choices = [(pairing[0], pairing[1]) for pairing in goal_choices]
 
-    if request.args.get('id') == 'excess' and excess_worker_form.validate_on_submit():
+    if excess_worker_form.validate_on_submit():
         county.production_choice = excess_worker_form.goal.data
-        return redirect(url_for('infrastructure'))
-
-    return render_template(template, build_form=build_form,
-                           excess_worker_form=excess_worker_form, meta_data=game_descriptions)
-
+        return jsonify(dict(
+            status="success",
+            message="You allocated workers to ..."
+        ))
+    return jsonify(dict(
+        status="fail",
+        message="You build form failed to pass validation."
+    ))
