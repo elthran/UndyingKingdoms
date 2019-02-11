@@ -105,6 +105,16 @@ def trade(county_id):
     kingdom_id = county.kingdom_id
 
     trade_form = TradeForm()
+
+    # should be able to be moved to form init? And just
+    # accept gold, wood and iron?
+    trade_form.offer_gold.choices = [(0, 0)]
+    trade_form.offer_wood.choices = [(0, 0)]
+    trade_form.offer_iron.choices = [(0, 0)]
+    trade_form.receive_gold.choices = [(0, 0)]
+    trade_form.receive_wood.choices = [(0, 0)]
+    trade_form.receive_iron.choices = [(0, 0)]
+
     if trade_form.validate_on_submit():
         trade = Trade(kingdom_id, county_id)
 
