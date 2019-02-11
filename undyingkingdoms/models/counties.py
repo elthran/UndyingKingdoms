@@ -245,6 +245,7 @@ class County(GameState):
                 self.armies['peasant'].traveling -= expedition.peasant
                 self.armies['soldier'].traveling -= expedition.soldier
                 self.armies['elite'].traveling -= expedition.elite
+                self.armies['monster'].traveling -= expedition.monster
                 self.land += expedition.land_acquired
                 notification = Notification(self.id, "Your army has returned",
                                             "{} new land has been added to your county".format(
