@@ -134,13 +134,13 @@ th {
 </div>
 {% endset %}
 
-{% set select_field %}
+{% macro select_field(size) %}
 <select class="select">
-  {% for n in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20] %}
+  {% for n in range(size) %}
    <option value="{{ n }}">{{ n }}</option>
   {% endfor %}
 </select>
-{% endset %}
+{% endmacro %}
 
 {% block content1 %}
 {% set user = current_user %}
@@ -162,22 +162,27 @@ th {
   <div class="column max-width-400" id="idle-pop-div">
     <p class="left-align">You may assign a task to your idle population. </p>
     <div class="top-spacer-dot-6"></div>
-    <form id="" action="{{ url_for("infrastructure") + "?id=excess" }}" method="POST" accept-charset="UTF-8">
-        {{ excess_worker_form.csrf_token }}
+    <form id="goal-form" action="{{ url_for('allocate_workers') }}" method="POST" accept-charset="UTF-8">
+        {{ excess_worker_form.csrf_token(id="allocate-form-csrf-token") }}
         {{ excess_worker_form.goal(class="other-select width-100-percent") }}
-        <button class="width-100-percent" type="submit" id="choiceSubmit">Update</button>
     </form>
-    <div class="invisible">
-      <span id="goldProduced">{{ county.get_excess_production_value(0) }}</span>
-      <span id="landProduced">{{ county.get_excess_production_value(1) }}</span>
-      <span id="landReclaimed">{{ county.produce_land }}</span>
-      <span id="foodProduced">{{ county.get_excess_production_value(2) }}</span>
-      <span id="happinessProduced">{{ county.get_excess_production_value(3) }}</span>
+    <div class="top-spacer-dot-6">
+      <span class="goalDescription invisible">
+        Your idle citizens will be forced to work, earning your county an additional {{ county.get_excess_production_value(0) }} gold per day.
+      </span>
+      <span class="goalDescription invisible">
+        Your idle citizens will be forced to reclaim overgrown land surrounding your county. You are currently {{ county.produce_land }} / 2000 square meters towards reclaiming an acre. You will advance {{ county.get_excess_production_value(1) }} square meters each day.
+      </span>
+      <span class="goalDescription invisible">
+        Your idle citizens will be forced to forage for food, gaining enough for {{ county.get_excess_production_value(2) }} people each day.
+      </span>
+      <span class="goalDescription invisible">
+        Your idle citizens will be allowed to relax, gaining {{ county.get_excess_production_value(3) }} happiness per day.
+      </span>
     </div>
-    <span id="excessProductionDescription" class="top-spacer-dot-6"></span>
   </div>
   <br>
-  <form id="tableForm" action="{{ url_for("infrastructure") + "?id=build" }}" method="POST" accept-charset="UTF-8">
+  <form id="tableForm" action="{{ url_for('build_buildings') }}" method="POST" accept-charset="UTF-8">
     {{ build_form.csrf_token }}
     <table id="productionTable">
       <tbody>
@@ -197,7 +202,7 @@ th {
         <td>To Be Built</td>
         <td>
           {{ dynamic_cost }}
-          {{ select_field }}
+          {{ select_field(max_buildable_by_cost(county, building)) }}
           <input class="value" name="{{ building.base_name }}" value="0" hidden/>
           <button class="submitButton" type="submit">Build <span class="display">0</span></button>
         </td>
@@ -245,8 +250,47 @@ th {
 {% endblock %}
 
 {% block script %}
+{{ super() }}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
+var goalForm = $("#goal-form");
+var goalChoice = $("#goal");
+var goalDescriptions = $(".goalDescription");
+
+function updateGoals() {
+    // hide all goals except the one at val()
+    goalDescriptions.each(function (index, element) {
+        if (parseInt(goalChoice.val()) === index) {
+            $(element).removeClass("invisible");
+        } else if (!$(element).hasClass("invisible")) {
+            $(element).addClass("invisible");
+        }
+    });
+}
+
+// submit form on input change
+goalChoice.change(function () {
+    $.ajax({
+        url: goalForm.attr("action"),
+        method: "POST",
+        // need to verify csrf id, I might be wrong.
+        headers: {"X-CSRF-TOKEN": $("#allocate-form-csrf-token").val()},
+        data: goalForm.serialize(),
+        dataType: "json",  // type of data returned, not type sent.
+        success: function (response, status) {
+            if (status === "success") {
+                updateGoals();
+            } else {
+                console.log(response);
+            }
+        }
+    });
+});
+
+$(document).ready(function () {
+    updateGoals();
+});
+
 var selects = $(".select");
 var submitButtons = $(".submitButton");
 var goldCosts = $(".goldCost");
@@ -287,7 +331,7 @@ function updateLand() {
         var sum = 0;
         selects.each(function (ignore, element) {
             // at some point the 1 will be a land cost.
-            sum += parseInt(element.value) * 1;
+            sum += element.value * 1;
         });
         element.innerHTML = sum;
     });
@@ -340,51 +384,6 @@ selects.each(function (index, element) {
         updateCosts();
     });
 });
-
-var goalChoice = $("#goal");
-var goalDescription = $("#excessProductionDescription");
-var goldProduced = $("#goldProduced").text();
-var landProduced = $("#landProduced").text();
-var landReclaimed = $("#landReclaimed").text();
-var foodProduced = $("#foodProduced").text();
-var happinessProduced = $("#happinessProduced").text();
-
-// This data should be listed in the metatdata somewhere.
-function updateGoals() {
-    if (goalChoice.val() === "0") {
-        goalDescription.text(
-            "Your idle citizens will be forced to work, " +
-            "earning your county an additional " + foodProduced +
-            " gold per day."
-        );
-    } else if (goalChoice.val() === "1") {
-        goalDescription.html(
-            "Your idle citizens will be forced to reclaim " +
-            "overgrown land surrounding your county.<br>You are currently " +
-            landReclaimed + " / 2000 square meters towards reclaiming an " +
-            "acre. You will advance " + landProduced +
-            " square meters each day."
-        );
-    } else if (goalChoice.val() === "2") {
-        goalDescription.text(
-            "Your idle citizens will be forced to forage " +
-            "for food, gaining enough for " + foodProduced +
-            " people each day."
-        );
-    } else if (goalChoice.val() === "3") {
-        goalDescription.html(
-            "Your idle citizens will be allowed to relax,<br>" +
-            "gaining " + happinessProduced + " happiness per day."
-        );
-    }
-}
-
-goalChoice.change(function () {
-    updateGoals()
-});
-
-// Pull chat date once page loads
-$(document).ready(updateGoals());
 </script>
 {% endblock %}
 
