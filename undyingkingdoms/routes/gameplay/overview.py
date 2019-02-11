@@ -48,7 +48,19 @@ def overview(template):
 @in_active_session
 def enemy_overview(template, kingdom_id=0, county_id=0):
     message_form = MessageForm()
+
     trade_form = TradeForm()
+
+    # should be able to be moved to form init? And just
+    # accept gold, wood and iron?
+    trade_form.offer_gold.choices = [(0, 0)]
+    trade_form.offer_wood.choices = [(0, 0)]
+    trade_form.offer_iron.choices = [(0, 0)]
+    trade_form.receive_gold.choices = [(0, 0)]
+    trade_form.receive_wood.choices = [(0, 0)]
+    trade_form.receive_iron.choices = [(0, 0)]
+
+
     target_kingdom = Kingdom.query.filter_by(id=kingdom_id).first()
     target_county = County.query.filter_by(id=county_id).first()
     # import pdb;pdb.set_trace()

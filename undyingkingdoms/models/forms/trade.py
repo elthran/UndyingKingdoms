@@ -10,5 +10,3 @@ class TradeForm(FlaskForm):
     receive_gold = SelectField('receive_gold', coerce=int)
     receive_wood = SelectField('receive_wood', coerce=int)
     receive_iron = SelectField('receive_iron', coerce=int)
-
-
