@@ -65,9 +65,10 @@ button {
     <a href="{{ url_for('infiltrate', county_id=target_county.id) }}">Infiltrate</a>
     {% endif %}
     {% endif %}
-
     <br><br>
-    <form method="POST" accept-charset="UTF-8" action="{{ url_for('overview') + '?id=trade' }}">
+    <form method="POST" accept-charset="UTF-8" action="{{ url_for('trade',county_id=target_county.id)">
+        <!-- GOOD TILL HERE -->
+        {% raw %}
         {{ trade_form.csrf_token }}
         <h1>Offer Trade</h1>
         <table>
@@ -89,14 +90,15 @@ button {
             </tr>
         </table>
         <button type="submit">Offer Trade</button>
+        {% endraw %}
+        <!-- GOOD AFTER HERE -->
     </form>
-
     <h1>Send Message:</h1>
     <form method="POST" accept-charset="UTF-8" action="{{ url_for('overview') + '?id=message' }}">
         {{ message_form.csrf_token }}
         {{ render_field(message_form.title, placeholder="Title", autofocus="", maxlength=message_form.TITLE_SIZE) }}
         <textarea cols="100" rows="10" name="content" placeholder="Content"
-                  maxlength="{{ form.CONTENT_SIZE }}"></textarea>
+                  maxlength="{{ message_form.CONTENT_SIZE }}"></textarea>
         <div class="spacer"></div>
         <button type="submit">Send Message</button>
     </form>
