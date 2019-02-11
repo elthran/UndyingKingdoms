@@ -8,6 +8,26 @@ from undyingkingdoms.models.forms.military import MilitaryForm
 from undyingkingdoms.static.metadata.metadata import all_armies, game_descriptions
 
 
+def monsters_buildable(county):
+    return county.buildings['lair'].total - \
+            county.armies['monster'].total - \
+            county.armies['monster'].currently_training
+
+
+def max_trainable_by_cost(county, army):
+    max_size = min(
+        county.gold // army.gold,
+        county.wood // army.wood,
+        county.iron // army.iron
+    )
+    if army.base_name == 'monster':
+        return min(
+            max_size,
+            monsters_buildable(county)
+        )
+    return max_size
+
+
 @app.route('/gameplay/military/', methods=['GET', 'POST'])
 @mobile_template('{mobile/}gameplay/military.html')
 @login_required
@@ -41,4 +61,9 @@ def military(template):
             happiness_penalty = (total_trained * 200 // county.population) + 1
         county.happiness -= happiness_penalty
         return redirect(url_for('military'))
-    return render_template(template, form=form, meta_data=game_descriptions)
+
+    return render_template(
+        template, form=form,
+        meta_data=game_descriptions,
+        max_trainable_by_cost=max_trainable_by_cost,
+        monsters_buildable=monsters_buildable)
