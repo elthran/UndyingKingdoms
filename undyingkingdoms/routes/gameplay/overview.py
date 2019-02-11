@@ -18,6 +18,15 @@ The main concept is that you are separating each concept into
 its own route. Even though this cause duplication of code it is much
 easeir to test and debug. If you use a major concept in 2 places
 you can make that a 'utility' function and import it into both routes.
+
+The Routes that return JSON could be made to return a redirect to 
+the overview or overiew_enemy pages but JSON is easier to handle with
+JS ... You would need a JS function to submit you form and handle the
+callback. The callback would update any relvant data on the page
+on the success of the Trade or Send Message routes. 
+
+The Trade and Send Message routes might need to return more data 
+than they currently are.
 """
 
 @app.route('/gameplay/overview', methods=['GET'])
