@@ -148,8 +148,8 @@ h2 {
     {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
     {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
   </h2>
-  <form action="{{ url_for('build_buildings') }}" method="POST" accept-charset="UTF-8">
-    {{ build_form.csrf_token }}
+  <form id="build-form" action="{{ url_for('build_buildings') }}" method="POST" accept-charset="UTF-8">
+    {{ build_form.csrf_token(id="build-form-csrf-token") }}
     <table>
       <tr>
         <th style="width:150px;">Name</th>
@@ -172,7 +172,7 @@ h2 {
           <span class="display">0</span>
           <input class="value" name="{{ building.base_name }}" value="0" hidden/>
         </td>
-        <td>{{ building.pending }}</td>
+        <td><span class="pending">{{ building.pending }}</span></td>
         <td>
           <span class="buildingGoldCost">{{ building.gold_cost or 0 }}</span><img class="resource_icons" src="/static/images/gold_icon.jpg">
           <span class="buildingWoodCost">{{ building.wood_cost or 0 }}</span><img class="resource_icons" src="/static/images/wood_icon.jpg">
@@ -219,9 +219,48 @@ h2 {
 {% set county = current_user.county %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
+var goalForm = $("#goal-form")
+var goalChoice = $("#goal");
+var goalDescriptions = $(".goalDescription");
+
+// submit form on input change
+goalChoice.change(function() {
+    $.ajax({
+        url: goalForm.attr("action"),
+        method: "POST",
+        // need to verify csrf id, I might be wrong.
+        headers: {"X-CSRF-TOKEN": $("#allocate-form-csrf-token").val()},
+        data: goalForm.serialize(),
+        dataType: "json",  // type of data returned, not type sent.
+        success: function (response, status) {
+            if (status === "success") {
+                updateGoals();
+            } else {
+                console.log(response);
+            }
+        }
+    });
+});
+
+function updateGoals() {
+    // hide all goals except the one at val()
+    goalDescriptions.each(function (index, element) {
+        if (parseInt(goalChoice.val()) === index) {
+            $(element).removeClass("invisibleDataFields");
+        } else if (!$(element).hasClass("invisibleDataFields")) {
+            $(element).addClass("invisibleDataFields");
+        }
+    });
+}
+
+$(document).ready(function() {
+  updateGoals();
+});
+
 var sliders = $(".slider");
 var displays = $(".display");
 var values = $(".value");
+var pendings = $(".pending")
 
 var buildingGoldCosts = $(".buildingGoldCost");
 var buildingWoodCosts = $(".buildingWoodCost");
@@ -311,43 +350,28 @@ sliders.each(function (index, element) {
     });
 });
 
-var goalForm = $("#goal-form")
-var goalChoice = $("#goal");
-var goalDescriptions = $(".goalDescription");
-
-// submit for on input change
-goalChoice.change(function() {
-    $.ajax({
-        url: goalForm.attr("action"),
-        method: "POST",
-        // need to verify csrf id, I might be wrong.
-        headers: {"X-CSRF-TOKEN": $("#allocate-form-csrf-token").val()},
-        data: goalForm.serialize(),
-        dataType: "json",  // type of data returned, not type sent.
-        success: function (response, status) {
-            if (status === "success") {
-                updateGoals();
-            } else {
-                console.log(response);
-            }
-        }
-    });
-});
-
-function updateGoals() {
-    // hide all goals except the one at val()
-    goalDescriptions.each(function (index, element) {
-        if (parseInt(goalChoice.val()) === index) {
-            $(element).removeClass("invisibleDataFields");
-        } else if (!$(element).hasClass("invisibleDataFields")) {
-            $(element).addClass("invisibleDataFields");
-        }
-    });
-}
-
-$(document).ready(function() {
-  updateGoals();
-});
+// $("#build-form").submit(function (e) {
+//     e.preventDefault();
+//     $.ajax({
+//         url: $(this).attr("action"),
+//         method: "POST",
+//         // need to verify csrf id, I might be wrong.
+//         headers: {"X-CSRF-TOKEN": $("#build-form-csrf-token").val()},
+//         data: $(this).serialize(),
+//         dataType: "json",  // type of data returned, not type sent.
+//         success: function (response, status) {
+//             if (status === "success") {
+//                 values.each(function (index, element) {
+//                     var pending = $(pendings[index])
+//                     pending.html(parseInt(pending.html()) + parseInt($(element).val()));
+//                     $(sliders[index]).val(0);
+//                 });
+//             } else {
+//                 console.log(response);
+//             }
+//         }
+//     });
+// });
 </script>
 
 {% endblock %}

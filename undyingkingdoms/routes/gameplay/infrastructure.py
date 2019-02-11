@@ -65,14 +65,15 @@ def build_buildings():
                                          wood_per_item=county.buildings[building].wood_cost,
                                          iron_per_item=0)
         transaction.save()
-        return jsonify(dict(
-            status="success",
-            message="You purchased x buildings ..."
-        ))
-    return jsonify(dict(
-        status="fail",
-        message="You build form failed to pass validation."
-    ))
+    return redirect(url_for('infrastructure'))
+    #     return jsonify(dict(
+    #         status="success",
+    #         message="You purchased x buildings ..."
+    #     ))
+    # return jsonify(dict(
+    #     status="fail",
+    #     message="Your build form failed to pass validation."
+    # ))
 
 
 @app.route('/gameplay/infrastructure/allocate/', methods=['POST'])
@@ -92,5 +93,5 @@ def allocate_workers():
         ))
     return jsonify(dict(
         status="fail",
-        message="You build form failed to pass validation."
+        message="Your allocation form failed to pass validation."
     ))
