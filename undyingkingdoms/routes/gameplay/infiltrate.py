@@ -26,8 +26,8 @@ def infiltrate(template, county_id):
 
     form = InfiltrateForm()
     form.county_id.data = current_user.county.id
-    thieves = min(current_user.county.get_number_of_available_thieves(), 3)
-    thieves += amount_of_thieves_modifier.get(current_user.county.race, ("", 0))[1] + amount_of_thieves_modifier.get(current_user.county.background, ("", 0))[1]
+    max_thieves = 3 + amount_of_thieves_modifier.get(current_user.county.race, ("", 0))[1] + amount_of_thieves_modifier.get(current_user.county.background, ("", 0))[1]
+    thieves = min(current_user.county.get_number_of_available_thieves(), max_thieves)
     form.amount.choices = [(i + 1, i + 1) for i in range(thieves)]
     form.mission.choices = [(index, name) for index, name in enumerate(infiltration_missions)]
 
