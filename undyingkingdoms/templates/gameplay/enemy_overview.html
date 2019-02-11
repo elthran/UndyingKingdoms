@@ -66,16 +66,17 @@ button {
     {% endif %}
     {% endif %}
     <br><br>
-    <form method="POST" accept-charset="UTF-8" action="{{ url_for('trade',county_id=target_county.id)">
-        <!-- GOOD TILL HERE -->
-        {% raw %}
+    <form method="POST" accept-charset="UTF-8" action="{{ url_for('trade',county_id=target_county.id) }}">
         {{ trade_form.csrf_token }}
+        <!-- GOOD TILL HERE -->
         <h1>Offer Trade</h1>
         <table>
             <tr>
                 <th>Offer</th>
                 <th>Request</th>
             </tr>
+            {% raw %}
+            <!-- Bugged in the next 5 lines. -->
             <tr>
                 <td>{{ trade_form.offer_gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"></td>
                 <td>{{ trade_form.receive_gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"></td>
@@ -88,10 +89,10 @@ button {
                 <td>{{ trade_form.offer_iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></td>
                 <td>{{ trade_form.receive_iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></td>
             </tr>
+            {% endraw %}
         </table>
-        <button type="submit">Offer Trade</button>
-        {% endraw %}
         <!-- GOOD AFTER HERE -->
+        <button type="submit">Offer Trade</button>
     </form>
     <h1>Send Message:</h1>
     <form method="POST" accept-charset="UTF-8" action="{{ url_for('overview') + '?id=message' }}">
