@@ -262,9 +262,9 @@ class County(GameState):
         if randint(1, 10) == 10 and self.county_age > 10:
             self.land += randint(-5, 15)
         if randint(1, 10) == 10:
-            self.armies['peasant'].total += randint(1, 5)
+            self.armies['peasant'].total += randint(1, 4)
             self.armies['soldier'].total += randint(1, 3)
-            self.armies['archer'].total += randint(1, 3)
+            self.armies['archer'].total += randint(1, 2)
             self.armies['elite'].total += 1
         if randint(1, 10) > 8:
             self.gold -= 25
@@ -283,6 +283,7 @@ class County(GameState):
         self.wood += self.get_wood_income()
         self.iron += self.get_iron_income()
         self.happiness += self.get_happiness_change()
+        self.health += self.get_health_change()
 
     def get_health_change(self):
         if self.nourishment > 90:
