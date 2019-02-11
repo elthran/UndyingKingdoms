@@ -270,6 +270,7 @@ class County(GameState):
             self.gold -= 25
         if randint(1, 12) == 12 and self.kingdom.leader == 0:
             friendly_counties = County.query.filter_by(kingdom_id=self.kingdom_id).all()
+            friendly_counties = [county for county in friendly_counties if not county.user.is_bot]
             self.vote = choice(friendly_counties).id
             self.kingdom.count_votes()
         if randint(1, 5) == 5:

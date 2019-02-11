@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField, IntegerField
 
 from undyingkingdoms.models import County
+from undyingkingdoms.static.metadata.metadata import amount_of_thieves_modifier
 
 
 class InfiltrateForm(FlaskForm):
@@ -20,12 +21,13 @@ class InfiltrateForm(FlaskForm):
         county = County.query.filter_by(id=self.county_id.data).first()
         thieves_available = county.get_number_of_available_thieves()
         thieves_being_sent = self.amount.data
+        maximum_per_mission = 3 + amount_of_thieves_modifier.get(county.race, ("", 0))[1] + amount_of_thieves_modifier.get(county.background, ("", 0))[1]
         if thieves_being_sent > thieves_available:
             self.amount.errors.append("You do not have enough thieves available.")
             return True
         if thieves_being_sent < 1:
             self.amount.errors.append("You must send at least one thief.")
             return True
-        if thieves_being_sent > 3:
-            self.amount.errors.append("You can not send more than 3 thieves at a time.")
+        if thieves_being_sent > maximum_per_mission:
+            self.amount.errors.append("You can not send more than {} thieves at a time.".format(maximum_per_mission))
             return True
