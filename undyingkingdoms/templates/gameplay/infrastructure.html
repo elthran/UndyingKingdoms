@@ -277,7 +277,7 @@ function updateResources() {
     var woodSum = 0;
     var goldSum = 0;
     var landSum = 0;
-    selects.each(function (index, element) {
+    sliders.each(function (index, element) {
         goldSum += element.value * buildingGoldCosts[index].innerHTML;
         woodSum += element.value * buildingWoodCosts[index].innerHTML;
         // at some point the 1 will be a land cost.
@@ -285,7 +285,7 @@ function updateResources() {
     });
     goldCost.html(goldSum);
     woodCost.html(woodSum);
-    landCost.htm(landSum);
+    landCost.html(landSum);
 }
 
 function calcSliderWidth(size) {
