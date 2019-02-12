@@ -219,12 +219,23 @@ h2 {
 {% set county = current_user.county %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
-var goalForm = $("#goal-form")
+var goalForm = $("#goal-form");
 var goalChoice = $("#goal");
 var goalDescriptions = $(".goalDescription");
 
+function updateGoals() {
+    // hide all goals except the one at val()
+    goalDescriptions.each(function (index, element) {
+        if (parseInt(goalChoice.val()) === index) {
+            $(element).removeClass("invisibleDataFields");
+        } else if (!$(element).hasClass("invisibleDataFields")) {
+            $(element).addClass("invisibleDataFields");
+        }
+    });
+}
+
 // submit form on input change
-goalChoice.change(function() {
+goalChoice.change(function () {
     $.ajax({
         url: goalForm.attr("action"),
         method: "POST",
@@ -242,25 +253,14 @@ goalChoice.change(function() {
     });
 });
 
-function updateGoals() {
-    // hide all goals except the one at val()
-    goalDescriptions.each(function (index, element) {
-        if (parseInt(goalChoice.val()) === index) {
-            $(element).removeClass("invisibleDataFields");
-        } else if (!$(element).hasClass("invisibleDataFields")) {
-            $(element).addClass("invisibleDataFields");
-        }
-    });
-}
-
-$(document).ready(function() {
-  updateGoals();
+$(document).ready(function () {
+    updateGoals();
 });
 
 var sliders = $(".slider");
 var displays = $(".display");
 var values = $(".value");
-var pendings = $(".pending")
+var pendings = $(".pending");
 
 var buildingGoldCosts = $(".buildingGoldCost");
 var buildingWoodCosts = $(".buildingWoodCost");
@@ -273,29 +273,19 @@ var totalGold = parseInt($("#totalGold").text());
 var totalWood = parseInt($("#totalWood").text());
 var totalLand = parseInt($("#totalLand").text());
 
-function updateGold() {
-    var sum = 0;
-    sliders.each(function (index, element) {
-        sum += element.value * buildingGoldCosts[index].innerHTML;
+function updateResources() {
+    var woodSum = 0;
+    var goldSum = 0;
+    var landSum = 0;
+    selects.each(function (index, element) {
+        goldSum += element.value * buildingGoldCosts[index].innerHTML;
+        woodSum += element.value * buildingWoodCosts[index].innerHTML;
+        // at some point the 1 will be a land cost.
+        landSum += element.value * 1;
     });
-    goldCost.html(sum);
-}
-
-function updateWood() {
-    var sum = 0;
-    sliders.each(function (index, element) {
-        sum += element.value * buildingWoodCosts[index].innerHTML;
-    });
-    woodCost.html(sum);
-}
-
-function updateLand() {
-    var sum = 0;
-    sliders.each(function (index, element) {
-        // someday this 1 will be a land cost.
-        sum += element.value * 1;
-    });
-    landCost.html(sum);
+    goldCost.html(goldSum);
+    woodCost.html(woodSum);
+    landCost.htm(landSum);
 }
 
 function calcSliderWidth(size) {
@@ -327,9 +317,7 @@ function resizeRemaining(gold, wood, land) {
 }
 
 function updateCosts() {
-    updateGold();
-    updateWood();
-    updateLand();
+    updateResources();
 
     var gold = parseInt(goldCost.text());
     var wood = parseInt(woodCost.text());
