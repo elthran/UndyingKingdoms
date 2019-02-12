@@ -136,7 +136,7 @@ th {
 
 {% macro select_field(size) %}
 <select class="select">
-  {% for n in range(size) %}
+  {% for n in range(size+1) %}
    <option value="{{ n }}">{{ n }}</option>
   {% endfor %}
 </select>
@@ -325,49 +325,57 @@ function updateResources() {
     });
 }
 
-function addOptions(element, size) {
-    console.log(element);
-    for (var i = 0; i < size; i++) {
-        var option = "<option value=\"option" + i + "\">option" + i + "</option>";
-        console.log(option);
-        $(element).append(option);
-    }
-}
+// function updateOptions(element, size) {
+//     console.log($(element).find("option").length, size)
+//     // If select is too long, drop options,
+//     // if it is too short add new ones.
+//     var currentSize = $(element).find("option").length;
+//     if (currentSize == size + 1) {
+//         return;
+//     } else if (currentSize < size + 1) {  // too small
+//         do {
+//             console.log("currentSize:", currentSize);
+//             var option = $("<option></option>").val(i).text(i);
+//             $(element).append(option);
+//         } while ($(element).find("option").length < size + 1);
+//     } else {  // too big
+//         do {
+//             $(element).last().remove()
+//             var newSize = $(element).find("option").length
+//         } while (newSize > size + 1);
+//     }
+// }
 
-function resizeRemaining(gold, wood, land) {
-    // console.log(sliders);
-    selects.each(function (index, element) {
-        var goldPrice = buildingGoldCosts[index].innerHTML;
-        var woodPrice = buildingWoodCosts[index].innerHTML;
-        var landPrice = 1;  // someday will be land cost
-        var remaining = Math.max(Math.floor(Math.min(
-            (totalGold - gold) / goldPrice,
-            (totalWood - wood) / woodPrice,
-            (avaiableLand - land) / landPrice
-        )), 0);
+// function resizeRemaining(element, index, gold, wood, land) {
+//     var goldPrice = buildingGoldCosts[index].innerHTML;
+//     var woodPrice = buildingWoodCosts[index].innerHTML;
+//     var landPrice = 1;  // someday will be land cost
+//     var remaining = Math.max(Math.floor(Math.min(
+//         (totalGold - gold) / goldPrice,
+//         (totalWood - wood) / woodPrice,
+//         (avaiableLand - land) / landPrice
+//     )), 0);
 
-        var size = element.value * 1 + remaining;
-        $(element).empty();
-        addOptions(element, size);
-        if (size === 0) {
-            $(element).addClass("disabled");
-        } else {
-            $(element).removeClass("disabled");
-        }
-    });
-}
+//     var size = element.value * 1 + remaining;
+//     updateOptions(element, size);
+//     if (size === 0) {
+//         $(element).addClass("disabled");
+//     } else {
+//         $(element).removeClass("disabled");
+//     }
+// }
 
 function updateCosts() {
     updateResources();
 
-    selects.each(function (index) {
+    selects.each(function (index, element) {
         var goldCost = goldCosts[index];
         var woodCost = woodCosts[index];
         var landCost = landCosts[index];
         var gold = parseInt(goldCost.innerHTML);
         var wood = parseInt(woodCost.innerHTML);
         var land = parseInt(landCost.innerHTML);
-        resizeRemaining(gold, wood, land);
+        // resizeRemaining(element, index, gold, wood, land);
 
         if (gold > totalGold) {
             goldCost.style.color = "red";
