@@ -13,7 +13,106 @@ input {
     padding: 0.5em 0 0;
 }
 
+.invisibleDataFields {
+    display: none;
+}
 
+#costCol {
+    min-width: 8.5em;
+}
+
+.slide-container {
+    display: flex;
+    justify-content: space-around;
+    width: 10em;
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 0.1em; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+  padding: 0.1em 0 0.1em;
+  margin: 1em 0 1em;
+  width: 10em;
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 0.4em; /* Set a specific slider handle width */
+  height: 1.5em; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 0.4em; /* Set a specific slider handle width */
+  height: 1.5em; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider-disabled::-moz-range-thumb  {
+    background: grey;
+}
+
+.slider-disabled::-webkit-slider-thumb {
+    background: grey;
+}
+
+table {
+    margin-top: 1em;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2;}
+
+th, td {
+    vertical-align: bottom;
+    border: 1px solid #ddd;
+    padding: 0 0.3em 0.3em;
+}
+
+th {
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.total-row {
+    font-weight: bold;
+    height: 2.6em;
+}
+
+.tooltip .tooltipText {
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 120%;
+    left: 50%;
+    margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
+h2 {
+    margin-bottom: 0.6em;
+}
+
+.bottom-spacer-dot-3 {
+    margin-bottom: 0.3em;
+}
+
+.bottom-spacer-1 {
+    margin-bottom: 1em;
+}
+
+.top-spacer-dot-3 {
+    margin-top: 0.3em;
+}
 </style>
 {% endblock %}
 
@@ -23,177 +122,244 @@ input {
 {% set kingdom = county.kingdom %}
 
 <div id="content">
-    <h2>Available Land: {{ county.get_available_land() }} / {{ county.land }}</h2><br>
-    <h2>Unemployed Citizens : {{ county.get_available_workers() }} / {{ county.population }}</h2><br>
-    <p>You may assign a task to your idle population. </p>
-
-    <form action="{{ url_for('infrastructure') + '?id=excess' }}" method="POST" accept-charset="UTF-8">
-        {{ excess_worker_form.csrf_token }}
-        {{ excess_worker_form.goal }}
-        <button type="submit" id="choiceSubmit">Update</button>
-    </form>
-
-    <span id="excessProductionDescription"></span>
-
-
-    <h2>Current Resources:
-        {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">
-        {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
-        {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
-    </h2>
+  <h2>Available Land: {{ county.get_available_land() }} / {{ county.land }}</h2>
+  <h2>Unemployed Citizens : {{ county.get_available_workers() }} / {{ county.population }}</h2>
+  <p class="bottom-spacer-dot-3">You may assign a task to your idle population. </p>
+  <form id="goal-form" action="{{ url_for('allocate_workers') }}" method="POST" accept-charset="UTF-8">
+    {{ excess_worker_form.csrf_token(id="allocate-form-csrf-token") }}
+    {{ excess_worker_form.goal }}
+  </form>
+  <div class="top-spacer-dot-3 bottom-spacer-1">
+    <span class="goalDescription invisibleDataFields">
+      Your idle citizens will be forced to work, earning your county an additional {{ county.get_excess_production_value(0) }} gold per day.
+    </span>
+    <span class="goalDescription invisibleDataFields">
+      Your idle citizens will be forced to reclaim overgrown land surrounding your county. You are currently {{ county.produce_land }} / 2000 square meters towards reclaiming an acre. You will advance {{ county.get_excess_production_value(1) }} square meters each day.
+    </span>
+    <span class="goalDescription invisibleDataFields">
+      Your idle citizens will be forced to forage for food, gaining enough for {{ county.get_excess_production_value(2) }} people each day.
+    </span>
+    <span class="goalDescription invisibleDataFields">
+      Your idle citizens will be allowed to relax, gaining {{ county.get_excess_production_value(3) }} happiness per day.
+    </span>
+  </div>
+  <h2>Current Resources:
+    {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">
+    {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
+    {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
+  </h2>
+  <form id="build-form" action="{{ url_for('build_buildings') }}" method="POST" accept-charset="UTF-8">
+    {{ build_form.csrf_token(id="build-form-csrf-token") }}
+    <table>
+      <tr>
+        <th style="width:150px;">Name</th>
+        <th>Owned</th>
+        <th style="width:175px;">To Be Built</th>
+        <th>Under Construction</th>
+        <th style="width:150px;">Cost</th>
+        <th style="width:150px;">Workers Employed</th>
+        <th>Description</th>
+      </tr>
+      {% for building in county.buildings.values() %}
+        {% set slider_size = max_buildable_by_cost(county, building) %}
+      <tr>
+        <td>{{ building.class_name.title() }}</td>
+        <td>{{ building.total }}</td>
+        <td>
+          <div class="slide-container">
+            <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
+          </div>
+          <span class="display">0</span>
+          <input class="value" name="{{ building.base_name }}" value="0" hidden/>
+        </td>
+        <td><span class="pending">{{ building.pending }}</span></td>
+        <td>
+          <span class="buildingGoldCost">{{ building.gold_cost or 0 }}</span><img class="resource_icons" src="/static/images/gold_icon.jpg">
+          <span class="buildingWoodCost">{{ building.wood_cost or 0 }}</span><img class="resource_icons" src="/static/images/wood_icon.jpg">
+        </td>
+        <td>{{ building.workers_employed * building.total }} ({{ building.workers_employed }} each)</td>
+        <td>{{ building.description }}</td>
+      </tr>
+      {% endfor %}
+      <tr style="font-weight:bold;">
+        <td style="width:150px;">Total</td>
+        <td>{{ county.buildings.values()|sum(attribute='total') }}</td>
+        <td>-</td>
+        <td>{{ county.buildings.values()|sum(attribute='pending') }}</td>
+        <td style="width:150px;">-</td>
+        <td style="width:150px;">{{ county.get_employed_workers() }}</td>
+        <td>-</td>
+      </tr>
+    </table>
     <br>
-    <form action="{{ url_for('infrastructure') + '?id=build' }}" method="POST" accept-charset="UTF-8">
-        {{ build_form.csrf_token }}
-        <table class="production_table">
-            <tr>
-                <th style="width:150px;">Name</th>
-                <th>Owned</th>
-                <th style="width:175px;">To Be Built</th>
-                <th>Under Construction</th>
-                <th style="width:150px;">Cost</th>
-                <th style="width:150px;">Workers Employed</th>
-                <th>Description</th>
-            </tr>
-            {% for building in county.buildings.values() %}
-            <tr>
-                <td>{{ building.class_name.title() }}</td>
-                <td>{{ building.total }}</td>
-                <td>
-                    <input id="{{ building.base_name }}_slider" type="range" value="0" min="0" max="20" step="1"/>
-                    <span id="{{ building.base_name }}_display">0</span>
-                    <input id="{{ building.base_name }}_value" name="{{ building.base_name }}" value="0" hidden/>
-                </td>
-                <td>{{ building.pending }}</td>
-                <td>
-                    {% if building.gold_cost %}{{ building.gold_cost }}<img class="resource_icons"
-                                                                  src="/static/images/gold_icon.jpg">{% endif %}
-                    {% if building.wood_cost %}{{ building.wood_cost }}<img class="resource_icons"
-                                                                  src="/static/images/wood_icon.jpg">{% endif %}
-                </td>
-                <td>{{ building.workers_employed * building.total }} ({{ building.workers_employed }} each)</td>
-                <td>{{ building.description }}</td>
-            </tr>
-            {% endfor %}
-            <tr style="font-weight:bold;">
-                <td style="width:150px;">Total</td>
-                <td>{{ county.buildings.values()|sum(attribute='total') }}</td>
-                <td>-</td>
-                <td>{{ county.buildings.values()|sum(attribute='pending') }}</td>
-                <td style="width:150px;">-</td>
-                <td style="width:150px;">{{ county.get_employed_workers() }}</td>
-                <td>-</td>
-            </tr>
-        </table>
-        <br>
-        Gold Cost: <span id="goldCost">0</span>
-        <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons"
-                                                                                                 src="/static/images/gold_icon.jpg"><br>
-        Wood Cost: <span id="woodCost">0</span>
-        <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons"
-                                                                                                 src="/static/images/wood_icon.jpg"><br>
-        Land Required: <span id="landCost">0</span> / {{ county.get_available_land() }}
-        <br><br>
-        Each day, up to {% if county.background == 'Engineer' %}5{% else %}3{% endif %} buildings in your queue will be built.
-        <br>
-        <button id="buildSubmit" type="submit">Build</button>
-        <br>
-    </form>
+    Gold Cost: <span id="goldCost">0</span>
+    <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img src="/static/images/gold_icon.jpg"><br>
+    Wood Cost: <span id="woodCost">0</span>
+    <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img src="/static/images/wood_icon.jpg"><br>
+    Land Required: <span id="landCost">0</span> / {{ county.get_available_land() }}
+    <br><br>
+    Each day, up to {% if county.background == 'Engineer' %}5{% else %}3{% endif %} buildings in your queue will be built.
+    <br>
+    <button id="buildSubmit" type="submit">Build</button>
+    <br>
+  </form>
+</div>
+<div class="invisibleDataFields">
+  <span id="totalGold">{{ county.gold }}</span>
+  <span id="totalWood">{{ county.wood }}</span>
+  <span id="totalLand">{{ county.get_available_land() }}</span>
+  {% for n in range(4) %}
+    <span id="goalAmount{{ n }}">{{ county.get_excess_production_value(n) }}</span>
+  {% endfor %}
 </div>
 {% endblock %}
 
 {% block script %}
 {{ super() }}
 {% set county = current_user.county %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
-var submitButton = document.getElementById("buildSubmit");
-var goldCost = document.getElementById("goldCost");
-var woodCost = document.getElementById("woodCost");
-var landCost = document.getElementById("landCost");
-window.onload = function() {
-  updateGoals();
-};
+var goalForm = $("#goal-form");
+var goalChoice = $("#goal");
+var goalDescriptions = $(".goalDescription");
 
-{% for building in county.buildings.values() %}
-var {{ building.base_name }}_slider = document.getElementById("{{ building.base_name }}_slider");
-var {{ building.base_name }}_display = document.getElementById("{{ building.base_name }}_display");
-var {{ building.base_name }}_value = document.getElementById("{{ building.base_name }}_value");
-{% endfor %}
-
-function updateGold() {
-    goldCost.innerHTML = 0{% for building in county.buildings.values() %} +
-    {{ building.base_name }}_slider.value * {{ building.gold_cost }}{% endfor %};
+function updateGoals() {
+    // hide all goals except the one at val()
+    goalDescriptions.each(function (index, element) {
+        if (parseInt(goalChoice.val()) === index) {
+            $(element).removeClass("invisibleDataFields");
+        } else if (!$(element).hasClass("invisibleDataFields")) {
+            $(element).addClass("invisibleDataFields");
+        }
+    });
 }
 
-function updateWood() {
-    woodCost.innerHTML = 0{% for building in county.buildings.values() %} +
-    {{ building.base_name }}_slider.value * {{ building.wood_cost }}{% endfor %};
+// submit form on input change
+goalChoice.change(function () {
+    $.ajax({
+        url: goalForm.attr("action"),
+        method: "POST",
+        // need to verify csrf id, I might be wrong.
+        headers: {"X-CSRF-TOKEN": $("#allocate-form-csrf-token").val()},
+        data: goalForm.serialize(),
+        dataType: "json",  // type of data returned, not type sent.
+        success: function (response, status) {
+            if (status === "success") {
+                updateGoals();
+            } else {
+                console.log(response);
+            }
+        }
+    });
+});
+
+$(document).ready(function () {
+    updateGoals();
+});
+
+var sliders = $(".slider");
+var displays = $(".display");
+var values = $(".value");
+var pendings = $(".pending");
+
+var buildingGoldCosts = $(".buildingGoldCost");
+var buildingWoodCosts = $(".buildingWoodCost");
+
+var goldCost = $("#goldCost");
+var woodCost = $("#woodCost");
+var landCost = $("#landCost");
+
+var totalGold = parseInt($("#totalGold").text());
+var totalWood = parseInt($("#totalWood").text());
+var totalLand = parseInt($("#totalLand").text());
+
+function updateResources() {
+    var woodSum = 0;
+    var goldSum = 0;
+    var landSum = 0;
+    selects.each(function (index, element) {
+        goldSum += element.value * buildingGoldCosts[index].innerHTML;
+        woodSum += element.value * buildingWoodCosts[index].innerHTML;
+        // at some point the 1 will be a land cost.
+        landSum += element.value * 1;
+    });
+    goldCost.html(goldSum);
+    woodCost.html(woodSum);
+    landCost.htm(landSum);
 }
 
-function updateLand() {
-    landCost.innerHTML = 0{% for building in county.buildings.values() %} +
-    parseInt({{ building.base_name }}_slider.value){% endfor %};
+function calcSliderWidth(size) {
+    return Math.min(size + 0.8, 10) + "em";
+}
+
+function resizeRemaining(gold, wood, land) {
+    // console.log(sliders);
+    sliders.each(function (index, element) {
+        var goldPrice = buildingGoldCosts[index].innerHTML;
+        var woodPrice = buildingWoodCosts[index].innerHTML;
+        var landPrice = 1;  // someday will be land cost
+        var remaining = Math.max(Math.floor(Math.min(
+            (totalGold - gold) / goldPrice,
+            (totalWood - wood) / woodPrice,
+            (totalLand - land) / landPrice
+        )), 0);
+
+        var size = parseInt(element.value) + remaining;
+        // need to include current element.value + current_max - remaining?
+        $(element).prop("max", size);
+        $(element).css("width", calcSliderWidth(size));
+        if (size === 0) {
+            $(element).addClass("slider-disabled");
+        } else {
+            $(element).removeClass("slider-disabled");
+        }
+    });
 }
 
 function updateCosts() {
-    updateGold();
-    updateWood();
-    updateLand();
-    var gold = parseInt(goldCost.innerHTML);
-    if (gold > {{ county.gold }}) {
-        goldCost.style.color = "red";
-    } else {
-        goldCost.style.color = "green";
-    }
-    var wood = parseInt(woodCost.innerHTML);
-    if (wood > {{ county.wood }}) {
-        woodCost.style.color = "red";
-    } else {
-        woodCost.style.color = "green";
-    }
-    var land = parseInt(landCost.innerHTML);
-    if (land > {{ county.get_available_land() }}) {
-        landCost.style.color = "red";
-    } else {
-        landCost.style.color = "green";
-    }
-    if (gold <= {{ county.gold }} && wood <= {{ county.wood }} && land <= {{ county.get_available_land() }}) {
-        submitButton.disabled = false;
-    } else {
-        submitButton.disabled = true;
-    }
+    updateResources();
+
+    var gold = parseInt(goldCost.text());
+    var wood = parseInt(woodCost.text());
+    var land = parseInt(landCost.text());
+    resizeRemaining(gold, wood, land);
 }
 
-{% for building in county.buildings.values() %}
-{{ building.base_name }}_slider.oninput = function () {
-    {{ building.base_name }}_display.innerHTML = this.value;
-    {{ building.base_name }}_value.value = this.value;
-    updateCosts();
-};
-{% endfor %}
-
-var goalChoice = document.getElementById('goal');
-var goalDescription = document.getElementById('excessProductionDescription');
-goalChoice.oninput = function() {
-    updateGoals();
-};
-
-function updateGoals() {
-    if (goalChoice.value == 0) {
-        var goalAmount = {{ county.get_excess_production_value(0) }};
-        goalDescription.innerHTML = 'Your idle citizens will be forced to work, earning your county an additional ' + goalAmount + ' gold per day.';
-    } else if (goalChoice.value == 1) {
-        var goalAmount = {{ county.get_excess_production_value(1) }};
-        var landReclaimed = {{ county.produce_land }};
-        goalDescription.innerHTML = 'Your idle citizens will be forced to reclaim overgrown land surrounding your county. You are currently ' + landReclaimed + ' / 2000 square meters towards reclaiming an acre. You will advance ' + goalAmount + ' square meters each day.';
-    } else if (goalChoice.value == 2) {
-        var goalAmount = {{ county.get_excess_production_value(2) }};
-        goalDescription.innerHTML = 'Your idle citizens will be forced to forage for food, gaining enough for ' + goalAmount + ' people each day.';
-    } else if (goalChoice.value == 3) {
-        var goalAmount = {{ county.get_excess_production_value(3) }};
-        goalDescription.innerHTML = 'Your idle citizens will be allowed to relax, gaining ' + goalAmount + ' happiness per day.';
+sliders.each(function (index, element) {
+    var size = parseInt($(element).prop("max"));
+    if (size === 0) {
+        $(element).addClass("slider-disabled");
     }
-}
+    $(element).css("width", calcSliderWidth(size));
+    $(element).on("input", function () {
+        displays[index].innerHTML = $(element).val();
+        values[index].value = $(element).val();
+        updateCosts();
+    });
+});
 
+// $("#build-form").submit(function (e) {
+//     e.preventDefault();
+//     $.ajax({
+//         url: $(this).attr("action"),
+//         method: "POST",
+//         // need to verify csrf id, I might be wrong.
+//         headers: {"X-CSRF-TOKEN": $("#build-form-csrf-token").val()},
+//         data: $(this).serialize(),
+//         dataType: "json",  // type of data returned, not type sent.
+//         success: function (response, status) {
+//             if (status === "success") {
+//                 values.each(function (index, element) {
+//                     var pending = $(pendings[index])
+//                     pending.html(parseInt(pending.html()) + parseInt($(element).val()));
+//                     $(sliders[index]).val(0);
+//                 });
+//             } else {
+//                 console.log(response);
+//             }
+//         }
+//     });
+// });
 </script>
 
 {% endblock %}
