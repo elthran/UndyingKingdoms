@@ -57,7 +57,12 @@ all_achievements = {
                                     display_title="King of the Forest",
                                     description="Become the leader of your kingdom while playing as Elves.",
                                     maximum_tier=1,
-                                    points_rewarded=15)
+                                    points_rewarded=15),
+    'goblin_class_leader': Achievement(name="goblin_class_leader", category="class_leader", sub_category="goblin",
+                                       display_title="The Goblin King",
+                                       description="Become the leader of your kingdom while playing as Goblins.",
+                                       maximum_tier=1,
+                                       points_rewarded=15)
 }
 
 # Racial/Class Modifiers (A modifier of 0 means +0%. A modifier of 1 would mean +100%)

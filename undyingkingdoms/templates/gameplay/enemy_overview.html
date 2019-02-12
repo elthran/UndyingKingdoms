@@ -64,7 +64,7 @@ button {
       <a href="{{ url_for('infiltrate', county_id=target_county.id) }}">Infiltrate</a>
     {% endif %}
   {% endif %}
-  <br><br>
+  <br><br><br>
   <form method="POST" accept-charset="UTF-8" action="{{ url_for('trade',county_id=target_county.id) }}">
     {{ trade_form.csrf_token }}
     <h1>Offer Trade</h1>
@@ -86,8 +86,12 @@ button {
         <td>{{ trade_form.receive_iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></td>
       </tr>
     </table>
+    <br>
+    <p>Note: Any items you offer in a trade will be unavailable to you until the other county replies to offer or you cancel it.</p>
+    <br>
     <button type="submit">Offer Trade</button>
   </form>
+  <br><br>
   <h1>Send Message:</h1>
   <form id="message-form" method="POST" accept-charset="UTF-8" action="{{ url_for('send_message', county_id=target_county.id) }}">
     {{ message_form.csrf_token(id="message-form-csrf-token") }}
