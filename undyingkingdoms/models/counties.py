@@ -10,6 +10,7 @@ from undyingkingdoms.models.helpers import cached_random
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
+from undyingkingdoms.models.trades import Trade
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
     happiness_modifier, buildings_built_per_day_modifier
@@ -251,6 +252,19 @@ class County(GameState):
                                             "{} new land has been added to your county".format(
                                                 expedition.land_acquired),
                                             self.kingdom.world.day)
+                notification.save()
+
+        trades = Trade.query.filter_by(county_id=self.id).filter(Trade.duration > 0).all()
+        for trade in trades:
+            trade.duration -= 1
+            if trade.duration == 0:
+                self.gold += trade.gold_to_give
+                self.wood += trade.wood_to_give
+                self.iron += trade.iron_to_give
+                target_county = County.query.filter_by(id=trade.target_id).first()
+                notification = Notification(self.id, "Your trade offer has expired",
+                                            "Your resources have been return and your trade offer to {} has expired".format(
+                                                target_county.name), self.kingdom.world.day)
                 notification.save()
 
         infiltrations = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()

@@ -15,6 +15,6 @@ def diplomacy(template):
     if not current_user.in_active_session:
         current_user.in_active_session = True
     county = current_user.county
-    trades_offered = Trade.query.filter_by(county_id=county.id).all()
-    trades_received = Trade.query.filter_by(target_id=county.id).all()
+    trades_offered = Trade.query.filter_by(county_id=county.id).filter(Trade.duration > 0).all()
+    trades_received = Trade.query.filter_by(target_id=county.id).filter(Trade.duration > 0).all()
     return render_template(template, trades_offered=trades_offered, trades_received=trades_received)

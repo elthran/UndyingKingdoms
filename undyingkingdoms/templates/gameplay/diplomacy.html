@@ -14,7 +14,8 @@
     <br>
     We offered a trade to county id: {{ trade.target_id }}.
     We offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, and {{ trade.iron_to_give }} iron
-    in exchange for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, and {{ trade.iron_to_receive }} iron
+    in exchange for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, and {{ trade.iron_to_receive }} iron.
+    The trade expires in {{ trade.duration }} days if they do not reply.
 {% else %}
     We currently have not offered any county a trade.
 {% endfor %}
