@@ -19,7 +19,7 @@ class Trade(GameEvent):
         self.target_id = target_id
         self.world_day = world_day
         self.duration = duration
-        self.accepted = "pending"
+        self.accepted = False
 
         self.gold = gold
         self.wood = wood

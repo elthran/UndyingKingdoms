@@ -10,3 +10,19 @@ class TradeForm(FlaskForm):
     receive_gold = SelectField('receive_gold', coerce=int)
     receive_wood = SelectField('receive_wood', coerce=int)
     receive_iron = SelectField('receive_iron', coerce=int)
+
+    duration = SelectField('duration', coerce=int)  # How long they have to accept
+
+    def validate(self):
+        if not FlaskForm.validate(self):
+            return False
+        if self.empty_offer():
+            return False
+        return True
+
+    def empty_offer(self):
+        for item in [self.offer_gold, self.offer_wood, self.offer_iron, self.receive_gold, self.receive_wood, self.receive_iron]:
+            if item.data != 0:
+                return False
+        self.offer_gold.errors.append("You must offer or request something")
+        return True

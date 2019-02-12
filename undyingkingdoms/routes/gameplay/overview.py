@@ -9,6 +9,7 @@ from undyingkingdoms.models import County, Kingdom, Message
 from undyingkingdoms.models.bases import GameState
 from undyingkingdoms.models.forms.message import MessageForm
 from undyingkingdoms.models.forms.trade import TradeForm
+from undyingkingdoms.models.trades import Trade
 from undyingkingdoms.routes.helpers import in_active_session
 
 """
@@ -16,7 +17,7 @@ Each of these routes could go in their own file
 
 The main concept is that you are separating each concept into
 its own route. Even though this cause duplication of code it is much
-easeir to test and debug. If you use a major concept in 2 places
+easier to test and debug. If you use a major concept in 2 places
 you can make that a 'utility' function and import it into both routes.
 
 The Routes that return JSON could be made to return a redirect to 
@@ -28,6 +29,7 @@ on the success of the Trade or Send Message routes.
 The Trade and Send Message routes might need to return more data 
 than they currently are.
 """
+
 
 @app.route('/gameplay/overview', methods=['GET'])
 @mobile_template('{mobile/}gameplay/overview.html')
@@ -62,6 +64,7 @@ def enemy_overview(template, kingdom_id=0, county_id=0):
     trade_form.receive_gold.choices = [(i*10, i*10) for i in range(51)]
     trade_form.receive_wood.choices = [(i*10, i*10) for i in range(51)]
     trade_form.receive_iron.choices = [(i*10, i*10) for i in range(51)]
+    trade_form.duration.choices = [(i, i) for i in range(3, 25)]
 
     # import pdb;pdb.set_trace()
 
@@ -90,11 +93,6 @@ def send_message(county_id):
         message="Your message didn't pass form validation."
     ))
 
-# move to proper model file
-class Trade(GameState):
-    def __init__(self, kingdom_id, county_id):
-        pass
-
 
 @app.route('/gameplay/trade/<int:county_id>/', methods=['POST'])
 @login_required
@@ -106,22 +104,20 @@ def trade(county_id):
 
     trade_form = TradeForm()
 
-    # should be able to be moved to form init? And just
-    # accept gold, wood and iron?
-    trade_form.offer_gold.choices = [(0, 0)]
-    trade_form.offer_wood.choices = [(0, 0)]
-    trade_form.offer_iron.choices = [(0, 0)]
-    trade_form.receive_gold.choices = [(0, 0)]
-    trade_form.receive_wood.choices = [(0, 0)]
-    trade_form.receive_iron.choices = [(0, 0)]
+    trade_form.offer_gold.choices = [(i * 10, i * 10) for i in range(county.gold // 10 + 1)]
+    trade_form.offer_wood.choices = [(i * 10, i * 10) for i in range(county.wood // 10 + 1)]
+    trade_form.offer_iron.choices = [(i * 10, i * 10) for i in range(county.iron // 10 + 1)]
+    trade_form.receive_gold.choices = [(i * 10, i * 10) for i in range(51)]
+    trade_form.receive_wood.choices = [(i * 10, i * 10) for i in range(51)]
+    trade_form.receive_iron.choices = [(i * 10, i * 10) for i in range(51)]
+    trade_form.duration.choices = [(i, i) for i in range(3, 25)]
 
     if trade_form.validate_on_submit():
-        trade = Trade(kingdom_id, county_id)
-
-        trade.save()
+        trade_offered = Trade(current_user.county.id, county.id, current_user.county.kingdom.world.day, 12)
+        trade_offered.save()
         return jsonify(dict(
             status='success',
-            message=f'You sent a trade to {county_id}'
+            message=f'You sent a trade to {county_id}. You offered {trade_form.offer_gold.data} for {trade_form.receive_gold.data}.'
         ))
     return jsonify(dict(
         status='fail',
