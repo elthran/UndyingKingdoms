@@ -5,7 +5,7 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.models import County, Kingdom, Message
+from undyingkingdoms.models import County, Kingdom, Message, Notification
 from undyingkingdoms.models.bases import GameState
 from undyingkingdoms.models.forms.message import MessageForm
 from undyingkingdoms.models.forms.trade import TradeForm
@@ -58,17 +58,18 @@ def enemy_overview(template, kingdom_id=0, county_id=0):
 
     # should be able to be moved to form init? And just
     # accept gold, wood and iron?
-    trade_form.offer_gold.choices = [(i*10, i*10) for i in range(county.gold // 10 + 1)]
-    trade_form.offer_wood.choices = [(i*10, i*10) for i in range(county.wood // 10 + 1)]
-    trade_form.offer_iron.choices = [(i*10, i*10) for i in range(county.iron // 10 + 1)]
-    trade_form.receive_gold.choices = [(i*10, i*10) for i in range(51)]
-    trade_form.receive_wood.choices = [(i*10, i*10) for i in range(51)]
-    trade_form.receive_iron.choices = [(i*10, i*10) for i in range(51)]
+    trade_form.offer_gold.choices = [(i * 10, i * 10) for i in range(county.gold // 10 + 1)]
+    trade_form.offer_wood.choices = [(i * 10, i * 10) for i in range(county.wood // 10 + 1)]
+    trade_form.offer_iron.choices = [(i * 10, i * 10) for i in range(county.iron // 10 + 1)]
+    trade_form.receive_gold.choices = [(i * 10, i * 10) for i in range(51)]
+    trade_form.receive_wood.choices = [(i * 10, i * 10) for i in range(51)]
+    trade_form.receive_iron.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.duration.choices = [(i, i) for i in range(3, 25)]
 
     # import pdb;pdb.set_trace()
 
-    return render_template(template, target_kingdom=target_kingdom, target_county=target_county, message_form=message_form, trade_form=trade_form)
+    return render_template(template, target_kingdom=target_kingdom, target_county=target_county,
+                           message_form=message_form, trade_form=trade_form)
 
 
 @app.route('/gameplay/send_message/<int:county_id>/', methods=['POST'])
@@ -98,7 +99,6 @@ def send_message(county_id):
 @login_required
 @in_active_session
 def trade(county_id):
-
     county = current_user.county
     target_county = County.query.get(county_id)
     kingdom_id = county.kingdom_id
@@ -123,10 +123,14 @@ def trade(county_id):
         county.wood -= trade_form.offer_wood.data
         county.iron -= trade_form.offer_iron.data
 
+        trade_notice = Notification(target_county.id, "You were offered a trade",
+                                    "{} has offered you a trade. Visit the diplomacy page.".format(county.name),
+                                    county.kingdom.world.day)
+        trade_notice.save()
+
         return redirect(url_for('diplomacy'))
 
     return jsonify(dict(
         status='fail',
         message="Your trade didn't pass form validation."
     ))
-

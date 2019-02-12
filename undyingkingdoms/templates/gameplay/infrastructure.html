@@ -69,6 +69,8 @@ input {
                                                                   src="/static/images/gold_icon.jpg">{% endif %}
                     {% if building.wood_cost %}{{ building.wood_cost }}<img class="resource_icons"
                                                                   src="/static/images/wood_icon.jpg">{% endif %}
+                    {% if building.stone_cost %}{{ building.stone_cost }}<img class="resource_icons"
+                                                                  src="/static/images/stone_icon.jpg">{% endif %}
                 </td>
                 <td>{{ building.workers_employed * building.total }} ({{ building.workers_employed }} each)</td>
                 <td>{{ building.description }}</td>

@@ -15,5 +15,8 @@ elf_buildings['stables'].class_name, elf_buildings['stables'].class_name_plural 
 elf_buildings['guild'].class_name, elf_buildings['guild'].class_name_plural = 'thieves guild', 'thieves guilds'
 elf_buildings['bank'].class_name, elf_buildings['bank'].class_name_plural = 'exchequer', 'exchequers'
 elf_buildings['lair'].class_name, elf_buildings['lair'].class_name_plural = 'dragon den', 'dragon dens'
+# Goblins:
+elf_buildings['stables'].output += 1
+elf_buildings['stables'].stone_cost += 5
 
 

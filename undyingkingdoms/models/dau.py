@@ -22,6 +22,13 @@ class DAU(GameEvent):
     land = db.Column(db.Integer)
     population = db.Column(db.Integer)
     gold = db.Column(db.Integer)
+    wood = db.Column(db.Integer)
+    iron = db.Column(db.Integer)
+    stone = db.Column(db.Integer)
+    lifetime_gold = db.Column(db.Integer)
+    lifetime_wood = db.Column(db.Integer)
+    lifetime_iron = db.Column(db.Integer)
+    lifetime_stone = db.Column(db.Integer)
     happiness = db.Column(db.Integer)
     nourishment = db.Column(db.Integer)
     health = db.Column(db.Integer)
@@ -61,6 +68,13 @@ class DAU(GameEvent):
         self.land = county.land
         self.population = county.population
         self.gold = county.gold
+        self.wood = county.wood
+        self.iron = county.iron
+        self.stone = county.stone
+        self.lifetime_gold = county.lifetime_gold
+        self.lifetime_wood = county.lifetime_wood
+        self.lifetime_iron = county.lifetime_iron
+        self.lifetime_stone = county.lifetime_stone
         self.happiness = county.happiness
         self.nourishment = county.nourishment
         self.health = county.health

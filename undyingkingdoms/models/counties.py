@@ -49,6 +49,11 @@ class County(GameState):
     _gold = db.Column(db.Integer)
     _wood = db.Column(db.Integer)
     _iron = db.Column(db.Integer)
+    _stone = db.Column(db.Integer)
+    lifetime_gold = db.Column(db.Integer)
+    lifetime_wood = db.Column(db.Integer)
+    lifetime_iron = db.Column(db.Integer)
+    lifetime_stone = db.Column(db.Integer)
     rations = db.Column(db.Float)
     _happiness = db.Column(db.Integer)  # Out of 100
     _nourishment = db.Column(db.Integer)  # Out of 100
@@ -59,7 +64,7 @@ class County(GameState):
 
     expeditions = db.relationship('Expedition', backref='county')
     infiltrations = db.relationship('Infiltration', backref='county')
-    
+
     # Excess Production
     production_choice = db.Column(db.Integer)  # the current setting the user chose
     produce_land = db.Column(db.Integer)  # Progress towards next land
@@ -95,7 +100,12 @@ class County(GameState):
         self.tax = 5
         self._gold = 500
         self._wood = 100
-        self._iron = 25
+        self._iron = 0
+        self._stone = 0
+        self.lifetime_gold = self._gold
+        self.lifetime_wood = self._wood
+        self.lifetime_iron = self._iron
+        self.lifetime_stone = self._stone
         self.rations = 1
         self.grain_stores = 500
         self.weather = "Sunny"
@@ -104,7 +114,7 @@ class County(GameState):
         self.deaths = 0
         self.immigration = 0
         self.emigration = 0
-        
+
         self.production_choice = 0
         self.produce_land = 0
 
@@ -154,6 +164,9 @@ class County(GameState):
 
     @gold.setter
     def gold(self, value):
+        difference = value - self._gold
+        if difference > 0:
+            self.lifetime_gold += difference
         self._gold = max(value, 0)
         self.check_incremental_achievement("gold", self._gold)
 
@@ -163,6 +176,9 @@ class County(GameState):
 
     @wood.setter
     def wood(self, value):
+        difference = value - self._wood
+        if difference > 0:
+            self.lifetime_wood += difference
         self._wood = max(value, 0)
         self.check_incremental_achievement("wood", self._wood)
 
@@ -172,8 +188,23 @@ class County(GameState):
 
     @iron.setter
     def iron(self, value):
+        difference = value - self._iron
+        if difference > 0:
+            self.lifetime_iron += difference
         self._iron = max(value, 0)
         self.check_incremental_achievement("iron", self._iron)
+
+    @property
+    def stone(self):
+        return self._stone
+
+    @stone.setter
+    def stone(self, value):
+        difference = value - self._stone
+        if difference > 0:
+            self.lifetime_stone += difference
+        self._stone = max(value, 0)
+        self.check_incremental_achievement("stone", self._stone)
 
     @property
     def happiness(self):
@@ -262,8 +293,8 @@ class County(GameState):
                 self.wood += trade.wood_to_give
                 self.iron += trade.iron_to_give
                 target_county = County.query.filter_by(id=trade.target_id).first()
-                notification = Notification(self.id, "Your trade offer has expired",
-                                            "Your resources have been return and your trade offer to {} has expired".format(
+                notification = Notification(self.id, "Trade Offer",
+                                            "Your trade offer to {} has expired and your resources have been return".format(
                                                 target_county.name), self.kingdom.world.day)
                 notification.save()
 
@@ -297,6 +328,7 @@ class County(GameState):
         self.gold += self.get_gold_change()
         self.wood += self.get_wood_income()
         self.iron += self.get_iron_income()
+        self.stone += self.get_stone_income()
         self.happiness += self.get_happiness_change()
         self.health += self.get_health_change()
 
@@ -394,7 +426,8 @@ class County(GameState):
             amount = min(randint(3, 7), self.nourishment)
             notification = Notification(self.id,
                                         "Sickness",
-                                        "A disease has spread throughout your lands, lowering your county's health by {}.".format(amount), self.kingdom.world.day)
+                                        "A disease has spread throughout your lands, lowering your county's health by {}.".format(
+                                            amount), self.kingdom.world.day)
             self.nourishment -= amount
 
         if notification:
@@ -440,7 +473,8 @@ class County(GameState):
             return 0
 
     def get_food_to_be_eaten(self):
-        modifier = 1 + food_consumed_modifier.get(self.race, ("", 0))[1] + food_consumed_modifier.get(self.background, ("", 0))[1]
+        modifier = 1 + food_consumed_modifier.get(self.race, ("", 0))[1] + \
+                   food_consumed_modifier.get(self.background, ("", 0))[1]
         return int((self.population - self.get_unavailable_army_size()) * self.rations * modifier)
 
     def grain_storage_change(self):
@@ -483,12 +517,14 @@ class County(GameState):
         return max(self.population - self.get_employed_workers() - self.get_army_size(), 0)
 
     def get_death_rate(self):
-        modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + death_rate_modifier.get(self.background, ("", 0))[1]
+        modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + \
+                   death_rate_modifier.get(self.background, ("", 0))[1]
         death_rate = (uniform(1.7, 2.1) / self.health) * modifier
         return int(death_rate * self.population)
 
     def get_birth_rate(self):
-        modifier = 1 + birth_rate_modifier.get(self.race, ("", 0))[1] + birth_rate_modifier.get(self.background, ("", 0))[1]
+        modifier = 1 + birth_rate_modifier.get(self.race, ("", 0))[1] + \
+                   birth_rate_modifier.get(self.background, ("", 0))[1]
         birth_rate = self.buildings['house'].total * self.buildings['house'].output * modifier
         return int(birth_rate * uniform(0.9995, 1.0005))
 
@@ -539,6 +575,9 @@ class County(GameState):
     def get_iron_income(self):
         return self.buildings['mine'].total * self.buildings['mine'].output
 
+    def get_stone_income(self):
+        return self.buildings['quarry'].total * self.buildings['quarry'].output
+
     # Building
     def get_production_modifier(self):  # Modifiers your excess production
         return 1 + production_per_worker_modifier.get(self.race, ("", 0))[1] \
@@ -549,7 +588,7 @@ class County(GameState):
         Returns the amount of excess production you get each turn
         """
         return max(int(self.get_production_modifier() * self.get_available_workers()), 0)
-    
+
     def get_excess_production_value(self, value=-1):
         """
         Users the excess production towards completing a task
@@ -566,7 +605,7 @@ class County(GameState):
             return self.get_excess_production() // 7
         if excess_worker_choice == 3:  # Happiness
             return 1
-        
+
     def apply_excess_production_value(self):
         if self.production_choice == 0:
             self.gold += self.get_excess_production_value()
@@ -797,7 +836,8 @@ class County(GameState):
         buffer_time = datetime.utcnow() - timedelta(hours=12)
         operations_on_target = Infiltration.query.filter_by(target_id=self.id).filter_by(success=True).filter(
             Infiltration.time_created > buffer_time).count()
-        reduction = 10 + (self.get_number_of_available_thieves() * 3500 / self.land) ** 0.7 + (10 * operations_on_target)
+        reduction = 10 + (self.get_number_of_available_thieves() * 3500 / self.land) ** 0.7 + (
+                    10 * operations_on_target)
         return max(int(100 - reduction), 10)
 
     # Terminology
