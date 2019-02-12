@@ -99,7 +99,8 @@ def send_message(county_id):
 @in_active_session
 def trade(county_id):
 
-    county = County.query.get(county_id)
+    county = current_user.county
+    target_county = County.query.get(county_id)
     kingdom_id = county.kingdom_id
 
     trade_form = TradeForm()
@@ -113,12 +114,17 @@ def trade(county_id):
     trade_form.duration.choices = [(i, i) for i in range(3, 25)]
 
     if trade_form.validate_on_submit():
-        trade_offered = Trade(current_user.county.id, county.id, current_user.county.kingdom.world.day, 12)
+        trade_offered = Trade(county.id, target_county.id, current_user.county.kingdom.world.day, 12,
+                              trade_form.offer_gold.data, trade_form.offer_wood.data, trade_form.offer_iron.data,
+                              trade_form.receive_gold.data, trade_form.receive_wood.data, trade_form.receive_iron.data)
         trade_offered.save()
-        return jsonify(dict(
-            status='success',
-            message=f'You sent a trade to {county_id}. You offered {trade_form.offer_gold.data} for {trade_form.receive_gold.data}.'
-        ))
+
+        county.gold -= trade_form.offer_gold.data
+        county.wood -= trade_form.offer_wood.data
+        county.iron -= trade_form.offer_iron.data
+
+        return redirect(url_for('diplomacy'))
+
     return jsonify(dict(
         status='fail',
         message="Your trade didn't pass form validation."

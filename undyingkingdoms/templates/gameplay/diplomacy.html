@@ -1,0 +1,30 @@
+{% extends "gameplay/layout.html" %}
+
+{% block title %}Economy: {{ super() }}{% endblock %}
+
+{% block content2 %}
+
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+
+<br>
+<h1>Trades We Offered</h1>
+{% for trade in trades_offered %}
+    <br>
+    We offered a trade to county id: {{ trade.target_id }}.
+    We offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, and {{ trade.iron_to_give }} iron
+    in exchange for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, and {{ trade.iron_to_receive }} iron
+{% else %}
+    We currently have not offered any county a trade.
+{% endfor %}
+<br><br>
+<h1>Trades Offered To Us</h1>
+{% for trade in trades_received %}
+    <br>
+    We were offered a trade by county id: {{ trade.county_id }}
+{% else %}
+    We currently have no offers by any county to trade.
+{% endfor %}
+
+{% endblock %}
