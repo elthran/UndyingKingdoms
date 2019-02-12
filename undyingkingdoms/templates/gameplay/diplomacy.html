@@ -26,9 +26,46 @@
     We were offered a trade by county id: {{ trade.target_id }}.
     We were offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, and {{ trade.iron_to_give }} iron
     in exchange for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, and {{ trade.iron_to_receive }} iron.
-    The trade expires in {{ trade.duration }} days if we do not reply. <button>Accept</button><button>Reject</button>
+    The trade expires in {{ trade.duration }} days if we do not reply. <button class="accept" value="{{ url_for('diplomacy_reply', trade_id=trade.target_id) }}">Accept</button><button class="reject" value="{{ url_for('diplomacy_reply', trade_id=trade.target_id) }}">Reject</button>
 {% else %}
     We currently have no offers by any county to trade.
 {% endfor %}
 
 {% endblock %}
+
+{% block script %}
+{{ super() }}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+// attached to every "accept" class object.
+// This object must have a "value" attribute
+// that contains the url to send to.
+$(".accept").click(function () {
+    $.get(
+        $(this).val() + "?accept=1",
+        function (response, status) {
+            if (status === "success") {
+                console.log(response);
+            } else {
+                console.log(response);
+            }
+    }, "json");
+});
+
+// attached to every "reject" class object.
+// This object must have a "value" attribute
+// that contains the url to send to.
+$(".reject").click(function () {
+    $.get(
+        $(this).val() + "?reject=1",
+        function (response, status) {
+            if (status === "success") {
+                console.log(response);
+            } else {
+                console.log(response);
+            }
+    }, "json");
+});
+</script>
+{% endblock %}
+
