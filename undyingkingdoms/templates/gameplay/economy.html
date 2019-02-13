@@ -198,7 +198,7 @@ th {
       </td>
       <td>
         <ul>
-          <li>To be Eaten: {{ county.get_food_to_be_eaten() }}</li>
+          <li>To be Eaten: v{ foodEaten }</li>
         </ul>
       </td>
       <td>Excess dairy can not be stored in your granaries. If you do not have enough food, your populace will
@@ -285,12 +285,8 @@ th {
     <tr>
       <td>Nourishment</td>
       <td>{{ county.nourishment }}%</td>
-      {% if county.get_nourishment_change() >= 0 %}
-      <td style="color:green;">+
-        {% else %}
-      <td style="color:red;">
-        {% endif %}
-        {{ county.get_nourishment_change() }}
+      <td>
+        <status-number :number="nourishmentChange"></status-number>
       </td>
       <td>-</td>
       <td>-</td>
@@ -341,6 +337,8 @@ var GOLD_CHANGE = {{ county.get_gold_change() }};
 var HAPPINESS_CHANGE = {{ county.get_happiness_change() }};
 var GRAIN_STORAGE_CHANGE = {{ county.grain_storage_change() }};
 var RATIONS = {{ county.rations }};
+var FOOD_EATEN = {{ county.get_food_to_be_eaten() }};
+var NOURISHMENT_CHANGE = {{ county.get_nourishment_change() }};
 // end of Jinja code. Please keep it inside here.
 
 function sendForm (form, callback) {
@@ -369,7 +367,7 @@ Vue.component('status-number', {
   props: ['number', 'value'],
   template: `
     <span :style="{ color: number < 0 ?'red':'green' }">
-      v{ (number <= 0 ? "  ":"+ ") + number }
+      v{ (number <= 0 ? "&#160;":"+ ") + number }
     </span>
   `
 });
@@ -398,14 +396,17 @@ var app = new Vue({
     selectedTaxRate: TAX,
     happinessChange: HAPPINESS_CHANGE,
     grainStorageChange: GRAIN_STORAGE_CHANGE,
-    selectedRations: RATIONS
+    selectedRations: RATIONS,
+    foodEaten: FOOD_EATEN,
+    nourishmentChange: NOURISHMENT_CHANGE
   },
   methods: {
     updatePage: function (data) {
-      console.log(data);
       this.goldChange = data.goldChange;
       this.happinessChange = data.happinessChange;
       this.grainStorageChange = data.grainStorageChange;
+      this.foodEaten = data.foodEaten;
+      this.nourishmentChange = data.nourishmentChange;
     }
   },
   watch: {

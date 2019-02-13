@@ -58,7 +58,9 @@ def update_economy():
             happiness_modifier=happiness_modifier,
             goldChange=county.get_gold_change(),
             happinessChange=county.get_happiness_change(),
-            grainStorageChange=county.grain_storage_change()
+            grainStorageChange=county.grain_storage_change(),
+            foodEaten=county.get_food_to_be_eaten(),
+            nourishmentChange=county.get_nourishment_change()
         ))
     return jsonify(dict(
         status="fail",
