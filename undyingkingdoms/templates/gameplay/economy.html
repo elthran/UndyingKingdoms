@@ -101,15 +101,12 @@ th {
       <td>Gold</td>
       <td>{{ county.gold }}</td>
       <td>
-        <status-number :number=goldChange></status-number>
+        <status-number :number="goldChange"></status-number>
         <img class="resource_icons" src="/static/images/gold_icon.jpg">
       </td>
       <td>
         <ul>
-          <li>
-            <tax-select v-model="selectedTaxRate" :size={{ 10 }}></tax-select>
-          </li>
-          <li>Tax Rate: {{ form.tax }}%</li>
+          <li>Tax Rate: <tax-select v-model="selectedTaxRate" :options="{{ form.tax.choices }}"></tax-select>%</li>
           {% if income_modifier.get(county.race)[1] %}
           <li>
             <div class="tooltip">{{ income_modifier.get(county.race)[0] }}: {{
@@ -318,14 +315,19 @@ th {
       </td>
     </tr>
   </table>
+  <div class="invisible">
+    <input id="goldChange">{{ county.get_gold_change() }}</span>
+  </div>
 </form>
 {% endblock %}
 
 {% block script %}
 {{ super() }}
+{% set county = current_user.county %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.2/dist/vue.min.js"></script><script>
-var economyForm = $("#economy-form");
+var TAX = {{ county.tax }};
+var GOLD_CHANGE = {{ county.get_gold_change() }};
 
 function sendForm (form, callback) {
     $.ajax({
@@ -346,53 +348,60 @@ function sendForm (form, callback) {
     });
 }
 
-function updatePage (data) {
-    console.log(data);
-}
-
-// attach post method to both form elements.
-$("#tax").change(function () {
-    sendForm(economyForm, updatePage);
-});
-
-$("#rations").change(function () {
-    sendForm(economyForm, updatePage);
-});
-
 // Configure all vue instances.
 Vue.options.delimiters = ['v{', '}'];
 
 Vue.component('status-number', {
-  props: ['number'],
-  template: '<span :style="{ color: number<0?\'red\':\'green\' }">v{ (number<=0?"":"+") + number }</span>'
-})
+  props: ['number', 'value'],
+  template: `
+    <span :style="{ color: number<0?'red':'green' }">
+      v{ (number<=0?"":"+") + number }
+    </span>
+  `
+});
 
 Vue.component('tax-select', {
-  props: ['size', 'value'],
+  props: ['options', 'value'],
   template: `
     <select id="tax" name="tax" 
       v-bind:value="value"
       v-on:input="$emit('input', $event.target.value)"
     >
-      <option v-for="index in size" :key="index" :value="index">
-      v{ index }
+      <option v-for="text, value in options" :value="value">
+      v{ text }
       </option>
     </select>
   `
-})
+});
 
+// // attach post method to both form elements.
+// $("#tax").change(function () {
+//     sendForm(economyForm, updatePage);
+// });
+
+// $("#rations").change(function () {
+//     sendForm(economyForm, updatePage);
+// });
+
+// I'm being evil and using Jinja inside my Vue ...
 var app = new Vue({
   el: '#economy-form',
   data: {
-    goldChange: 5,
-    selectedTaxRate: 3
+    goldChange: GOLD_CHANGE,
+    selectedTaxRate: TAX
     // statusColor: 'green'
   },
-  watch: {
-    selectedTaxRate: function (val, oldVal) {
-      console.log(val, oldVal)
+  methods: {
+    updatePage: function (data) {
+      console.log(data);
+      this.goldChange = data.goldChange;
     }
   },
-})
+  watch: {
+    selectedTaxRate: function () {
+      sendForm( $("#economy-form"), this.updatePage)
+    }
+  }
+});
 </script>
 {% endblock %}

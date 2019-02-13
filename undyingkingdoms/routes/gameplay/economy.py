@@ -54,7 +54,7 @@ def update_economy():
             income_modifier=income_modifier,
             food_consumed_modifier=food_consumed_modifier,
             happiness_modifier=happiness_modifier,
-            gold_change=county.get_gold_change()
+            goldChange=county.get_gold_change()
         ))
     return jsonify(dict(
         status="fail",
