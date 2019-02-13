@@ -18,7 +18,7 @@ input {
 }
 
 #costCol {
-    min-width: 9.07em;
+    min-width: 8.5em;
 }
 
 .slide-container {
@@ -63,9 +63,40 @@ input {
     background: grey;
 }
 
- .slider-disabled::-webkit-slider-thumb {
+.slider-disabled::-webkit-slider-thumb {
     background: grey;
- }
+}
+
+table {
+    margin-top: 1em;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2;}
+
+th, td {
+    vertical-align: bottom;
+    border: 1px solid #ddd;
+    padding: 0 0.3em 0.3em;
+}
+
+th {
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.total-row {
+    font-weight: bold;
+    height: 2.6em;
+}
+
+.tooltip .tooltipText {
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 120%;
+    left: 50%;
+    margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
 </style>
 {% endblock %}
 
@@ -73,17 +104,13 @@ input {
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
-<!--min(each cost)-->
-{% macro max_trainable_by_cost(army) %}
-{{ ([county.gold // army.gold, county.wood // army.wood, county.iron // army.iron] | sort)[0] }}
-{% endmacro %}
 <div id="content">
   <h2>Current Attack Power Available: {{ county.get_offensive_strength(county=county) }}</h2>
   <h2>Current Defensive Power: {{ county.get_defensive_strength() }}</h2>
   <h2>{{ county.get_available_workers() }} workers available for training</h2>
   <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
-    <table class="production_table">
+    <table>
       <tr>
         <th>Name</th>
         <th>Available</th>
@@ -109,7 +136,7 @@ input {
       {% for army in county.armies.values() %}
         <!-- {{ [county.gold // army.gold, county.wood // army.wood, county.iron // army.iron] }} -->
         <!--(list | sort)[0] replicates min()-->
-        {% set slider_size = max_trainable_by_cost(army) | int %}
+        {% set slider_size = max_trainable_by_cost(county, army) %}
       <tr>
         <td>{{ army.class_name.title() }}</td>
         <td>{{ army.available }}</td>
@@ -117,15 +144,15 @@ input {
         <td>{{ army.currently_training }}</td>
         <td>
           {% if army.base_name == 'monster' %}
-            {% if county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training <= 0 %}
+            {% if monsters_buildable(county) <= 0 %}
               <div class="slide-container">
-                <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total }}" step="1" hidden/>
+                <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1" hidden/>
               </div>
               <span class="display" hidden>0</span>
-              <span style="color:red;">Requires {{ county.buildings['lair'].class_name_plural.title() }}</span>
+              <span style="color:red;">Requires more<br>{{ county.buildings['lair'].class_name_plural.title() }}</span>
             {% else %}
               <div class="slide-container">
-                <input class="slider" type="range" value="0" min="0" max="{{ county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training }}"
+                <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}"
                      step="1"/>
               </div>
               <span class="display">0</span>
@@ -140,16 +167,13 @@ input {
         </td>
         <td>
           {% if army.gold %}
-            <span class="buildingGoldCost">{{ army.gold }}</span>
-            <img class="resource_icons" src="/static/images/gold_icon.jpg">
+            <span class="buildingGoldCost">{{ army.gold }}</span><img class="resource_icons" src="/static/images/gold_icon.jpg">
           {% endif %}
           {% if army.wood %}
-            <span class="buildingWoodCost">{{ army.wood }}</span>
-            <img class="resource_icons" src="/static/images/wood_icon.jpg">
+            <span class="buildingWoodCost">{{ army.wood }}</span><img class="resource_icons" src="/static/images/wood_icon.jpg">
           {% endif %}
           {% if army.iron %}
-            <span class="buildingIronCost">{{ army.iron }}</span>
-            <img class="resource_icons" src="/static/images/iron_icon.jpg">
+            <span class="buildingIronCost">{{ army.iron }}</span><img class="resource_icons" src="/static/images/iron_icon.jpg">
           {% endif %}
           {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
         </td>
@@ -161,7 +185,7 @@ input {
         <td>{{ army.description }}</td>
       </tr>
       {% endfor %}
-      <tr style="font-weight:bold;">
+      <tr class="total-row">
         <td>Total</td>
         <td>{{ county.get_available_army_size() }}</td>
         <td>{{ county.get_unavailable_army_size() }}</td>
