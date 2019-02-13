@@ -12,5 +12,6 @@ undyingkingdoms/routes/gameplay/testing_page.py
 .ipynb_checkpoints
 /npm-debug.log
 /undyingkingdoms/static/dist/
+/undyingkingdoms/static/js/vue.js
 /frontend/
 /System Volume Information/
