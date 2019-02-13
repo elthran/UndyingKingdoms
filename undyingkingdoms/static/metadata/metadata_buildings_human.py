@@ -19,3 +19,5 @@ human_buildings['lair'].class_name, human_buildings['lair'].class_name_plural = 
 human_buildings['bank'].output += 2
 human_buildings['bank'].stone_cost += 5
 
+human_buildings['mill'].output += 1
+

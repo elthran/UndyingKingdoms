@@ -15,7 +15,9 @@ dwarf_buildings['guild'].class_name, dwarf_buildings['guild'].class_name_plural 
 dwarf_buildings['bank'].class_name, dwarf_buildings['bank'].class_name_plural = 'vault', 'vaults'
 dwarf_buildings['lair'].class_name, dwarf_buildings['lair'].class_name_plural = 'manticore lair', 'manticore lairs'
 # Dwarves:
-dwarf_buildings['fort'].output += 1
+dwarf_buildings['fort'].output += 2
 dwarf_buildings['fort'].stone_cost += 5
+
+dwarf_buildings['mine'].output += 1
 
 
