@@ -7,7 +7,7 @@ class Trade(GameEvent):
     target_id = db.Column(db.Integer)
     world_day = db.Column(db.Integer)
     duration = db.Column(db.Integer)
-    accepted = db.Column(db.Boolean)
+    status = db.Column(db.String(16))
 
     gold_to_give = db.Column(db.Integer)
     wood_to_give = db.Column(db.Integer)
@@ -26,7 +26,7 @@ class Trade(GameEvent):
         self.target_id = target_id
         self.world_day = world_day
         self.duration = duration
-        self.accepted = False
+        self.status = "Pending"
 
         self.gold_to_give = gold_to_give
         self.wood_to_give = wood_to_give
