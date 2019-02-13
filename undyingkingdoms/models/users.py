@@ -97,7 +97,7 @@ class User(GameState):
         else:  # Logging out
             session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
             if session:
-                session.time_logged_out = datetime.utcnow()
+                session.time_logged_out = self.time_modified
                 session.set_minutes()
 
     @property
