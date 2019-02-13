@@ -15,8 +15,10 @@ from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_
 @in_active_session
 def economy(template):
     form = EconomyForm(tax=current_user.county.tax, rations=current_user.county.rations)
+
     form.tax.choices = [(i, i) for i in range(11)]
     form.rations.choices = [(pairing[0], pairing[1]) for pairing in rations_terminology]
+
     return render_template(
         template, form=form,
         birth_rate_modifier=birth_rate_modifier,
@@ -55,7 +57,8 @@ def update_economy():
             food_consumed_modifier=food_consumed_modifier,
             happiness_modifier=happiness_modifier,
             goldChange=county.get_gold_change(),
-            happinessChange=county.get_happiness_change()
+            happinessChange=county.get_happiness_change(),
+            grainStorageChange=county.grain_storage_change()
         ))
     return jsonify(dict(
         status="fail",

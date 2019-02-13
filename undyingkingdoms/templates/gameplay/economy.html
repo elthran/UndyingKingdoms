@@ -117,8 +117,8 @@ th {
           <li>Tax Rate:
             <select-generator
               v-model="selectedTaxRate" 
-              :options="{{ form.tax.choices }}"
-              id-name="tax"
+              :options="{{ form.tax.choices | vuesafe }}"
+              id-name="{{ form.tax.id }}"
             ></select-generator>%
           </li>
           {% if income_modifier.get(county.race)[1] %}
@@ -161,17 +161,19 @@ th {
     <tr>
       <td>Food</td>
       <td>{{ county.grain_stores }}</td>
-      {% if county.grain_storage_change() > 0 %}
-      <td style="color:green;">+
-        {% else %}
-      <td style="color:red;">
-        {% endif %}
-        {{ county.grain_storage_change()|int }} <img class="resource_icons"
-                                                     src="/static/images/grain_icon.jpg">
+      <td>
+        <status-number :number="grainStorageChange"></status-number>
+        <img class="resource_icons" src="/static/images/grain_icon.jpg">
       </td>
       <td>
         <ul>
-          <li>Rations: {{ form.rations }}</li>
+          <li>Rations:
+            <select-generator
+              v-model="selectedRations"
+              :options="{{ form.rations.choices | vuesafe }}"
+              id-name="{{ form.rations.id }}"
+            ></select-generator>
+          </li>
           {% if food_consumed_modifier.get(county.race)[1] %}
           <li>
             <div class="tooltip">{{ food_consumed_modifier.get(county.race)[0] }}: {{
@@ -273,7 +275,7 @@ th {
             <img class="resource_icons" src="/static/images/heart_icon.jpg">
           </li>
           {% endif %}
-          <li>Taxes: -{{ county.tax }} <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>
+          <li>Taxes: v{ -selectedTaxRate } <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>
         </ul>
       </td>
       <td>Happiness affects emigration rate and how productive your workers are. If they become too unhappy,
@@ -322,9 +324,9 @@ th {
       </td>
     </tr>
   </table>
-  <div class="invisible">
-    <input id="goldChange">{{ county.get_gold_change() }}</span>
-  </div>
+  <!-- <div class="invisible">
+    <span id="goldChange">{{ county.get_gold_change() }}</span>
+  </div> -->
 </form>
 {% endblock %}
 
@@ -336,7 +338,10 @@ th {
 // ugly Jinja hacked in variables.
 var TAX = {{ county.tax }};
 var GOLD_CHANGE = {{ county.get_gold_change() }};
-var HAPPINESS_CHANGE = {{ county.get_happiness_change() }}
+var HAPPINESS_CHANGE = {{ county.get_happiness_change() }};
+var GRAIN_STORAGE_CHANGE = {{ county.grain_storage_change() }};
+var RATIONS = {{ county.rations }};
+// end of Jinja code. Please keep it inside here.
 
 function sendForm (form, callback) {
     $.ajax({
@@ -364,7 +369,7 @@ Vue.component('status-number', {
   props: ['number', 'value'],
   template: `
     <span :style="{ color: number < 0 ?'red':'green' }">
-      v{ (number <= 0 ? "":"+") + number }
+      v{ (number <= 0 ? "  ":"+ ") + number }
     </span>
   `
 });
@@ -378,40 +383,37 @@ Vue.component('select-generator', {
       :value="value"
       @input="$emit('input', $event.target.value)"
     >
-      <option v-for="text, value in options" :value="value">
-      v{ text }
+      <option v-for="option in options" :value="option[0]">
+      v{ option[1] }
       </option>
     </select>
   `
 });
 
-// // attach post method to both form elements.
-// $("#tax").change(function () {
-//     sendForm(economyForm, updatePage);
-// });
-
-// $("#rations").change(function () {
-//     sendForm(economyForm, updatePage);
-// });
-
-// I'm being evil and using Jinja inside my Vue ...
+// The constants are defined at the beginning and use evil Jinja in JS.
 var app = new Vue({
   el: '#economy-form',
   data: {
     goldChange: GOLD_CHANGE,
     selectedTaxRate: TAX,
-    happinessChange: HAPPINESS_CHANGE
+    happinessChange: HAPPINESS_CHANGE,
+    grainStorageChange: GRAIN_STORAGE_CHANGE,
+    selectedRations: RATIONS
   },
   methods: {
     updatePage: function (data) {
       console.log(data);
       this.goldChange = data.goldChange;
       this.happinessChange = data.happinessChange;
+      this.grainStorageChange = data.grainStorageChange;
     }
   },
   watch: {
     selectedTaxRate: function () {
-      sendForm($("#economy-form"), this.updatePage)
+      sendForm($("#economy-form"), this.updatePage);
+    },
+    selectedRations: function () {
+      sendForm($("#economy-form"), this.updatePage);
     }
   }
 });
