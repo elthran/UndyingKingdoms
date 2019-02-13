@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, jsonify
+from flask import render_template, redirect, url_for, jsonify, request
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
@@ -49,6 +49,11 @@ def update_economy():
     if form.validate_on_submit():
         county.tax = form.tax.data
         county.rations = form.rations.data
+
+        # Because I'm too lazy to update the mobile page right now.
+        if getattr(request, 'MOBILE', None):
+            return redirect(url_for('economy'))
+
         return jsonify(dict(
             status="success",
             message="You have updated your economy data.",
