@@ -5,12 +5,14 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import World, Transaction
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm, ExcessProductionForm
+from undyingkingdoms.routes.helpers import in_active_session
 from undyingkingdoms.static.metadata.metadata import all_buildings, game_descriptions
 
 
 @app.route('/gameplay/infrastructure/', methods=['GET', 'POST'])
 @mobile_template('{mobile/}gameplay/infrastructure.html')
 @login_required
+@in_active_session
 def infrastructure(template):
     if not current_user.in_active_session:
         current_user.in_active_session = True

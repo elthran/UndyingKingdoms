@@ -9,6 +9,7 @@ from sqlalchemy import desc
 from undyingkingdoms import app
 from undyingkingdoms.models import Infiltration, County, Notification
 from undyingkingdoms.models.forms.infiltrate import InfiltrateForm
+from undyingkingdoms.routes.helpers import in_active_session
 from undyingkingdoms.static.metadata.metadata import infiltration_missions, infiltration_success_modifier, \
     amount_of_thieves_modifier
 
@@ -16,6 +17,7 @@ from undyingkingdoms.static.metadata.metadata import infiltration_missions, infi
 @app.route('/gameplay/infiltrate/<int:county_id>', methods=['GET', 'POST'])
 @mobile_template('{mobile/}gameplay/infiltrate.html')
 @login_required
+@in_active_session
 def infiltrate(template, county_id):
     if not current_user.in_active_session:
         current_user.in_active_session = True

@@ -5,15 +5,15 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import Transaction, World
 from undyingkingdoms.models.forms.military import MilitaryForm
+from undyingkingdoms.routes.helpers import in_active_session
 from undyingkingdoms.static.metadata.metadata import all_armies, game_descriptions
 
 
 @app.route('/gameplay/military/', methods=['GET', 'POST'])
 @mobile_template('{mobile/}gameplay/military.html')
 @login_required
+@in_active_session
 def military(template):
-    if not current_user.in_active_session:
-        current_user.in_active_session = True
     county = current_user.county
     world = World.query.filter_by(id=county.kingdom.world_id).first()
     form = MilitaryForm()
