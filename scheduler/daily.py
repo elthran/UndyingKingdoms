@@ -9,7 +9,7 @@ if path not in sys.path:
 
 from scheduler import private_bearer_token
 
-route = "https://undyingkingdoms.pythonanywhere.com/game_clock/advance_24h_analytics"
+route = "https://undyingkingdoms.pythonanywhere.com/game_clock/advance_analytics"
 
 r = requests.get(
     route,
