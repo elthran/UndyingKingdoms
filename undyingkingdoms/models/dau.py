@@ -48,6 +48,8 @@ class DAU(GameEvent):
     stables = db.Column(db.Integer)
     guild = db.Column(db.Integer)
     bank = db.Column(db.Integer)
+    quarry = db.Column(db.Integer)
+    lair = db.Column(db.Integer)
 
     def __init__(self, user_id, county_age, world_age):
         self.user_id = user_id
@@ -94,6 +96,7 @@ class DAU(GameEvent):
         self.stables = county.buildings['stables'].total
         self.guild = county.buildings['guild'].total
         self.bank = county.buildings['bank'].total
+        self.quarry = county.buildings['quarry'].total
         self.lair = county.buildings['lair'].total
 
     @staticmethod

@@ -612,7 +612,7 @@ class County(GameState):
         if self.production_choice == 1:
             self.produce_land += self.get_excess_production_value()
             # Every 1000 production towards land gives you one acre
-            if self.produce_land > 2000:
+            if self.produce_land >= 2000:
                 self.produce_land -= 2000
                 self.land += 1
         if self.production_choice == 2:
