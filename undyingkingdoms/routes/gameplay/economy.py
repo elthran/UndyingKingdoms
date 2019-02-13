@@ -17,30 +17,44 @@ def economy(template):
     form = EconomyForm(tax=current_user.county.tax, rations=current_user.county.rations)
     form.tax.choices = [(i, i) for i in range(11)]
     form.rations.choices = [(pairing[0], pairing[1]) for pairing in rations_terminology]
-    return render_template(template, form=form,
-                           birth_rate_modifier=birth_rate_modifier,
-                           income_modifier=income_modifier,
-                           food_consumed_modifier=food_consumed_modifier,
-                           happiness_modifier=happiness_modifier)
+    return render_template(
+        template, form=form,
+        birth_rate_modifier=birth_rate_modifier,
+        income_modifier=income_modifier,
+        food_consumed_modifier=food_consumed_modifier,
+        happiness_modifier=happiness_modifier)
 
 
 @app.route('/gameplay/economy/update', methods=['POST'])
 @login_required
 @in_active_session
 def update_economy():
-    form = EconomyForm(tax=current_user.county.tax, rations=current_user.county.rations)
+    """Update the economy page with new data.
+
+    taxes affects: gold and happiness rows in 2 places each.
+    rations affects: food and nourishment.
+        food in 2 places, nourishment in 1.
+    """
+    county = current_user.county
+
+    form = EconomyForm(tax=county.tax, rations=county.rations)
     form.tax.choices = [(i, i) for i in range(11)]
-    form.rations.choices = [(pairing[0], pairing[1]) for pairing in rations_terminology]
+    form.rations.choices = [
+        (pairing[0], pairing[1])
+        for pairing in rations_terminology
+    ]
+
     if form.validate_on_submit():
-        current_user.county.tax = form.tax.data
-        current_user.county.rations = form.rations.data
+        county.tax = form.tax.data
+        county.rations = form.rations.data
         return jsonify(dict(
             status="success",
             message="You have updated your economy data.",
             birth_rate_modifier=birth_rate_modifier,
             income_modifier=income_modifier,
             food_consumed_modifier=food_consumed_modifier,
-            happiness_modifier=happiness_modifier
+            happiness_modifier=happiness_modifier,
+            gold_change=county.get_gold_change()
         ))
     return jsonify(dict(
         status="fail",

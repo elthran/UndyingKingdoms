@@ -100,13 +100,8 @@ th {
     <tr>
       <td>Gold</td>
       <td>{{ county.gold }}</td>
-      {% if county.get_gold_change() >= 0 %}
-      <td style="color:green;">
-        +{{ county.get_gold_change() }}
-        {% else %}
-      <td style="color:red;">
-        {{ county.get_gold_change() }}
-        {% endif %}
+      <td>
+        <status-number :number=goldChange></status-number>
         <img class="resource_icons" src="/static/images/gold_icon.jpg">
       </td>
       <td>
@@ -326,7 +321,7 @@ th {
 {% block script %}
 {{ super() }}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.2/dist/vue.min.js"></script><script>
 var economyForm = $("#economy-form");
 
 function sendForm (form, callback) {
@@ -360,5 +355,31 @@ $("#tax").change(function () {
 $("#rations").change(function () {
     sendForm(economyForm, updatePage);
 });
+
+// Configure all vue instances.
+Vue.options.delimiters = ['v{', '}'];
+
+Vue.component('status-number', {
+  props: ['number'],
+  template: '<span :style="{ color: number<0?\'red\':\'green\' }">v{ (number<=0?"":"+") + number }</span>'
+})
+
+var app = new Vue({
+  el: '#economy-form',
+  data: {
+    goldChange: 5,
+    // statusColor: 'green'
+  }
+  // watch: {
+  //   goldChange: function (val) {
+  //     if (val >= 0) {
+  //       this.statusColor = 'green';
+  //       this.goldSymbol = '+'
+  //     } else {
+  //       this.statusColor = 'red';
+  //     }
+  //   }
+  // },
+})
 </script>
 {% endblock %}
