@@ -106,6 +106,9 @@ th {
       </td>
       <td>
         <ul>
+          <li>
+            <tax-select v-model="selectedTaxRate" :size={{ 10 }}></tax-select>
+          </li>
           <li>Tax Rate: {{ form.tax }}%</li>
           {% if income_modifier.get(county.race)[1] %}
           <li>
@@ -364,22 +367,32 @@ Vue.component('status-number', {
   template: '<span :style="{ color: number<0?\'red\':\'green\' }">v{ (number<=0?"":"+") + number }</span>'
 })
 
+Vue.component('tax-select', {
+  props: ['size', 'value'],
+  template: `
+    <select id="tax" name="tax" 
+      v-bind:value="value"
+      v-on:input="$emit('input', $event.target.value)"
+    >
+      <option v-for="index in size" :key="index" :value="index">
+      v{ index }
+      </option>
+    </select>
+  `
+})
+
 var app = new Vue({
   el: '#economy-form',
   data: {
     goldChange: 5,
+    selectedTaxRate: 3
     // statusColor: 'green'
-  }
-  // watch: {
-  //   goldChange: function (val) {
-  //     if (val >= 0) {
-  //       this.statusColor = 'green';
-  //       this.goldSymbol = '+'
-  //     } else {
-  //       this.statusColor = 'red';
-  //     }
-  //   }
-  // },
+  },
+  watch: {
+    selectedTaxRate: function (val, oldVal) {
+      console.log(val, oldVal)
+    }
+  },
 })
 </script>
 {% endblock %}
