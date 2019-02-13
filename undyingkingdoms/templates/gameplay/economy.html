@@ -35,6 +35,14 @@ th {
     left: 50%;
     margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
 }
+
+.green {
+    color: green;
+}
+
+.red {
+    color: red;
+}
 </style>
 {% endblock %}
 
@@ -106,7 +114,13 @@ th {
       </td>
       <td>
         <ul>
-          <li>Tax Rate: <tax-select v-model="selectedTaxRate" :options="{{ form.tax.choices }}"></tax-select>%</li>
+          <li>Tax Rate:
+            <select-generator
+              v-model="selectedTaxRate" 
+              :options="{{ form.tax.choices }}"
+              id-name="tax"
+            ></select-generator>%
+          </li>
           {% if income_modifier.get(county.race)[1] %}
           <li>
             <div class="tooltip">{{ income_modifier.get(county.race)[0] }}: {{
@@ -125,7 +139,7 @@ th {
       </td>
       <td>
         <ul>
-          <li>Taxes: {{ county.get_tax_income() }}</li>
+          <li>Taxes: v{ goldChange }</li>
           {% if county.buildings['bank'].total > 0 %}
           <li>Banks: {{ county.get_bank_income() }}</li>
           {% endif %}
@@ -139,14 +153,10 @@ th {
           <li>Military Expenses: {{ county.get_upkeep_costs() }}</li>
         </ul>
       </td>
-      {% if county.tax < 7 %}
-      <td style="color:green;">Your current tax rate has a positive
-        {% elif county.tax == 7 %}
-      <td style="color:black;">Your current tax rate has no
-        {% else %}
-      <td style="color:red;">Your current tax rate has a negative
-        {% endif %}effect on happiness
-      </td>
+      <!-- These conditions must not occur together or it will break the table. -->
+      <td v-if="selectedTaxRate < 7" class="green">Your current tax rate has a positive effect on happiness</td>
+      <td v-if="selectedTaxRate == 7">Your current tax rate has no effect on happiness</td>
+      <td v-if="selectedTaxRate > 7" class="red">Your current tax rate has a negative effect on happiness</td>
     </tr>
     <tr>
       <td>Food</td>
@@ -238,12 +248,9 @@ th {
     <tr>
       <td>Happiness</td>
       <td>{{ county.happiness }}%</td>
-      {% if county.get_happiness_change() >= 0 %}
-      <td style="color:green;">+
-        {% else %}
-      <td style="color:red;">
-        {% endif %}
-        {{ county.get_happiness_change() }} <img class="resource_icons" src="/static/images/heart_icon.jpg">
+      <td>
+        <status-number :number="happinessChange"></status-number>
+        <img class="resource_icons" src="/static/images/heart_icon.jpg">
       </td>
       <td>-</td>
       <td>
@@ -326,8 +333,10 @@ th {
 {% set county = current_user.county %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.2/dist/vue.min.js"></script><script>
+// ugly Jinja hacked in variables.
 var TAX = {{ county.tax }};
 var GOLD_CHANGE = {{ county.get_gold_change() }};
+var HAPPINESS_CHANGE = {{ county.get_happiness_change() }}
 
 function sendForm (form, callback) {
     $.ajax({
@@ -354,18 +363,20 @@ Vue.options.delimiters = ['v{', '}'];
 Vue.component('status-number', {
   props: ['number', 'value'],
   template: `
-    <span :style="{ color: number<0?'red':'green' }">
-      v{ (number<=0?"":"+") + number }
+    <span :style="{ color: number < 0 ?'red':'green' }">
+      v{ (number <= 0 ? "":"+") + number }
     </span>
   `
 });
 
-Vue.component('tax-select', {
-  props: ['options', 'value'],
+Vue.component('select-generator', {
+  props: ['options', 'value', 'idName'],
   template: `
-    <select id="tax" name="tax" 
-      v-bind:value="value"
-      v-on:input="$emit('input', $event.target.value)"
+    <select 
+      :id="idName"
+      :name="idName"
+      :value="value"
+      @input="$emit('input', $event.target.value)"
     >
       <option v-for="text, value in options" :value="value">
       v{ text }
@@ -388,18 +399,19 @@ var app = new Vue({
   el: '#economy-form',
   data: {
     goldChange: GOLD_CHANGE,
-    selectedTaxRate: TAX
-    // statusColor: 'green'
+    selectedTaxRate: TAX,
+    happinessChange: HAPPINESS_CHANGE
   },
   methods: {
     updatePage: function (data) {
       console.log(data);
       this.goldChange = data.goldChange;
+      this.happinessChange = data.happinessChange;
     }
   },
   watch: {
     selectedTaxRate: function () {
-      sendForm( $("#economy-form"), this.updatePage)
+      sendForm($("#economy-form"), this.updatePage)
     }
   }
 });

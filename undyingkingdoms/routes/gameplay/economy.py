@@ -31,7 +31,7 @@ def economy(template):
 def update_economy():
     """Update the economy page with new data.
 
-    taxes affects: gold and happiness rows in 2 places each.
+    taxes affects: gold in 3 places and happiness 2 places.
     rations affects: food and nourishment.
         food in 2 places, nourishment in 1.
     """
@@ -54,7 +54,8 @@ def update_economy():
             income_modifier=income_modifier,
             food_consumed_modifier=food_consumed_modifier,
             happiness_modifier=happiness_modifier,
-            goldChange=county.get_gold_change()
+            goldChange=county.get_gold_change(),
+            happinessChange=county.get_happiness_change()
         ))
     return jsonify(dict(
         status="fail",
