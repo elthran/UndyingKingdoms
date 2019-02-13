@@ -20,12 +20,16 @@
 .notice {
     font-weight:bold;
 }
+
+.center-text {
+  text-align: center;
+}
 </style>
 
 <template>
   <div id="layout-body">
     <div id="sidebar">
-      <ul style="text-align:center;">
+      <ul class="center-text">
         <li><a :href="url_for('overview', kingdom_id=0, county_id=0)">County&nbsp;Overview</a></li>
         <li><a :href="url_for('economy')">Economy</a></li>
         <li><a :href="url_for('infrastructure')">Infrastructure</a></li>
@@ -54,6 +58,9 @@
 </template>
 
 <script>
+import axios from 'axios';
+// import _ from 'lodash';
+
 export default {
   name: "SideBar",
   props: {
@@ -70,7 +77,14 @@ is_admin
   },
   methods: {
     url_for: function () {
-      console.log(arguments);
+      axios.post('/api/url_for', arguments
+      )
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
     }
   }
 }
