@@ -2,18 +2,51 @@
 
 {% block title %}Economy: {{ super() }}{% endblock %}
 
-{% block content2 %}
+{% block style %}
+{{ super() }}
+<style>
+table {
+    margin-top: 1em;
+}
 
-{% set user = current_user %}
+tr:nth-child(even) {background-color: #f2f2f2;}
+
+th, td {
+    vertical-align: bottom;
+    border: 1px solid #ddd;
+    padding: 0 0.3em 0.3em;
+}
+
+th {
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.total-row {
+    font-weight: bold;
+    height: 2.6em;
+}
+
+.tooltip .tooltipText {
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 120%;
+    left: 50%;
+    margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+</style>
+{% endblock %}
+
+{% block content2 %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
-
 <br><h1 style="text-align:center;">Economy</h1><br><br>
 
-<form method="POST" accept-charset="UTF-8" role="form">
+<form id="economy-form" action="{{ url_for('update_economy') }}" accept-charset="UTF-8">
   {{ form.csrf_token }}
   <h2>Resources</h2>
-  <table class="production_table">
+  <table>
     <tr>
       <th style="width:50px;">Topic</th>
       <th style="width:50px;">Current</th>
@@ -39,7 +72,7 @@
           {% if birth_rate_modifier.get(county.race)[1] %}
           <li>
             <div class="tooltip">{{ birth_rate_modifier.get(county.race)[0] }}: {{
-              (birth_rate_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Bonus: {{ county.race }}</span>
+              (birth_rate_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>
             </div>
           </li>
           {% endif %}
@@ -82,14 +115,14 @@
           {% if income_modifier.get(county.race)[1] %}
           <li>
             <div class="tooltip">{{ income_modifier.get(county.race)[0] }}: {{
-              (income_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Bonus: {{ county.race }}</span>
+              (income_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>
             </div>
           </li>
           {% endif %}
           {% if income_modifier.get(county.background)[1] %}
           <li>
             <div class="tooltip">{{ income_modifier.get(county.background)[0] }}: {{
-              (income_modifier.get(county.background)[1] * 100)|int }}%<span class="tooltipText">Class Bonus: {{ county.background }}</span>
+              (income_modifier.get(county.background)[1] * 100)|int }}%<span class="tooltipText">Class Modifier: {{ county.background }}</span>
             </div>
           </li>
           {% endif %}
@@ -137,7 +170,7 @@
           {% if food_consumed_modifier.get(county.race)[1] %}
           <li>
             <div class="tooltip">{{ food_consumed_modifier.get(county.race)[0] }}: {{
-              (food_consumed_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Bonus: {{ county.race }}</span>
+              (food_consumed_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>
             </div>
           </li>
           {% endif %}
@@ -233,7 +266,7 @@
           {% if happiness_modifier.get(county.race)[0] %}
           <li>
             <div class="tooltip">{{ happiness_modifier.get(county.race)[0] }}: {{
-              happiness_modifier.get(county.race)[1] }}<span class="tooltipText">Racial Bonus: {{ county.race }}</span>
+              happiness_modifier.get(county.race)[1] }}<span class="tooltipText">Racial Modifier: {{ county.race }}</span>
             </div>
             <img class="resource_icons" src="/static/images/heart_icon.jpg">
           </li>
@@ -287,9 +320,45 @@
       </td>
     </tr>
   </table>
-  <br>
-  <button type="submit">Update</button>
-  <br>
 </form>
+{% endblock %}
 
+{% block script %}
+{{ super() }}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+var economyForm = $("#economy-form");
+
+function sendForm (form, callback) {
+    $.ajax({
+        url: form.attr("action"),
+        method: "POST",
+        // need to verify csrf id, I might be wrong.
+        headers: {"X-CSRF-TOKEN": $("#csrf_token").val()},
+        data: form.serialize(),
+        dataType: "json",  // type of data returned, not type sent.
+    })
+    .always(function (data, status) {
+            if (status === "success") {
+                console.log()
+                callback(data);
+            } else {
+                console.log(data);
+            }
+    });
+}
+
+function updatePage (data) {
+    console.log(data);
+}
+
+// attach post method to both form elements.
+$("#tax").change(function () {
+    sendForm(economyForm, updatePage);
+});
+
+$("#rations").change(function () {
+    sendForm(economyForm, updatePage);
+});
+</script>
 {% endblock %}
