@@ -23,11 +23,11 @@ def diplomacy(template):
 @app.route('/gameplay/diplomacy/<int:trade_id>', methods=['GET'])
 @login_required
 def diplomacy_reply(trade_id):
-    print(request.args)
+    print("Args:", request.args)
 
     trade = Trade.query.get(trade_id)
 
-    print(trade)
+    print("Trade:", trade)
     if "accept" in request.args:
         # Accept the trade.
         # return whatever data you need to client.
