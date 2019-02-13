@@ -1,0 +1,76 @@
+{% extends "mobile/gameplay/layout.html" %}
+
+{% block title %}Infiltration: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 1em;
+}
+
+#header {
+    max-width: 400px;
+    margin: auto auto 1.3em;
+}
+
+#footer {
+    max-width: 400px;
+    margin: auto;
+}
+
+h2 {
+    margin-bottom: 0.3em;
+}
+</style>
+{% endblock %}
+
+{% block content1 %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+<div id="content">
+  <div id="header">
+    <h2>Thieves available: {{ county.get_number_of_available_thieves() }} / {{ county.buildings['guild'].total }}</h2>
+    <p>Chance of enemy successfully infiltrating you: {{ county.get_chance_to_be_successfully_infiltrated() }}%<br>(Note: Each available thief helps defend your county from enemy thieves)</p>
+  </div>
+  <div id="footer">
+    <h2>Active Missions</h2>
+    <ul>
+      {% for mission in missions|sort(attribute='duration') %}
+      {% if mission.duration > 0 %}
+      {% if mission.success %}
+      {% if mission.mission == 'pilfer' %}
+      <li>Your {{ mission.amount_of_thieves }} thieves were able to steal {{ mission.pilfer_amount }} <img class="resource_icons" src="/static/images/gold_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).</li>
+      {% endif %}
+      {% if mission.mission == 'burn crops' %}
+      <li>Your {{ mission.amount_of_thieves }} thieves burned {{ mission.crops_burned }} crops. (Ready for next mission in {{ mission.duration }} days).</li>
+      {% endif %}
+      {% if mission.mission == 'sow distrust' %}
+      <li>Your {{ mission.amount_of_thieves }} thieves caused unrest and lowered enemy happiness by {{ mission.distrust }} <img class="resource_icons" src="/static/images/heart_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).</li>
+      {% endif %}
+      {% if mission.mission == 'scout military' %}
+      <li>Your {{ mission.amount_of_thieves }} thieves have successfully scouted the enemy's military. (Ready for next mission in {{ mission.duration }} days).</li>
+      {% endif %}
+      {% else %}
+      <li>The {{ mission.amount_of_thieves }} thieves you sent were caught. You will have trained new thieves to replace them in {{ mission.duration }} days.</li>
+      {% endif %}
+      {% endif %}
+      {% else %}
+      <li>All of your thieves are currently patrolling your county.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{{ super() }}
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script type="text/javascript">
+
+</script>
+{% endblock %}

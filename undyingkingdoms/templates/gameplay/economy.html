@@ -185,6 +185,24 @@
                 <td>Iron is used to equip powerful soldiers.</td>
             </tr>
             <tr>
+                <td>Stone</td>
+                <td>{{ county.stone }}</td>
+                {% if county.get_stone_income() >= 0 %}
+                <td style="color:green;">+
+                    {% else %}
+                <td style="color:red;">
+                    {% endif %}
+                    {{ county.get_stone_income() }} <img class="resource_icons" src="/static/images/stone_icon.jpg">
+                </td>
+                <td>-</td>
+                <td>
+                    <li>{{ county.buildings['quarry'].class_name_plural.title() }}: + {{ county.get_stone_income() }} <img
+                            class="resource_icons" src="/static/images/stone_icon.jpg"></li>
+                </td>
+                <td>-</td>
+                <td>Stone is used to build your most powerful buildings.</td>
+            </tr>
+            <tr>
                 <td>Happiness</td>
                 <td>{{ county.happiness }}%</td>
                 {% if county.get_happiness_change() >= 0 %}

@@ -52,8 +52,8 @@ def build_buildings():
     build_form = InfrastructureForm()
     build_form.county_id.data = county.id
 
-    if build_form.validate_on_submit():
-        transaction = Transaction(county.id, county.county_days_in_age, world.day, "buy")
+    if request.args.get('id') == 'build' and build_form.validate_on_submit():
+        transaction = Transaction(county.id, county.county_age, world.day, "buy")
         for building in all_buildings:
             if build_form.data[building] > 0:
                 county.gold -= build_form.data[building] * county.buildings[building].gold_cost

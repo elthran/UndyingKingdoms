@@ -25,7 +25,7 @@
     <li>Weather: {{ county.weather.title() }}</li>
 </ul>
 <br>
-{% if county.county_days_in_age < 1 %}
+{% if county.county_age < 1 %}
 <p style="color:red;" id="serverMessageToPlayers"></p>
 {% endif %}
 <h2>News</h2>

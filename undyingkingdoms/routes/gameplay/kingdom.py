@@ -5,14 +5,14 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import Kingdom
 from undyingkingdoms.models.forms.votes import VoteForm
+from undyingkingdoms.routes.helpers import in_active_session
 
 
 @app.route('/gameplay/kingdom/<int:kingdom_id>/', methods=['GET', 'POST'])
 @mobile_template('{mobile/}gameplay/kingdom.html')
 @login_required
+@in_active_session
 def kingdom(template, kingdom_id=0):
-    if not current_user.in_active_session:
-        current_user.in_active_session = True
     kingdom = Kingdom.query.filter_by(id=kingdom_id).first()
     form = VoteForm(vote=current_user.county.vote)
     form.vote.choices = [(county.id, county.name) for county in current_user.county.kingdom.counties]

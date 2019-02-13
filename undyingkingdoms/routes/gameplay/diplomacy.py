@@ -1,0 +1,68 @@
+from flask import render_template, jsonify, request, url_for, redirect
+from flask_login import login_required, current_user
+from flask_mobility.decorators import mobile_template
+
+from undyingkingdoms import app
+from undyingkingdoms.models import County
+from undyingkingdoms.models.trades import Trade
+from undyingkingdoms.routes.helpers import in_active_session
+
+
+@app.route('/gameplay/diplomacy/', methods=['GET'])
+@mobile_template("{mobile/}gameplay/diplomacy.html")
+@login_required
+@in_active_session
+def diplomacy(template):
+    county = current_user.county
+    trades_offered = Trade.query.filter_by(county_id=county.id).filter(Trade.duration > 0).all()
+    trades_received = Trade.query.filter_by(target_id=county.id).filter(Trade.duration > 0).all()
+    return render_template(template, trades_offered=trades_offered, trades_received=trades_received)
+
+
+@app.route('/gameplay/diplomacy/<int:trade_id>', methods=['GET'])
+@login_required
+@in_active_session
+def diplomacy_reply(trade_id):
+    trade = Trade.query.get(trade_id)
+    if "accept" in request.args:
+        county = County.query.filter_by(id=trade.county_id).first()
+        target_county = current_user.county  # This will be the current user
+        if target_county.gold >= trade.gold_to_receive and target_county.wood >= trade.wood_to_receive and target_county.iron >= trade.iron_to_receive and target_county.stone >= trade.stone_to_receive:
+            target_county.gold += trade.gold_to_give
+            target_county.gold -= trade.gold_to_receive
+            county.gold += trade.gold_to_receive
+            target_county.wood += trade.wood_to_give
+            target_county.wood -= trade.wood_to_receive
+            county.wood += trade.wood_to_receive
+            target_county.iron += trade.iron_to_give
+            target_county.iron -= trade.iron_to_receive
+            county.iron += trade.iron_to_receive
+            target_county.stone += trade.stone_to_give
+            target_county.stone -= trade.stone_to_receive
+            county.stone += trade.stone_to_receive
+            trade.status = "Accepted"
+            return jsonify(
+                status='success',
+                message='Trade was accepted.'
+            ), 200
+        else:
+            return jsonify(dict(
+                status="success",
+                message=f"You do not have the resources to accept this trade."
+            ))
+    elif "reject" in request.args:
+        trade.status = "Rejected"
+        return jsonify(dict(
+            status="success",
+            message=f"You rejected a trade from {trade_id}"
+        ))
+    elif "cancel" in request.args:
+        trade.status = "Cancelled"
+        return jsonify(dict(
+            status="success",
+            message=f"You cancelled a trade to {trade_id}"
+        ))
+    return jsonify(dict(
+        status="fail",
+        message="You sent some malformed data."
+    ))
