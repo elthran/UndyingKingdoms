@@ -10,3 +10,6 @@ env/
 undyingkingdoms/routes/gameplay/testing_page.py
 *scratchpad*
 .ipynb_checkpoints
+/npm-debug.log
+/undyingkingdoms/static/dist/
+/frontend/
