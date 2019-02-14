@@ -4,7 +4,6 @@ from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models.forms.economy import EconomyForm
-from undyingkingdoms.routes.helpers import in_active_session
 from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_rate_modifier, income_modifier, \
     food_consumed_modifier, happiness_modifier
 
@@ -12,7 +11,6 @@ from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_
 @app.route('/gameplay/economy/', methods=['GET'])
 @mobile_template('{mobile/}gameplay/economy.html')
 @login_required
-@in_active_session
 def economy(template):
     form = EconomyForm(tax=current_user.county.tax, rations=current_user.county.rations)
 
@@ -29,7 +27,6 @@ def economy(template):
 
 @app.route('/gameplay/economy/update', methods=['POST'])
 @login_required
-@in_active_session
 def update_economy():
     """Update the economy page with new data.
 

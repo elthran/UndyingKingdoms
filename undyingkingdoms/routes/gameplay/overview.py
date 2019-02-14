@@ -10,7 +10,6 @@ from undyingkingdoms.models.bases import GameState
 from undyingkingdoms.models.forms.message import MessageForm
 from undyingkingdoms.models.forms.trade import TradeForm
 from undyingkingdoms.models.trades import Trade
-from undyingkingdoms.routes.helpers import in_active_session
 
 """
 Each of these routes could go in their own file
@@ -34,7 +33,6 @@ than they currently are.
 @app.route('/gameplay/overview', methods=['GET'])
 @mobile_template('{mobile/}gameplay/overview.html')
 @login_required
-@in_active_session
 def overview(template):
     # If game has been reset allow user to make a new county.
     if not current_user.county:
@@ -47,7 +45,6 @@ def overview(template):
 @app.route('/gameplay/enemy_overview/<int:kingdom_id>/<int:county_id>/', methods=['GET'])
 @mobile_template('{mobile/}gameplay/enemy_overview.html')
 @login_required
-@in_active_session
 def enemy_overview(template, kingdom_id=0, county_id=0):
     county = current_user.county
     target_county = County.query.filter_by(id=county_id).first()
@@ -76,7 +73,6 @@ def enemy_overview(template, kingdom_id=0, county_id=0):
 
 @app.route('/gameplay/send_message/<int:county_id>/', methods=['POST'])
 @login_required
-@in_active_session
 def send_message(county_id):
     message_form = MessageForm()
     if message_form.validate_on_submit():
@@ -99,7 +95,6 @@ def send_message(county_id):
 
 @app.route('/gameplay/trade/<int:county_id>/', methods=['POST'])
 @login_required
-@in_active_session
 def trade(county_id):
     county = current_user.county
     target_county = County.query.get(county_id)

@@ -4,13 +4,12 @@ from flask_login import login_required
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms.blueprints.admin.helpers import create_bots, create_notification
-from undyingkingdoms.routes.helpers import in_active_session, admin_required
+from undyingkingdoms.routes.helpers import admin_required
 
 
 class HomeAPI(MethodView):
     @mobile_template('{mobile/}user/admin.html')
     @login_required
-    @in_active_session
     @admin_required
     def get(self, template):
         op_code = request.args.get('tool_id', None)
@@ -24,7 +23,6 @@ class HomeAPI(MethodView):
         return render_template(template)
 
     @login_required
-    @in_active_session
     @admin_required
     def post(self):
         if request.is_json:
