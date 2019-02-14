@@ -1,6 +1,6 @@
 {% extends "mobile/gameplay/layout.html" %}
 
-{% block title %}Infiltration: {{ super() }}{% endblock %}
+{% block title %}Diplomacy: {{ super() }}{% endblock %}
 
 {% block style %}
 {{ super() }}
@@ -12,18 +12,23 @@
     margin: 1em;
 }
 
-#header {
-    max-width: 400px;
+.max-width-32 {
+    max-width: 32em;
     margin: auto auto 1.3em;
 }
 
-#footer {
-    max-width: 400px;
-    margin: auto;
+.flex-col-start {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 h2 {
     margin-bottom: 0.3em;
+}
+
+.center {
+    align-self: center;
 }
 </style>
 {% endblock %}
@@ -33,36 +38,28 @@ h2 {
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 <div id="content">
-  <div id="header">
-    <h2>Thieves available: {{ county.get_number_of_available_thieves() }} / {{ county.buildings['guild'].total }}</h2>
-    <p>Chance of enemy successfully infiltrating you: {{ county.get_chance_to_be_successfully_infiltrated() }}%<br>(Note: Each available thief helps defend your county from enemy thieves)</p>
-  </div>
-  <div id="footer">
-    <h2>Active Missions</h2>
-    <ul>
-      {% for mission in missions|sort(attribute='duration') %}
-      {% if mission.duration > 0 %}
-      {% if mission.success %}
-      {% if mission.mission == 'pilfer' %}
-      <li>Your {{ mission.amount_of_thieves }} thieves were able to steal {{ mission.pilfer_amount }} <img class="resource_icons" src="/static/images/gold_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).</li>
-      {% endif %}
-      {% if mission.mission == 'burn crops' %}
-      <li>Your {{ mission.amount_of_thieves }} thieves burned {{ mission.crops_burned }} crops. (Ready for next mission in {{ mission.duration }} days).</li>
-      {% endif %}
-      {% if mission.mission == 'sow distrust' %}
-      <li>Your {{ mission.amount_of_thieves }} thieves caused unrest and lowered enemy happiness by {{ mission.distrust }} <img class="resource_icons" src="/static/images/heart_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).</li>
-      {% endif %}
-      {% if mission.mission == 'scout military' %}
-      <li>Your {{ mission.amount_of_thieves }} thieves have successfully scouted the enemy's military. (Ready for next mission in {{ mission.duration }} days).</li>
-      {% endif %}
-      {% else %}
-      <li>The {{ mission.amount_of_thieves }} thieves you sent were caught. You will have trained new thieves to replace them in {{ mission.duration }} days.</li>
-      {% endif %}
-      {% endif %}
-      {% else %}
-      <li>All of your thieves are currently patrolling your county.</li>
-      {% endfor %}
-    </ul>
+  <div class="max-width-32">
+    <h1 class="center">Trades We Offered</h1>
+    {% for trade in trades_offered if trade.status == 'Pending' %}
+      <p>We offered a trade to county id: {{ trade.target_id }}.</p>
+      <p>We offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, {{ trade.iron_to_give }} iron, and {{ trade.stone_to_give }} stone.</p>
+    <p>We asked for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, and {{ trade.stone_to_receive }} stone.</p>
+      <p>The trade expires in {{ trade.duration }} days if they do not reply. </p>
+    <button class="cancel" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Cancel</button>
+    {% else %}
+        We currently have not offered any county a trade.
+    {% endfor %}
+    <br><br>
+    <h1 class="center">Trades Offered To Us</h1>
+    {% for trade in trades_received if trade.status == 'Pending' %}
+        <br>
+        We were offered a trade by county id: {{ trade.target_id }}.
+        We were offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, and {{ trade.iron_to_give }} iron
+        in exchange for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, and {{ trade.iron_to_receive }} iron.
+        The trade expires in {{ trade.duration }} days if we do not reply. <button class="accept" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Accept</button><button class="reject" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Reject</button>
+    {% else %}
+        We currently have no offers by any county to trade.
+    {% endfor %}
   </div>
 </div>
 {{ super() }}
@@ -70,7 +67,48 @@ h2 {
 
 {% block script %}
 {{ super() }}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
+// attached to every "accept" class object.
+// This object must have a "value" attribute
+// that contains the url to send to.
+$(".accept").click(function () {
+    $.get(
+        $(this).val() + "?accept=1",
+        function (response, status) {
+            if (status === "success") {
+                console.log(response);
+            } else {
+                console.log(response);
+            }
+    }, "json");
+});
 
+// attached to every "reject" class object.
+// This object must have a "value" attribute
+// that contains the url to send to.
+$(".reject").click(function () {
+    $.get(
+        $(this).val() + "?reject=1",
+        function (response, status) {
+            if (status === "success") {
+                console.log(response);
+            } else {
+                console.log(response);
+            }
+    }, "json");
+});
+
+$(".cancel").click(function () {
+    $.get(
+        $(this).val() + "?cancel=1",
+        function (response, status) {
+            if (status === "success") {
+                console.log(response);
+            } else {
+                console.log(response);
+            }
+    }, "json");
+});
 </script>
 {% endblock %}
