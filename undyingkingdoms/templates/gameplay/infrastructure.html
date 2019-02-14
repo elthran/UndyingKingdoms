@@ -113,6 +113,10 @@ h2 {
 .top-spacer-dot-3 {
     margin-top: 0.3em;
 }
+
+.top-spacer-1 {
+    margin-top: 1em;
+}
 </style>
 {% endblock %}
 
@@ -193,16 +197,26 @@ h2 {
         <td>-</td>
       </tr>
     </table>
+    <div class="top-spacer-1">
+      Gold Cost: <span id="goldCost">0</span>
+      <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} 
+      <img class="resource_icons" src="/static/images/gold_icon.jpg">
+    </div>
+    <div>
+      Wood Cost: <span id="woodCost">0</span>
+      <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} 
+      <img class="resource_icons" src="/static/images/wood_icon.jpg">
+    </div>
+    <div>
+      Stone Cost: <span id="stoneCost">0</span>
+      <img class="resource_icons" src="/static/images/stone_icon.jpg"> / {{ county.stone }}
+      <img class="resource_icons" src="/static/images/stone_icon.jpg">
+    </div>
+    <div class="top-spacer-dot-3">
+      Land Required: <span id="landCost">0</span> / {{ county.get_available_land() }}
+    </div>
     <br>
-    Gold Cost: <span id="goldCost">0</span>
-    <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img src="/static/images/gold_icon.jpg"><br>
-    Wood Cost: <span id="woodCost">0</span>
-    <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img src="/static/images/wood_icon.jpg"><br>
-    Stone Cost: <span id="stoneCost">0</span>
-    <img class="resource_icons" src="/static/images/stone_icon.jpg"> / {{ county.stone }} <img src="/static/images/stone_icon.jpg"><br>
-    Land Required: <span id="landCost">0</span> / {{ county.get_available_land() }}
-    <br><br>
-    Each day, up to {% if county.background == 'Engineer' %}5{% else %}3{% endif %} buildings in your queue will be built.
+    <p>Each day, up to {% if county.background == 'Engineer' %}5{% else %}3{% endif %} buildings in your queue will be built.</p>
     <br>
     <button id="buildSubmit" type="submit">Build</button>
     <br>
