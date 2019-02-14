@@ -72,9 +72,6 @@ class World(GameState):
         self.age += 1
         self.day = -12
 
-    drop table army, building, notification, expedition, infiltration, chatroom, message,
-    session, transaction;
-
     def export_data_to_csv(self):
         all_tables = []
         table_name_reference = []
