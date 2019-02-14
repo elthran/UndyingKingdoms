@@ -3,7 +3,7 @@ from flask.views import MethodView
 from flask_login import login_required
 from flask_mobility.decorators import mobile_template
 
-from undyingkingdoms.blueprints.admin.helpers import create_bots, create_notification
+from undyingkingdoms.blueprints.admin.helpers import create_bots, create_notification, build_comparison_files
 from undyingkingdoms.routes.helpers import admin_required
 
 
@@ -16,6 +16,8 @@ class HomeAPI(MethodView):
         if op_code:
             if op_code.startswith('bots'):
                 return create_bots(int(op_code.split()[1]))
+            elif op_code.startswith('update_guide'):
+                return build_comparison_files()
             elif op_code.startswith('example'):
                 return "execute and return an example function as json"
             else:

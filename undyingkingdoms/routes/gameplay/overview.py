@@ -83,14 +83,14 @@ def send_message(county_id):
             author_county_id=current_user.county.id,
             day=current_user.county.kingdom.world.day)
         message.save()
-        return jsonify(dict(
+        return jsonify(
             status='success',
             message=f'You sent a message to {county_id}'
-        ))
-    return jsonify(dict(
+        )
+    return jsonify(
         status='fail',
         message="Your message didn't pass form validation."
-    ))
+    )
 
 
 @app.route('/gameplay/trade/<int:county_id>/', methods=['POST'])
@@ -130,7 +130,7 @@ def trade(county_id):
 
         return redirect(url_for('diplomacy'))
 
-    return jsonify(dict(
+    return jsonify(
         status='fail',
         message="Your trade didn't pass form validation."
-    ))
+    )
