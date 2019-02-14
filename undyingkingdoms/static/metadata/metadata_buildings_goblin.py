@@ -17,5 +17,6 @@ goblin_buildings['lair'].class_name, goblin_buildings['lair'].class_name_plural 
 # Goblins:
 goblin_buildings['guild'].output += 1
 goblin_buildings['guild'].stone_cost *= 2
+goblin_buildings['guild'].description = 'Each thieves guild gives you 2 additional spies to send on missions.'
 
 
