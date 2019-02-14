@@ -11,7 +11,7 @@
 <ul>
     {% for user in users %}
     {% if user.county and user.is_bot != True %}
-    <li><a href="{{ url_for('overview', kingdom_id=user.county.kingdom.id, county_id=user.county.id) }}">{{ user.county.name }}</a>: {{ user.get_current_leaderboard_score() }}</li>
+    <li><a href="{{ url_for('enemy_overview', kingdom_id=user.county.kingdom.id, county_id=user.county.id) }}">{{ user.county.name }}</a>: {{ user.get_current_leaderboard_score() }}</li>
     {% endif %}
     {% endfor %}
 </ul>
