@@ -65,10 +65,13 @@ def enemy_overview(template, kingdom_id=0, county_id=0):
     trade_form.receive_stone.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.duration.choices = [(i, i) for i in range(3, 25)]
 
-    # import pdb;pdb.set_trace()
-
-    return render_template(template, target_kingdom=target_kingdom, target_county=target_county,
-                           message_form=message_form, trade_form=trade_form)
+    return render_template(
+        template,
+        target_county=target_county,
+        target_kingdom=target_kingdom,
+        message_form=message_form,
+        trade_form=trade_form
+    )
 
 
 @app.route('/gameplay/send_message/<int:county_id>/', methods=['POST'])
