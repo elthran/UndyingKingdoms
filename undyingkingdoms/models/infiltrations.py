@@ -7,8 +7,8 @@ class Infiltration(GameEvent):
 
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
     target_id = db.Column(db.Integer)
-    county_age_in_days = db.Column(db.Integer)
-    world_age_in_days = db.Column(db.Integer)
+    world_day = db.Column(db.Integer)
+    county_day = db.Column(db.Integer)
     duration = db.Column(db.Integer)  # How many game days until your thieves return
     mission = db.Column(db.String(64))
     amount_of_thieves = db.Column(db.Integer)
@@ -28,12 +28,12 @@ class Infiltration(GameEvent):
     soldier = db.Column(db.Integer)
     elite = db.Column(db.Integer)
 
-    def __init__(self, county_id, target_id, county_age_in_days, world_age_in_days, mission, amount):
+    def __init__(self, county_id, target_id, world_day, county_day, mission, amount):
 
         self.county_id = county_id
         self.target_id = target_id
-        self.county_age_in_days = county_age_in_days
-        self.world_age_in_days = world_age_in_days
+        self.world_day = world_day
+        self.county_day = county_day
         self.mission = mission
         self.amount_of_thieves = amount
         self.success = None

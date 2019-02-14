@@ -30,7 +30,7 @@ class World(GameState):
                     county.temporary_bot_tweaks()
         self.day += 1
 
-    def advance_24h_analytics(self):
+    def advance_analytics(self):
         users = User.query.filter_by(is_bot=False).filter(User.county != None).all()
         for user in users:
             # First check and set their retention
@@ -48,7 +48,7 @@ class World(GameState):
                 user.day7_retention = retention
             # If they are playing this age, create a DAU for them
             if user.county:
-                dau_event = DAU(user.id, user.county.county_days_in_age, user.county.kingdom.world.day)
+                dau_event = DAU(user.id, user.county.county_age, user.county.kingdom.world.day)
                 dau_event.save()
         self.export_data_to_csv()
 
@@ -72,8 +72,7 @@ class World(GameState):
         self.age += 1
         self.day = -12
 
-    @staticmethod
-    def export_data_to_csv():
+    def export_data_to_csv(self):
         all_tables = []
         table_name_reference = []
         tables = db.metadata.tables
@@ -96,9 +95,7 @@ class World(GameState):
                     new_table.append(normal_row)
             all_tables.append(new_table)
         # We have a list of smaller lists. Each smaller list should be a csv file (each one is a separate sql table)
-        todays_date = date.today()
-
-        current_path = "export/{}".format(todays_date)
+        current_path = "export/age-{}".format(self.age)
         if not os.path.exists(current_path):
             os.makedirs(current_path)
 

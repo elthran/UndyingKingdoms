@@ -53,6 +53,7 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.infrastructure
     import undyingkingdoms.routes.gameplay.military
     import undyingkingdoms.routes.gameplay.infiltration
+    import undyingkingdoms.routes.gameplay.diplomacy
     import undyingkingdoms.routes.gameplay.kingdom
     import undyingkingdoms.routes.gameplay.attack
     import undyingkingdoms.routes.gameplay.messages

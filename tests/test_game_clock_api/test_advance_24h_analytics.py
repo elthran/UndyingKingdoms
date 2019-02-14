@@ -4,7 +4,7 @@ from tests.helpers import login
 from undyingkingdoms.models import DAU
 
 
-def test_advance_24h_analytics(client):
+def test_advance_analytics(client):
     with client:
         rv_login = login(client, 'haldon@gmail.com', 'brunner')
         assert "Calendar" in rv_login.data.decode()
@@ -20,7 +20,7 @@ def test_advance_24h_analytics(client):
 
         dau_events = DAU.query.count()
         rv = client.get(
-            '/game_clock/advance_24h_analytics',
+            '/game_clock/advance_analytics',
             headers=dict(
                 Authorization='Bearer ' + data_token['auth_token']
             )
