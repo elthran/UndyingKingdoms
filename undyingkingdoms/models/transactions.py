@@ -63,7 +63,7 @@ class Transaction(GameEvent):
         self.iron_spent = 0
         self.stone_spent = 0
 
-    def add_purchase(self, item_name, item_amount, gold_per_item, wood_per_item, iron_per_item, stone_per_item):
+    def add_purchase(self, item_name='Unknown', item_amount=0, gold_per_item=0, wood_per_item=0, iron_per_item=0, stone_per_item=0):
         if (item_name not in all_buildings) and (item_name not in all_armies):
             self.activity = "unknown item name"
         else:

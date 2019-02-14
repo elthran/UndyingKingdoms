@@ -60,7 +60,7 @@ def build_buildings():
                                          item_amount=build_form.data[building],
                                          gold_per_item=county.buildings[building].gold_cost,
                                          wood_per_item=county.buildings[building].wood_cost,
-                                         iron_per_item=0)
+                                         stone_per_item=county.buildings[building].stone_cost)
         transaction.save()
     return redirect(url_for('infrastructure'))
     #     return jsonify(
