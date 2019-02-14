@@ -1,4 +1,9 @@
+from datetime import datetime
+
+from flask import url_for
+from flask_login import current_user
 from sqlalchemy.exc import DatabaseError
+from werkzeug.utils import redirect
 
 from undyingkingdoms import app, db
 
@@ -16,3 +21,16 @@ def session_commit(response):
         raise
     # db.session.remove() # is called for you by flask-sqlalchemy
     return response
+
+
+@app.before_request
+def in_active_session():
+    """Implement in_active_session for every request."""
+
+    try:
+        current_user.time_modified = datetime.utcnow()
+        if not current_user.in_active_session:
+            current_user.in_active_session = True
+    except AttributeError:
+        pass
+    return None

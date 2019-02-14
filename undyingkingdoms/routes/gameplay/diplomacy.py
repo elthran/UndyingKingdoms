@@ -5,13 +5,11 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import County
 from undyingkingdoms.models.trades import Trade
-from undyingkingdoms.routes.helpers import in_active_session
 
 
 @app.route('/gameplay/diplomacy/', methods=['GET'])
 @mobile_template("{mobile/}gameplay/diplomacy.html")
 @login_required
-@in_active_session
 def diplomacy(template):
     county = current_user.county
     trades_offered = Trade.query.filter_by(county_id=county.id).filter(Trade.duration > 0).all()
@@ -21,7 +19,6 @@ def diplomacy(template):
 
 @app.route('/gameplay/diplomacy/<int:trade_id>', methods=['GET'])
 @login_required
-@in_active_session
 def diplomacy_reply(trade_id):
     trade = Trade.query.get(trade_id)
     if "accept" in request.args:

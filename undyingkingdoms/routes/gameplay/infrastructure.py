@@ -5,7 +5,6 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import World, Transaction
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm, ExcessProductionForm
-from undyingkingdoms.routes.helpers import in_active_session
 from undyingkingdoms.static.metadata.metadata import all_buildings, game_descriptions
 
 
@@ -22,7 +21,6 @@ def max_buildable_by_cost(county, building):
 @app.route('/gameplay/infrastructure/', methods=['GET'])
 @mobile_template('{mobile/}gameplay/infrastructure.html')
 @login_required
-@in_active_session
 def infrastructure(template):
     county = current_user.county
 
@@ -44,7 +42,6 @@ def infrastructure(template):
 
 @app.route('/gameplay/infrastructure/build/', methods=['POST'])
 @login_required
-@in_active_session
 def build_buildings():
     county = current_user.county
     world = World.query.filter_by(id=county.kingdom.world_id).first()
@@ -78,7 +75,6 @@ def build_buildings():
 
 @app.route('/gameplay/infrastructure/allocate/', methods=['POST'])
 @login_required
-@in_active_session
 def allocate_workers():
     county = current_user.county
     excess_worker_form = ExcessProductionForm(goal=county.production_choice)

@@ -5,13 +5,11 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import County
 from undyingkingdoms.models.forms.attack import AttackForm
-from undyingkingdoms.routes.helpers import in_active_session
 
 
 @app.route('/gameplay/attack/<int:county_id>/', methods=['GET', 'POST'])
 @mobile_template('{mobile/}gameplay/attack.html')
 @login_required
-@in_active_session
 def attack(template, county_id):
     if county_id == current_user.county.id:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))

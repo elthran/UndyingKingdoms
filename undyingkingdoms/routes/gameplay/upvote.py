@@ -4,12 +4,10 @@ from flask_login import login_required, current_user
 
 from undyingkingdoms import app
 from undyingkingdoms.models.upvotes import Upvote
-from undyingkingdoms.routes.helpers import in_active_session
 
 
 class UpvoteAPI(MethodView):
     @login_required
-    @in_active_session
     def get(self, post_id):
         upvote = Upvote.query.filter_by(user_id=current_user.id, post_id=post_id).first()
 

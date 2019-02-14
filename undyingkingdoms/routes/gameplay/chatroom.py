@@ -5,20 +5,17 @@ from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms.models import Chatroom
 from undyingkingdoms.models.forms.message import MessageForm
-from undyingkingdoms.routes.helpers import in_active_session
 
 
 class ChatRoomAPI(MethodView):
     @mobile_template('{mobile/}gameplay/chatroom.html')
     @login_required
-    @in_active_session
     def get(self, template):
         form = MessageForm()
         chat = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id).all()
         return render_template(template, form=form, chat=chat, global_chat_on=current_user.global_chat_on)
 
     @login_required
-    @in_active_session
     def post(self):
         form = MessageForm()
 
