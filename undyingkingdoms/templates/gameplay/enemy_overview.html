@@ -43,6 +43,7 @@ button {
     <li>{{target_county.armies['archer'].class_name }}: {{ report.archer }}</li>
     <li>{{target_county.armies['soldier'].class_name }}: {{ report.soldier }}</li>
     <li>{{target_county.armies['elite'].class_name }}: {{ report.elite }}</li>
+    <li>{{target_county.armies['monster'].class_name }}: {{ report.monster }}</li>
   </ul>
   {% else %}
   No information is known.
@@ -104,7 +105,7 @@ button {
     {{ message_form.csrf_token(id="message-form-csrf-token") }}
     {{ render_field(message_form.title, placeholder="Title", autofocus="", maxlength=message_form.TITLE_SIZE, id="message-title") }}
     <textarea id="message-content" cols="100" rows="10" name="content" placeholder="Content"
-              maxlength="{{ message_form.CONTENT_SIZE }}"></textarea>
+      maxlength="{{ message_form.CONTENT_SIZE }}"></textarea>
     <div class="spacer"></div>
     <button type="submit">Send Message</button>
   </form>
