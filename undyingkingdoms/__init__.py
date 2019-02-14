@@ -9,11 +9,13 @@ from extensions import flask_db, flask_json, flask_csrf, flask_mobility, flask_m
 from undyingkingdoms.GeoIP import geo_ip
 from undyingkingdoms.blueprints.admin import admin_blueprint
 from undyingkingdoms.blueprints.game_clock import game_clock_blueprint
+from undyingkingdoms import jinja_filters
 
 app = Flask(__name__)
 # I can't figure out how to put these in the config file
 app.jinja_env.lstrip_blocks = True
 app.jinja_env.trim_blocks = True
+app.jinja_env.filters['vuesafe'] = jinja_filters.vue_safe
 app.config.from_object('private_config')
 
 if 'liveweb' in socket.gethostname():
