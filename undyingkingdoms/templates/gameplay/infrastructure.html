@@ -303,7 +303,7 @@ function calcSliderWidth(size) {
     return Math.min(size + 0.8, 10) + "em";
 }
 
-function resizeRemaining(gold, wood, land) {
+function resizeRemaining(gold, wood, stone, land) {
     // console.log(sliders);
     sliders.each(function (index, element) {
         var goldPrice = buildingGoldCosts[index].innerHTML;
@@ -313,7 +313,9 @@ function resizeRemaining(gold, wood, land) {
         var remaining = Math.max(Math.floor(Math.min(
             (totalGold - gold) / goldPrice,
             (totalWood - wood) / woodPrice,
-            (totalStone - stone) / stonePrice,
+            ((stonePrice > 0) ? 
+                (totalStone - stone) / stonePrice:
+                Infinity),
             (totalLand - land) / landPrice
         )), 0);
 
@@ -336,7 +338,7 @@ function updateCosts() {
     var wood = parseInt(woodCost.text());
     var stone = parseInt(stoneCost.text());
     var land = parseInt(landCost.text());
-    resizeRemaining(gold, wood, land);
+    resizeRemaining(gold, wood, stone, land);
 }
 
 sliders.each(function (index, element) {
