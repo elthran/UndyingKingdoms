@@ -63,14 +63,14 @@ def build_buildings():
                                          iron_per_item=0)
         transaction.save()
     return redirect(url_for('infrastructure'))
-    #     return jsonify(dict(
+    #     return jsonify(
     #         status="success",
     #         message="You purchased x buildings ..."
-    #     ))
-    # return jsonify(dict(
+    #     )
+    # return jsonify(
     #     status="fail",
     #     message="Your build form failed to pass validation."
-    # ))
+    # )
 
 
 @app.route('/gameplay/infrastructure/allocate/', methods=['POST'])
@@ -83,11 +83,11 @@ def allocate_workers():
 
     if excess_worker_form.validate_on_submit():
         county.production_choice = excess_worker_form.goal.data
-        return jsonify(dict(
+        return jsonify(
             status="success",
             message="You allocated workers to ..."
-        ))
-    return jsonify(dict(
+        )
+    return jsonify(
         status="fail",
         message="Your allocation form failed to pass validation."
-    ))
+    )

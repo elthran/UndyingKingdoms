@@ -43,23 +43,23 @@ def diplomacy_reply(trade_id):
                 message='Trade was accepted.'
             ), 200
         else:
-            return jsonify(dict(
+            return jsonify(
                 status="success",
                 message=f"You do not have the resources to accept this trade."
-            ))
+            )
     elif "reject" in request.args:
         trade.status = "Rejected"
-        return jsonify(dict(
+        return jsonify(
             status="success",
             message=f"You rejected a trade from {trade_id}"
-        ))
+        )
     elif "cancel" in request.args:
         trade.status = "Cancelled"
-        return jsonify(dict(
+        return jsonify(
             status="success",
             message=f"You cancelled a trade to {trade_id}"
-        ))
-    return jsonify(dict(
+        )
+    return jsonify(
         status="fail",
         message="You sent some malformed data."
-    ))
+    )

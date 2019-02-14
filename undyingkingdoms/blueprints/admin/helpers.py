@@ -4,6 +4,7 @@ from uuid import uuid4
 from flask import jsonify
 
 from undyingkingdoms.models import World
+from undyingkingdoms.utilities.convert_metadata import build_race_table, build_modifier_table
 from .metadata import bot_county_prefix, bot_county_suffix, bot_leader_prefix, bot_leader_suffix
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.counties import County
@@ -48,3 +49,20 @@ def create_notification(message):
         status="success",
         message=f"Successfully sent notice '{message}' to all active users."
     )
+
+def build_comparison_files():
+    """Build nice spreadsheets from python metadata dictionaries."""
+
+    try:
+        build_race_table()
+        build_modifier_table()
+        return jsonify(
+            status="success",
+            message="You successfully updated the comparison tables for the player guide."
+        )
+    except Exception as ex:
+        return jsonify(
+            status="fail",
+            message=f"Player guide update failed due to: {ex}"
+        )
+

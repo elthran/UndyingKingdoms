@@ -51,7 +51,7 @@ def update_economy():
         if getattr(request, 'MOBILE', None):
             return redirect(url_for('economy'))
 
-        return jsonify(dict(
+        return jsonify(
             status="success",
             message="You have updated your economy data.",
             birth_rate_modifier=birth_rate_modifier,
@@ -63,8 +63,8 @@ def update_economy():
             grainStorageChange=county.grain_storage_change(),
             foodEaten=county.get_food_to_be_eaten(),
             nourishmentChange=county.get_nourishment_change()
-        ))
-    return jsonify(dict(
+        )
+    return jsonify(
         status="fail",
         message="You economy data did not pass form validation."
-    ))
+    )
