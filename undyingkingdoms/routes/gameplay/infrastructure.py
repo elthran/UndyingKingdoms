@@ -16,7 +16,7 @@ def max_buildable_by_cost(county, building):
             if building.stone_cost
             else float('inf')),
         # eventually the 1 will be a land cost.
-        county.get_available_land () // 1
+        county.get_available_land() // 1
     )
     return max_size
 

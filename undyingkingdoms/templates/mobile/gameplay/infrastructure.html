@@ -304,7 +304,7 @@ var buildingWoodCosts = $(".buildingWoodCost");
 // var buildingLandCosts = $(".buildingLandCost");  // not being used yet.
 var totalGold = parseInt($("#totalGold").text());
 var totalWood = parseInt($("#totalWood").text());
-var avaiableLand = parseInt($("#avaiableLand").text());
+var availableLand = parseInt($("#availableLand").text());
 
 function updateResources() {
     goldCosts.each(function (index, goldElement) {
@@ -353,7 +353,7 @@ function updateResources() {
 //     var remaining = Math.max(Math.floor(Math.min(
 //         (totalGold - gold) / goldPrice,
 //         (totalWood - wood) / woodPrice,
-//         (avaiableLand - land) / landPrice
+//         (availableLand - land) / landPrice
 //     )), 0);
 
 //     var size = element.value * 1 + remaining;
@@ -389,13 +389,13 @@ function updateCosts() {
             woodCost.style.color = "green";
         }
 
-        if (land > avaiableLand) {
+        if (land > availableLand) {
             landCost.style.color = "red";
         } else {
             landCost.style.color = "green";
         }
 
-        if (gold <= totalGold && wood <= totalWood && land <= avaiableLand) {
+        if (gold <= totalGold && wood <= totalWood && land <= availableLand) {
             submitButtons[index].disabled = false;
         } else {
             submitButtons[index].disabled = true;
