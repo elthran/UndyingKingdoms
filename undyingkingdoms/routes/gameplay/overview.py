@@ -47,8 +47,8 @@ def overview(template):
 @login_required
 def enemy_overview(template, kingdom_id=0, county_id=0):
     county = current_user.county
-    target_county = County.query.filter_by(id=county_id).first()
-    target_kingdom = Kingdom.query.filter_by(id=kingdom_id).first()
+    target_county = County.query.get(county_id)
+    target_kingdom = Kingdom.query.get(kingdom_id)
 
     message_form = MessageForm()
     trade_form = TradeForm()

@@ -18,7 +18,7 @@ class InfiltrateForm(FlaskForm):
         return True
 
     def quantity_of_thieves(self):
-        county = County.query.filter_by(id=self.county_id.data).first()
+        county = County.query.get(self.county_id.data)
         thieves_available = county.get_number_of_available_thieves()
         thieves_being_sent = self.amount.data
         maximum_per_mission = 3 + amount_of_thieves_modifier.get(county.race, ("", 0))[1] + amount_of_thieves_modifier.get(county.background, ("", 0))[1]

@@ -23,11 +23,11 @@ class Message(GameState):
         return '<Notification: %r: %r>' % (self.title, self.content)
 
     def get_author(self):
-        county = County.query.filter_by(id=self.author_county_id).first()
+        county = County.query.get(self.author_county_id)
         return county.leader
 
     def get_age_of_message(self):
-        current_day = World.query.filter_by(id=1).first().day
+        current_day = World.query.get(1).day
         return current_day - self.day
 
 

@@ -31,7 +31,7 @@ class Thread(GameEvent):
         return Post.query.filter_by(thread_id=self.id).order_by(desc('time_created')).first()
 
     def get_author(self):
-        author = User.query.filter_by(id=self.author_id).first()
+        author = User.query.get(self.author_id)
         return author.username
         
         
@@ -65,7 +65,7 @@ class Post(GameEvent):
         return post
 
     def get_author(self):
-        author = User.query.filter_by(id=self.author_id).first()
+        author = User.query.get(self.author_id)
         return author.username
 
     def get_votes(self):

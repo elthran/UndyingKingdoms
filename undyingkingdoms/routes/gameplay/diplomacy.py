@@ -22,7 +22,7 @@ def diplomacy(template):
 def diplomacy_reply(trade_id):
     trade = Trade.query.get(trade_id)
     if "accept" in request.args:
-        county = County.query.filter_by(id=trade.county_id).first()
+        county = County.query.get(trade.county_id)
         target_county = current_user.county  # This will be the current user
         if target_county.gold >= trade.gold_to_receive and target_county.wood >= trade.wood_to_receive and target_county.iron >= trade.iron_to_receive and target_county.stone >= trade.stone_to_receive:
             target_county.gold += trade.gold_to_give

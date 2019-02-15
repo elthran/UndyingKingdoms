@@ -47,7 +47,7 @@ def infrastructure(template):
 @login_required
 def build_buildings():
     county = current_user.county
-    world = World.query.filter_by(id=county.kingdom.world_id).first()
+    world = World.query.get(county.kingdom.world_id)
 
     build_form = InfrastructureForm()
     build_form.county_id.data = county.id

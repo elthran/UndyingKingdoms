@@ -13,7 +13,7 @@ from undyingkingdoms.models.forms.attack import AttackForm
 def attack(template, county_id):
     if county_id == current_user.county.id:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
-    enemy = County.query.filter_by(id=county_id).first()
+    enemy = County.query.get(county_id)
     form = AttackForm()
 
     peasant = current_user.county.armies['peasant'].available

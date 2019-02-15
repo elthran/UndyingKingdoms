@@ -33,7 +33,7 @@ def max_trainable_by_cost(county, army):
 @login_required
 def military(template):
     county = current_user.county
-    world = World.query.filter_by(id=county.kingdom.world_id).first()
+    world = World.query.get(county.kingdom.world_id)
     form = MilitaryForm()
     form.county_id.data = county.id
     if form.validate_on_submit():

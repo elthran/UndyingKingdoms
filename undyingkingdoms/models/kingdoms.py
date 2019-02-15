@@ -35,7 +35,7 @@ class Kingdom(GameState):
                 achievement.current_tier += 1
 
     def get_leader_name(self, county_id):
-        return County.query.filter_by(id=county_id).first().name
+        return County.query.get(county_id).name
 
     def kingdom_button(self, direction, current_id):
         if direction == 'left':
@@ -46,7 +46,7 @@ class Kingdom(GameState):
             current_id = len(kingdom_names)
         elif current_id > len(kingdom_names):
             current_id = 1
-        chosen_kingdom = Kingdom.query.filter_by(id=current_id).first()  # Get the chosen kingdom
+        chosen_kingdom = Kingdom.query.get(current_id)  # Get the chosen kingdom
         if len(chosen_kingdom.counties) == 0:  # If it's empty, skip it and go to next kingdom in that direction
             return self.kingdom_button(direction, current_id)
         return current_id

@@ -253,7 +253,7 @@ class County(GameState):
         self.kingdom.count_votes()
 
     def display_vote(self):
-        vote = County.query.filter_by(id=self.vote).first()
+        vote = County.query.get(self.vote)
         return vote.name
 
     # Advance day
@@ -292,7 +292,7 @@ class County(GameState):
                 self.gold += trade.gold_to_give
                 self.wood += trade.wood_to_give
                 self.iron += trade.iron_to_give
-                target_county = County.query.filter_by(id=trade.target_id).first()
+                target_county = County.query.get(trade.target_id)
                 notification = Notification(self.id, "Trade Offer",
                                             "Your trade offer to {} has expired and your resources have been return".format(
                                                 target_county.name), self.kingdom.world.day)

@@ -20,7 +20,7 @@ def infiltrate(template, county_id):
     if county_id == current_user.county.id:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
 
-    target = County.query.filter_by(id=county_id).first()
+    target = County.query.get(county_id)
 
     form = InfiltrateForm()
     form.county_id.data = current_user.county.id
