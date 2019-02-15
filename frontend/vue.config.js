@@ -2,5 +2,13 @@
 
 module.exports = {
 		// options
-	outputDir: "../undyingkingdoms/static/dist",
+	outputDir: "../undyingkingdoms/templates/dist",
+	assetsDir: "../../static/dist",
+	pages: {
+		economy: {
+			entry: 'src/economy/main.js',
+			template: 'public/index.html',
+      filename: 'economy.html'
+		}
+	}
 }

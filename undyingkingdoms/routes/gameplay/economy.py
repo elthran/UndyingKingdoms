@@ -9,7 +9,7 @@ from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_
 
 
 @app.route('/gameplay/economy/', methods=['GET'])
-@mobile_template('{mobile/}gameplay/economy.html')
+@mobile_template('{mobile/}dist/economy.html')
 @login_required
 def economy(template):
     form = EconomyForm(tax=current_user.county.tax, rations=current_user.county.rations)

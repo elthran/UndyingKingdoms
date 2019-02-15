@@ -11,6 +11,7 @@ undyingkingdoms/routes/gameplay/testing_page.py
 .ipynb_checkpoints
 frontend/node_modules
 /undyingkingdoms/static/dist
+/undyingkingdoms/templates/dist
 /System Volume Information/
 
 # Log files
