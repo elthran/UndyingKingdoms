@@ -463,7 +463,7 @@ class County(GameState):
                                         "Sickness",
                                         "A disease has spread throughout your lands, lowering your county's health by {}.".format(
                                             amount), self.kingdom.world.day)
-            self.nourishment -= amount
+            self.health -= amount
 
         if notification:
             notification.save()
