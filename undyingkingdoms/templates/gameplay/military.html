@@ -143,7 +143,7 @@ th {
         <td>{{ army.traveling }}</td>
         <td>{{ army.currently_training }}</td>
         <td>
-          {% if army.base_name == 'monster' %}
+          {% if army.name == 'monster' %}
             {% if monsters_buildable(county) <= 0 %}
               <div class="slide-container">
                 <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1" hidden/>
@@ -163,7 +163,7 @@ th {
             </div>
             <span class="display">0</span>
           {% endif %}
-          <input class="value" name="{{ army.base_name }}" value="0" hidden/>
+          <input class="value" name="{{ army.name }}" value="0" hidden/>
         </td>
         <td>
           {% if army.gold %}

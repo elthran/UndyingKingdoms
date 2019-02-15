@@ -67,8 +67,8 @@ select {
       <h2>Attack power available: {{ county.get_offensive_strength(county=county) }}</h2><br>
       <ul>
       {% for army in county.armies.values() %}
-        {% if army.base_name != 'archer' %}
-          <li class="spacer">{{ army.class_name.capitalize() }}: {{ form[army.base_name] }} (Available: {{ army.available }} / {{ army.total }})
+        {% if army.name != 'archer' %}
+          <li class="spacer">{{ army.class_name.capitalize() }}: {{ form[army.name] }} (Available: {{ army.available }} / {{ army.total }})
             <p class="tab">(Attack Power: {{ army.attack }} per troop)</p>
           </li>
         {% endif %}
@@ -96,25 +96,25 @@ select {
 {% set county = current_user.county %}
 <script type="text/javascript">
 {% for unit in county.armies.values() %}
-{% if unit.base_name != 'archer' %}
-document.getElementById('{{ unit.base_name }}').onchange = function() {
+{% if unit.name != 'archer' %}
+document.getElementById('{{ unit.name }}').onchange = function() {
     updateAttack();
     updateDuration();
 }
-var {{ unit.base_name }}_amount = document.getElementById("{{ unit.base_name }}");
-console.log({{ unit.base_name }}_amount);
+var {{ unit.name }}_amount = document.getElementById("{{ unit.name }}");
+console.log({{ unit.name }}_amount);
 {% endif %}
 {% endfor %}
 
 function updateAttack() {
     var total_power = 0;
-    total_power = 0{% for unit in county.armies.values() %}{% if unit.base_name != 'archer' %}  + parseInt({{ unit.base_name }}_amount.value) * parseInt({{ unit.attack }}){% endif %}{% endfor %};
+    total_power = 0{% for unit in county.armies.values() %}{% if unit.name != 'archer' %}  + parseInt({{ unit.name }}_amount.value) * parseInt({{ unit.attack }}){% endif %}{% endfor %};
     calculatedAttack.innerHTML = total_power;
 }
 function updateDuration() {
     var days_to_return = 0;
     var total_units = 0;
-    total_units = 0{% for unit in county.armies.values() %}{% if unit.base_name != 'archer' %}  + parseInt({{ unit.base_name }}_amount.value){% endif %}{% endfor %};
+    total_units = 0{% for unit in county.armies.values() %}{% if unit.name != 'archer' %}  + parseInt({{ unit.name }}_amount.value){% endif %}{% endfor %};
     console.log(total_units);
     days_to_return = Math.ceil(total_units / 20) + 2;
     attackDuration.innerHTML = days_to_return;

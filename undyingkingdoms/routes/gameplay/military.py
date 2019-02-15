@@ -20,7 +20,7 @@ def max_trainable_by_cost(county, army):
         county.wood // army.wood,
         county.iron // army.iron
     )
-    if army.base_name == 'monster':
+    if army.name == 'monster':
         return min(
             max_size,
             monsters_buildable(county)

@@ -81,10 +81,10 @@ class County(GameState):
     immigration = db.Column(db.Integer)
     emigration = db.Column(db.Integer)
     buildings = db.relationship("Building",
-                                collection_class=attribute_mapped_collection('base_name'),
+                                collection_class=attribute_mapped_collection('name'),
                                 cascade="all, delete, delete-orphan", passive_deletes=True)
     armies = db.relationship("Army",
-                             collection_class=attribute_mapped_collection('base_name'),
+                             collection_class=attribute_mapped_collection('name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
 
     def __init__(self, kingdom_id, name, leader, user_id, race, title, background):
@@ -697,8 +697,8 @@ class County(GameState):
                    + offensive_power_modifier.get(self.background, ("", 0))[1]
         if army:
             for unit in self.armies.values():
-                if unit.base_name != 'archer':
-                    strength += army[unit.base_name] * unit.attack
+                if unit.name != 'archer':
+                    strength += army[unit.name] * unit.attack
         elif county:
             for unit in county.armies.values():
                 if scoreboard:
