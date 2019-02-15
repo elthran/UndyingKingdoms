@@ -51,6 +51,7 @@
   <h2>Time</h2>
   <p>Each real-world hour ends one game day. At the end of each game day many things change such as the weather, your county's population, your taxes are collected, etc.
     While the game is in testing, each real-world week constitutes an 'Age' of the game. At the end of each Age, the game resets (though your achievements remain).</p>
+  {% if races is not none and armies is not none %}
   <div class="compare-div">
     {% for background in races.Background.dropna().unique() %}
       <div class="side-spacer">
@@ -90,5 +91,8 @@
       </div>
     {% endfor %}
   </div>
+  {% else %}
+  <p>The comparison table generation code is failing, please complain to the moderators.</p>
+  {% endif %}
 </div>
 {% endblock %}

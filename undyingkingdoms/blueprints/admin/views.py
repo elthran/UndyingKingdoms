@@ -3,20 +3,21 @@ from flask.views import MethodView
 from flask_login import login_required
 from flask_mobility.decorators import mobile_template
 
-from undyingkingdoms.blueprints.admin.helpers import create_bots, create_notification
-from undyingkingdoms.routes.helpers import in_active_session, admin_required
+from undyingkingdoms.blueprints.admin.helpers import create_bots, create_notification, build_comparison_files
+from undyingkingdoms.routes.helpers import admin_required
 
 
 class HomeAPI(MethodView):
     @mobile_template('{mobile/}user/admin.html')
     @login_required
-    @in_active_session
     @admin_required
     def get(self, template):
         op_code = request.args.get('tool_id', None)
         if op_code:
             if op_code.startswith('bots'):
                 return create_bots(int(op_code.split()[1]))
+            elif op_code.startswith('update_guide'):
+                return build_comparison_files()
             elif op_code.startswith('example'):
                 return "execute and return an example function as json"
             else:
@@ -24,7 +25,6 @@ class HomeAPI(MethodView):
         return render_template(template)
 
     @login_required
-    @in_active_session
     @admin_required
     def post(self):
         if request.is_json:

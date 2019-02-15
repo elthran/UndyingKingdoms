@@ -15,7 +15,7 @@ infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust
 rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (0.75, "Three-Quarters"), (1, "Normal"),
                        (1.5, "One-and-a-half"), (2, "Double"), (3, "Triple")]
 
-all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'fort', 'stables', 'guild', 'bank', 'lair']
+all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'quarry', 'fort', 'stables', 'guild', 'bank', 'lair']
 
 all_achievements = {
     'land': Achievement(name="land", category="reach_x_amount_in_one_age", sub_category="land",
@@ -43,6 +43,11 @@ all_achievements = {
                         description="Have your county reach x iron in one playthrough.",
                         tier1=500, tier2=1000, tier3=1500, tier4=2000, tier5=2500, maximum_tier=5,
                         points_rewarded=5),
+    'stone': Achievement(name="stone", category="reach_x_amount_in_one_age", sub_category="stone",
+                         display_title="Stone Cold",
+                         description="Have your county reach x stone in one playthrough.",
+                         tier1=250, tier2=500, tier3=1000, tier4=1500, tier5=2000, maximum_tier=5,
+                         points_rewarded=5),
     'dwarf_class_leader': Achievement(name="dwarf_class_leader", category="class_leader", sub_category="dwarf",
                                       display_title="Lord Under the Mountain!",
                                       description="Become the leader of your kingdom while playing as Dwarves.",
@@ -57,7 +62,12 @@ all_achievements = {
                                     display_title="King of the Forest",
                                     description="Become the leader of your kingdom while playing as Elves.",
                                     maximum_tier=1,
-                                    points_rewarded=15)
+                                    points_rewarded=15),
+    'goblin_class_leader': Achievement(name="goblin_class_leader", category="class_leader", sub_category="goblin",
+                                       display_title="The Goblin King",
+                                       description="Become the leader of your kingdom while playing as Goblins.",
+                                       maximum_tier=1,
+                                       points_rewarded=15)
 }
 
 # Racial/Class Modifiers (A modifier of 0 means +0%. A modifier of 1 would mean +100%)
@@ -71,7 +81,7 @@ amount_of_thieves_modifier = {'Rogue': ("Army of Shadows", 2)}
 production_per_worker_modifier = {'Dwarf': ("Dwarven Steel", 0.15), 'Engineer': ("Artisan", 0.20)}
 defense_per_citizen_modifier = {'Elf': ("Citizen Militia", 1.00)}
 food_consumed_modifier = {'Dwarf': ("Ravenous", 0.15)}
-buildings_built_per_day_modifier = {'Engineer': ("Craftsman", 2)}
+buildings_built_per_day_modifier = {'Engineer': ("Craftsman", 1)}
 
 all_armies = ["peasant", "archer", "soldier", "elite", "monster"]
 

@@ -5,13 +5,11 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models.forms.message import MessageForm
 from undyingkingdoms.models.forum import Forum, Thread, Post
-from undyingkingdoms.routes.helpers import in_active_session
 
 
 @app.route('/user/forum/<int:thread_id>/<int:post_id>', methods=['GET', 'POST'])
 @mobile_template('{mobile/}user/forum.html')
 @login_required
-@in_active_session
 def forum(template, thread_id=0, post_id=0):
     the_forum = Forum.query.first()
     the_thread = Thread.query.filter_by(id=thread_id).first()

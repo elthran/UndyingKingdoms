@@ -17,8 +17,6 @@ from undyingkingdoms.static.metadata.metadata import infiltration_missions, infi
 @mobile_template('{mobile/}gameplay/infiltrate.html')
 @login_required
 def infiltrate(template, county_id):
-    if not current_user.in_active_session:
-        current_user.in_active_session = True
     if county_id == current_user.county.id:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
 
@@ -26,16 +24,15 @@ def infiltrate(template, county_id):
 
     form = InfiltrateForm()
     form.county_id.data = current_user.county.id
-    thieves = min(current_user.county.get_number_of_available_thieves(), 3)
-    thieves += amount_of_thieves_modifier.get(current_user.county.race, ("", 0))[1] + amount_of_thieves_modifier.get(current_user.county.background, ("", 0))[1]
+    max_thieves = 3 + amount_of_thieves_modifier.get(current_user.county.race, ("", 0))[1] + amount_of_thieves_modifier.get(current_user.county.background, ("", 0))[1]
+    thieves = min(current_user.county.get_number_of_available_thieves(), max_thieves)
     form.amount.choices = [(i + 1, i + 1) for i in range(thieves)]
     form.mission.choices = [(index, name) for index, name in enumerate(infiltration_missions)]
 
     if form.validate_on_submit():
         mission = infiltration_missions[form.mission.data]
-        report = Infiltration(current_user.county.id, target.id, current_user.county.county_days_in_age,
-                              current_user.county.kingdom.world.day,
-                              mission, form.amount.data)
+        report = Infiltration(current_user.county.id, target.id, current_user.county.kingdom.world.day,
+                              current_user.county.county_age, mission, form.amount.data)
         report.save()
 
         chance_of_success = target.get_chance_to_be_successfully_infiltrated() + form.amount.data

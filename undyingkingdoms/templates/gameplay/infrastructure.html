@@ -113,6 +113,10 @@ h2 {
 .top-spacer-dot-3 {
     margin-top: 0.3em;
 }
+
+.top-spacer-1 {
+    margin-top: 1em;
+}
 </style>
 {% endblock %}
 
@@ -147,6 +151,7 @@ h2 {
     {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">
     {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
     {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
+    {{ county.stone }} <img class="resource_icons" src="/static/images/stone_icon.jpg">
   </h2>
   <form id="build-form" action="{{ url_for('build_buildings') }}" method="POST" accept-charset="UTF-8">
     {{ build_form.csrf_token(id="build-form-csrf-token") }}
@@ -176,6 +181,7 @@ h2 {
         <td>
           <span class="buildingGoldCost">{{ building.gold_cost or 0 }}</span><img class="resource_icons" src="/static/images/gold_icon.jpg">
           <span class="buildingWoodCost">{{ building.wood_cost or 0 }}</span><img class="resource_icons" src="/static/images/wood_icon.jpg">
+          <span class="buildingStoneCost">{{ building.stone_cost or 0 }}</span><img class="resource_icons" src="/static/images/stone_icon.jpg">
         </td>
         <td>{{ building.workers_employed * building.total }} ({{ building.workers_employed }} each)</td>
         <td>{{ building.description }}</td>
@@ -191,14 +197,26 @@ h2 {
         <td>-</td>
       </tr>
     </table>
+    <div class="top-spacer-1">
+      Gold Cost: <span id="goldCost">0</span>
+      <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} 
+      <img class="resource_icons" src="/static/images/gold_icon.jpg">
+    </div>
+    <div>
+      Wood Cost: <span id="woodCost">0</span>
+      <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} 
+      <img class="resource_icons" src="/static/images/wood_icon.jpg">
+    </div>
+    <div>
+      Stone Cost: <span id="stoneCost">0</span>
+      <img class="resource_icons" src="/static/images/stone_icon.jpg"> / {{ county.stone }}
+      <img class="resource_icons" src="/static/images/stone_icon.jpg">
+    </div>
+    <div class="top-spacer-dot-3">
+      Land Required: <span id="landCost">0</span> / {{ county.get_available_land() }}
+    </div>
     <br>
-    Gold Cost: <span id="goldCost">0</span>
-    <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img src="/static/images/gold_icon.jpg"><br>
-    Wood Cost: <span id="woodCost">0</span>
-    <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img src="/static/images/wood_icon.jpg"><br>
-    Land Required: <span id="landCost">0</span> / {{ county.get_available_land() }}
-    <br><br>
-    Each day, up to {% if county.background == 'Engineer' %}5{% else %}3{% endif %} buildings in your queue will be built.
+    <p>Each day, up to {% if county.background == 'Engineer' %}5{% else %}3{% endif %} buildings in your queue will be built.</p>
     <br>
     <button id="buildSubmit" type="submit">Build</button>
     <br>
@@ -207,6 +225,7 @@ h2 {
 <div class="invisibleDataFields">
   <span id="totalGold">{{ county.gold }}</span>
   <span id="totalWood">{{ county.wood }}</span>
+  <span id="totalStone">{{ county.stone }}</span>
   <span id="totalLand">{{ county.get_available_land() }}</span>
   {% for n in range(4) %}
     <span id="goalAmount{{ n }}">{{ county.get_excess_production_value(n) }}</span>
@@ -264,27 +283,33 @@ var pendings = $(".pending");
 
 var buildingGoldCosts = $(".buildingGoldCost");
 var buildingWoodCosts = $(".buildingWoodCost");
+var buildingStoneCosts = $(".buildingStoneCost");
 
 var goldCost = $("#goldCost");
 var woodCost = $("#woodCost");
+var stoneCost = $("#stoneCost");
 var landCost = $("#landCost");
 
 var totalGold = parseInt($("#totalGold").text());
 var totalWood = parseInt($("#totalWood").text());
+var totalStone = parseInt($("#totalStone").text());
 var totalLand = parseInt($("#totalLand").text());
 
 function updateResources() {
-    var woodSum = 0;
     var goldSum = 0;
+    var woodSum = 0;
+    var stoneSum = 0;
     var landSum = 0;
     sliders.each(function (index, element) {
         goldSum += element.value * buildingGoldCosts[index].innerHTML;
         woodSum += element.value * buildingWoodCosts[index].innerHTML;
+        stoneSum += element.value * buildingStoneCosts[index].innerHTML;
         // at some point the 1 will be a land cost.
         landSum += element.value * 1;
     });
     goldCost.html(goldSum);
     woodCost.html(woodSum);
+    stoneCost.html(stoneSum);
     landCost.html(landSum);
 }
 
@@ -292,15 +317,19 @@ function calcSliderWidth(size) {
     return Math.min(size + 0.8, 10) + "em";
 }
 
-function resizeRemaining(gold, wood, land) {
+function resizeRemaining(gold, wood, stone, land) {
     // console.log(sliders);
     sliders.each(function (index, element) {
         var goldPrice = buildingGoldCosts[index].innerHTML;
         var woodPrice = buildingWoodCosts[index].innerHTML;
+        var stonePrice = buildingStoneCosts[index].innerHTML;
         var landPrice = 1;  // someday will be land cost
         var remaining = Math.max(Math.floor(Math.min(
             (totalGold - gold) / goldPrice,
             (totalWood - wood) / woodPrice,
+            ((stonePrice > 0) ? 
+                (totalStone - stone) / stonePrice:
+                Infinity),
             (totalLand - land) / landPrice
         )), 0);
 
@@ -321,8 +350,9 @@ function updateCosts() {
 
     var gold = parseInt(goldCost.text());
     var wood = parseInt(woodCost.text());
+    var stone = parseInt(stoneCost.text());
     var land = parseInt(landCost.text());
-    resizeRemaining(gold, wood, land);
+    resizeRemaining(gold, wood, stone, land);
 }
 
 sliders.each(function (index, element) {

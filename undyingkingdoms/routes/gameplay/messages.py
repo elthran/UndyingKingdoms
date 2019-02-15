@@ -10,8 +10,6 @@ from undyingkingdoms.models import Message
 @mobile_template('{mobile/}gameplay/messages.html')
 @login_required
 def messages(template):
-    if not current_user.in_active_session:
-        current_user.in_active_session = True
     new_messages = Message.query.filter_by(county_id=current_user.county.id, unread=True).all()
     for message in new_messages:
         message.unread = False

@@ -18,14 +18,14 @@ elf_armies['monster'].class_name, elf_armies['monster'].class_name_plural, elf_a
 # Peasants
 elf_armies['peasant'].attack += 1
 elf_armies['peasant'].defence += 1
-elf_armies['peasant'].wood += 1
+elf_armies['peasant'].wood += 2
 # Soldiers
 elf_armies['soldier'].attack += 1
-elf_armies['soldier'].wood += 2
+elf_armies['soldier'].wood += 3
 # Archers
 elf_armies['archer'].defence += 1
-elf_armies['archer'].wood += 2
+elf_armies['archer'].wood += 3
 # Elites
 elf_armies['elite'].attack += 1
 elf_armies['elite'].defence += 1
-elf_armies['elite'].wood += 3
+elf_armies['elite'].wood += 4

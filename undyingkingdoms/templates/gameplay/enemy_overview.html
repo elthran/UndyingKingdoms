@@ -1,0 +1,141 @@
+{% extends "gameplay/layout.html" %}
+
+{% block title %}Overview Enemy: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+input {
+    width: 21em;
+    margin-bottom: 0.6em;
+}
+
+.spacer {
+    margin-bottom: 1em;
+}
+
+button {
+    min-width: 14em;
+}
+</style>
+{% endblock %}
+
+{% block content2 %}
+{% set user = current_user %}
+<div id="content">
+  <h1 style="text-align:center;">{{ target_county.name }}</h1>
+
+  <h2>Basic Info</h2>
+  <ul>
+    <li>Leader: {{ target_county.title }} {{ target_county.leader }}</li>
+    <li>Race: {{ target_county.race }}</li>
+    <li>Title: {{ target_county.background }}</li>
+    <li>Population: {{target_county.population }}</li>
+    <li>Land: {{ target_county.land }} acres</li>
+  </ul>
+  <br>
+  <h2>Estimated Military Info</h2>
+  {% if user.county.get_thief_report_military(target_county.id) %}
+  {% set report = user.county.get_thief_report_military(target_county.id) %}
+  (Updated {{ report.get_report_age(user.county.kingdom.world.day) }} days ago)
+  <ul>
+    <li>{{target_county.armies['peasant'].class_name }}: {{ report.peasant }}</li>
+    <li>{{target_county.armies['archer'].class_name }}: {{ report.archer }}</li>
+    <li>{{target_county.armies['soldier'].class_name }}: {{ report.soldier }}</li>
+    <li>{{target_county.armies['elite'].class_name }}: {{ report.elite }}</li>
+    <li>{{target_county.armies['monster'].class_name }}: {{ report.monster }}</li>
+  </ul>
+  {% else %}
+  No information is known.
+  {% endif %}
+  <br><br>
+  <!-- Checks to see if there should be an attack option Not yourself, and if not teammate if civil war over -->
+  {% if current_user.county.kingdom.leader == 0 %} <!-- Your kingdom is in civil war -->
+    {% if target_kingdom == current_user.county.kingdom %} <!-- You can attack your own kingdom -->
+      <a href="{{ url_for('attack', county_id=target_county.id) }}">Attack</a>
+      <a href="{{ url_for('infiltrate', county_id=target_county.id) }}">Infiltrate</a>
+    {% else %}
+      <p style="color:blue;">You can't send troops outside of your kingdom while it is in civil war.</p>
+    {% endif %}
+  {% else %}
+    {% if target_kingdom == current_user.county.kingdom %} <!-- You can't attack your own kingdom -->
+      <p style="color:blue;">You can't attack counties within your own kingdom while you are at peace.</p>
+    {% else %}
+      <a href="{{ url_for('attack', county_id=target_county.id) }}">Attack</a>
+      <a href="{{ url_for('infiltrate', county_id=target_county.id) }}">Infiltrate</a>
+    {% endif %}
+  {% endif %}
+  <br><br><br>
+  {% if target_kingdom == current_user.county.kingdom %}
+  <form method="POST" accept-charset="UTF-8" action="{{ url_for('trade',county_id=target_county.id) }}">
+    {{ trade_form.csrf_token }}
+    <h1>Offer Trade</h1>
+    <table>
+      <tr>
+        <th>Offer</th>
+        <th>Request</th>
+      </tr>
+      <tr>
+        <td>{{ trade_form.offer_gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"></td>
+        <td>{{ trade_form.receive_gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"></td>
+      </tr>
+      <tr>
+        <td>{{ trade_form.offer_wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"></td>
+        <td>{{ trade_form.receive_wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"></td>
+      </tr>
+      <tr>
+        <td>{{ trade_form.offer_iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></td>
+        <td>{{ trade_form.receive_iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></td>
+      </tr>
+      <tr>
+        <td>{{ trade_form.offer_stone }} <img class="resource_icons" src="/static/images/stone_icon.jpg"></td>
+        <td>{{ trade_form.receive_stone }} <img class="resource_icons" src="/static/images/stone_icon.jpg"></td>
+      </tr>
+    </table>
+    How many days do they have to accept this offer? {{ trade_form.duration }}
+    <br>
+    <p>Note: Any items you offer in a trade will be unavailable to you until the other county replies to offer or you cancel it.</p>
+    <br>
+    <button type="submit">Offer Trade</button>
+  </form>
+  {% endif %}
+  <br><br>
+  <h1>Send Message:</h1>
+  <form id="message-form" method="POST" accept-charset="UTF-8" action="{{ url_for('send_message', county_id=target_county.id) }}">
+    {{ message_form.csrf_token(id="message-form-csrf-token") }}
+    {{ render_field(message_form.title, placeholder="Title", autofocus="", maxlength=message_form.TITLE_SIZE, id="message-title") }}
+    <textarea id="message-content" cols="100" rows="10" name="content" placeholder="Content"
+      maxlength="{{ message_form.CONTENT_SIZE }}"></textarea>
+    <div class="spacer"></div>
+    <button type="submit">Send Message</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+// If you keep Jinja out of JS debuging is much easier.
+$("#message-form").submit(function (e) {
+    e.preventDefault();
+    $.ajax({
+        url: $(this).attr("action"),
+        method: "POST",
+        // need to verify csrf id, I might be wrong.
+        headers: {"X-CSRF-TOKEN": $("#message-form-csrf-token").val()},
+        data: $(this).serialize(),
+        dataType: "json",  // type of data returned, not type sent.
+        success: function (response, status) {
+            if (status === "success") {
+                $("#message-title").val("");
+                $("#message-content").val("");
+                console.log(response);
+            } else {
+                console.log(response);
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

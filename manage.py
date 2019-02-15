@@ -47,10 +47,10 @@ def init_db():
 @manager.command
 def drop_db():
     """Drop the database."""
-    # db.engine.execute("SET FOREIGN_KEY_CHECKS=0;")
+    db.engine.execute("SET FOREIGN_KEY_CHECKS=0;")
     with app.app_context():
         db.drop_all()
-    # db.engine.execute("SET FOREIGN_KEY_CHECKS=1;")
+    db.engine.execute("SET FOREIGN_KEY_CHECKS=1;")
     print("Drop all tables.")
 
 

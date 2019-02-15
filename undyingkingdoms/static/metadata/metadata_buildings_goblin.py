@@ -14,5 +14,9 @@ goblin_buildings['stables'].class_name, goblin_buildings['stables'].class_name_p
 goblin_buildings['guild'].class_name, goblin_buildings['guild'].class_name_plural = 'hideout', 'hideouts'
 goblin_buildings['bank'].class_name, goblin_buildings['bank'].class_name_plural = 'storehouse', 'storehouses'
 goblin_buildings['lair'].class_name, goblin_buildings['lair'].class_name_plural = 'wyvern lair', 'wyvern lairs'
+# Goblins:
+goblin_buildings['guild'].output += 1
+goblin_buildings['guild'].stone_cost *= 2
+goblin_buildings['guild'].description = 'Each thieves guild gives you 2 additional spies to send on missions.'
 
 

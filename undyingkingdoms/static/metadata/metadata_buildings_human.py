@@ -15,5 +15,12 @@ human_buildings['stables'].class_name, human_buildings['stables'].class_name_plu
 human_buildings['guild'].class_name, human_buildings['guild'].class_name_plural = 'thieves guild', 'thieves guild'
 human_buildings['bank'].class_name, human_buildings['bank'].class_name_plural = 'treasury', 'treasury'
 human_buildings['lair'].class_name, human_buildings['lair'].class_name_plural = 'gryphon aviary', 'gryphon aviaries'
+# Goblins:
+human_buildings['bank'].output += 2
+human_buildings['bank'].stone_cost += 5
+human_buildings['bank'].description = 'Each bank gives you 10 additional gold per day.'
+
+human_buildings['mill'].output += 1
+human_buildings['mill'].description = 'Each lumber mill produces 5 wood a day.'
 
 

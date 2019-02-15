@@ -9,11 +9,13 @@ from extensions import flask_db, flask_json, flask_csrf, flask_mobility, flask_m
 from undyingkingdoms.GeoIP import geo_ip
 from undyingkingdoms.blueprints.admin import admin_blueprint
 from undyingkingdoms.blueprints.game_clock import game_clock_blueprint
+from undyingkingdoms import jinja_filters
 
 app = Flask(__name__)
 # I can't figure out how to put these in the config file
 app.jinja_env.lstrip_blocks = True
 app.jinja_env.trim_blocks = True
+app.jinja_env.filters['vuesafe'] = jinja_filters.vue_safe
 app.config.from_object('private_config')
 
 if 'liveweb' in socket.gethostname():
@@ -51,6 +53,7 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.infrastructure
     import undyingkingdoms.routes.gameplay.military
     import undyingkingdoms.routes.gameplay.infiltration
+    import undyingkingdoms.routes.gameplay.diplomacy
     import undyingkingdoms.routes.gameplay.kingdom
     import undyingkingdoms.routes.gameplay.attack
     import undyingkingdoms.routes.gameplay.messages

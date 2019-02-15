@@ -11,7 +11,5 @@ from undyingkingdoms.models import Infiltration
 @mobile_template("{mobile/}gameplay/infiltration.html")
 @login_required
 def infiltration(template):
-    if not current_user.in_active_session:
-        current_user.in_active_session = True
     missions = Infiltration.query.filter_by(county_id=current_user.county.id).order_by(desc('time_created')).all()
     return render_template(template, missions=missions)

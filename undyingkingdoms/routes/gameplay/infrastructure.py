@@ -5,7 +5,6 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import World, Transaction
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm, ExcessProductionForm
-from undyingkingdoms.routes.helpers import in_active_session
 from undyingkingdoms.static.metadata.metadata import all_buildings, game_descriptions
 
 
@@ -13,8 +12,11 @@ def max_buildable_by_cost(county, building):
     max_size = min(
         county.gold // building.gold_cost,
         county.wood // building.wood_cost,
+        (county.stone // building.stone_cost
+            if building.stone_cost
+            else float('inf')),
         # eventually the 1 will be a land cost.
-        county.get_available_land () // 1
+        county.get_available_land() // 1
     )
     return max_size
 
@@ -22,7 +24,6 @@ def max_buildable_by_cost(county, building):
 @app.route('/gameplay/infrastructure/', methods=['GET'])
 @mobile_template('{mobile/}gameplay/infrastructure.html')
 @login_required
-@in_active_session
 def infrastructure(template):
     county = current_user.county
 
@@ -44,7 +45,6 @@ def infrastructure(template):
 
 @app.route('/gameplay/infrastructure/build/', methods=['POST'])
 @login_required
-@in_active_session
 def build_buildings():
     county = current_user.county
     world = World.query.filter_by(id=county.kingdom.world_id).first()
@@ -53,7 +53,7 @@ def build_buildings():
     build_form.county_id.data = county.id
 
     if build_form.validate_on_submit():
-        transaction = Transaction(county.id, county.county_days_in_age, world.day, "buy")
+        transaction = Transaction(county.id, county.county_age, world.day, "buy")
         for building in all_buildings:
             if build_form.data[building] > 0:
                 county.gold -= build_form.data[building] * county.buildings[building].gold_cost
@@ -63,22 +63,21 @@ def build_buildings():
                                          item_amount=build_form.data[building],
                                          gold_per_item=county.buildings[building].gold_cost,
                                          wood_per_item=county.buildings[building].wood_cost,
-                                         iron_per_item=0)
+                                         stone_per_item=county.buildings[building].stone_cost)
         transaction.save()
     return redirect(url_for('infrastructure'))
-    #     return jsonify(dict(
+    #     return jsonify(
     #         status="success",
     #         message="You purchased x buildings ..."
-    #     ))
-    # return jsonify(dict(
+    #     )
+    # return jsonify(
     #     status="fail",
     #     message="Your build form failed to pass validation."
-    # ))
+    # )
 
 
 @app.route('/gameplay/infrastructure/allocate/', methods=['POST'])
 @login_required
-@in_active_session
 def allocate_workers():
     county = current_user.county
     excess_worker_form = ExcessProductionForm(goal=county.production_choice)
@@ -87,11 +86,11 @@ def allocate_workers():
 
     if excess_worker_form.validate_on_submit():
         county.production_choice = excess_worker_form.goal.data
-        return jsonify(dict(
+        return jsonify(
             status="success",
             message="You allocated workers to ..."
-        ))
-    return jsonify(dict(
+        )
+    return jsonify(
         status="fail",
         message="Your allocation form failed to pass validation."
-    ))
+    )

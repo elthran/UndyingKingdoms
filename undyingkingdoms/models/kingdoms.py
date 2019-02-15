@@ -31,7 +31,8 @@ class Kingdom(GameState):
             self.leader = county.id
             achievement = Achievement.query.filter_by(user_id=county.user_id, category="class_leader",
                                                       sub_category=county.race.lower()).first()
-            achievement.current_tier += 1
+            if achievement:  # This should be unneeded and SHOULD be throwing errors. But while it's in beta we can leave it in
+                achievement.current_tier += 1
 
     def get_leader_name(self, county_id):
         return County.query.filter_by(id=county_id).first().name
