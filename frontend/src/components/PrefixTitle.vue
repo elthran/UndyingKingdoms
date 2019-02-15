@@ -1,7 +1,9 @@
 <script>
 export default {
-  name: 'vue-title',
-  props: ['title'],
+  name: 'PrefixTitle',
+  props: {
+    title: String
+  },
   created () {
     document.title = this.title + ": " + document.title;
   },
