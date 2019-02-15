@@ -216,7 +216,7 @@ h2 {
       Land Required: <span id="landCost">0</span> / {{ county.get_available_land() }}
     </div>
     <br>
-    <p>Each day, up to {% if county.background == 'Engineer' %}5{% else %}3{% endif %} buildings in your queue will be built.</p>
+    <p>Each day, up to {% if county.background == 'Engineer' %}3{% else %}2{% endif %} buildings in your queue will be built.</p>
     <br>
     <button id="buildSubmit" type="submit">Build</button>
     <br>

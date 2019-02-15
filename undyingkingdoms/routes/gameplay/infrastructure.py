@@ -58,6 +58,7 @@ def build_buildings():
             if build_form.data[building] > 0:
                 county.gold -= build_form.data[building] * county.buildings[building].gold_cost
                 county.wood -= build_form.data[building] * county.buildings[building].wood_cost
+                county.stone -= build_form.data[building] * county.buildings[building].stone_cost
                 county.buildings[building].pending += build_form.data[building]
                 transaction.add_purchase(item_name=building,
                                          item_amount=build_form.data[building],
