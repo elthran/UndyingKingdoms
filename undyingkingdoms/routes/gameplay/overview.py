@@ -59,10 +59,13 @@ def enemy_overview(template, kingdom_id=0, county_id=0):
     trade_form.offer_wood.choices = [(i * 10, i * 10) for i in range(county.wood // 10 + 1)]
     trade_form.offer_iron.choices = [(i * 10, i * 10) for i in range(county.iron // 10 + 1)]
     trade_form.offer_stone.choices = [(i * 10, i * 10) for i in range(county.stone // 10 + 1)]
+    trade_form.offer_grain.choices = [(i * 10, i * 10) for i in range(county.grain_stores // 10 + 1)]
+    
     trade_form.receive_gold.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_wood.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_iron.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_stone.choices = [(i * 10, i * 10) for i in range(51)]
+    trade_form.receive_grain.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.duration.choices = [(i, i) for i in range(3, 25)]
 
     return render_template(
@@ -109,16 +112,19 @@ def trade(county_id):
     trade_form.offer_wood.choices = [(i * 10, i * 10) for i in range(county.wood // 10 + 1)]
     trade_form.offer_iron.choices = [(i * 10, i * 10) for i in range(county.iron // 10 + 1)]
     trade_form.offer_stone.choices = [(i * 10, i * 10) for i in range(county.stone // 10 + 1)]
+    trade_form.offer_grain.choices = [(i * 10, i * 10) for i in range(county.grain_stores // 10 + 1)]
+    
     trade_form.receive_gold.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_wood.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_iron.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_stone.choices = [(i * 10, i * 10) for i in range(51)]
+    trade_form.receive_grain.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.duration.choices = [(i, i) for i in range(3, 25)]
 
     if trade_form.validate_on_submit():
         trade_offered = Trade(county.id, target_county.id, current_user.county.kingdom.world.day, 12,
-                              trade_form.offer_gold.data, trade_form.offer_wood.data, trade_form.offer_iron.data, trade_form.offer_stone.data,
-                              trade_form.receive_gold.data, trade_form.receive_wood.data, trade_form.receive_iron.data, trade_form.receive_stone.data)
+                              trade_form.offer_gold.data, trade_form.offer_wood.data, trade_form.offer_iron.data, trade_form.offer_stone.data, trade_form.offer_grain.data,
+                              trade_form.receive_gold.data, trade_form.receive_wood.data, trade_form.receive_iron.data, trade_form.receive_stone.data, trade_form.receive_grain.data)
         trade_offered.save()
 
         county.gold -= trade_form.offer_gold.data

@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
 
-from sqlalchemy import cast, Date
-
 from extensions import flask_db as db
 from undyingkingdoms.models import Session, User
 from undyingkingdoms.models.bases import GameEvent
@@ -21,17 +19,22 @@ class DAU(GameEvent):
     score = db.Column(db.Integer)
     land = db.Column(db.Integer)
     population = db.Column(db.Integer)
+    happiness = db.Column(db.Integer)
+    nourishment = db.Column(db.Integer)
+    health = db.Column(db.Integer)
+    # Resources
     gold = db.Column(db.Integer)
     wood = db.Column(db.Integer)
     iron = db.Column(db.Integer)
     stone = db.Column(db.Integer)
+    research = db.Column(db.Integer)
+    mana = db.Column(db.Integer)
     lifetime_gold = db.Column(db.Integer)
     lifetime_wood = db.Column(db.Integer)
     lifetime_iron = db.Column(db.Integer)
     lifetime_stone = db.Column(db.Integer)
-    happiness = db.Column(db.Integer)
-    nourishment = db.Column(db.Integer)
-    health = db.Column(db.Integer)
+    lifetime_research = db.Column(db.Integer)
+    lifetime_mana = db.Column(db.Integer)
     # Military data
     peasant = db.Column(db.Integer)
     soldier = db.Column(db.Integer)
@@ -73,10 +76,14 @@ class DAU(GameEvent):
         self.wood = county.wood
         self.iron = county.iron
         self.stone = county.stone
+        self.research = county.research
+        self.mana = county.mana
         self.lifetime_gold = county.lifetime_gold
         self.lifetime_wood = county.lifetime_wood
         self.lifetime_iron = county.lifetime_iron
         self.lifetime_stone = county.lifetime_stone
+        self.lifetime_research = county.lifetime_research
+        self.lifetime_mana = county.lifetime_mana
         self.happiness = county.happiness
         self.nourishment = county.nourishment
         self.health = county.health
