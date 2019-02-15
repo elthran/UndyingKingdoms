@@ -53,7 +53,7 @@ def build_buildings():
     build_form.county_id.data = county.id
 
     if build_form.validate_on_submit():
-        transaction = Transaction(county.id, county.county_age, world.day, "buy")
+        transaction = Transaction(county.id, county.day, world.day, "buy")
         for building in all_buildings:
             if build_form.data[building] > 0:
                 county.gold -= build_form.data[building] * county.buildings[building].gold_cost

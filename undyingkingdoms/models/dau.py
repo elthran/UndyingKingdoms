@@ -16,9 +16,9 @@ class DAU(GameEvent):
     minutes_played = db.Column(db.Integer)
     ads_watched = db.Column(db.Integer)
     # Game data
-    world_age = db.Column(db.Integer)
-    county_age = db.Column(db.Integer)
-    current_score = db.Column(db.Integer)
+    world_day = db.Column(db.Integer)
+    county_day = db.Column(db.Integer)
+    score = db.Column(db.Integer)
     land = db.Column(db.Integer)
     population = db.Column(db.Integer)
     gold = db.Column(db.Integer)
@@ -51,22 +51,22 @@ class DAU(GameEvent):
     quarry = db.Column(db.Integer)
     lair = db.Column(db.Integer)
 
-    def __init__(self, user_id, county_age, world_age):
+    def __init__(self, user_id):
         self.user_id = user_id
-        self.county_age = county_age
-        self.world_age = world_age
+        self.update_self(user_id)
         self.sessions = self.get_sessions(user_id)
         self.minutes_played = self.get_minutes_played(user_id)
         self.ads_watched = 0
-        self.update_self(user_id)
 
     def update_self(self, user_id):
-        user = User.query.filter_by(id=user_id).first()
+        user = User.query.get(user_id)
         county = user.county
         
+        self.world_day = county.kingdom.world.day
+        self.county_day = county.day
         self.account_age_in_days = (datetime.utcnow() - user.time_created).days
         self.county_id = county.id
-        self.current_score = user.get_current_leaderboard_score()
+        self.score = user.get_current_leaderboard_score()
         self.land = county.land
         self.population = county.population
         self.gold = county.gold
