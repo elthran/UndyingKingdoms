@@ -40,24 +40,33 @@ class County(GameState):
 
     messages = db.relationship('Message', backref='county')
 
-    _land = db.Column(db.Integer)
     race = db.Column(db.String(32))
     title = db.Column(db.String(16))
     background = db.Column(db.String(32))
-    tax = db.Column(db.Integer)
+    
     _population = db.Column(db.Integer)
+    _land = db.Column(db.Integer)
+    _happiness = db.Column(db.Integer)  # Out of 100
+    _nourishment = db.Column(db.Integer)  # Out of 100
+    _health = db.Column(db.Integer)  # Out of 100
+    
+    tax = db.Column(db.Integer)
+    rations = db.Column(db.Float)
+    production_choice = db.Column(db.Integer)  # the current setting the user chose
+
     _gold = db.Column(db.Integer)
     _wood = db.Column(db.Integer)
     _iron = db.Column(db.Integer)
     _stone = db.Column(db.Integer)
+    _research = db.Column(db.Integer)
+    _mana = db.Column(db.Integer)
     lifetime_gold = db.Column(db.Integer)
     lifetime_wood = db.Column(db.Integer)
     lifetime_iron = db.Column(db.Integer)
     lifetime_stone = db.Column(db.Integer)
-    rations = db.Column(db.Float)
-    _happiness = db.Column(db.Integer)  # Out of 100
-    _nourishment = db.Column(db.Integer)  # Out of 100
-    _health = db.Column(db.Integer)  # Out of 100
+    lifetime_research = db.Column(db.Integer)
+    lifetime_mana = db.Column(db.Integer)
+
     weather = db.Column(db.String(32))
     grain_stores = db.Column(db.Integer)
     notifications = db.relationship('Notification', backref='county')
@@ -65,8 +74,6 @@ class County(GameState):
     expeditions = db.relationship('Expedition', backref='county')
     infiltrations = db.relationship('Infiltration', backref='county')
 
-    # Excess Production
-    production_choice = db.Column(db.Integer)  # the current setting the user chose
     produce_land = db.Column(db.Integer)  # Progress towards next land
 
     births = db.Column(db.Integer)
@@ -91,49 +98,53 @@ class County(GameState):
         self.day = 0
         self.vote = None
         self.last_vote_date = None
-
+        # Basic resources
         self._population = 500
         self._land = 150
         self._nourishment = 75
         self._happiness = 75
         self._health = 75
+        self.weather = "Sunny"
+        # Set values / preferences
         self.tax = 5
+        self.rations = 1
+        self.production_choice = 0
+        # Resources
         self._gold = 500
         self._wood = 100
         self._iron = 0
         self._stone = 0
+        self._research = 0
+        self._mana = 0
+        self.grain_stores = 500
+        self.produce_land = 0  # Progress towards next land
+        # Lifetime accrued resources
         self.lifetime_gold = self._gold
         self.lifetime_wood = self._wood
         self.lifetime_iron = self._iron
         self.lifetime_stone = self._stone
-        self.rations = 1
-        self.grain_stores = 500
-        self.weather = "Sunny"
-
+        self.lifetime_research = self._research
+        self.lifetime_mana = self._mana
+        # Predictions from advisors
         self.births = 0
         self.deaths = 0
         self.immigration = 0
         self.emigration = 0
-
-        self.production_choice = 0
-        self.produce_land = 0
-
-        buildings = None
-        armies = None
+        # Buildings and Armies extracted from metadata
         if self.race == 'Dwarf':
-            buildings = deepcopy(dwarf_buildings)
-            armies = deepcopy(dwarf_armies)
+            self.buildings = deepcopy(dwarf_buildings)
+            self.armies = deepcopy(dwarf_armies)
         elif self.race == 'Human':
-            buildings = deepcopy(human_buildings)
-            armies = deepcopy(human_armies)
+            self.buildings = deepcopy(human_buildings)
+            self.armies = deepcopy(human_armies)
         elif self.race == 'Elf':
-            buildings = deepcopy(elf_buildings)
-            armies = deepcopy(elf_armies)
+            self.buildings = deepcopy(elf_buildings)
+            self.armies = deepcopy(elf_armies)
         elif self.race == 'Goblin':
-            buildings = deepcopy(goblin_buildings)
-            armies = deepcopy(goblin_armies)
-        self.buildings = buildings
-        self.armies = armies
+            self.buildings = deepcopy(goblin_buildings)
+            self.armies = deepcopy(goblin_armies)
+        else:
+            raise AttributeError('Buildings and Armies were not found in metadata')
 
     @property
     def population(self):
@@ -205,6 +216,30 @@ class County(GameState):
             self.lifetime_stone += difference
         self._stone = max(value, 0)
         self.check_incremental_achievement("stone", self._stone)
+
+    @property
+    def research(self):
+        return self._research
+
+    @research.setter
+    def research(self, value):
+        difference = value - self._research
+        if difference > 0:
+            self.lifetime_research += difference
+        self._research = max(value, 0)
+        self.check_incremental_achievement("research", self._research)
+
+    @property
+    def mana(self):
+        return self._mana
+
+    @mana.setter
+    def mana(self, value):
+        difference = value - self._mana
+        if difference > 0:
+            self.lifetime_mana += difference
+        self._mana = max(value, 0)
+        self.check_incremental_achievement("mana", self._mana)
 
     @property
     def happiness(self):
@@ -314,7 +349,7 @@ class County(GameState):
             self.armies['elite'].total += 1
         if randint(1, 10) > 8:
             self.gold -= 25
-        if randint(1, 12) == 12 and self.kingdom.leader == 0:
+        if randint(1, 24) == 24 and self.kingdom.leader == 0:
             friendly_counties = County.query.filter_by(kingdom_id=self.kingdom_id).all()
             friendly_counties = [county for county in friendly_counties if not county.user.is_bot]
             self.vote = choice(friendly_counties).id
