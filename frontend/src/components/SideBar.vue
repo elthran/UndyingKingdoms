@@ -1,6 +1,6 @@
 <template>
   <div id="sidebar">
-    <ul style="text-align:center;">
+    <ul class=".text-center">
       <li><h1>Gameplay</h1></li>
       <li><a :href="urlFor.overview">County&nbsp;Overview</a></li>
       <li><a :href="urlFor.economy">Economy</a></li>
@@ -27,7 +27,7 @@
       <li><a :href="urlFor.leaderboard">Leaderboard</a></li>
       <li><a :href="urlFor.versions">Read&nbsp;About&nbsp;Updates</a></li>
       <li v-if="user.isAdmin">
-        <a :href="urlFor.admin.homeAPI">Admin</a>
+        <a :href="urlFor.adminHomeAPI">Admin</a>
       </li>
       <li><a :href="urlFor.logout">Logout</a></li>
       <li><br><br><br></li>
@@ -45,20 +45,25 @@ export default {
     }
   },
   methods: {
-    updatePage: function (data) {
+    updatePage (data) {
       console.log(data);
       this.urlFor = data.urlFor;
       this.user = data.user;
     }
   },
   mounted () {
-    this.axios
-      .get('/api/sidebar')
-      .then(this.updagePage)
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      });
+    this.axios.get('/api/sidebar')
+    .then((response) => {
+      if (response.status === 200) {
+        this.updatePage(response.data);
+      } else {
+        console.log(response);
+      }
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    });
   }
 }
 </script>
@@ -84,5 +89,9 @@ export default {
 
 .bold {
     font-weight: bold;
+}
+
+.text-center {
+    text-align: center;
 }
 </style>
