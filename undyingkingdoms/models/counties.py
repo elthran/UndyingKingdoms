@@ -848,7 +848,7 @@ class County(GameState):
 
     # Infiltrations
     def get_number_of_available_thieves(self):
-        total_thieves = self.buildings['guild'].total
+        total_thieves = self.buildings['tavern'].total
         all_current_missions = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
         unavailable_thieves = sum(mission.amount_of_thieves for mission in all_current_missions)
         return total_thieves - unavailable_thieves

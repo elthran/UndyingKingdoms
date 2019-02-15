@@ -12,8 +12,10 @@ dwarf_buildings['mill'].class_name, dwarf_buildings['mill'].class_name_plural = 
 dwarf_buildings['mine'].class_name, dwarf_buildings['mine'].class_name_plural = 'iron mine', 'iron mines'
 dwarf_buildings['fort'].class_name, dwarf_buildings['fort'].class_name_plural = 'stronghold', 'strongholds'
 dwarf_buildings['stables'].class_name, dwarf_buildings['stables'].class_name_plural = 'pony stables', 'pony stables'
-dwarf_buildings['guild'].class_name, dwarf_buildings['guild'].class_name_plural = 'thieves den', 'thieves dens'
 dwarf_buildings['bank'].class_name, dwarf_buildings['bank'].class_name_plural = 'vault', 'vaults'
+dwarf_buildings['thief'].class_name, dwarf_buildings['thief'].class_name_plural = 'thieves den', 'thieves dens'
+dwarf_buildings['research'].class_name, dwarf_buildings['research'].class_name_plural = 'alchemist lab', 'alchemist labs'
+dwarf_buildings['wizard'].class_name, dwarf_buildings['wizard'].class_name_plural = 'rune Forge', 'rune Forges'
 dwarf_buildings['lair'].class_name, dwarf_buildings['lair'].class_name_plural = 'manticore lair', 'manticore lairs'
 # Dwarves:
 dwarf_buildings['fort'].output += 2
