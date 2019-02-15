@@ -49,8 +49,10 @@ class DAU(GameEvent):
     mine = db.Column(db.Integer)
     fort = db.Column(db.Integer)
     stables = db.Column(db.Integer)
-    tavern = db.Column(db.Integer)
     bank = db.Column(db.Integer)
+    tavern = db.Column(db.Integer)
+    lab = db.Column(db.Integer)
+    arcane = db.Column(db.Integer)
     quarry = db.Column(db.Integer)
     lair = db.Column(db.Integer)
 
@@ -101,8 +103,10 @@ class DAU(GameEvent):
         self.mine = county.buildings['mine'].total
         self.fort = county.buildings['fort'].total
         self.stables = county.buildings['stables'].total
-        self.tavern = county.buildings['tavern'].total
         self.bank = county.buildings['bank'].total
+        self.tavern = county.buildings['tavern'].total
+        self.lab = county.buildings['lab'].total
+        self.arcane = county.buildings['arcane'].total
         self.quarry = county.buildings['quarry'].total
         self.lair = county.buildings['lair'].total
 

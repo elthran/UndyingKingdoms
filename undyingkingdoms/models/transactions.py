@@ -23,8 +23,10 @@ class Transaction(GameEvent):
     mine = db.Column(db.Integer)
     fort = db.Column(db.Integer)
     stables = db.Column(db.Integer)
-    tavern = db.Column(db.Integer)
     bank = db.Column(db.Integer)
+    tavern = db.Column(db.Integer)
+    lab = db.Column(db.Integer)
+    arcane = db.Column(db.Integer)
     quarry = db.Column(db.Integer)
     lair = db.Column(db.Integer)
 
@@ -47,8 +49,10 @@ class Transaction(GameEvent):
         self.mine = 0
         self.fort = 0
         self.stables = 0
-        self.tavern = 0
         self.bank = 0
+        self.tavern = 0
+        self.lab = 0
+        self.arcane = 0
         self.quarry = 0
         self.lair = 0
 
