@@ -15,7 +15,7 @@ infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust
 rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (0.75, "Three-Quarters"), (1, "Normal"),
                        (1.5, "One-and-a-half"), (2, "Double"), (3, "Triple")]
 
-all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'fort', 'stables', 'guild', 'bank', 'lair']
+all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'quarry', 'fort', 'stables', 'tavern', 'bank', 'lab', 'arcane', 'lair']
 
 all_achievements = {
     'land': Achievement(name="land", category="reach_x_amount_in_one_age", sub_category="land",

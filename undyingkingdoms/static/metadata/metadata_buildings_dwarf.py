@@ -10,6 +10,7 @@ dwarf_buildings['field'].class_name, dwarf_buildings['field'].class_name_plural 
 dwarf_buildings['pasture'].class_name, dwarf_buildings['pasture'].class_name_plural = 'goat farm', 'goat farms'
 dwarf_buildings['mill'].class_name, dwarf_buildings['mill'].class_name_plural = 'lumber mill', 'lumber mills'
 dwarf_buildings['mine'].class_name, dwarf_buildings['mine'].class_name_plural = 'iron mine', 'iron mines'
+dwarf_buildings['quarry'].class_name, dwarf_buildings['quarry'].class_name_plural = 'stone quarry', 'stone quarries'
 dwarf_buildings['fort'].class_name, dwarf_buildings['fort'].class_name_plural = 'stronghold', 'strongholds'
 dwarf_buildings['stables'].class_name, dwarf_buildings['stables'].class_name_plural = 'pony stables', 'pony stables'
 dwarf_buildings['bank'].class_name, dwarf_buildings['bank'].class_name_plural = 'vault', 'vaults'
