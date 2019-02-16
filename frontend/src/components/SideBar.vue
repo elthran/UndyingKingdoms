@@ -1,5 +1,5 @@
 <template>
-  <div id="sidebar">
+  <div id="side-bar">
     <ul class=".text-center">
       <li><h1>Gameplay</h1></li>
       <li><a :href="urlFor.overview">County&nbsp;Overview</a></li>
@@ -36,6 +36,8 @@
 </template>
 
 <script>
+import helpers from '@/assets/helpers.js'
+
 export default {
   name: "SideBar",
   data () {
@@ -53,26 +55,29 @@ export default {
     }
   },
   mounted () {
-    console.log("Mounted")
-    this.axios.get('/api/sidebar')
+    // if development
+    // this.axios.get('http://localhost:5000/api/sidebar')
+    var url = helpers.methods.envDependentUrl('/api/sidebar');
+    console.log(url);
+    this.axios.get(url)
     .then((response) => {
       if (response.status === 200) {
         this.updatePage(response.data);
       } else {
-        // console.log(response);
+        console.log(response);
       }
     })
     .catch((error) => {
       this.error = error;
       // handle error
-      // console.log(error);
+      console.log(error);
     });
   }
 }
 </script>
 
 <style scoped>
-#sidebar {  /* The main sidebar which is always visible when logged in */
+#side-bar {  /* The main sidebar which is always visible when logged in */
     margin-right: 1em;
     padding: 0.6em;
     font-size: 1.25em;

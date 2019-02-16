@@ -299,6 +299,8 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
+import StatusNumber from "@/components/StatusNumber.vue"
+import SelectGenerator from "@/components/SelectGenerator.vue"
 // // ugly Jinja hacked in variables.
 // var TAX = {{ county.tax }};
 // var GOLD_CHANGE = {{ county.get_gold_change() }};
@@ -331,14 +333,18 @@ function sendForm (form, callback) {
 // The constants are defined at the beginning and use evil Jinja in JS.
 export default {
   name: 'EconomyForm',
+  components: {
+    'status-number': StatusNumber,
+    'select-generator': SelectGenerator
+  },
   data: {
-    goldChange: GOLD_CHANGE,
-    selectedTaxRate: TAX,
-    happinessChange: HAPPINESS_CHANGE,
-    grainStorageChange: GRAIN_STORAGE_CHANGE,
-    selectedRations: RATIONS,
-    foodEaten: FOOD_EATEN,
-    nourishmentChange: NOURISHMENT_CHANGE
+    goldChange: Number,
+    selectedTaxRate: Number,
+    happinessChange: Number,
+    grainStorageChange: Number,
+    selectedRations: Number,
+    foodEaten: Number,
+    nourishmentChange: Number
   },
   methods: {
     updatePage: function (data) {

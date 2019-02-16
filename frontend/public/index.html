@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <meta HTTP-EQUIV="REFRESH" CONTENT="3600">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <meta http-equiv="refresh" content="3600">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/reset.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <title>Undying Kingdoms</title>
@@ -14,37 +14,37 @@
     <noscript>
       <strong>We're sorry but frontend doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <!--{% macro render_field(field, placeholder=None) %}-->
-      <!--<div>-->
-        <!--{% set css_class = 'form-control ' + kwargs.pop('class', '') %}-->
-        <!--{{ field(class=css_class, placeholder=placeholder, **kwargs) }}-->
-      <!--</div>-->
-    <!--{% endmacro %}-->
-    <!--{% with messages = get_flashed_messages(with_categories=true) %}-->
-    <!--{% if messages %}-->
-    <!--<ul class=flashes>-->
-      <!--{% for message in messages %}-->
-      <!--{% for category, message in messages %}-->
-      <!--<div class='flash-{{ category }}'>-->
-          <!--<li class="flash-{{ category }}">{{ message }}</li>-->
-      <!--</div>-->
-      <!--{% endfor %}-->
-      <!--{% endfor %}-->
-    <!--</ul>-->
-    <!--{% endif %}-->
-    <!--{% endwith %}-->
-    <!--{% if form and form.errors %}-->
-    <!--<div style="color:red;">-->
-      <!--Form data not sent to Python due to validation failure. Errors are:-->
-      <!--<ul>-->
-        <!--{% for field, error in form.errors.items() %}-->
-        <!--{% for e in error %}-->
-        <!--<li>{{ e }}</li>-->
-        <!--{% endfor %}-->
-        <!--{% endfor %}-->
-      <!--</ul>-->
-    <!--</div>-->
-    <!--{% endif %}-->
+    {% macro render_field(field, placeholder=None) %}
+      <div>
+        {% set css_class = 'form-control ' + kwargs.pop('class', '') %}
+        {{ field(class=css_class, placeholder=placeholder, **kwargs) }}
+      </div>
+    {% endmacro %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class=flashes>
+      {% for message in messages %}
+      {% for category, message in messages %}
+      <div class='flash-{{ category }}'>
+          <li class="flash-{{ category }}">{{ message }}</li>
+      </div>
+      {% endfor %}
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    {% if form and form.errors %}
+    <div style="color:red;">
+      Form data not sent to Python due to validation failure. Errors are:
+      <ul>
+        {% for field, error in form.errors.items() %}
+        {% for e in error %}
+        <li>{{ e }}</li>
+        {% endfor %}
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
 
     <div id="app"></div>
     <!-- built files will be auto injected -->

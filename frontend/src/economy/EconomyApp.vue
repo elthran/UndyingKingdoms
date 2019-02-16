@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="economy-app">
     <prefix-title title="Economy"></prefix-title>
     <div id="layout-body">
       <side-bar></side-bar>
@@ -10,16 +10,12 @@
 
 <script>
 import SideBar from "@/components/SideBar.vue"
-import StatusNumber from "@/components/StatusNumber.vue"
-import SelectGenerator from "@/components/SelectGenerator.vue"
 import EconomyForm from "@/components/EconomyForm.vue"
 
 export default {
-  name: 'app',
+  name: 'EconomyApp',
   components: {
     'side-bar': SideBar,
-    'status-number': StatusNumber,
-    'select-generator': SelectGenerator,
     'economy-form': EconomyForm
   }
 }
