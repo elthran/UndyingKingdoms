@@ -5,6 +5,7 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
+from undyingkingdoms.blueprints.api.views.helpers import patch_has_mail
 from undyingkingdoms.models import County, Kingdom, Message, Notification
 from undyingkingdoms.models.bases import GameState
 from undyingkingdoms.models.forms.message import MessageForm
@@ -37,9 +38,9 @@ def overview(template):
     # If game has been reset allow user to make a new county.
     if not current_user.county:
         return redirect(url_for('initialize'))
+    patch_has_mail(current_user)
 
-    has_mail = Message.query.filter_by(county_id=current_user.county.id, unread=True).count()
-    return render_template(template, has_mail=has_mail)
+    return render_template(template, has_mail=current_user.has_mail())
 
 
 @app.route('/gameplay/enemy_overview/<int:kingdom_id>/<int:county_id>/', methods=['GET'])

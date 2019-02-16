@@ -12,13 +12,26 @@ from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_
 @mobile_template('{mobile/}dist/economy.html')
 @login_required
 def economy(template):
+    # county = current_user.county
+    # kingdom = county.kingdom
+
     form = EconomyForm(tax=current_user.county.tax, rations=current_user.county.rations)
 
     form.tax.choices = [(i, i) for i in range(11)]
     form.rations.choices = [(pairing[0], pairing[1]) for pairing in rations_terminology]
 
-    return render_template(
-        template, form=form,
+    vue_safe_env = app.jinja_env.overlay()
+    vue_safe_env.block_start_string = '((*'
+    vue_safe_env.block_end_string = '*))'
+    vue_safe_env.variable_start_string = '((('
+    vue_safe_env.variable_end_string = ')))'
+    vue_safe_env.comment_start_string = '((='
+    vue_safe_env.comment_end_string = '=))'
+
+    vue_safe_template = vue_safe_env.get_template(template)
+
+    return vue_safe_template.render(
+        form=form,
         birth_rate_modifier=birth_rate_modifier,
         income_modifier=income_modifier,
         food_consumed_modifier=food_consumed_modifier,

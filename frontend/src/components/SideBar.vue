@@ -41,39 +41,37 @@ export default {
   data () {
     return {
       'urlFor': Object,
-      'user': Object
+      'user': Object,
+      'error': Object
     }
   },
   methods: {
     updatePage (data) {
-      console.log(data);
+      // console.log(data);
       this.urlFor = data.urlFor;
       this.user = data.user;
     }
   },
   mounted () {
+    console.log("Mounted")
     this.axios.get('/api/sidebar')
     .then((response) => {
       if (response.status === 200) {
         this.updatePage(response.data);
       } else {
-        console.log(response);
+        // console.log(response);
       }
     })
-    .catch(function (error) {
+    .catch((error) => {
+      this.error = error;
       // handle error
-      console.log(error);
+      // console.log(error);
     });
   }
 }
 </script>
 
 <style scoped>
-#layout-body {
-    display: flex;
-    margin: 1em;
-}
-
 #sidebar {  /* The main sidebar which is always visible when logged in */
     margin-right: 1em;
     padding: 0.6em;
@@ -81,10 +79,6 @@ export default {
     line-height: 1.7em;
     border: solid;
     border-radius: 5px;
-}
-
-#layout-content {
-    width: 100%;
 }
 
 .bold {
