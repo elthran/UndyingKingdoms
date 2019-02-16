@@ -67,4 +67,4 @@ class Infiltration(GameEvent):
         self.elite = max(enemy_county.armies['elite'].total + randint(-elite_inaccuracy, elite_inaccuracy), 0)
 
     def get_report_age(self, day):
-        return day - self.world_age_in_days
+        return day - self.world_day
