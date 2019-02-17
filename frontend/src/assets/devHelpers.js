@@ -10,6 +10,18 @@ function baseURL () {
   }
 }
 
+// $.ajax({
+//     async: false,
+//     type: "POST",
+//     url: "Default.aspx/GetCurrentTime",
+//     data: '{name: "Mudassar" }',
+//     contentType: "application/json; charset=utf-8",
+//     dataType: "json",
+//     success: function (response) {
+//         alert(response.d);
+//     }
+// });
+
 function login () {
   var loginUrl = 'http://localhost:5000/login/'
   var csrfToken;

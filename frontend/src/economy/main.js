@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import EconomyApp from './EconomyApp.vue';
 // import axios from 'axios';
-import {devAxios} from '@/assets/devHelpers.js'
+import {devAxios, devLogin} from '@/assets/devHelpers.js'
 import VueAxios from 'vue-axios';
 import PrefixTitle from '@/components/PrefixTitle.vue';
 
