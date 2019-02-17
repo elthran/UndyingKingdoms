@@ -11,3 +11,9 @@ new Vue({
 		delimiters: ['v{', '}'],
     render: h => h(EconomyApp)
 }).$mount('#app');
+
+export default {
+	name: 'main',
+	data () {
+	}
+}

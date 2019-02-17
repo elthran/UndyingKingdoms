@@ -337,14 +337,16 @@ export default {
     'status-number': StatusNumber,
     'select-generator': SelectGenerator
   },
-  data: {
-    goldChange: Number,
-    selectedTaxRate: Number,
-    happinessChange: Number,
-    grainStorageChange: Number,
-    selectedRations: Number,
-    foodEaten: Number,
-    nourishmentChange: Number
+  data () {
+    return {
+      goldChange: Number,
+      selectedTaxRate: Number,
+      happinessChange: Number,
+      grainStorageChange: Number,
+      selectedRations: Number,
+      foodEaten: Number,
+      nourishmentChange: Number
+    }
   },
   methods: {
     updatePage: function (data) {

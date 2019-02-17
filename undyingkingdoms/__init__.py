@@ -5,7 +5,7 @@ from flask import Flask, render_template, send_from_directory
 from flask_sslify import SSLify
 from flask_login import LoginManager
 
-from extensions import flask_db, flask_json, flask_csrf, flask_mobility, flask_mail
+from extensions import flask_db, flask_json, flask_csrf, flask_mobility, flask_mail, flask_cors
 from undyingkingdoms.GeoIP import geo_ip
 from undyingkingdoms.blueprints.admin import admin_blueprint
 from undyingkingdoms.blueprints.game_clock import game_clock_blueprint
@@ -32,6 +32,7 @@ flask_csrf.init_app(app)
 flask_json.init_app(app)
 flask_mobility.init_app(app)
 flask_mail.init_app(app)
+flask_cors.init_app(app)
 
 
 # Register app blueprints
