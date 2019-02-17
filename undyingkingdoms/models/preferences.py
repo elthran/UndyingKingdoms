@@ -41,3 +41,4 @@ class Preferences(GameState):
         self.county_id = county_id
         self.user_id = user_id
         self.tax_rate = 5
+        self.rations = 1

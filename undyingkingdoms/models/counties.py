@@ -52,7 +52,6 @@ class County(GameState):
     _nourishment = db.Column(db.Integer)  # Out of 100
     _health = db.Column(db.Integer)  # Out of 100
     
-    rations = db.Column(db.Float)
     production_choice = db.Column(db.Integer)  # the current setting the user chose
 
     _gold = db.Column(db.Integer)
@@ -110,7 +109,6 @@ class County(GameState):
         self._health = 75
         self.weather = "Sunny"
         # Set values / preferences
-        self.rations = 1
         self.production_choice = 0
         # Resources
         self._gold = 500
@@ -257,10 +255,6 @@ class County(GameState):
     def nourishment(self):
         return self._nourishment
 
-    @property
-    def tax_rate(self):
-        return Preferences.query.filter_by(county_id=self.id).first().tax_rate
-
     @nourishment.setter
     def nourishment(self, value):
         self._nourishment = int(min(max(value, 1), 100))
@@ -272,6 +266,14 @@ class County(GameState):
     @health.setter
     def health(self, value):
         self._health = int(min(max(value, 1), 100))
+
+    @property
+    def tax_rate(self):
+        return Preferences.query.filter_by(county_id=self.id).first().tax_rate
+
+    @property
+    def rations(self):
+        return Preferences.query.filter_by(county_id=self.id).first().rations
 
     @property
     def seed(self):
