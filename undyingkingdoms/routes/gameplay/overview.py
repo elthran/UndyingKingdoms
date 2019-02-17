@@ -66,7 +66,7 @@ def enemy_overview(template, kingdom_id=0, county_id=0):
     trade_form.receive_iron.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_stone.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_grain.choices = [(i * 10, i * 10) for i in range(51)]
-    trade_form.duration.choices = [(i, i) for i in range(3, 25)]
+    trade_form.duration.choices = [(i, i) for i in range(12, 25)]
 
     return render_template(
         template,
@@ -119,7 +119,7 @@ def trade(county_id):
     trade_form.receive_iron.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_stone.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_grain.choices = [(i * 10, i * 10) for i in range(51)]
-    trade_form.duration.choices = [(i, i) for i in range(3, 25)]
+    trade_form.duration.choices = [(i, i) for i in range(12, 25)]
 
     if trade_form.validate_on_submit():
         trade_offered = Trade(county.id, target_county.id, current_user.county.kingdom.world.day, 12,
