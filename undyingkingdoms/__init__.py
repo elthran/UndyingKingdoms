@@ -32,7 +32,9 @@ flask_csrf.init_app(app)
 flask_json.init_app(app)
 flask_mobility.init_app(app)
 flask_mail.init_app(app)
-flask_cors.init_app(app)
+
+if app.config['ENV'] != 'production':
+    flask_cors.init_app(app)
 
 
 # Register app blueprints

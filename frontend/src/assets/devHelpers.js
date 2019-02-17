@@ -23,7 +23,6 @@ function login () {
     if (csrfToken.val() === undefined) {
       console.log("You are already logged in!")
     } else {
-      console.log("Should get here")
       axios.post(loginUrl, 
         $.param({
           email: "haldon@gmail.com",
@@ -34,7 +33,7 @@ function login () {
       })
       .then(function (response, status) {
         console.log("POST login successful")
-        console.log(response);
+        // console.log(response);
       }).catch( (error) => {
         console.log('POST login failed');
         console.log(error);
@@ -46,7 +45,7 @@ function login () {
   });
 }
 
-login();
+export const devLogin = login();
 
 export const devAxios = axios.create({
   baseURL: baseURL(),
