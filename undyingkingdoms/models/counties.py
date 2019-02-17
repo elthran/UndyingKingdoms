@@ -854,12 +854,14 @@ class County(GameState):
         events = [event for event in Notification.query.filter_by(county_id=self.id).all() if event.new is False]
         return events
 
+    def get_total_number_of_thieves(self):
+        return self.buildings['tavern'].total * self.buildings['tavern'].output
+
     # Infiltrations
     def get_number_of_available_thieves(self):
-        total_thieves = self.buildings['tavern'].total
         all_current_missions = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
         unavailable_thieves = sum(mission.amount_of_thieves for mission in all_current_missions)
-        return total_thieves - unavailable_thieves
+        return self.get_total_number_of_thieves() - unavailable_thieves
 
     def get_thief_report_military(self, target_id):
         current_report = Infiltration.query.filter_by(county_id=self.id, target_id=target_id,
