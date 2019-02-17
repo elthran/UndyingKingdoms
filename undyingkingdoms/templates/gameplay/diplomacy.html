@@ -80,7 +80,6 @@ $(".accept").click(function () {
         $(this).val() + "?accept=1",
         (response, status) => {
             if (status === "success") {
-                console.log(this);
                 $(this).parent().remove();
                 if ($("#trades-they-offered").children().length === 0) {
                     $("#they-offered-no-trades").removeClass('invisible');
