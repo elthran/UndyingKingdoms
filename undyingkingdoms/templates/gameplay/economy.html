@@ -268,7 +268,7 @@ th {
     <tr>
       <td>Research</td>
       <td>{{ county.research }}</td>
-      <td>-</td>
+      <td>+{{ county.get_research_change() }} <img class="resource_icons" src="/static/images/research_icon.jpg"></td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
@@ -277,7 +277,7 @@ th {
     <tr>
       <td>Mana</td>
       <td>{{ county.mana }}</td>
-      <td>-</td>
+      <td>+{{ county.get_mana_change() }} <img class="resource_icons" src="/static/images/mana_icon.jpg"></td>
       <td>-</td>
       <td>-</td>
       <td>-</td>

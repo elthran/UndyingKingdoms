@@ -364,6 +364,8 @@ class County(GameState):
         self.wood += self.get_wood_income()
         self.iron += self.get_iron_income()
         self.stone += self.get_stone_income()
+        self.mana += self.get_mana_change()
+        self.research += self.get_research_change()
         self.happiness += self.get_happiness_change()
         self.health += self.get_health_change()
 
@@ -612,6 +614,12 @@ class County(GameState):
 
     def get_stone_income(self):
         return self.buildings['quarry'].total * self.buildings['quarry'].output
+
+    def get_mana_change(self):
+        return self.buildings['arcane'].total * self.buildings['arcane'].output
+
+    def get_research_change(self):
+        return self.buildings['lab'].total * self.buildings['lab'].output
 
     # Building
     def get_production_modifier(self):  # Modifiers your excess production
