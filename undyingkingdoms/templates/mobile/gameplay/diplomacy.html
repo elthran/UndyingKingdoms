@@ -29,6 +29,9 @@ h2 {
 
 .center {
     align-self: center;
+    width: 100%;
+    margin: auto;
+    text-align: center;
 }
 </style>
 {% endblock %}
@@ -40,15 +43,17 @@ h2 {
 <div id="content">
   <div class="max-width-32">
     <h1 class="center">Trades We Offered</h1>
-    {% for trade in trades_offered if trade.status == 'Pending' %}
-      <p>We offered a trade to county id: {{ trade.target_id }}.</p>
-      <p>We offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, {{ trade.iron_to_give }} iron, and {{ trade.stone_to_give }} stone.</p>
-    <p>We asked for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.</p>
-      <p>The trade expires in {{ trade.duration }} days if they do not reply. </p>
-    <button class="cancel" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Cancel</button>
-    {% else %}
-        We currently have not offered any county a trade.
-    {% endfor %}
+    <div id="trades-we-offered">
+        {% for trade in trades_offered if trade.status == 'Pending' %}
+          <p>We offered a trade to county id: {{ trade.target_id }}.</p>
+          <p>We offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, {{ trade.iron_to_give }} iron, and {{ trade.stone_to_give }} stone.</p>
+        <p>We asked for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.</p>
+          <p>The trade expires in {{ trade.duration }} days if they do not reply. </p>
+        <button class="cancel" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Cancel</button>
+        {% else %}
+            We currently have not offered any county a trade.
+        {% endfor %}
+    </div>
     <br><br>
     <h1 class="center">Trades Offered To Us</h1>
     {% for trade in trades_received if trade.status == 'Pending' %}
@@ -75,9 +80,13 @@ h2 {
 $(".accept").click(function () {
     $.get(
         $(this).val() + "?accept=1",
-        function (response, status) {
+        (response, status) => {
             if (status === "success") {
-                console.log(response);
+                console.log(this);
+                $(this).parent().remove();
+                if ($("#trades-they-offered").children().length === 0) {
+                    $("#they-offered-no-trades").removeClass('invisible');
+                }
             } else {
                 console.log(response);
             }
@@ -90,9 +99,12 @@ $(".accept").click(function () {
 $(".reject").click(function () {
     $.get(
         $(this).val() + "?reject=1",
-        function (response, status) {
+        (response, status) => {
             if (status === "success") {
-                console.log(response);
+                $(this).parent().remove();
+                if ($("#trades-they-offered").children().length === 0) {
+                    $("#they-offered-no-trades").removeClass('invisible');
+                }
             } else {
                 console.log(response);
             }
@@ -102,9 +114,12 @@ $(".reject").click(function () {
 $(".cancel").click(function () {
     $.get(
         $(this).val() + "?cancel=1",
-        function (response, status) {
+        (response, status) => {
             if (status === "success") {
-                console.log(response);
+                $(this).parent().remove();
+                if ($("#trades-we-offered").children().length === 0) {
+                    $("#we-offered-no-trades").removeClass('invisible');
+                }
             } else {
                 console.log(response);
             }

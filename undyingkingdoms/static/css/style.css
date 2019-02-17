@@ -88,3 +88,7 @@ button[disabled], button[disabled]:active {
     padding: 25px;
     position: absolute;
 }
+
+.invisible {
+    display: none;
+}
