@@ -1,11 +1,11 @@
 // vue.config.js
 
 module.exports = {
-		publicPath: '',
+	publicPath: '/static/dist',
     // options
-    outputDir: '../undyingkingdoms/templates/dist',
+    outputDir: '../undyingkingdoms/static/dist',
 
-    assetsDir: '../../static/dist',
+    // assetsDir: '../../static/dist',
 
     pages: {
 				economy: {

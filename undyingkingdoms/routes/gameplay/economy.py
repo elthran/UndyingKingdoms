@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, jsonify, request
+from flask import render_template, redirect, url_for, jsonify, request, send_from_directory, current_app
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
@@ -9,7 +9,7 @@ from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_
 
 
 @app.route('/gameplay/economy/', methods=['GET'])
-@mobile_template('{mobile/}dist/economy.html')
+@mobile_template('{mobile/}economy.html')
 @login_required
 def economy(template):
     # county = current_user.county
@@ -30,12 +30,13 @@ def economy(template):
     #
     # vue_safe_template = vue_safe_env.get_template(template)
     # return vue_safe_template.render(
-    return render_template(template,
-        form=form,
-        birth_rate_modifier=birth_rate_modifier,
-        income_modifier=income_modifier,
-        food_consumed_modifier=food_consumed_modifier,
-        happiness_modifier=happiness_modifier)
+    # return render_template(template,
+    #     form=form,
+    #     birth_rate_modifier=birth_rate_modifier,
+    #     income_modifier=income_modifier,
+    #     food_consumed_modifier=food_consumed_modifier,
+    #     happiness_modifier=happiness_modifier)
+    return send_from_directory('static/dist', template)
 
 
 @app.route('/gameplay/economy/update', methods=['POST'])
