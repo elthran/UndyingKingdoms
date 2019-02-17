@@ -117,9 +117,9 @@ li.bottomPadded {
     </table>
     <br><br>
     <h2>Create New Thread</h2>
-    <h2 style="margin-top:5px;">{{ render_field(form.title, placeholder="Title", autofocus="") }}</h2>
+    <h2 style="margin-top:5px;">{{ render_field(form.title, placeholder="Title", autofocus="", maxlength=form.TITLE_SIZE) }}</h2>
     <br>
-    <textarea cols="100" rows="10" name="content" placeholder="Content"></textarea>
+    <textarea cols="100" rows="10" name="content" placeholder="Content" maxlength="{{ form.CONTENT_SIZE }}"></textarea>
     <br><br>
     <button type="submit">Create Post</button>
     <br><br>
@@ -144,7 +144,7 @@ li.bottomPadded {
     </ul>
       {% endfor %}
       <br>
-      <textarea cols="100" rows="10" name="content" placeholder="Type your post here"></textarea>
+      <textarea cols="100" rows="10" name="content" placeholder="Type your post here" maxlength="{{ form.CONTENT_SIZE }}"></textarea>
       <br><br>
       <button type="submit">Reply to Post</button>
       <br><br>
