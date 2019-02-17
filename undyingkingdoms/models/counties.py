@@ -25,6 +25,7 @@ from undyingkingdoms.static.metadata.metadata_buildings_dwarf import dwarf_build
 from undyingkingdoms.static.metadata.metadata_buildings_elf import elf_buildings
 from undyingkingdoms.static.metadata.metadata_buildings_goblin import goblin_buildings
 from undyingkingdoms.static.metadata.metadata_buildings_human import human_buildings
+from undyingkingdoms.static.metadata.metadata_research_all import generic_technology
 
 
 class County(GameState):
@@ -86,6 +87,9 @@ class County(GameState):
     armies = db.relationship("Army",
                              collection_class=attribute_mapped_collection('name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
+    technologies = db.relationship("Technology",
+                                collection_class=attribute_mapped_collection('name'),
+                                cascade="all, delete, delete-orphan", passive_deletes=True)
 
     def __init__(self, kingdom_id, name, leader, user_id, race, title, background):
         self.name = name
@@ -145,6 +149,7 @@ class County(GameState):
             self.armies = deepcopy(goblin_armies)
         else:
             raise AttributeError('Buildings and Armies were not found in metadata')
+        self.technologies = deepcopy(generic_technology)
 
     @property
     def population(self):

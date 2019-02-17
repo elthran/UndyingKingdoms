@@ -9,7 +9,13 @@
 {% set kingdom = county.kingdom %}
 
 <h2>Current Research:</h2>
-<br><br>
+<form id="economy-form" action="{{ url_for('research') }}" accept-charset="UTF-8">
+    {{ form.csrf_token }}
+    Name: {{ form.technology }}<br>
+    Description: {{ available_technologies[0].description }}<br>
+    Progress: {{ available_technologies[0].current }} / {{ available_technologies[0].required }}
+</form>
+
 <h2>Known Technologies</h2>
 <ul>
     None.
