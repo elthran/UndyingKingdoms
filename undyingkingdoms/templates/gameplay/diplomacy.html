@@ -2,35 +2,41 @@
 
 {% block title %}Diplomacy: {{ super() }}{% endblock %}
 
-{% block content2 %}
 
+{% block content2 %}
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
-
-<br>
-<h1>Trades We Offered</h1>
-{% for trade in trades_offered if trade.status == 'Pending' %}
-    <br>
-    We offered a trade to county id: {{ trade.target_id }}.
-    We offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, {{ trade.iron_to_give }} iron, and {{ trade.stone_to_give }} stone
-    in exchange for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.
-    The trade expires in {{ trade.duration }} days if they do not reply. <button class="cancel" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Cancel</button>
-{% else %}
+<div>
+  <br>
+  <h1>Trades We Offered</h1>
+  {% for trade in trades_offered if trade.status == 'Pending' %}
+    <div id="trade-{{ trade.id }}">
+      We offered a trade to county id: {{ trade.target_id }}.
+      We offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, {{ trade.iron_to_give }} iron, and {{ trade.stone_to_give }} stone
+      in exchange for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.
+      The trade expires in {{ trade.duration }} days if they do not reply. 
+      <button class="cancel" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Cancel</button>
+    </div>
+  {% else %}
     We currently have not offered any county a trade.
-{% endfor %}
-<br><br>
-<h1>Trades Offered To Us</h1>
-{% for trade in trades_received if trade.status == 'Pending' %}
-    <br>
-    We were offered a trade by county id: {{ trade.target_id }}.
-    We were offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, and {{ trade.iron_to_give }} iron
-    in exchange for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.
-    The trade expires in {{ trade.duration }} days if we do not reply. <button class="accept" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Accept</button><button class="reject" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Reject</button>
-{% else %}
-    We currently have no offers by any county to trade.
-{% endfor %}
-
+  {% endfor %}
+  <br><br>
+  <h1>Trades Offered To Us</h1>
+  {% for trade in trades_received if trade.status == 'Pending' %}
+    <div id="trade-{{ trade.id }}">
+      We were offered a trade by county id: {{ trade.target_id }}.
+      We were offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, and {{ trade.iron_to_give }} iron
+      in exchange for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.
+      The trade expires in {{ trade.duration }} days if we do not reply.
+      <button class="accept" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Accept</button>
+      <button class="reject" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Reject</button>
+    </div>
+  {% else %}
+    <p>We currently have no offers by any county to trade.</p>
+  {% endfor %}
+  <p id="no-trade-offers" class="invisible">We currently have no offers by any county to trade.</p>
+</div>
 {% endblock %}
 
 {% block script %}
@@ -43,9 +49,11 @@
 $(".accept").click(function () {
     $.get(
         $(this).val() + "?accept=1",
-        function (response, status) {
+        (response, status) => {
             if (status === "success") {
-                console.log(response);
+                console.log(this);
+                $(this).parent().empty();
+                $("#no-trade-offers").toggle('invisible');
             } else {
                 console.log(response);
             }
@@ -60,7 +68,7 @@ $(".reject").click(function () {
         $(this).val() + "?reject=1",
         function (response, status) {
             if (status === "success") {
-                console.log(response);
+                $(this.parent).empty();
             } else {
                 console.log(response);
             }
@@ -72,7 +80,7 @@ $(".cancel").click(function () {
         $(this).val() + "?cancel=1",
         function (response, status) {
             if (status === "success") {
-                console.log(response);
+                $(this.parent).empty();
             } else {
                 console.log(response);
             }
