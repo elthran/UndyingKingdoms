@@ -19,8 +19,11 @@ function login () {
     console.log('GET login successful');
     // console.log(response);
     csrfToken = $('#csrf_token', response.data);
-    if (status === 200 && csrfToken.val() !== undefined) {
-      console.log(csrfToken.val());
+    // console.log(csrfToken.val());
+    if (csrfToken.val() === undefined) {
+      console.log("You are already logged in!")
+    } else {
+      console.log("Should get here")
       axios.post(loginUrl, 
         $.param({
           email: "haldon@gmail.com",
@@ -29,17 +32,13 @@ function login () {
         headers: {"X-CSRF-TOKEN": csrfToken.val()},
         withCredentials: true
       })
-      .always(function (response, status) {
-        if (status === "success") {
-          console.log("POST login successful")
-          callback(response);
-        } else {
-          console.log(response);
-          console.log(response.responseText);
-        }
+      .then(function (response, status) {
+        console.log("POST login successful")
+        console.log(response);
+      }).catch( (error) => {
+        console.log('POST login failed');
+        console.log(error);
       });
-    } else {
-      console.log("You are already logged in!")
     }
   }).catch( (error) => {
     console.log("login get request failed")
@@ -49,7 +48,7 @@ function login () {
 
 login();
 
-export const HTTP = axios.create({
+export const devAxios = axios.create({
   baseURL: baseURL(),
   withCredentials: true
 });

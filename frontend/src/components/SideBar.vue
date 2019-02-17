@@ -36,8 +36,6 @@
 </template>
 
 <script>
-import {HTTP} from '@/assets/devHelpers.js'
-
 export default {
   name: "SideBar",
   data () {
@@ -57,7 +55,7 @@ export default {
   mounted () {
     // if development
     // this.axios.get('http://localhost:5000/api/sidebar')
-    HTTP.get('/api/sidebar')
+    this.axios.get('/api/sidebar')
     .then((response) => {
       if (response.status === 200) {
         this.updatePage(response.data);
