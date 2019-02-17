@@ -199,9 +199,9 @@ th {
         </tr>
         <tr>
           <td>Notes</td>
-          {% if county.tax < 7 %}
+          {% if tax_rate < 7 %}
             <td style="color:green;">Your current tax rate has a positive
-          {% elif county.tax == 7 %}
+          {% elif tax_rate == 7 %}
             <td style="color:black;">Your current tax rate has no
           {% else %}
             <td style="color:red;">Your current tax rate has a negative
@@ -385,7 +385,7 @@ th {
                   <img class="resource_icons" src="/static/images/heart_icon.jpg">
                 </li>
               {% endif %}
-              <li>Taxes: -{{ county.tax }} <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>
+              <li>Taxes: -{{ tax_rate }} <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>
             </ul>
           </td>
         </tr>

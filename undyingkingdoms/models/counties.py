@@ -10,6 +10,7 @@ from undyingkingdoms.models.helpers import cached_random
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
+from undyingkingdoms.models.preferences import Preferences
 from undyingkingdoms.models.trades import Trade
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
@@ -51,7 +52,6 @@ class County(GameState):
     _nourishment = db.Column(db.Integer)  # Out of 100
     _health = db.Column(db.Integer)  # Out of 100
     
-    tax = db.Column(db.Integer)
     rations = db.Column(db.Float)
     production_choice = db.Column(db.Integer)  # the current setting the user chose
 
@@ -110,7 +110,6 @@ class County(GameState):
         self._health = 75
         self.weather = "Sunny"
         # Set values / preferences
-        self.tax = 5
         self.rations = 1
         self.production_choice = 0
         # Resources
@@ -258,6 +257,10 @@ class County(GameState):
     def nourishment(self):
         return self._nourishment
 
+    @property
+    def tax_rate(self):
+        return Preferences.query.filter_by(county_id=self.id).first().tax_rate
+
     @nourishment.setter
     def nourishment(self, value):
         self._nourishment = int(min(max(value, 1), 100))
@@ -390,7 +393,7 @@ class County(GameState):
         return -4
 
     def get_happiness_change(self):
-        change = 7 - self.tax
+        change = 7 - self.tax_rate
         if self.production_choice == 3:
             change += self.get_excess_production_value(self.production_choice)
         modifier = happiness_modifier.get(self.race, ("", 0))[1] + happiness_modifier.get(self.background, ("", 0))[1]
@@ -592,7 +595,7 @@ class County(GameState):
 
     # Resources
     def get_tax_income(self):
-        return int(self.population * (self.tax / 100))
+        return int(self.population * (self.tax_rate / 100))
 
     def get_bank_income(self):
         return self.buildings['bank'].total * self.buildings['bank'].output

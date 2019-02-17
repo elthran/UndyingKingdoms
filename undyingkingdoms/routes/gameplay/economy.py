@@ -4,6 +4,7 @@ from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models.forms.economy import EconomyForm
+from undyingkingdoms.models.preferences import Preferences
 from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_rate_modifier, income_modifier, \
     food_consumed_modifier, happiness_modifier
 
@@ -12,13 +13,14 @@ from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_
 @mobile_template('{mobile/}gameplay/economy.html')
 @login_required
 def economy(template):
-    form = EconomyForm(tax=current_user.county.tax, rations=current_user.county.rations)
+    tax = Preferences.query.filter_by(county_id=current_user.county.id).first()
+    form = EconomyForm(tax=tax.tax_rate, rations=current_user.county.rations)
 
     form.tax.choices = [(i, i) for i in range(11)]
     form.rations.choices = [(pairing[0], pairing[1]) for pairing in rations_terminology]
 
     return render_template(
-        template, form=form,
+        template, form=form, tax_rate=tax.tax_rate,
         birth_rate_modifier=birth_rate_modifier,
         income_modifier=income_modifier,
         food_consumed_modifier=food_consumed_modifier,
@@ -34,9 +36,10 @@ def update_economy():
     rations affects: food and nourishment.
         food in 2 places, nourishment in 1.
     """
+    tax = Preferences.query.filter_by(county_id=current_user.county.id).first()
     county = current_user.county
 
-    form = EconomyForm(tax=county.tax, rations=county.rations)
+    form = EconomyForm(tax=tax.tax_rate, rations=county.rations)
     form.tax.choices = [(i, i) for i in range(11)]
     form.rations.choices = [
         (pairing[0], pairing[1])
@@ -44,7 +47,7 @@ def update_economy():
     ]
 
     if form.validate_on_submit():
-        county.tax = form.tax.data
+        tax.tax_rate = form.tax.data
         county.rations = form.rations.data
 
         # Because I'm too lazy to update the mobile page right now.
@@ -54,6 +57,7 @@ def update_economy():
         return jsonify(
             status="success",
             message="You have updated your economy data.",
+            tax_rate=tax.tax_rate,
             birth_rate_modifier=birth_rate_modifier,
             income_modifier=income_modifier,
             food_consumed_modifier=food_consumed_modifier,

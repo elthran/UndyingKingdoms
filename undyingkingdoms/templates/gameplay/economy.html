@@ -368,7 +368,7 @@ th {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.2/dist/vue.min.js"></script><script>
 // ugly Jinja hacked in variables.
-var TAX = {{ county.tax }};
+var TAX = {{ tax_rate }};
 var GOLD_CHANGE = {{ county.get_gold_change() }};
 var HAPPINESS_CHANGE = {{ county.get_happiness_change() }};
 var GRAIN_STORAGE_CHANGE = {{ county.grain_storage_change() }};
