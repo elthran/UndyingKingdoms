@@ -1,21 +1,21 @@
 <template>
   <div id="layout-content">
     <!--actual content -->
-    <!--<br><h1 style="text-align:center;">Economy</h1><br><br>-->
+    <br><h1 style="text-align:center;">Economy</h1><br><br>
 
-    <!--<form id="economy-form" action="{{ url_for('update_economy') }}" accept-charset="UTF-8">-->
-      <!--{{ form.csrf_token }}-->
-      <!--<h2>Resources</h2>-->
-      <!--<table>-->
-        <!--<tr>-->
-          <!--<th style="width:50px;">Topic</th>-->
-          <!--<th style="width:50px;">Current</th>-->
-          <!--<th style="width:75px;">Projected Change</th>-->
-          <!--<th style="width:200px;">Modifiers</th>-->
-          <!--<th style="width:180px;">Projected Growth</th>-->
-          <!--<th style="width:180px;">Projected Losses</th>-->
-          <!--<th style="width:225px;">Notes</th>-->
-        <!--</tr>-->
+    <form id="economy-form" :action="urlFor.update_economy" accept-charset="UTF-8">
+      {{ form.csrf_token }}
+      <h2>Resources</h2>
+      <table>
+        <tr>
+          <th style="width:50px;">Topic</th>
+          <th style="width:50px;">Current</th>
+          <th style="width:75px;">Projected Change</th>
+          <th style="width:200px;">Modifiers</th>
+          <th style="width:180px;">Projected Growth</th>
+          <th style="width:180px;">Projected Losses</th>
+          <th style="width:225px;">Notes</th>
+        </tr>
         <!--<tr>-->
           <!--<td>Population</td>-->
           <!--<td>{{ county.population }}</td>-->
@@ -289,11 +289,11 @@
             <!--become very susceptible to disease and plague.-->
           <!--</td>-->
         <!--</tr>-->
-      <!--</table>-->
-      <!--&lt;!&ndash; <div class="invisible">-->
-        <!--<span id="goldChange">{{ county.get_gold_change() }}</span>-->
-      <!--</div> &ndash;&gt;-->
-    <!--</form>-->
+      </table>
+      <!-- <div class="invisible">
+        <span id="goldChange">{{ county.get_gold_change() }}</span>
+      </div> -->
+    </form>
   </div>
 </template>
 
