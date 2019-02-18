@@ -48,6 +48,8 @@ def overview(template):
 def enemy_overview(template, kingdom_id=0, county_id=0):
     county = current_user.county
     target_county = County.query.get(county_id)
+    if county == target_county:
+        return redirect(url_for('overview', kingdom_id=0, county_id=0))
     target_kingdom = Kingdom.query.get(kingdom_id)
 
     message_form = MessageForm()
@@ -121,7 +123,7 @@ def trade(county_id):
     trade_form.receive_grain.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.duration.choices = [(i, i) for i in range(12, 25)]
 
-    if trade_form.validate_on_submit():
+    if trade_form.validate_on_submit() and county != target_county:
         trade_offered = Trade(county.id, target_county.id, current_user.county.kingdom.world.day, 12,
                               trade_form.offer_gold.data, trade_form.offer_wood.data, trade_form.offer_iron.data, trade_form.offer_stone.data, trade_form.offer_grain.data,
                               trade_form.receive_gold.data, trade_form.receive_wood.data, trade_form.receive_iron.data, trade_form.receive_stone.data, trade_form.receive_grain.data)
