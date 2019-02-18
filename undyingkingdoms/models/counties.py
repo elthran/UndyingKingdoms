@@ -345,7 +345,7 @@ class County(GameState):
                                             self.kingdom.world.day)
                 notification.save()
 
-        trades = Trade.query.filter_by(county_id=self.id).filter(Trade.duration > 0).all()
+        trades = Trade.query.filter_by(county_id=self.id).filter_by(status='Pending').filter(Trade.duration > 0).all()
         for trade in trades:
             trade.duration -= 1
             if trade.duration == 0:
