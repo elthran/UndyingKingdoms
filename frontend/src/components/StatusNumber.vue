@@ -5,13 +5,13 @@
 </template>
 
 <script>
-  export default {
-    name: 'StatusNumber',
-    props: {
-      'number': Number,
-      'value': Number
-    }
+export default {
+  name: 'StatusNumber',
+  props: {
+    'number': Number,
+    'value': Number
   }
+}
 </script>
 
 <style scoped>

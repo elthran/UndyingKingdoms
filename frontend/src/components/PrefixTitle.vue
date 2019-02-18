@@ -4,17 +4,17 @@ export default {
   props: {
     title: String
   },
-  created () {
-    document.title = this.title + ": " + document.title;
-  },
   watch: {
     title () {
       // only used when the title changes after page load
-      document.title = this.title + ": " + document.title;
+      document.title = this.title + ': ' + document.title
     }
   },
+  created () {
+    document.title = this.title + ': ' + document.title
+  },
   render: function () {
-    return "";
+    return ''
   }
 }
 </script>

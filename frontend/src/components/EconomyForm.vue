@@ -1,373 +1,3 @@
-<template>
-  <div id="layout-content">
-    <!--actual content -->
-    <br><h1 style="text-align:center;">Economy</h1><br><br>
-
-    <form id="economy-form" :action="urlFor.update_economy" accept-charset="UTF-8">
-      {{ form.csrf_token }}
-      <h2>Resources</h2>
-      <table>
-        <tr>
-          <th style="width:50px;">Topic</th>
-          <th style="width:50px;">Current</th>
-          <th style="width:75px;">Projected Change</th>
-          <th style="width:200px;">Modifiers</th>
-          <th style="width:180px;">Projected Growth</th>
-          <th style="width:180px;">Projected Losses</th>
-          <th style="width:225px;">Notes</th>
-        </tr>
-        <!--<tr>-->
-          <!--<td>Population</td>-->
-          <!--<td>{{ county.population }}</td>-->
-          <!--{% set population_projection = county.get_population_change(prediction=True) %}-->
-          <!--{% if population_projection >= 0 %}-->
-          <!--<td style="color:green;">+-->
-            <!--{% else %}-->
-          <!--<td style="color:red;">-->
-            <!--{% endif %}-->
-            <!--{{ population_projection }} <img class="resource_icons" src="/static/images/population_icon.jpg">-->
-          <!--</td>-->
-          <!--<td>-->
-            <!--<ul>-->
-              <!--{% if birth_rate_modifier.get(county.race)[1] %}-->
-              <!--<li>-->
-                <!--<div class="tooltip">{{ birth_rate_modifier.get(county.race)[0] }}: {{-->
-                  <!--(birth_rate_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>-->
-                <!--</div>-->
-              <!--</li>-->
-              <!--{% endif %}-->
-              <!--{% if birth_rate_modifier.get(county.background)[1] %}-->
-              <!--<li>({{ county.background }}) {{ birth_rate_modifier.get(county.background)[0] }}: {{-->
-                <!--(birth_rate_modifier.get(county.background)[1] * 100)|int }}%-->
-              <!--</li>-->
-              <!--{% endif %}-->
-            <!--</ul>-->
-          <!--</td>-->
-          <!--<td>-->
-            <!--<ul>-->
-              <!--<li>Births: {{ county.get_birth_rate() }}</li>-->
-              <!--<li>Immigration: {{ county.get_immigration_rate() }}</li>-->
-            <!--</ul>-->
-          <!--</td>-->
-          <!--<td>-->
-            <!--<ul>-->
-              <!--<li>Deaths: {{ county.get_death_rate() }}</li>-->
-              <!--<li>Emigration: {{ county.get_emigration_rate() }}</li>-->
-            <!--</ul>-->
-          <!--</td>-->
-          <!--<td>Raise happiness to lower the amount of emigrants leaving your county.</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-          <!--<td>Gold</td>-->
-          <!--<td>{{ county.gold }}</td>-->
-          <!--<td>-->
-            <!--<status-number :number="goldChange"></status-number>-->
-            <!--<img class="resource_icons" src="/static/images/gold_icon.jpg">-->
-          <!--</td>-->
-          <!--<td>-->
-            <!--<ul>-->
-              <!--<li>Tax Rate:-->
-                <!--<select-generator-->
-                  <!--v-model="selectedTaxRate"-->
-                  <!--:options="{{ form.tax.choices | vuesafe }}"-->
-                  <!--id-name="{{ form.tax.id }}"-->
-                <!--&gt;</select-generator>%-->
-              <!--</li>-->
-              <!--{% if income_modifier.get(county.race)[1] %}-->
-              <!--<li>-->
-                <!--<div class="tooltip">{{ income_modifier.get(county.race)[0] }}: {{-->
-                  <!--(income_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>-->
-                <!--</div>-->
-              <!--</li>-->
-              <!--{% endif %}-->
-              <!--{% if income_modifier.get(county.background)[1] %}-->
-              <!--<li>-->
-                <!--<div class="tooltip">{{ income_modifier.get(county.background)[0] }}: {{-->
-                  <!--(income_modifier.get(county.background)[1] * 100)|int }}%<span class="tooltipText">Class Modifier: {{ county.background }}</span>-->
-                <!--</div>-->
-              <!--</li>-->
-              <!--{% endif %}-->
-            <!--</ul>-->
-          <!--</td>-->
-          <!--<td>-->
-            <!--<ul>-->
-              <!--<li>Taxes: v{ goldChange }</li>-->
-              <!--{% if county.buildings['bank'].total > 0 %}-->
-              <!--<li>Banks: {{ county.get_bank_income() }}</li>-->
-              <!--{% endif %}-->
-              <!--{% if county.production_choice == 0 %}-->
-              <!--<li>Overworking: + {{ county.get_excess_production_value(0) }}</li>-->
-              <!--{% endif %}-->
-            <!--</ul>-->
-          <!--</td>-->
-          <!--<td>-->
-            <!--<ul>-->
-              <!--<li>Military Expenses: {{ county.get_upkeep_costs() }}</li>-->
-            <!--</ul>-->
-          <!--</td>-->
-          <!--&lt;!&ndash; These conditions must not occur together or it will break the table. &ndash;&gt;-->
-          <!--<td v-if="selectedTaxRate < 7" class="green">Your current tax rate has a positive effect on happiness</td>-->
-          <!--<td v-if="selectedTaxRate == 7">Your current tax rate has no effect on happiness</td>-->
-          <!--<td v-if="selectedTaxRate > 7" class="red">Your current tax rate has a negative effect on happiness</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-          <!--<td>Food</td>-->
-          <!--<td>{{ county.grain_stores }}</td>-->
-          <!--<td>-->
-            <!--<status-number :number="grainStorageChange"></status-number>-->
-            <!--<img class="resource_icons" src="/static/images/grain_icon.jpg">-->
-          <!--</td>-->
-          <!--<td>-->
-            <!--<ul>-->
-              <!--<li>Rations:-->
-                <!--<select-generator-->
-                  <!--v-model="selectedRations"-->
-                  <!--:options="{{ form.rations.choices | vuesafe }}"-->
-                  <!--id-name="{{ form.rations.id }}"-->
-                <!--&gt;</select-generator>-->
-              <!--</li>-->
-              <!--{% if food_consumed_modifier.get(county.race)[1] %}-->
-              <!--<li>-->
-                <!--<div class="tooltip">{{ food_consumed_modifier.get(county.race)[0] }}: {{-->
-                  <!--(food_consumed_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>-->
-                <!--</div>-->
-              <!--</li>-->
-              <!--{% endif %}-->
-            <!--</ul>-->
-          <!--</td>-->
-          <!--<td>-->
-            <!--<ul>-->
-              <!--<li>Fields: + {{ county.get_produced_grain() }} <img class="resource_icons"-->
-                                                                   <!--src="/static/images/grain_icon.jpg"></li>-->
-              <!--<li>Pastures: + {{ county.get_produced_dairy() }} <img class="resource_icons"-->
-                                                                     <!--src="/static/images/dairy_icon.jpg"></li>-->
-              <!--{% if county.production_choice == 2 %}-->
-              <!--<li>Foraging: + {{ county.get_excess_production_value(2) }} <img class="resource_icons"-->
-                                                                               <!--src="/static/images/dairy_icon.jpg">-->
-              <!--</li>-->
-              <!--{% endif %}-->
-            <!--</ul>-->
-          <!--</td>-->
-          <!--<td>-->
-            <!--<ul>-->
-              <!--<li>To be Eaten: v{ foodEaten }</li>-->
-            <!--</ul>-->
-          <!--</td>-->
-          <!--<td>Excess dairy can not be stored in your granaries. If you do not have enough food, your populace will-->
-            <!--begin to starve.-->
-          <!--</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-          <!--<td>Lumber</td>-->
-          <!--<td>{{ county.wood }}</td>-->
-          <!--{% if county.get_wood_income() >= 0 %}-->
-          <!--<td style="color:green;">+-->
-            <!--{% else %}-->
-          <!--<td style="color:red;">-->
-            <!--{% endif %}-->
-            <!--{{ county.get_wood_income() }} <img class="resource_icons" src="/static/images/wood_icon.jpg">-->
-          <!--</td>-->
-          <!--<td>-</td>-->
-          <!--<td>-->
-            <!--<ul>-->
-              <!--<li>{{ county.buildings['mill'].class_name_plural.title() }}: + {{ county.get_wood_income() }} <img-->
-                  <!--class="resource_icons" src="/static/images/wood_icon.jpg">-->
-              <!--</li>-->
-            <!--</ul>-->
-          <!--</td>-->
-          <!--<td>-</td>-->
-          <!--<td>Lumber is used to build buildings and to equip certain soldiers.</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-          <!--<td>Iron</td>-->
-          <!--<td>{{ county.iron }}</td>-->
-          <!--{% if county.get_iron_income() >= 0 %}-->
-          <!--<td style="color:green;">+-->
-            <!--{% else %}-->
-          <!--<td style="color:red;">-->
-            <!--{% endif %}-->
-            <!--{{ county.get_iron_income() }} <img class="resource_icons" src="/static/images/iron_icon.jpg">-->
-          <!--</td>-->
-          <!--<td>-</td>-->
-          <!--<td>-->
-            <!--<ul>-->
-              <!--<li>{{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.get_iron_income() }} <img-->
-                  <!--class="resource_icons" src="/static/images/iron_icon.jpg">-->
-              <!--</li>-->
-            <!--</ul>-->
-          <!--</td>-->
-          <!--<td>-</td>-->
-          <!--<td>Iron is used to equip powerful soldiers.</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-          <!--<td>Stone</td>-->
-          <!--<td>{{ county.stone }}</td>-->
-            <!--{% if county.get_stone_income() >= 0 %}-->
-              <!--<td style="color:green;">+-->
-            <!--{% else %}-->
-              <!--<td style="color:red;">-->
-            <!--{% endif %}-->
-            <!--{{ county.get_stone_income() }} <img class="resource_icons" src="/static/images/stone_icon.jpg">-->
-          <!--</td>-->
-          <!--<td>-</td>-->
-          <!--<td>-->
-            <!--<li>{{ county.buildings['quarry'].class_name_plural.title() }}: + {{ county.get_stone_income() }} <img-->
-                      <!--class="resource_icons" src="/static/images/stone_icon.jpg"></li>-->
-          <!--</td>-->
-          <!--<td>-</td>-->
-          <!--<td>Stone is used to build your most powerful buildings.</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-          <!--<td>Happiness</td>-->
-          <!--<td>{{ county.happiness }}%</td>-->
-          <!--<td>-->
-            <!--<status-number :number="happinessChange"></status-number>-->
-            <!--<img class="resource_icons" src="/static/images/heart_icon.jpg">-->
-          <!--</td>-->
-          <!--<td>-</td>-->
-          <!--<td>-->
-            <!--<ul>-->
-              <!--<li>Natural: +7 <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>-->
-              <!--{% if county.production_choice == 3 %}-->
-              <!--<li>Relax: + {{ county.get_excess_production_value(3) }} <img class="resource_icons"-->
-                                                                            <!--src="/static/images/heart_icon.jpg">-->
-              <!--</li>-->
-              <!--{% endif %}-->
-            <!--</ul>-->
-          <!--</td>-->
-          <!--<td>-->
-            <!--<ul>-->
-              <!--{% if happiness_modifier.get(county.race)[0] %}-->
-              <!--<li>-->
-                <!--<div class="tooltip">{{ happiness_modifier.get(county.race)[0] }}: {{-->
-                  <!--happiness_modifier.get(county.race)[1] }}<span class="tooltipText">Racial Modifier: {{ county.race }}</span>-->
-                <!--</div>-->
-                <!--<img class="resource_icons" src="/static/images/heart_icon.jpg">-->
-              <!--</li>-->
-              <!--{% endif %}-->
-              <!--<li>Taxes: v{ -selectedTaxRate } <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>-->
-            <!--</ul>-->
-          <!--</td>-->
-          <!--<td>Happiness affects emigration rate and how productive your workers are. If they become too unhappy,-->
-            <!--they may start to question your rule.-->
-          <!--</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-          <!--<td>Nourishment</td>-->
-          <!--<td>{{ county.nourishment }}%</td>-->
-          <!--<td>-->
-            <!--<status-number :number="nourishmentChange"></status-number>-->
-          <!--</td>-->
-          <!--<td>-</td>-->
-          <!--<td>-</td>-->
-          <!--<td>-</td>-->
-          <!--<td>The better nourished your people, the healthier they will be.-->
-            <!--Your nourishment decreases by 1% for every 200 unfed people each day.-->
-          <!--</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-          <!--<td>Health</td>-->
-          <!--{% if county.health >= 75 %}-->
-          <!--<td style="color:green;">-->
-            <!--{% else %}-->
-          <!--<td style="color:red;">-->
-            <!--{% endif %}-->
-            <!--{{ county.health_terminology.title() }}-->
-          <!--</td>-->
-          <!--{% if county.get_health_change() > 0 %}-->
-          <!--<td style="color:green;">Positive-->
-            <!--{% elif county.get_health_change() == 0 %}-->
-          <!--<td>None-->
-            <!--{% else %}-->
-          <!--<td style="color:red;">Negative-->
-            <!--{% endif %}-->
-          <!--</td>-->
-          <!--<td>-</td>-->
-          <!--<td>-</td>-->
-          <!--<td>-</td>-->
-          <!--<td>The current health of your people. If they become unhealthy, they will die at much greater rates and-->
-            <!--become very susceptible to disease and plague.-->
-          <!--</td>-->
-        <!--</tr>-->
-      </table>
-      <!-- <div class="invisible">
-        <span id="goldChange">{{ county.get_gold_change() }}</span>
-      </div> -->
-    </form>
-  </div>
-</template>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script>
-import StatusNumber from "@/components/StatusNumber.vue"
-import SelectGenerator from "@/components/SelectGenerator.vue"
-// // ugly Jinja hacked in variables.
-// var TAX = {{ county.tax }};
-// var GOLD_CHANGE = {{ county.get_gold_change() }};
-// var HAPPINESS_CHANGE = {{ county.get_happiness_change() }};
-// var GRAIN_STORAGE_CHANGE = {{ county.grain_storage_change() }};
-// var RATIONS = {{ county.rations }};
-// var FOOD_EATEN = {{ county.get_food_to_be_eaten() }};
-// var NOURISHMENT_CHANGE = {{ county.get_nourishment_change() }};
-// // end of Jinja code. Please keep it inside here.
-
-function sendForm (form, callback) {
-    $.ajax({
-        url: form.attr("action"),
-        method: "POST",
-        // need to verify csrf id, I might be wrong.
-        headers: {"X-CSRF-TOKEN": $("#csrf_token").val()},
-        data: form.serialize(),
-        dataType: "json",  // type of data returned, not type sent.
-    })
-    .always(function (data, status) {
-            if (status === "success") {
-                console.log()
-                callback(data);
-            } else {
-                console.log(data);
-            }
-    });
-}
-
-// The constants are defined at the beginning and use evil Jinja in JS.
-export default {
-  name: 'EconomyForm',
-  components: {
-    'status-number': StatusNumber,
-    'select-generator': SelectGenerator
-  },
-  data () {
-    return {
-      goldChange: Number,
-      selectedTaxRate: Number,
-      happinessChange: Number,
-      grainStorageChange: Number,
-      selectedRations: Number,
-      foodEaten: Number,
-      nourishmentChange: Number
-    }
-  },
-  methods: {
-    updatePage: function (data) {
-      this.goldChange = data.goldChange;
-      this.happinessChange = data.happinessChange;
-      this.grainStorageChange = data.grainStorageChange;
-      this.foodEaten = data.foodEaten;
-      this.nourishmentChange = data.nourishmentChange;
-    }
-  },
-  watch: {
-    selectedTaxRate: function () {
-      sendForm($("#economy-form"), this.updatePage);
-    },
-    selectedRations: function () {
-      sendForm($("#economy-form"), this.updatePage);
-    }
-  }
-}
-</script>
-
 <style scoped>
 #layout-content {
     width: 100%;
@@ -404,3 +34,414 @@ th {
     margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
 }
 </style>
+
+<template>
+  <div id="layout-content">
+    <!--actual content -->
+    <br><h1 style="text-align:center;">
+      Economy
+    </h1><br><br>
+
+    <form
+      id="economy-form"
+      :action="urlFor.update_economy"
+      accept-charset="UTF-8"
+    >
+      {{ form.csrf_token }}
+      <h2>Resources</h2>
+      <table>
+        <tr>
+          <th style="width:50px;">
+            Topic
+          </th>
+          <th style="width:50px;">
+            Current
+          </th>
+          <th style="width:75px;">
+            Projected Change
+          </th>
+          <th style="width:200px;">
+            Modifiers
+          </th>
+          <th style="width:180px;">
+            Projected Growth
+          </th>
+          <th style="width:180px;">
+            Projected Losses
+          </th>
+          <th style="width:225px;">
+            Notes
+          </th>
+        </tr>
+        <!--<tr>-->
+        <!--<td>Population</td>-->
+        <!--<td>{{ county.population }}</td>-->
+        <!--{% set population_projection = county.get_population_change(prediction=True) %}-->
+        <!--{% if population_projection >= 0 %}-->
+        <!--<td style="color:green;">+-->
+        <!--{% else %}-->
+        <!--<td style="color:red;">-->
+        <!--{% endif %}-->
+        <!--{{ population_projection }} <img class="resource_icons" src="/static/images/population_icon.jpg">-->
+        <!--</td>-->
+        <!--<td>-->
+        <!--<ul>-->
+        <!--{% if birth_rate_modifier.get(county.race)[1] %}-->
+        <!--<li>-->
+        <!--<div class="tooltip">{{ birth_rate_modifier.get(county.race)[0] }}: {{-->
+        <!--(birth_rate_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>-->
+        <!--</div>-->
+        <!--</li>-->
+        <!--{% endif %}-->
+        <!--{% if birth_rate_modifier.get(county.background)[1] %}-->
+        <!--<li>({{ county.background }}) {{ birth_rate_modifier.get(county.background)[0] }}: {{-->
+        <!--(birth_rate_modifier.get(county.background)[1] * 100)|int }}%-->
+        <!--</li>-->
+        <!--{% endif %}-->
+        <!--</ul>-->
+        <!--</td>-->
+        <!--<td>-->
+        <!--<ul>-->
+        <!--<li>Births: {{ county.get_birth_rate() }}</li>-->
+        <!--<li>Immigration: {{ county.get_immigration_rate() }}</li>-->
+        <!--</ul>-->
+        <!--</td>-->
+        <!--<td>-->
+        <!--<ul>-->
+        <!--<li>Deaths: {{ county.get_death_rate() }}</li>-->
+        <!--<li>Emigration: {{ county.get_emigration_rate() }}</li>-->
+        <!--</ul>-->
+        <!--</td>-->
+        <!--<td>Raise happiness to lower the amount of emigrants leaving your county.</td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<td>Gold</td>-->
+        <!--<td>{{ county.gold }}</td>-->
+        <!--<td>-->
+        <!--<status-number :number="goldChange"></status-number>-->
+        <!--<img class="resource_icons" src="/static/images/gold_icon.jpg">-->
+        <!--</td>-->
+        <!--<td>-->
+        <!--<ul>-->
+        <!--<li>Tax Rate:-->
+        <!--<select-generator-->
+        <!--v-model="selectedTaxRate"-->
+        <!--:options="{{ form.tax.choices | vuesafe }}"-->
+        <!--id-name="{{ form.tax.id }}"-->
+        <!--&gt;</select-generator>%-->
+        <!--</li>-->
+        <!--{% if income_modifier.get(county.race)[1] %}-->
+        <!--<li>-->
+        <!--<div class="tooltip">{{ income_modifier.get(county.race)[0] }}: {{-->
+        <!--(income_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>-->
+        <!--</div>-->
+        <!--</li>-->
+        <!--{% endif %}-->
+        <!--{% if income_modifier.get(county.background)[1] %}-->
+        <!--<li>-->
+        <!--<div class="tooltip">{{ income_modifier.get(county.background)[0] }}: {{-->
+        <!--(income_modifier.get(county.background)[1] * 100)|int }}%<span class="tooltipText">Class Modifier: {{ county.background }}</span>-->
+        <!--</div>-->
+        <!--</li>-->
+        <!--{% endif %}-->
+        <!--</ul>-->
+        <!--</td>-->
+        <!--<td>-->
+        <!--<ul>-->
+        <!--<li>Taxes: v{ taxIncome }</li>-->
+        <!--{% if county.buildings['bank'].total > 0 %}-->
+        <!--<li>Banks: {{ county.get_bank_income() }}</li>-->
+        <!--{% endif %}-->
+        <!--{% if county.production_choice == 0 %}-->
+        <!--<li>Overworking: + {{ county.get_excess_production_value(0) }}</li>-->
+        <!--{% endif %}-->
+        <!--</ul>-->
+        <!--</td>-->
+        <!--<td>-->
+        <!--<ul>-->
+        <!--<li>Military Expenses: {{ county.get_upkeep_costs() }}</li>-->
+        <!--</ul>-->
+        <!--</td>-->
+        <!--&lt;!&ndash; These conditions must not occur together or it will break the table. &ndash;&gt;-->
+        <!--<td v-if="selectedTaxRate < 7" class="green">Your current tax rate has a positive effect on happiness</td>-->
+        <!--<td v-if="selectedTaxRate == 7">Your current tax rate has no effect on happiness</td>-->
+        <!--<td v-if="selectedTaxRate > 7" class="red">Your current tax rate has a negative effect on happiness</td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<td>Food</td>-->
+        <!--<td>{{ county.grain_stores }}</td>-->
+        <!--<td>-->
+        <!--<status-number :number="grainStorageChange"></status-number>-->
+        <!--<img class="resource_icons" src="/static/images/grain_icon.jpg">-->
+        <!--</td>-->
+        <!--<td>-->
+        <!--<ul>-->
+        <!--<li>Rations:-->
+        <!--<select-generator-->
+        <!--v-model="selectedRations"-->
+        <!--:options="{{ form.rations.choices | vuesafe }}"-->
+        <!--id-name="{{ form.rations.id }}"-->
+        <!--&gt;</select-generator>-->
+        <!--</li>-->
+        <!--{% if food_consumed_modifier.get(county.race)[1] %}-->
+        <!--<li>-->
+        <!--<div class="tooltip">{{ food_consumed_modifier.get(county.race)[0] }}: {{-->
+        <!--(food_consumed_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>-->
+        <!--</div>-->
+        <!--</li>-->
+        <!--{% endif %}-->
+        <!--</ul>-->
+        <!--</td>-->
+        <!--<td>-->
+        <!--<ul>-->
+        <!--<li>Fields: + {{ county.get_produced_grain() }} <img class="resource_icons"-->
+        <!--src="/static/images/grain_icon.jpg"></li>-->
+        <!--<li>Pastures: + {{ county.get_produced_dairy() }} <img class="resource_icons"-->
+        <!--src="/static/images/dairy_icon.jpg"></li>-->
+        <!--{% if county.production_choice == 2 %}-->
+        <!--<li>Foraging: + {{ county.get_excess_production_value(2) }} <img class="resource_icons"-->
+        <!--src="/static/images/dairy_icon.jpg">-->
+        <!--</li>-->
+        <!--{% endif %}-->
+        <!--</ul>-->
+        <!--</td>-->
+        <!--<td>-->
+        <!--<ul>-->
+        <!--<li>To be Eaten: v{ foodEaten }</li>-->
+        <!--</ul>-->
+        <!--</td>-->
+        <!--<td>Excess dairy can not be stored in your granaries. If you do not have enough food, your populace will-->
+        <!--begin to starve.-->
+        <!--</td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<td>Lumber</td>-->
+        <!--<td>{{ county.wood }}</td>-->
+        <!--{% if county.get_wood_income() >= 0 %}-->
+        <!--<td style="color:green;">+-->
+        <!--{% else %}-->
+        <!--<td style="color:red;">-->
+        <!--{% endif %}-->
+        <!--{{ county.get_wood_income() }} <img class="resource_icons" src="/static/images/wood_icon.jpg">-->
+        <!--</td>-->
+        <!--<td>-</td>-->
+        <!--<td>-->
+        <!--<ul>-->
+        <!--<li>{{ county.buildings['mill'].class_name_plural.title() }}: + {{ county.get_wood_income() }} <img-->
+        <!--class="resource_icons" src="/static/images/wood_icon.jpg">-->
+        <!--</li>-->
+        <!--</ul>-->
+        <!--</td>-->
+        <!--<td>-</td>-->
+        <!--<td>Lumber is used to build buildings and to equip certain soldiers.</td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<td>Iron</td>-->
+        <!--<td>{{ county.iron }}</td>-->
+        <!--{% if county.get_iron_income() >= 0 %}-->
+        <!--<td style="color:green;">+-->
+        <!--{% else %}-->
+        <!--<td style="color:red;">-->
+        <!--{% endif %}-->
+        <!--{{ county.get_iron_income() }} <img class="resource_icons" src="/static/images/iron_icon.jpg">-->
+        <!--</td>-->
+        <!--<td>-</td>-->
+        <!--<td>-->
+        <!--<ul>-->
+        <!--<li>{{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.get_iron_income() }} <img-->
+        <!--class="resource_icons" src="/static/images/iron_icon.jpg">-->
+        <!--</li>-->
+        <!--</ul>-->
+        <!--</td>-->
+        <!--<td>-</td>-->
+        <!--<td>Iron is used to equip powerful soldiers.</td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<td>Stone</td>-->
+        <!--<td>{{ county.stone }}</td>-->
+        <!--{% if county.get_stone_income() >= 0 %}-->
+        <!--<td style="color:green;">+-->
+        <!--{% else %}-->
+        <!--<td style="color:red;">-->
+        <!--{% endif %}-->
+        <!--{{ county.get_stone_income() }} <img class="resource_icons" src="/static/images/stone_icon.jpg">-->
+        <!--</td>-->
+        <!--<td>-</td>-->
+        <!--<td>-->
+        <!--<li>{{ county.buildings['quarry'].class_name_plural.title() }}: + {{ county.get_stone_income() }} <img-->
+        <!--class="resource_icons" src="/static/images/stone_icon.jpg"></li>-->
+        <!--</td>-->
+        <!--<td>-</td>-->
+        <!--<td>Stone is used to build your most powerful buildings.</td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<td>Happiness</td>-->
+        <!--<td>{{ county.happiness }}%</td>-->
+        <!--<td>-->
+        <!--<status-number :number="happinessChange"></status-number>-->
+        <!--<img class="resource_icons" src="/static/images/heart_icon.jpg">-->
+        <!--</td>-->
+        <!--<td>-</td>-->
+        <!--<td>-->
+        <!--<ul>-->
+        <!--<li>Natural: +7 <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>-->
+        <!--{% if county.production_choice == 3 %}-->
+        <!--<li>Relax: + {{ county.get_excess_production_value(3) }} <img class="resource_icons"-->
+        <!--src="/static/images/heart_icon.jpg">-->
+        <!--</li>-->
+        <!--{% endif %}-->
+        <!--</ul>-->
+        <!--</td>-->
+        <!--<td>-->
+        <!--<ul>-->
+        <!--{% if happiness_modifier.get(county.race)[0] %}-->
+        <!--<li>-->
+        <!--<div class="tooltip">{{ happiness_modifier.get(county.race)[0] }}: {{-->
+        <!--happiness_modifier.get(county.race)[1] }}<span class="tooltipText">Racial Modifier: {{ county.race }}</span>-->
+        <!--</div>-->
+        <!--<img class="resource_icons" src="/static/images/heart_icon.jpg">-->
+        <!--</li>-->
+        <!--{% endif %}-->
+        <!--<li>Taxes: v{ -selectedTaxRate } <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>-->
+        <!--</ul>-->
+        <!--</td>-->
+        <!--<td>Happiness affects emigration rate and how productive your workers are. If they become too unhappy,-->
+        <!--they may start to question your rule.-->
+        <!--</td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<td>Nourishment</td>-->
+        <!--<td>{{ county.nourishment }}%</td>-->
+        <!--<td>-->
+        <!--<status-number :number="nourishmentChange"></status-number>-->
+        <!--</td>-->
+        <!--<td>-</td>-->
+        <!--<td>-</td>-->
+        <!--<td>-</td>-->
+        <!--<td>The better nourished your people, the healthier they will be.-->
+        <!--Your nourishment decreases by 1% for every 200 unfed people each day.-->
+        <!--</td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<td>Health</td>-->
+        <!--{% if county.health >= 75 %}-->
+        <!--<td style="color:green;">-->
+        <!--{% else %}-->
+        <!--<td style="color:red;">-->
+        <!--{% endif %}-->
+        <!--{{ county.health_terminology.title() }}-->
+        <!--</td>-->
+        <!--{% if county.get_health_change() > 0 %}-->
+        <!--<td style="color:green;">Positive-->
+        <!--{% elif county.get_health_change() == 0 %}-->
+        <!--<td>None-->
+        <!--{% else %}-->
+        <!--<td style="color:red;">Negative-->
+        <!--{% endif %}-->
+        <!--</td>-->
+        <!--<td>-</td>-->
+        <!--<td>-</td>-->
+        <!--<td>-</td>-->
+        <!--<td>The current health of your people. If they become unhealthy, they will die at much greater rates and-->
+        <!--become very susceptible to disease and plague.-->
+        <!--</td>-->
+        <!--</tr>-->
+      </table>
+      <!-- <div class="invisible">
+        <span id="goldChange">{{ county.get_gold_change() }}</span>
+      </div> -->
+    </form>
+  </div>
+</template>
+
+<script>
+import $ from 'jquery'
+import StatusNumber from '@/components/StatusNumber.vue'
+import SelectGenerator from '@/components/SelectGenerator.vue'
+// // ugly Jinja hacked in variables.
+// var TAX = {{ county.tax }};
+// var GOLD_CHANGE = {{ county.get_gold_change() }};
+// var HAPPINESS_CHANGE = {{ county.get_happiness_change() }};
+// var GRAIN_STORAGE_CHANGE = {{ county.grain_storage_change() }};
+// var RATIONS = {{ county.rations }};
+// var FOOD_EATEN = {{ county.get_food_to_be_eaten() }};
+// var NOURISHMENT_CHANGE = {{ county.get_nourishment_change() }};
+// // end of Jinja code. Please keep it inside here.
+
+// The constants are defined at the beginning and use evil Jinja in JS.
+export default {
+  name: 'EconomyForm',
+  components: {
+    'status-number': StatusNumber,
+    'select-generator': SelectGenerator
+  },
+  props: {
+    errors: Object
+  },
+  data () {
+    return {
+      form: Object,
+      urlFor: Object,
+      goldChange: Number,
+      taxIncome: Number,
+      selectedTaxRate: Number,
+      happinessChange: Number,
+      grainStorageChange: Number,
+      selectedRations: Number,
+      foodEaten: Number,
+      nourishmentChange: Number
+    }
+  },
+  watch: {
+    selectedTaxRate () {
+      this.sendForm($('#economy-form'), this.updatePage)
+    },
+    selectedRations () {
+      this.sendForm($('#economy-form'), this.updatePage)
+    }
+  },
+  mounted () {
+    // consider putting this in a general function?
+    this.axios.get('/api/economy')
+      .then((response, status) => {
+        if (status === 200) {
+          this.updatePage(response.data)
+        } else {
+          this.errors = response
+        }
+      })
+      .catch((error) => {
+        this.errors = error.response
+      })
+  },
+  methods: {
+    updatePage (data) {
+      this.form = data.form
+      this.urlFor = data.urlFor
+      this.goldChange = data.goldChange
+      this.taxIncome = data.taxIncome
+      this.happinessChange = data.happinessChange
+      this.grainStorageChange = data.grainStorageChange
+      this.foodEaten = data.foodEaten
+      this.nourishmentChange = data.nourishmentChange
+    },
+    sendForm (form, callback) {
+      $.ajax({
+        url: form.attr('action'),
+        method: 'POST',
+        // need to verify csrf id, I might be wrong.
+        headers: { 'X-CSRF-TOKEN': $('#csrf_token').val() },
+        data: form.serialize(),
+        dataType: 'json' // type of data returned, not type sent.
+      })
+        .always(function (data, status) {
+          if (status === 'success') {
+            callback(data)
+          } else {
+            this.errors = data
+          }
+        })
+    }
+  }
+}
+</script>

@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import SideBar from "@/components/SideBar.vue"
-import EconomyForm from "@/components/EconomyForm.vue"
+import SideBar from '@/components/SideBar.vue'
+import EconomyForm from '@/components/EconomyForm.vue'
 
 export default {
   name: 'EconomyApp',
