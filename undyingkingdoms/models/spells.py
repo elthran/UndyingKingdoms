@@ -15,12 +15,8 @@ class Spell(GameEvent):
     mana_sustain = db.Column(db.Integer)  # Mana required to spend each day to sustain the spell
     duration = db.Column(db.Integer)  # How many game days until the spell ends
 
-    def __init__(self, county_id, target_id, world_day, county_day, name, category, mana_cost, mana_sustain=0, duration=0):
+    def __init__(self, name, category, mana_cost, mana_sustain=0, duration=0):
 
-        self.county_id = county_id
-        self.target_id = target_id
-        self.world_day = world_day
-        self.county_day = county_day
         self.name = name
         self.category = category
         self.mana_cost = mana_cost

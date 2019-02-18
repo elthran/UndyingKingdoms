@@ -15,6 +15,8 @@ def research(template):
     form = TechnologyForm()
 
     available_technologies = Technology.query.filter_by(county_id=county.id).filter_by(completed=False).all()
+    known_technologies = Technology.query.filter_by(county_id=county.id).filter_by(completed=True).all()
     form.technology.choices = [(i, available_technologies[i].name) for i in range(len(available_technologies))]
 
-    return render_template(template, form=form, available_technologies=available_technologies)
+    return render_template(template, form=form, available_technologies=available_technologies,
+                           known_technologies=known_technologies)

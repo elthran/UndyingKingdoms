@@ -26,6 +26,8 @@ from undyingkingdoms.static.metadata.metadata_buildings_dwarf import dwarf_build
 from undyingkingdoms.static.metadata.metadata_buildings_elf import elf_buildings
 from undyingkingdoms.static.metadata.metadata_buildings_goblin import goblin_buildings
 from undyingkingdoms.static.metadata.metadata_buildings_human import human_buildings
+from undyingkingdoms.static.metadata.metadata_magic_all import generic_spells
+from undyingkingdoms.static.metadata.metadata_magic_elf import elf_spells
 from undyingkingdoms.static.metadata.metadata_research_all import generic_technology
 
 
@@ -45,7 +47,7 @@ class County(GameState):
     race = db.Column(db.String(32))
     title = db.Column(db.String(16))
     background = db.Column(db.String(32))
-    
+
     _population = db.Column(db.Integer)
     _land = db.Column(db.Integer)
     _happiness = db.Column(db.Integer)  # Out of 100
@@ -85,8 +87,11 @@ class County(GameState):
                              collection_class=attribute_mapped_collection('name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
     technologies = db.relationship("Technology",
-                                collection_class=attribute_mapped_collection('name'),
-                                cascade="all, delete, delete-orphan", passive_deletes=True)
+                                   collection_class=attribute_mapped_collection('name'),
+                                   cascade="all, delete, delete-orphan", passive_deletes=True)
+    spells = db.relationship("Spell",
+                             collection_class=attribute_mapped_collection('name'),
+                             cascade="all, delete, delete-orphan", passive_deletes=True)
 
     def __init__(self, kingdom_id, name, leader, user_id, race, title, background):
         self.name = name
@@ -128,6 +133,7 @@ class County(GameState):
         self.immigration = 0
         self.emigration = 0
         # Buildings and Armies extracted from metadata
+        self.spells = deepcopy(generic_spells)
         if self.race == 'Dwarf':
             self.buildings = deepcopy(dwarf_buildings)
             self.armies = deepcopy(dwarf_armies)
@@ -137,6 +143,7 @@ class County(GameState):
         elif self.race == 'Elf':
             self.buildings = deepcopy(elf_buildings)
             self.armies = deepcopy(elf_armies)
+            self.spells = deepcopy(elf_spells)
         elif self.race == 'Goblin':
             self.buildings = deepcopy(goblin_buildings)
             self.armies = deepcopy(goblin_armies)
@@ -291,6 +298,15 @@ class County(GameState):
         preference.production_choice = value
 
     @property
+    def research_choice(self):
+        return Preferences.query.filter_by(county_id=self.id).first().research_choice
+
+    @research_choice.setter
+    def research_choice(self, value):
+        preference = Preferences.query.filter_by(county_id=self.id).first()
+        preference.research_choice = value
+
+    @property
     def seed(self):
         return self.kingdom.world.day
 
@@ -322,6 +338,7 @@ class County(GameState):
         Add a WORLD. Tracks day. Has game clock.
         """
         self.update_daily_resources()
+        self.advance_research()
         self.produce_pending_buildings()
         self.produce_pending_armies()
         self.apply_excess_production_value()
@@ -395,6 +412,15 @@ class County(GameState):
         self.research += self.get_research_change()
         self.happiness += self.get_happiness_change()
         self.health += self.get_health_change()
+
+    def advance_research(self):
+        technology = self.technologies[self.research_choice]
+        technology.current += self.research
+        if technology.current >= technology.required:  # You save left over research
+            self.research = technology.required - technology.current
+            technology.completed = True
+        else:  # You don't keep research as a resource; it's spent
+            self.research = 0
 
     def get_health_change(self):
         if self.nourishment > 90:
@@ -909,7 +935,7 @@ class County(GameState):
         operations_on_target = Infiltration.query.filter_by(target_id=self.id).filter_by(success=True).filter(
             Infiltration.time_created > buffer_time).count()
         reduction = 10 + (self.get_number_of_available_thieves() * 3500 / self.land) ** 0.7 + (
-                    10 * operations_on_target)
+                10 * operations_on_target)
         return max(int(100 - reduction), 10)
 
     # Terminology

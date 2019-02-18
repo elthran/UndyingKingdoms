@@ -8,6 +8,8 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
+You currently gain {{ county.get_research_change() }} <img class="resource_icons" src="/static/images/research_icon.jpg"> each day.<br><br>
+
 <h2>Current Research:</h2>
 <form id="economy-form" action="{{ url_for('research') }}" accept-charset="UTF-8">
     {{ form.csrf_token }}
@@ -15,10 +17,14 @@
     Description: {{ available_technologies[0].description }}<br>
     Progress: {{ available_technologies[0].current }} / {{ available_technologies[0].required }}
 </form>
-
+<br><br>
 <h2>Known Technologies</h2>
 <ul>
-    None.
+    {% for technology in known_technologies %}<br>
+    {{ technology.name.title() }}: {{ technology.description }}
+    {% else %}<br>
+    No technologies have been researched yet.
+    {% endfor %}
 </ul>
 
 {% endblock %}
