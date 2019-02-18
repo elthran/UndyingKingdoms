@@ -34,7 +34,7 @@ class Preferences(GameState):
 
     tax_rate = db.Column(db.Integer)
     rations = db.Column(db.Integer)
-    production = db.Column(db.Integer)
+    production_choice = db.Column(db.Integer)
     research = db.Column(db.String(128))
 
     def __init__(self, county_id, user_id):
@@ -42,3 +42,4 @@ class Preferences(GameState):
         self.user_id = user_id
         self.tax_rate = 5
         self.rations = 1
+        self.production_choice = 0

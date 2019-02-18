@@ -4,7 +4,6 @@ from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models.forms.economy import EconomyForm
-from undyingkingdoms.models.preferences import Preferences
 from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_rate_modifier, income_modifier, \
     food_consumed_modifier, happiness_modifier
 
@@ -13,10 +12,7 @@ from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_
 @mobile_template('{mobile/}gameplay/economy.html')
 @login_required
 def economy(template):
-    county_preferences = Preferences.query.filter_by(county_id=current_user.county.id).first()
-    tax_rate = county_preferences.tax_rate
-    rations = county_preferences.rations
-    form = EconomyForm(tax=tax_rate, rations=rations)
+    form = EconomyForm(tax=current_user.county.tax_rate, rations=current_user.county.rations)
 
     form.tax.choices = [(i, i) for i in range(11)]
     form.rations.choices = [(pairing[0], pairing[1]) for pairing in rations_terminology]
@@ -39,11 +35,8 @@ def update_economy():
         food in 2 places, nourishment in 1.
     """
     county = current_user.county
-    county_preferences = Preferences.query.filter_by(county_id=county.id).first()
-    tax_rate = county_preferences.tax_rate
-    rations = county_preferences.rations
 
-    form = EconomyForm(tax=tax_rate, rations=rations)
+    form = EconomyForm(tax=county.tax_rate, rations=county.rations)
     form.tax.choices = [(i, i) for i in range(11)]
     form.rations.choices = [
         (pairing[0], pairing[1])
@@ -51,8 +44,8 @@ def update_economy():
     ]
 
     if form.validate_on_submit():
-        county_preferences.tax_rate = form.tax.data
-        county_preferences.rations = form.rations.data
+        county.tax_rate = form.tax.data
+        county.rations = form.rations.data
 
         # Because I'm too lazy to update the mobile page right now.
         if getattr(request, 'MOBILE', None):
