@@ -1,38 +1,58 @@
+<style scoped>
+#side-bar {  /* The main sidebar which is always visible when logged in */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    font-size: 1.5em;
+    margin: 0 1em 0.5em;
+    margin-right: 1em;
+    padding: 0.6em;
+    font-size: 1.25em;
+    line-height: 1.7em;
+    border: solid;
+    border-radius: 5px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.spacer {
+    margin-bottom: 1em;
+}
+</style>
+
 <template>
-  <div id="side-bar">
-    <ul class=".text-center">
-      <li><h1>Gameplay</h1></li>
-      <li><a :href="urlFor.overview">County&nbsp;Overview</a></li>
-      <li><a :href="urlFor.economy">Economy</a></li>
-      <li><a :href="urlFor.infrastructure">Infrastructure</a></li>
-      <li><a :href="urlFor.military">Military</a></li>
-      <li><a :href="urlFor.infiltration">Infiltration</a></li>
-      <li><a :href="urlFor.diplomacy">Diplomacy</a></li>
-      <li>
-        <a :href="urlFor.messages"
-           :class="{ bold: user.hasMail }"
-        >Inbox</a>
-      </li>
-      <li>
-        <a :href="urlFor.chatroomAPI"
-           :class="{ bold: user.hasChatMessage }"
-        >Town&nbsp;Hall</a>
-      </li>
-      <li><a :href="urlFor.kingdom">Kingdom&nbsp;Overview</a></li>
-      <li><br></li>
-      <li><h1>About the Game</h1></li>
-      <li><a :href="urlFor.achievements">Achievements</a></li>
-      <li><a :href="urlFor.forum">Forum</a></li>
-      <li><a :href="urlFor.guide">Player&nbsp;Guide</a></li>
-      <li><a :href="urlFor.leaderboard">Leaderboard</a></li>
-      <li><a :href="urlFor.versions">Read&nbsp;About&nbsp;Updates</a></li>
-      <li v-if="user.isAdmin">
-        <a :href="urlFor.adminHomeAPI">Admin</a>
-      </li>
-      <li><a :href="urlFor.logout">Logout</a></li>
-      <li><br><br><br></li>
-    </ul>
-  </div>
+  <nav id="side-bar" class=".text-center">
+    <h1>Gameplay</h1>
+    <a :href="urlFor.overview">County&nbsp;Overview</a>
+    <a :href="urlFor.economy">Economy</a>
+    <a :href="urlFor.infrastructure">Infrastructure</a>
+    <a :href="urlFor.military">Military</a>
+    <a :href="urlFor.infiltration">Infiltration</a>
+    <a :href="urlFor.diplomacy">Diplomacy</a>
+    <a :href="urlFor.messages"
+       :class="{ bold: user.hasMail }"
+    >Inbox</a>
+    <a :href="urlFor.chatroomAPI"
+       :class="{ bold: user.hasChatMessage }"
+    >Town&nbsp;Hall</a>
+    <a :href="urlFor.kingdom">Kingdom&nbsp;Overview</a>
+    <div class="spacer"></div>
+    <h1>About the Game</h1>
+    <a :href="urlFor.achievements">Achievements</a>
+    <a :href="urlFor.forum">Forum</a>
+    <a :href="urlFor.guide">Player&nbsp;Guide</a>
+    <a :href="urlFor.leaderboard">Leaderboard</a>
+    <a :href="urlFor.versions">Read&nbsp;About&nbsp;Updates</a>
+    <a v-if="user.isAdmin" :href="urlFor.adminHomeAPI">Admin</a>
+    <a :href="urlFor.logout">Logout</a>
+  </nav>
 </template>
 
 <script>
@@ -42,7 +62,7 @@ export default {
     return {
       'urlFor': Object,
       'user': Object,
-      'error': Object
+      'error': ''
     }
   },
   methods: {
@@ -64,29 +84,8 @@ export default {
       }
     })
     .catch((error) => {
-      this.error = error;
-      // handle error
-      console.log(error);
+      console.log(error.response);
     });
   }
 }
 </script>
-
-<style scoped>
-#side-bar {  /* The main sidebar which is always visible when logged in */
-    margin-right: 1em;
-    padding: 0.6em;
-    font-size: 1.25em;
-    line-height: 1.7em;
-    border: solid;
-    border-radius: 5px;
-}
-
-.bold {
-    font-weight: bold;
-}
-
-.text-center {
-    text-align: center;
-}
-</style>

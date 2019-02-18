@@ -68,7 +68,7 @@ export const devLogin = function () {
   }
 }();
 
-export const devAxios = axios.create({
+export const customAxios = axios.create({
   baseURL: baseURL(),
   withCredentials: true
 });

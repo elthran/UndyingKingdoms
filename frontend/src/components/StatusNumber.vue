@@ -1,7 +1,7 @@
 <template>
   <span :style="{ color: number < 0 ?'red':'green' }">
-      {{ (number <= 0 ? "&#160;":"+ ") + number }}
-    </span>
+    {{ (number <= 0 ? "&#160;":"+ ") + number }}
+  </span>
 </template>
 
 <script>
