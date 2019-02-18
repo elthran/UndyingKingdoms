@@ -5,8 +5,7 @@
     align-items: center;
 
     font-size: 1.5em;
-    margin: 0 1em 0.5em;
-    margin-right: 1em;
+    margin: 0 1em 0.3em 0.5em;
     padding: 0.6em;
     font-size: 1.25em;
     line-height: 1.7em;
@@ -98,13 +97,11 @@
 <script>
 export default {
   name: 'SideBar',
-  props: {
-    errors: Object
-  },
   data () {
     return {
       urlFor: Object,
-      user: Object
+      user: Object,
+      errors: Object
     }
   },
   mounted () {

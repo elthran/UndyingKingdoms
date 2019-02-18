@@ -1,37 +1,37 @@
 <style scoped>
 #layout-content {
-    width: 100%;
+  width: 100%;
 }
 
 table {
-    margin-top: 1em;
+  margin-top: 1em;
 }
 
 tr:nth-child(even) {background-color: #f2f2f2;}
 
 th, td {
-    vertical-align: bottom;
-    border: 1px solid #ddd;
-    padding: 0 0.3em 0.3em;
+  vertical-align: bottom;
+  border: 1px solid #ddd;
+  padding: 0 0.3em 0.3em;
 }
 
 th {
-    font-weight: bold;
-    vertical-align: middle;
+  font-weight: bold;
+  vertical-align: middle;
 }
 
 .total-row {
-    font-weight: bold;
-    height: 2.6em;
+  font-weight: bold;
+  height: 2.6em;
 }
 
 .tooltip .tooltipText {
-    /* Position the tooltip */
-    position: absolute;
-    z-index: 1;
-    top: 120%;
-    left: 50%;
-    margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: 120%;
+  left: 50%;
+  margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
 }
 </style>
 
@@ -375,9 +375,6 @@ export default {
     'status-number': StatusNumber,
     'select-generator': SelectGenerator
   },
-  props: {
-    errors: Object
-  },
   data () {
     return {
       form: Object,
@@ -389,7 +386,8 @@ export default {
       grainStorageChange: Number,
       selectedRations: Number,
       foodEaten: Number,
-      nourishmentChange: Number
+      nourishmentChange: Number,
+      errors: Object
     }
   },
   watch: {
