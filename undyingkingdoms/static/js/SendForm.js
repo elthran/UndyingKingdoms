@@ -13,9 +13,9 @@ function sendForm (form, callback, args) {
     data: form.serialize(),
     dataType: "json",  // type of data returned, not type sent.
   })
-  .always(function (data, status) {
-    if (status === 'success') {
-      console.log('the request succeeded');
+  // Note that I can't use (reponse, status) here as that status will always be 'success'.
+  .always(function (data) {
+    if (data.status === 'success') {
       callback(data);
     } else {
       console.log('The request was not sucessful.')

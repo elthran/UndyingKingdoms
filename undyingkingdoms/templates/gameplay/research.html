@@ -7,7 +7,7 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 <div id="research-app">
-  You currently gain v{ researchChange } <img class="resource_icons" src="/static/images/research_icon.jpg"> each day.<br><br>
+  <h2>You currently gain v{ researchChange } <img class="resource_icons" src="/static/images/research_icon.jpg"> each day.</h2><br><br>
 
   <h2>Current Research:</h2>
   <form id="research-form" action="{{ url_for('research_api') }}" accept-charset="UTF-8">
@@ -25,10 +25,10 @@
   <br><br>
   <h2>Known Technologies</h2>
   <ul>
-    {% for technology in known_technologies %}<br>
-    {{ technology.name.title() }}: {{ technology.description }}
-    {% else %}<br>
-    No technologies have been researched yet.
+    {% for technology in known_technologies %}
+    <li>{{ technology.name.title() }}: {{ technology.description }}</li>
+    {% else %}
+      <li>No technologies have been researched yet.</li>
     {% endfor %}
   </ul>
 </div>
@@ -65,7 +65,6 @@ var app = new Vue({
   },
   methods: {
     updatePage (data) {
-      console.log(data)
       this.researchChange = data.researchChange;
       this.description = data.description;
       this.progressCurrent = data.progressCurrent;

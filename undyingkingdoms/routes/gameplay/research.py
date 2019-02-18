@@ -41,7 +41,10 @@ def research_api():
 
     if form.validate_on_submit():
         tech = Technology.query.get(form.technology.data)
-        jsonify(
+        # update choice.
+        county.research_choice = tech.name
+
+        return jsonify(
             status='success',
             message='You have updated your current research choice.',
             researchChange=county.get_research_change(),
