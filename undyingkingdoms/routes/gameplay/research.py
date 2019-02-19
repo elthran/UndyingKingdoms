@@ -16,7 +16,7 @@ def research(template):
 
     available_technologies = Technology.query.filter_by(county_id=county.id).filter_by(completed=False).all()
     known_technologies = Technology.query.filter_by(county_id=county.id).filter_by(completed=True).all()
-    form.technology.choices = [(tech.id, tech.name) for tech in available_technologies]
+    form.technology.choices = [(tech.id, tech.name.title()) for tech in available_technologies]
 
     current_tech = Technology.query.filter_by(county_id=county.id, name=county.research_choice).first()
 

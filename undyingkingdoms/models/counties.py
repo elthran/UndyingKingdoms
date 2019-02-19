@@ -551,10 +551,16 @@ class County(GameState):
             self.nourishment -= min(nourishment_loss, 5)
 
     def get_produced_grain(self):
-        return self.buildings['field'].total * self.buildings['field'].output
+        modifier = 1
+        if self.technologies['agriculture'].completed:
+            modifier += 0.5
+        return int(self.buildings['field'].total * self.buildings['field'].output * modifier)
 
     def get_produced_dairy(self):
-        return self.buildings['pasture'].total * self.buildings['pasture'].output
+        modifier = 1
+        if self.technologies['animal husbandry'].completed:
+            modifier += 0.5
+        return int(self.buildings['pasture'].total * self.buildings['pasture'].output * modifier)
 
     def get_excess_worker_produced_food(self):
         if self.production_choice == 2:
@@ -820,6 +826,8 @@ class County(GameState):
             duration = self.get_army_duration(sum(army.values()))
             expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, self.day, duration, "attack")
             expedition.save()
+            for unit in army.keys():
+                setattr(expedition, unit + '_sent', army[unit])
             while hit_points_to_be_removed > 0:
                 army = {key: value for key, value in army.items() if value > 0}  # Remove dead troops
                 if army == {}:
