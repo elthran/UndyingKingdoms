@@ -42,6 +42,7 @@ class GoldAPI(MethodView):
         return jsonify(
             status='success',
             message='You called on the gold api.',
+            selectedTaxRate=county.tax,
             county=data,
             form=form,
             birth_rate_modifier=birth_rate_modifier,

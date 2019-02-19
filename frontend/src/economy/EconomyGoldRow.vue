@@ -10,8 +10,9 @@
       <ul>
         <li>Tax Rate:<br>
           <select-generator
-            v-model="county.tax"
+            v-model="selectedTaxRate"
             :options="form.tax.choices"
+            :selected="county.tax"
             :id-name="form.tax.id"
           ></select-generator>%
         </li>
@@ -66,6 +67,7 @@ export default {
   },
   data () {
     return {
+      selectedTaxRate: 7,
       county: Object,
       form: {
         tax: {
@@ -74,6 +76,11 @@ export default {
         }
       },
       errors: Object
+    }
+  },
+  watch: {
+    selectedTaxRate () {
+        console.log('tax updated')
     }
   },
   beforeCreate () {
