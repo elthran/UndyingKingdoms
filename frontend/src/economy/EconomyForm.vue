@@ -76,7 +76,7 @@ export default {
   name: 'EconomyForm',
   components: {
     'economy-population-row': EconomyPopulationRow,
-    'economy-gold-row': EconomyGoldRow,
+    'economy-gold-row': EconomyGoldRow
     // 'economy-food-row': EconomyFoodRow,
     // 'economy-wood-row': EconomyWoodRow,
     // 'economy-iron-row': EconomyIronRow,

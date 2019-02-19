@@ -8,7 +8,8 @@
     <option
       v-for="option in options"
       :key="option[0]"
-      :value="key"
+      :option="option"
+      :value="option[0]"
     >
       {{ option[1] }}
     </option>
@@ -19,9 +20,9 @@
 export default {
   name: 'SelectGenerator',
   props: {
-    'options': Array,
-    'value': Number,
-    'idName': String
+    options: Array,
+    value: Number,
+    idName: String
   }
 }
 </script>

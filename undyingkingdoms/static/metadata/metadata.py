@@ -12,6 +12,8 @@ kingdom_names = ["Faenoth", "Aldoroth", "Ecthalion"]
 
 infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust']
 
+tax_options = [(i, i) for i in range(11)]
+
 rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (0.75, "Three-Quarters"), (1, "Normal"),
                        (1.5, "One-and-a-half"), (2, "Double"), (3, "Triple")]
 

@@ -4,17 +4,16 @@
     <td>{{ county.gold }}</td>
     <td>
       <status-number :number="county.goldChange"></status-number>
-      <img class="resource_icons" src="/static/images/gold_icon.jpg">
+      <img class="resource_icons" src="/static/dist/images/gold_icon.jpg">
     </td>
     <td>
       <ul>
-        <li>Tax Rate:
+        <li>Tax Rate:<br>
           <select-generator
-            v-model="county.selectedTaxRate"
+            v-model="county.tax"
             :options="form.tax.choices"
-            id-name="form.tax.id"
-          ></select-generator>
-          %
+            :id-name="form.tax.id"
+          ></select-generator>%
         </li>
         <!-- {% if income_modifier.get(county.race)[1] %}
         <li>
@@ -49,26 +48,52 @@
       </ul>
     </td> -->
     <!-- These conditions must not occur together or it will break the table. -->
-    <td v-if="selectedTaxRate < 7" class="green">Your current tax rate has a positive effect on happiness</td>
-    <td v-if="selectedTaxRate == 7">Your current tax rate has no effect on happiness</td>
-    <td v-if="selectedTaxRate > 7" class="red">Your current tax rate has a negative effect on happiness</td>
+    <td v-if="county.tax < 7" class="green">Your current tax rate has a positive effect on happiness</td>
+    <td v-if="county.tax == 7">Your current tax rate has no effect on happiness</td>
+    <td v-if="county.tax > 7" class="red">Your current tax rate has a negative effect on happiness</td>
   </tr>
 </template>
 
 <script>
-import SelectGenerator from '@/components/SelectGenerator.vue';
-import StatusNumber from '@/components/StatusNumber.vue';
+import SelectGenerator from '@/components/SelectGenerator.vue'
+import StatusNumber from '@/components/StatusNumber.vue'
 
 export default {
   name: 'EconomyGoldRow',
   components: {
     'status-number': StatusNumber,
-    'seelect-generator': SelectGenerator
+    'select-generator': SelectGenerator
   },
   data () {
     return {
       county: Object,
-
+      form: {
+        tax: {
+          choices: [Array],  // for some reason using default args this way fixes the linting bug.
+          id: ""
+        }
+      },
+      errors: Object
+    }
+  },
+  beforeCreate () {
+    this.axios.get('/api/economy/gold')
+      .then((response) => {
+        if (response.data.status === 'success') {
+          this.updatePage(response.data)
+        } else {
+          this.errors = response
+        }
+      })
+      .catch((error) => {
+        this.errors = error.response
+      })
+  },
+  methods: {
+    updatePage (data) {
+      // console.log(data)
+      this.county = data.county
+      this.form = data.form
     }
   }
 }

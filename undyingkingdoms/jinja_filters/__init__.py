@@ -1,6 +1,6 @@
 from markupsafe import Markup
 
-def vue_safe(value):
+def vue_safe(value, for_template=True):
     """Convert all tuples to lists.
 
     This also marks the value as safe to prevent escaping.
@@ -14,4 +14,6 @@ def vue_safe(value):
         else:
             new.append(item)
 
-    return Markup(new)
+    if for_template:
+        return Markup(new)
+    return new
