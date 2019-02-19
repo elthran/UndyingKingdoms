@@ -47,7 +47,7 @@ def diplomacy_reply(trade_id):
             ), 200
         else:
             return jsonify(
-                status="success",
+                status="fail",
                 message=f"You do not have the resources to accept this trade."
             )
     elif "reject" in request.args:

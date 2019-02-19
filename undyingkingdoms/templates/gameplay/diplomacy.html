@@ -78,12 +78,14 @@ button {
 $(".accept").click(function () {
     $.get(
         $(this).val() + "?accept=1",
-        (response, status) => {
-            if (status === "success") {
+        (response) => {
+            if (response.status === "success") {
                 $(this).parent().remove();
                 if ($("#trades-they-offered").children().length === 0) {
                     $("#they-offered-no-trades").removeClass('invisible');
                 }
+            } else if (response.status === "fail") {
+                alert(response.message);
             } else {
                 console.log(response);
             }
@@ -96,8 +98,8 @@ $(".accept").click(function () {
 $(".reject").click(function () {
     $.get(
         $(this).val() + "?reject=1",
-        (response, status) => {
-            if (status === "success") {
+        (response) => {
+            if (response.status === "success") {
                 $(this).parent().remove();
                 if ($("#trades-they-offered").children().length === 0) {
                     $("#they-offered-no-trades").removeClass('invisible');
@@ -111,8 +113,8 @@ $(".reject").click(function () {
 $(".cancel").click(function () {
     $.get(
         $(this).val() + "?cancel=1",
-        (response, status) => {
-            if (status === "success") {
+        (response) => {
+            if (response.status === "success") {
                 $(this).parent().remove();
                 if ($("#trades-we-offered").children().length === 0) {
                     $("#we-offered-no-trades").removeClass('invisible');

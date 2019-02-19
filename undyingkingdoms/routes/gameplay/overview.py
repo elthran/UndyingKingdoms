@@ -19,13 +19,13 @@ its own route. Even though this cause duplication of code it is much
 easier to test and debug. If you use a major concept in 2 places
 you can make that a 'utility' function and import it into both routes.
 
-The Routes that return JSON could be made to return a redirect to 
+The Routes that return JSON could be made to return a redirect to
 the overview or overiew_enemy pages but JSON is easier to handle with
 JS ... You would need a JS function to submit you form and handle the
 callback. The callback would update any relvant data on the page
-on the success of the Trade or Send Message routes. 
+on the success of the Trade or Send Message routes.
 
-The Trade and Send Message routes might need to return more data 
+The Trade and Send Message routes might need to return more data
 than they currently are.
 """
 
@@ -48,6 +48,8 @@ def overview(template):
 def enemy_overview(template, kingdom_id=0, county_id=0):
     county = current_user.county
     target_county = County.query.get(county_id)
+    if county == target_county:
+        return redirect(url_for('overview', kingdom_id=0, county_id=0))
     target_kingdom = Kingdom.query.get(kingdom_id)
 
     message_form = MessageForm()
