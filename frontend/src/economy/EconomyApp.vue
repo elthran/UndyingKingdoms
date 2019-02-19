@@ -10,7 +10,7 @@
 
 <script>
 import SideBar from '@/components/SideBar.vue'
-import EconomyForm from '@/components/EconomyForm.vue'
+import EconomyForm from './EconomyForm.vue'
 
 export default {
   name: 'EconomyApp',

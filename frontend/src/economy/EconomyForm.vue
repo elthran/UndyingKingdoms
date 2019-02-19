@@ -3,21 +3,12 @@
   width: 100%;
 }
 
-table {
-  margin-top: 1em;
-}
-
 tr:nth-child(even) {background-color: #f2f2f2;}
 
-th, td {
+td {
   vertical-align: bottom;
   border: 1px solid #ddd;
   padding: 0 0.3em 0.3em;
-}
-
-th {
-  font-weight: bold;
-  vertical-align: middle;
 }
 
 .total-row {
@@ -33,15 +24,19 @@ th {
   left: 50%;
   margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
 }
+
+.flex-table {
+  display: flex;
+  width: 100%;
+}
 </style>
 
 <template>
   <div id="layout-content">
     <!--actual content -->
-    <br><h1 style="text-align:center;">
+    <h1 style="text-align:center;">
       Economy
-    </h1><br><br>
-
+    </h1>
     <form
       id="economy-form"
       :action="urlFor.update_economy"
@@ -49,71 +44,9 @@ th {
     >
       {{ form.csrf_token }}
       <h2>Resources</h2>
-      <table>
-        <tr>
-          <th style="width:50px;">
-            Topic
-          </th>
-          <th style="width:50px;">
-            Current
-          </th>
-          <th style="width:75px;">
-            Projected Change
-          </th>
-          <th style="width:200px;">
-            Modifiers
-          </th>
-          <th style="width:180px;">
-            Projected Growth
-          </th>
-          <th style="width:180px;">
-            Projected Losses
-          </th>
-          <th style="width:225px;">
-            Notes
-          </th>
-        </tr>
-        <!--<tr>-->
-        <!--<td>Population</td>-->
-        <!--<td>{{ county.population }}</td>-->
-        <!--{% set population_projection = county.get_population_change(prediction=True) %}-->
-        <!--{% if population_projection >= 0 %}-->
-        <!--<td style="color:green;">+-->
-        <!--{% else %}-->
-        <!--<td style="color:red;">-->
-        <!--{% endif %}-->
-        <!--{{ population_projection }} <img class="resource_icons" src="/static/images/population_icon.jpg">-->
-        <!--</td>-->
-        <!--<td>-->
-        <!--<ul>-->
-        <!--{% if birth_rate_modifier.get(county.race)[1] %}-->
-        <!--<li>-->
-        <!--<div class="tooltip">{{ birth_rate_modifier.get(county.race)[0] }}: {{-->
-        <!--(birth_rate_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>-->
-        <!--</div>-->
-        <!--</li>-->
-        <!--{% endif %}-->
-        <!--{% if birth_rate_modifier.get(county.background)[1] %}-->
-        <!--<li>({{ county.background }}) {{ birth_rate_modifier.get(county.background)[0] }}: {{-->
-        <!--(birth_rate_modifier.get(county.background)[1] * 100)|int }}%-->
-        <!--</li>-->
-        <!--{% endif %}-->
-        <!--</ul>-->
-        <!--</td>-->
-        <!--<td>-->
-        <!--<ul>-->
-        <!--<li>Births: {{ county.get_birth_rate() }}</li>-->
-        <!--<li>Immigration: {{ county.get_immigration_rate() }}</li>-->
-        <!--</ul>-->
-        <!--</td>-->
-        <!--<td>-->
-        <!--<ul>-->
-        <!--<li>Deaths: {{ county.get_death_rate() }}</li>-->
-        <!--<li>Emigration: {{ county.get_emigration_rate() }}</li>-->
-        <!--</ul>-->
-        <!--</td>-->
-        <!--<td>Raise happiness to lower the amount of emigrants leaving your county.</td>-->
-        <!--</tr>-->
+      <table class="flex-table top-spacer-1">
+        <economy-table-header></economy-table-header>
+        <economy-population-row></economy-population-row>
         <!--<tr>-->
         <!--<td>Gold</td>-->
         <!--<td>{{ county.gold }}</td>-->
@@ -358,6 +291,8 @@ th {
 import $ from 'jquery'
 import StatusNumber from '@/components/StatusNumber.vue'
 import SelectGenerator from '@/components/SelectGenerator.vue'
+import EconomyTableHeader from './EconomyTableHeader.vue'
+import EconomyPopulationRow from './EconomyPopulationRow.vue'
 // // ugly Jinja hacked in variables.
 // var TAX = {{ county.tax }};
 // var GOLD_CHANGE = {{ county.get_gold_change() }};
@@ -373,7 +308,9 @@ export default {
   name: 'EconomyForm',
   components: {
     'status-number': StatusNumber,
-    'select-generator': SelectGenerator
+    'select-generator': SelectGenerator,
+    'economy-table-header': EconomyTableHeader,
+    'economy-population-row': EconomyPopulationRow
   },
   data () {
     return {
@@ -398,7 +335,7 @@ export default {
       this.sendForm($('#economy-form'), this.updatePage)
     }
   },
-  mounted () {
+  beforeCreate () {
     // consider putting this in a general function?
     this.axios.get('/api/economy')
       .then((response, status) => {
