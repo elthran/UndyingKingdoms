@@ -3,19 +3,6 @@
   width: 100%;
 }
 
-tr:nth-child(even) {background-color: #f2f2f2;}
-
-td {
-  vertical-align: bottom;
-  border: 1px solid #ddd;
-  padding: 0 0.3em 0.3em;
-}
-
-.total-row {
-  font-weight: bold;
-  height: 2.6em;
-}
-
 .tooltip .tooltipText {
   /* Position the tooltip */
   position: absolute;
@@ -24,18 +11,12 @@ td {
   left: 50%;
   margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
 }
-
-.flex-table-columnar {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
 </style>
 
 <template>
   <div id="layout-content">
     <!--actual content -->
-    <h1 style="text-align:center;">
+    <h1 class="center">
       Economy
     </h1>
     <form
@@ -45,11 +26,19 @@ td {
     >
       {{ form.csrf_token }}
       <h2>Resources</h2>
-      <table class="flex-table-columnar top-spacer-1">
-        <economy-table-header></economy-table-header>
+      <table class="top-spacer-1">
+        <tr class="grey-border">
+          <th>Topic</th>
+          <th>Current</th>
+          <th>Projected Change</th>
+          <th>Modifiers</th>
+          <th>Projected Growth</th>
+          <th>Projected Losses</th>
+          <th>Notes</th>
+        </tr>
         <economy-population-row></economy-population-row>
-        <!-- <economy-gold-row></economy-gold-row>
-        <economy-food-row></economy-food-row>
+        <economy-gold-row></economy-gold-row>
+        <!-- <economy-food-row></economy-food-row>
         <economy-wood-row></economy-wood-row>
         <economy-iron-row></economy-iron-row>
         <economy-stone-row></economy-stone-row>
@@ -63,9 +52,8 @@ td {
 
 <script>
 import $ from 'jquery'
-import EconomyTableHeader from './EconomyTableHeader.vue'
 import EconomyPopulationRow from './EconomyPopulationRow.vue'
-// import EconomyGoldRow from './EconomyGoldRow.vue'
+import EconomyGoldRow from './EconomyGoldRow.vue'
 // import EconomyFoodRow from './EconomyFoodRow.vue'
 // import EconomyWoodRow from './EconomyWoodRow.vue'
 // import EconomyIronRow from './EconomyIronRow.vue'
@@ -87,9 +75,8 @@ import EconomyPopulationRow from './EconomyPopulationRow.vue'
 export default {
   name: 'EconomyForm',
   components: {
-    'economy-table-header': EconomyTableHeader,
-    'economy-population-row': EconomyPopulationRow
-    // 'economy-gold-row': EconomyGoldRow,
+    'economy-population-row': EconomyPopulationRow,
+    'economy-gold-row': EconomyGoldRow,
     // 'economy-food-row': EconomyFoodRow,
     // 'economy-wood-row': EconomyWoodRow,
     // 'economy-iron-row': EconomyIronRow,

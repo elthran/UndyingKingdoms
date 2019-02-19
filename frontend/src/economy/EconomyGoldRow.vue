@@ -3,20 +3,20 @@
     <td>Gold</td>
     <td>{{ county.gold }}</td>
     <td>
-      <status-number :number="goldChange"></status-number>
+      <status-number :number="county.goldChange"></status-number>
       <img class="resource_icons" src="/static/images/gold_icon.jpg">
     </td>
     <td>
       <ul>
         <li>Tax Rate:
           <select-generator
-            v-model="selectedTaxRate"
-            :options="{{ form.tax.choices | vuesafe }}"
-            id-name="{{ form.tax.id }}"
+            v-model="county.selectedTaxRate"
+            :options="form.tax.choices"
+            id-name="form.tax.id"
           ></select-generator>
           %
         </li>
-        {% if income_modifier.get(county.race)[1] %}
+        <!-- {% if income_modifier.get(county.race)[1] %}
         <li>
           <div class="tooltip">{{ income_modifier.get(county.race)[0] }}: {{
             (income_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>
@@ -29,10 +29,10 @@
             (income_modifier.get(county.background)[1] * 100)|int }}%<span class="tooltipText">Class Modifier: {{ county.background }}</span>
           </div>
         </li>
-        {% endif %}
+        {% endif %} -->
       </ul>
     </td>
-    <td>
+    <!-- <td>
       <ul>
         <li>Taxes: v{ taxIncome }</li>
         {% if county.buildings['bank'].total > 0 %}
@@ -47,7 +47,7 @@
       <ul>
         <li>Military Expenses: {{ county.get_upkeep_costs() }}</li>
       </ul>
-    </td>
+    </td> -->
     <!-- These conditions must not occur together or it will break the table. -->
     <td v-if="selectedTaxRate < 7" class="green">Your current tax rate has a positive effect on happiness</td>
     <td v-if="selectedTaxRate == 7">Your current tax rate has no effect on happiness</td>
@@ -62,7 +62,14 @@ import StatusNumber from '@/components/StatusNumber.vue';
 export default {
   name: 'EconomyGoldRow',
   components: {
-    'status-number': StatusNumber
+    'status-number': StatusNumber,
+    'seelect-generator': SelectGenerator
+  },
+  data () {
+    return {
+      county: Object,
+
+    }
   }
 }
 </script>

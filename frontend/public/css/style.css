@@ -1,54 +1,67 @@
 h1 {
-    font-size: 25px;
-    font-weight: bold;
+  font-size: 25px;
+  font-weight: bold;
 }
 
 h2 {
-    font-size: 20px;
-    font-weight: bold;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .button {
-    width: 60px;
-    height: 40px;
+  width: 60px;
+  height: 40px;
 }
 
 input, textarea {
-    padding: 1em;
+  padding: 1em;
 }
 
 button {
-    background-color: #FFD700;
-    color: #000000;
-    font-weight: 900;
-    cursor: pointer;
-    height: 2.6em;
-    min-width: 8em;
+  background-color: #FFD700;
+  color: #000000;
+  font-weight: 900;
+  cursor: pointer;
+  height: 2.6em;
+  min-width: 8em;
 }
 
 button:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
 }
 
 button:active {
-    position: relative;
-    top: 1px;
+  position: relative;
+  top: 1px;
 }
 
 button[disabled], button[disabled]:active {
-		background-color: #DCDCDC;
-		position: static;
-		top: 0;
+  background-color: #DCDCDC;
+  position: static;
+  top: 0;
 }
 
-.production_table {     /* The tables which display your infrastructure/military and let you build */
-    width: auto;
-    border: 1px solid;
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
 
-.production_table th, td {
-    border: 1px dotted;
-    padding:4px;
+th {
+  font-weight: bold;
+  vertical-align: middle;
+  border: 1px solid #ddd;
+  padding: 0.3em;
+}
+
+td {
+  vertical-align: bottom;
+  border: 1px solid #ddd;
+  padding: 0.3em;
+}
+
+.total-row {
+  font-weight: bold;
+  height: 2.6em;
 }
 
 .resource_icons {
@@ -139,4 +152,8 @@ button[disabled], button[disabled]:active {
 
 .invisible {
     display: none;
+}
+
+.center {
+    text-align: center;
 }
