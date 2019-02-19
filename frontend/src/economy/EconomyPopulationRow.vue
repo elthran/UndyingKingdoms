@@ -3,8 +3,8 @@
     <td>
       Population
     </td>
-    <td>{{ county.population }}</td>
-    {% set population_projection = county.get_population_change(prediction=True) %}
+    <td>{{ population }}</td>
+    <!-- {% set population_projection = county.get_population_change(prediction=True) %}
     {% if population_projection >= 0 %}
     <td style="color:green;">+
     {% else %}
@@ -39,23 +39,29 @@
         <li>Deaths: {{ county.get_death_rate() }}</li>
         <li>Emigration: {{ county.get_emigration_rate() }}</li>
       </ul>
-    </td>
+    </td> -->
     <td>Raise happiness to lower the amount of emigrants leaving your county.</td>
   </tr>
 </template>
 
 <script>
+import StatusNumber from '@/components/StatusNumber.vue'
+
 export default {
   name: 'EconomyPopulationRow',
+  components: {
+    'status-number': StatusNumber
+  },
   data () {
     return {
-
+      population: Number,
+      errors: Object
     }
   },
   beforeCreate () {
     this.axios.get('/api/economy/population')
-      .then((response, status) => {
-        if (status === 200) {
+      .then((response) => {
+        if (response.data.status === 'success') {
           this.updatePage(response.data)
         } else {
           this.errors = response
@@ -64,6 +70,12 @@ export default {
       .catch((error) => {
         this.errors = error.response
       })
+  },
+  methods: {
+    updatePage (data) {
+      console.log(data);
+      this.population = data.population
+    }
   }
 }
 </script>

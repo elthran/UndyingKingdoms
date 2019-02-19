@@ -2,7 +2,7 @@ from flask import jsonify, url_for
 from flask.views import MethodView
 from flask_login import current_user, login_required
 
-from undyingkingdoms.blueprints.api.views.helpers import patch_has_mail, patch_has_chat_message
+from .helpers import patch_has_mail, patch_has_chat_message
 
 
 class SideBarAPI(MethodView):

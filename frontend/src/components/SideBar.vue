@@ -104,13 +104,6 @@ export default {
       errors: Object
     }
   },
-  methods: {
-    updatePage (data) {
-      // console.log(data);
-      this.urlFor = data.urlFor
-      this.user = data.user
-    }
-  },
   beforeCreate () {
     // if development
     // this.axios.get('http://localhost:5000/api/sidebar')
@@ -125,6 +118,13 @@ export default {
       .catch((error) => {
         this.errors = error.response
       })
+  },
+  methods: {
+    updatePage (data) {
+      // console.log(data);
+      this.urlFor = data.urlFor
+      this.user = data.user
+    }
   }
 }
 </script>

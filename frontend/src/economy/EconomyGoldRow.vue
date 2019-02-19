@@ -56,7 +56,13 @@
 </template>
 
 <script>
+import SelectGenerator from '@/components/SelectGenerator.vue';
+import StatusNumber from '@/components/StatusNumber.vue';
+
 export default {
-  name: 'EconomyGoldRow'
+  name: 'EconomyGoldRow',
+  components: {
+    'status-number': StatusNumber
+  }
 }
 </script>

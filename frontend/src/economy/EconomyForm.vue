@@ -25,8 +25,9 @@ td {
   margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
 }
 
-.flex-table {
+.flex-table-columnar {
   display: flex;
+  flex-direction: column;
   width: 100%;
 }
 </style>
@@ -44,36 +45,34 @@ td {
     >
       {{ form.csrf_token }}
       <h2>Resources</h2>
-      <table class="flex-table top-spacer-1">
+      <table class="flex-table-columnar top-spacer-1">
         <economy-table-header></economy-table-header>
         <economy-population-row></economy-population-row>
-        <economy-gold-row></economy-gold-row>
+        <!-- <economy-gold-row></economy-gold-row>
         <economy-food-row></economy-food-row>
         <economy-wood-row></economy-wood-row>
         <economy-iron-row></economy-iron-row>
         <economy-stone-row></economy-stone-row>
         <economy-happiness-row></economy-happiness-row>
         <economy-nourishment-row></economy-nourishment-row>
-        <economy-health-row></economy-health-row>
+        <economy-health-row></economy-health-row> -->
       </table>
     </form>
   </div>
 </template>
 
 <script>
-import $ from 'jquery';
-import StatusNumber from '@/components/StatusNumber.vue';
-import SelectGenerator from '@/components/SelectGenerator.vue';
-import EconomyTableHeader from './EconomyTableHeader.vue';
-import EconomyPopulationRow from './EconomyPopulationRow.vue';
-import EconomyGoldRow from './EconomyGoldRow.vue';
-import EconomyFoodRow from './EconomyFoodRow.vue';
-import EconomyWoodRow from './EconomyWoodRow.vue';
-import EconomyIronRow from './EconomyIronRow.vue';
-import EconomyStoneRow from './EconomyStoneRow.vue';
-import EconomyHappinessRow from './EconomyHappinessRow.vue';
-import EconomyNourishmentRow from './EconomyNourishmentRow.vue';
-import EconomyHealthRow from './EconomyHealthRow.vue';
+import $ from 'jquery'
+import EconomyTableHeader from './EconomyTableHeader.vue'
+import EconomyPopulationRow from './EconomyPopulationRow.vue'
+// import EconomyGoldRow from './EconomyGoldRow.vue'
+// import EconomyFoodRow from './EconomyFoodRow.vue'
+// import EconomyWoodRow from './EconomyWoodRow.vue'
+// import EconomyIronRow from './EconomyIronRow.vue'
+// import EconomyStoneRow from './EconomyStoneRow.vue'
+// import EconomyHappinessRow from './EconomyHappinessRow.vue'
+// import EconomyNourishmentRow from './EconomyNourishmentRow.vue'
+// import EconomyHealthRow from './EconomyHealthRow.vue'
 // // ugly Jinja hacked in variables.
 // var TAX = {{ county.tax }};
 // var GOLD_CHANGE = {{ county.get_gold_change() }};
@@ -88,18 +87,16 @@ import EconomyHealthRow from './EconomyHealthRow.vue';
 export default {
   name: 'EconomyForm',
   components: {
-    'status-number': StatusNumber,
-    'select-generator': SelectGenerator,
     'economy-table-header': EconomyTableHeader,
-    'economy-population-row': EconomyPopulationRow,
-    'economy-gold-row': EconomyGoldRow,
-    'economy-food-row': EconomyFoodRow,
-    'economy-wood-row': EconomyWoodRow,
-    'economy-iron-row': EconomyIronRow,
-    'economy-stone-row': EconomyStoneRow,
-    'economy-happiness-row': EconomyHappinessRow,
-    'economy-nourishment-row': EconomyNourishmentRow,
-    'economy-health-row': EconomyHealthRow
+    'economy-population-row': EconomyPopulationRow
+    // 'economy-gold-row': EconomyGoldRow,
+    // 'economy-food-row': EconomyFoodRow,
+    // 'economy-wood-row': EconomyWoodRow,
+    // 'economy-iron-row': EconomyIronRow,
+    // 'economy-stone-row': EconomyStoneRow,
+    // 'economy-happiness-row': EconomyHappinessRow,
+    // 'economy-nourishment-row': EconomyNourishmentRow,
+    // 'economy-health-row': EconomyHealthRow
   },
   data () {
     return {
@@ -126,17 +123,17 @@ export default {
   },
   beforeCreate () {
     // consider putting this in a general function?
-    this.axios.get('/api/economy')
-      .then((response, status) => {
-        if (status === 200) {
-          this.updatePage(response.data)
-        } else {
-          this.errors = response
-        }
-      })
-      .catch((error) => {
-        this.errors = error.response
-      })
+    // this.axios.get('/api/economy')
+    //   .then((response, status) => {
+    //     if (status === 200) {
+    //       this.updatePage(response.data)
+    //     } else {
+    //       this.errors = response
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     this.errors = error.response
+    //   })
   },
   methods: {
     updatePage (data) {
