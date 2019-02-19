@@ -47,252 +47,33 @@ td {
       <table class="flex-table top-spacer-1">
         <economy-table-header></economy-table-header>
         <economy-population-row></economy-population-row>
-        <!--<tr>-->
-        <!--<td>Gold</td>-->
-        <!--<td>{{ county.gold }}</td>-->
-        <!--<td>-->
-        <!--<status-number :number="goldChange"></status-number>-->
-        <!--<img class="resource_icons" src="/static/images/gold_icon.jpg">-->
-        <!--</td>-->
-        <!--<td>-->
-        <!--<ul>-->
-        <!--<li>Tax Rate:-->
-        <!--<select-generator-->
-        <!--v-model="selectedTaxRate"-->
-        <!--:options="{{ form.tax.choices | vuesafe }}"-->
-        <!--id-name="{{ form.tax.id }}"-->
-        <!--&gt;</select-generator>%-->
-        <!--</li>-->
-        <!--{% if income_modifier.get(county.race)[1] %}-->
-        <!--<li>-->
-        <!--<div class="tooltip">{{ income_modifier.get(county.race)[0] }}: {{-->
-        <!--(income_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>-->
-        <!--</div>-->
-        <!--</li>-->
-        <!--{% endif %}-->
-        <!--{% if income_modifier.get(county.background)[1] %}-->
-        <!--<li>-->
-        <!--<div class="tooltip">{{ income_modifier.get(county.background)[0] }}: {{-->
-        <!--(income_modifier.get(county.background)[1] * 100)|int }}%<span class="tooltipText">Class Modifier: {{ county.background }}</span>-->
-        <!--</div>-->
-        <!--</li>-->
-        <!--{% endif %}-->
-        <!--</ul>-->
-        <!--</td>-->
-        <!--<td>-->
-        <!--<ul>-->
-        <!--<li>Taxes: v{ taxIncome }</li>-->
-        <!--{% if county.buildings['bank'].total > 0 %}-->
-        <!--<li>Banks: {{ county.get_bank_income() }}</li>-->
-        <!--{% endif %}-->
-        <!--{% if county.production_choice == 0 %}-->
-        <!--<li>Overworking: + {{ county.get_excess_production_value(0) }}</li>-->
-        <!--{% endif %}-->
-        <!--</ul>-->
-        <!--</td>-->
-        <!--<td>-->
-        <!--<ul>-->
-        <!--<li>Military Expenses: {{ county.get_upkeep_costs() }}</li>-->
-        <!--</ul>-->
-        <!--</td>-->
-        <!--&lt;!&ndash; These conditions must not occur together or it will break the table. &ndash;&gt;-->
-        <!--<td v-if="selectedTaxRate < 7" class="green">Your current tax rate has a positive effect on happiness</td>-->
-        <!--<td v-if="selectedTaxRate == 7">Your current tax rate has no effect on happiness</td>-->
-        <!--<td v-if="selectedTaxRate > 7" class="red">Your current tax rate has a negative effect on happiness</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-        <!--<td>Food</td>-->
-        <!--<td>{{ county.grain_stores }}</td>-->
-        <!--<td>-->
-        <!--<status-number :number="grainStorageChange"></status-number>-->
-        <!--<img class="resource_icons" src="/static/images/grain_icon.jpg">-->
-        <!--</td>-->
-        <!--<td>-->
-        <!--<ul>-->
-        <!--<li>Rations:-->
-        <!--<select-generator-->
-        <!--v-model="selectedRations"-->
-        <!--:options="{{ form.rations.choices | vuesafe }}"-->
-        <!--id-name="{{ form.rations.id }}"-->
-        <!--&gt;</select-generator>-->
-        <!--</li>-->
-        <!--{% if food_consumed_modifier.get(county.race)[1] %}-->
-        <!--<li>-->
-        <!--<div class="tooltip">{{ food_consumed_modifier.get(county.race)[0] }}: {{-->
-        <!--(food_consumed_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>-->
-        <!--</div>-->
-        <!--</li>-->
-        <!--{% endif %}-->
-        <!--</ul>-->
-        <!--</td>-->
-        <!--<td>-->
-        <!--<ul>-->
-        <!--<li>Fields: + {{ county.get_produced_grain() }} <img class="resource_icons"-->
-        <!--src="/static/images/grain_icon.jpg"></li>-->
-        <!--<li>Pastures: + {{ county.get_produced_dairy() }} <img class="resource_icons"-->
-        <!--src="/static/images/dairy_icon.jpg"></li>-->
-        <!--{% if county.production_choice == 2 %}-->
-        <!--<li>Foraging: + {{ county.get_excess_production_value(2) }} <img class="resource_icons"-->
-        <!--src="/static/images/dairy_icon.jpg">-->
-        <!--</li>-->
-        <!--{% endif %}-->
-        <!--</ul>-->
-        <!--</td>-->
-        <!--<td>-->
-        <!--<ul>-->
-        <!--<li>To be Eaten: v{ foodEaten }</li>-->
-        <!--</ul>-->
-        <!--</td>-->
-        <!--<td>Excess dairy can not be stored in your granaries. If you do not have enough food, your populace will-->
-        <!--begin to starve.-->
-        <!--</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-        <!--<td>Lumber</td>-->
-        <!--<td>{{ county.wood }}</td>-->
-        <!--{% if county.get_wood_income() >= 0 %}-->
-        <!--<td style="color:green;">+-->
-        <!--{% else %}-->
-        <!--<td style="color:red;">-->
-        <!--{% endif %}-->
-        <!--{{ county.get_wood_income() }} <img class="resource_icons" src="/static/images/wood_icon.jpg">-->
-        <!--</td>-->
-        <!--<td>-</td>-->
-        <!--<td>-->
-        <!--<ul>-->
-        <!--<li>{{ county.buildings['mill'].class_name_plural.title() }}: + {{ county.get_wood_income() }} <img-->
-        <!--class="resource_icons" src="/static/images/wood_icon.jpg">-->
-        <!--</li>-->
-        <!--</ul>-->
-        <!--</td>-->
-        <!--<td>-</td>-->
-        <!--<td>Lumber is used to build buildings and to equip certain soldiers.</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-        <!--<td>Iron</td>-->
-        <!--<td>{{ county.iron }}</td>-->
-        <!--{% if county.get_iron_income() >= 0 %}-->
-        <!--<td style="color:green;">+-->
-        <!--{% else %}-->
-        <!--<td style="color:red;">-->
-        <!--{% endif %}-->
-        <!--{{ county.get_iron_income() }} <img class="resource_icons" src="/static/images/iron_icon.jpg">-->
-        <!--</td>-->
-        <!--<td>-</td>-->
-        <!--<td>-->
-        <!--<ul>-->
-        <!--<li>{{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.get_iron_income() }} <img-->
-        <!--class="resource_icons" src="/static/images/iron_icon.jpg">-->
-        <!--</li>-->
-        <!--</ul>-->
-        <!--</td>-->
-        <!--<td>-</td>-->
-        <!--<td>Iron is used to equip powerful soldiers.</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-        <!--<td>Stone</td>-->
-        <!--<td>{{ county.stone }}</td>-->
-        <!--{% if county.get_stone_income() >= 0 %}-->
-        <!--<td style="color:green;">+-->
-        <!--{% else %}-->
-        <!--<td style="color:red;">-->
-        <!--{% endif %}-->
-        <!--{{ county.get_stone_income() }} <img class="resource_icons" src="/static/images/stone_icon.jpg">-->
-        <!--</td>-->
-        <!--<td>-</td>-->
-        <!--<td>-->
-        <!--<li>{{ county.buildings['quarry'].class_name_plural.title() }}: + {{ county.get_stone_income() }} <img-->
-        <!--class="resource_icons" src="/static/images/stone_icon.jpg"></li>-->
-        <!--</td>-->
-        <!--<td>-</td>-->
-        <!--<td>Stone is used to build your most powerful buildings.</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-        <!--<td>Happiness</td>-->
-        <!--<td>{{ county.happiness }}%</td>-->
-        <!--<td>-->
-        <!--<status-number :number="happinessChange"></status-number>-->
-        <!--<img class="resource_icons" src="/static/images/heart_icon.jpg">-->
-        <!--</td>-->
-        <!--<td>-</td>-->
-        <!--<td>-->
-        <!--<ul>-->
-        <!--<li>Natural: +7 <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>-->
-        <!--{% if county.production_choice == 3 %}-->
-        <!--<li>Relax: + {{ county.get_excess_production_value(3) }} <img class="resource_icons"-->
-        <!--src="/static/images/heart_icon.jpg">-->
-        <!--</li>-->
-        <!--{% endif %}-->
-        <!--</ul>-->
-        <!--</td>-->
-        <!--<td>-->
-        <!--<ul>-->
-        <!--{% if happiness_modifier.get(county.race)[0] %}-->
-        <!--<li>-->
-        <!--<div class="tooltip">{{ happiness_modifier.get(county.race)[0] }}: {{-->
-        <!--happiness_modifier.get(county.race)[1] }}<span class="tooltipText">Racial Modifier: {{ county.race }}</span>-->
-        <!--</div>-->
-        <!--<img class="resource_icons" src="/static/images/heart_icon.jpg">-->
-        <!--</li>-->
-        <!--{% endif %}-->
-        <!--<li>Taxes: v{ -selectedTaxRate } <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>-->
-        <!--</ul>-->
-        <!--</td>-->
-        <!--<td>Happiness affects emigration rate and how productive your workers are. If they become too unhappy,-->
-        <!--they may start to question your rule.-->
-        <!--</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-        <!--<td>Nourishment</td>-->
-        <!--<td>{{ county.nourishment }}%</td>-->
-        <!--<td>-->
-        <!--<status-number :number="nourishmentChange"></status-number>-->
-        <!--</td>-->
-        <!--<td>-</td>-->
-        <!--<td>-</td>-->
-        <!--<td>-</td>-->
-        <!--<td>The better nourished your people, the healthier they will be.-->
-        <!--Your nourishment decreases by 1% for every 200 unfed people each day.-->
-        <!--</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-        <!--<td>Health</td>-->
-        <!--{% if county.health >= 75 %}-->
-        <!--<td style="color:green;">-->
-        <!--{% else %}-->
-        <!--<td style="color:red;">-->
-        <!--{% endif %}-->
-        <!--{{ county.health_terminology.title() }}-->
-        <!--</td>-->
-        <!--{% if county.get_health_change() > 0 %}-->
-        <!--<td style="color:green;">Positive-->
-        <!--{% elif county.get_health_change() == 0 %}-->
-        <!--<td>None-->
-        <!--{% else %}-->
-        <!--<td style="color:red;">Negative-->
-        <!--{% endif %}-->
-        <!--</td>-->
-        <!--<td>-</td>-->
-        <!--<td>-</td>-->
-        <!--<td>-</td>-->
-        <!--<td>The current health of your people. If they become unhealthy, they will die at much greater rates and-->
-        <!--become very susceptible to disease and plague.-->
-        <!--</td>-->
-        <!--</tr>-->
+        <economy-gold-row></economy-gold-row>
+        <economy-food-row></economy-food-row>
+        <economy-wood-row></economy-wood-row>
+        <economy-iron-row></economy-iron-row>
+        <economy-stone-row></economy-stone-row>
+        <economy-happiness-row></economy-happiness-row>
+        <economy-nourishment-row></economy-nourishment-row>
+        <economy-health-row></economy-health-row>
       </table>
-      <!-- <div class="invisible">
-        <span id="goldChange">{{ county.get_gold_change() }}</span>
-      </div> -->
     </form>
   </div>
 </template>
 
 <script>
-import $ from 'jquery'
-import StatusNumber from '@/components/StatusNumber.vue'
-import SelectGenerator from '@/components/SelectGenerator.vue'
-import EconomyTableHeader from './EconomyTableHeader.vue'
-import EconomyPopulationRow from './EconomyPopulationRow.vue'
+import $ from 'jquery';
+import StatusNumber from '@/components/StatusNumber.vue';
+import SelectGenerator from '@/components/SelectGenerator.vue';
+import EconomyTableHeader from './EconomyTableHeader.vue';
+import EconomyPopulationRow from './EconomyPopulationRow.vue';
+import EconomyGoldRow from './EconomyGoldRow.vue';
+import EconomyFoodRow from './EconomyFoodRow.vue';
+import EconomyWoodRow from './EconomyWoodRow.vue';
+import EconomyIronRow from './EconomyIronRow.vue';
+import EconomyStoneRow from './EconomyStoneRow.vue';
+import EconomyHappinessRow from './EconomyHappinessRow.vue';
+import EconomyNourishmentRow from './EconomyNourishmentRow.vue';
+import EconomyHealthRow from './EconomyHealthRow.vue';
 // // ugly Jinja hacked in variables.
 // var TAX = {{ county.tax }};
 // var GOLD_CHANGE = {{ county.get_gold_change() }};
@@ -310,7 +91,15 @@ export default {
     'status-number': StatusNumber,
     'select-generator': SelectGenerator,
     'economy-table-header': EconomyTableHeader,
-    'economy-population-row': EconomyPopulationRow
+    'economy-population-row': EconomyPopulationRow,
+    'economy-gold-row': EconomyGoldRow,
+    'economy-food-row': EconomyFoodRow,
+    'economy-wood-row': EconomyWoodRow,
+    'economy-iron-row': EconomyIronRow,
+    'economy-stone-row': EconomyStoneRow,
+    'economy-happiness-row': EconomyHappinessRow,
+    'economy-nourishment-row': EconomyNourishmentRow,
+    'economy-health-row': EconomyHealthRow
   },
   data () {
     return {
