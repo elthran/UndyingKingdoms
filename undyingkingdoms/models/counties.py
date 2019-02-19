@@ -11,6 +11,7 @@ from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
 from undyingkingdoms.models.preferences import Preferences
+from undyingkingdoms.models.technologies import Technology
 from undyingkingdoms.models.trades import Trade
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
@@ -416,9 +417,12 @@ class County(GameState):
     def advance_research(self):
         technology = self.technologies[self.research_choice]
         technology.current += self.research
+        print("Research", technology.current, technology.required, self.research)
         if technology.current >= technology.required:  # You save left over research
-            self.research = technology.required - technology.current
+            self.research = technology.current - technology.required
             technology.completed = True
+            available_technologies = Technology.query.filter_by(county_id=self.id).filter_by(completed=False).first()
+            self.research_choice = available_technologies.name
         else:  # You don't keep research as a resource; it's spent
             self.research = 0
 
@@ -722,12 +726,18 @@ class County(GameState):
         if self.production_choice == 3:
             pass  # Already handled in self.get_happiness_change()
 
+    def get_number_of_buildings_produced_per_day(self):
+        amount = 3 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
+                                + buildings_built_per_day_modifier.get(self.background, ("", 0))[1]
+        if self.technologies['engineering'].completed:
+            amount += 1
+        return amount
+
     def produce_pending_buildings(self):
         """
         Gets a list of all buildings which can be built today. Builds it. Then recalls function.
         """
-        buildings_to_be_built = 3 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
-                                + buildings_built_per_day_modifier.get(self.background, ("", 0))[1]
+        buildings_to_be_built = self.get_number_of_buildings_produced_per_day()
         while buildings_to_be_built > 0:
             buildings_to_be_built -= 1
             queue = [building for building in self.buildings.values() if building.pending > 0]

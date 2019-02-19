@@ -7,7 +7,8 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 <div id="research-app">
-  <h2>You currently gain v{ researchChange } <img class="resource_icons" src="/static/images/research_icon.jpg"> each day.</h2><br><br>
+  <h2>You currently gain v{ researchChange } <img class="resource_icons" src="/static/images/research_icon.jpg"> each day
+    {% if county.research > 0 %} and you have {{ county.research }} research left over from your last completed technology{% endif %}.</h2><br>
 
   <h2>Current Research:</h2>
   <form id="research-form" action="{{ url_for('research_api') }}" accept-charset="UTF-8">
