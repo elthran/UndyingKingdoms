@@ -1,20 +1,27 @@
 <template>
-  <tr>
+  <tr
+    :value="tax"
+    @input="$emit('input', $event.target.value)"
+  >
     <td>Gold</td>
-    <td>{{ county.gold }}</td>
+    <td>{{ gold }}</td>
     <td>
-      <status-number :number="county.goldChange"></status-number>
-      <img class="resource_icons" src="/static/dist/images/gold_icon.jpg">
+      <status-number :number="goldChange" />
+      <img
+        class="resource_icons"
+        src="/static/dist/images/gold_icon.jpg"
+      >
     </td>
     <td>
       <ul>
-        <li>Tax Rate:<br>
+        <li>
+          Tax Rate:<br>
           <select-generator
-            v-model="selectedTaxRate"
+            v-model="tax"
             :options="form.tax.choices"
-            :selected="county.tax"
+            :selected="tax"
             :id-name="form.tax.id"
-          ></select-generator>%
+          />%
         </li>
         <!-- {% if income_modifier.get(county.race)[1] %}
         <li>
@@ -49,9 +56,21 @@
       </ul>
     </td> -->
     <!-- These conditions must not occur together or it will break the table. -->
-    <td v-if="county.tax < 7" class="green">Your current tax rate has a positive effect on happiness</td>
-    <td v-if="county.tax == 7">Your current tax rate has no effect on happiness</td>
-    <td v-if="county.tax > 7" class="red">Your current tax rate has a negative effect on happiness</td>
+    <td
+      v-if="tax < 7"
+      class="green"
+    >
+      Your current tax rate has a positive effect on happiness
+    </td>
+    <td v-if="tax == 7">
+      Your current tax rate has no effect on happiness
+    </td>
+    <td
+      v-if="tax > 7"
+      class="red"
+    >
+      Your current tax rate has a negative effect on happiness
+    </td>
   </tr>
 </template>
 
@@ -67,8 +86,14 @@ export default {
   },
   data () {
     return {
-      selectedTaxRate: 7,
-      county: Object,
+      gold: 50,
+      tax: 7,
+      rations: 0,
+      goldChange: 7,
+      happinessChange: 7,
+      grainStorageChange: 7,
+      foodEaten: 7,
+      nourishmentChange: 7,
       form: {
         tax: {
           choices: [Array],  // for some reason using default args this way fixes the linting bug.
@@ -78,30 +103,8 @@ export default {
       errors: Object
     }
   },
-  watch: {
-    selectedTaxRate () {
-        console.log('tax updated')
-    }
-  },
   beforeCreate () {
-    this.axios.get('/api/economy/gold')
-      .then((response) => {
-        if (response.data.status === 'success') {
-          this.updatePage(response.data)
-        } else {
-          this.errors = response
-        }
-      })
-      .catch((error) => {
-        this.errors = error.response
-      })
-  },
-  methods: {
-    updatePage (data) {
-      // console.log(data)
-      this.county = data.county
-      this.form = data.form
-    }
+    this.$getData('/api/economy/gold', this.$deployData)   
   }
 }
 </script>

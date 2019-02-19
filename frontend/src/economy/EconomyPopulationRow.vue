@@ -11,8 +11,11 @@ td:nth-child(2), td:nth-child(3) {
     </td>
     <td>{{ county.population }}</td>
     <td>
-      <status-number :number="county.population_projection"></status-number>
-      <img class="resource_icons" src="/static/dist/images/population_icon.jpg">
+      <status-number :number="county.population_projection" />
+      <img
+        class="resource_icons"
+        src="/static/dist/images/population_icon.jpg"
+      >
     </td>
     <td>
       <ul v-if="county.birth_rate_mod">
@@ -20,7 +23,7 @@ td:nth-child(2), td:nth-child(3) {
           <tool-tip
             :content="county.birth_rate_mod.race.name + ':\u00a0' + county.birth_rate_mod.race.value + '%'"
             :tip="'Racial Modifier: ' + county.race"
-          ></tool-tip>
+          />
         </li>
         <li v-if="county.birth_rate_mod.background">
           ({{ county.background }}) {{ county.birth_rate_mod.background.name }}: {{ county.birth_rate_mod.background.value }}%
@@ -48,7 +51,7 @@ import StatusNumber from '@/components/StatusNumber.vue'
 import ToolTip from '@/components/ToolTip.vue'
 
 export default {
-  name: 'countyPopulationRow',
+  name: 'EconomyPopulationRow',
   components: {
     'status-number': StatusNumber,
     'tool-tip': ToolTip

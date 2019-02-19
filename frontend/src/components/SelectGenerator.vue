@@ -27,7 +27,9 @@ export default {
   },
   data () {
     return {
-      key: [Number, String]
+      key () {
+        return [Number, String]
+      } 
     }
   }
 }

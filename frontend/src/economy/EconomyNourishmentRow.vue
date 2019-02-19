@@ -3,12 +3,13 @@
     <td>Nourishment</td>
     <td>{{ county.nourishment }}%</td>
     <td>
-      <status-number :number="nourishmentChange"></status-number>
+      <status-number :number="nourishmentChange" />
     </td>
     <td>-</td>
     <td>-</td>
     <td>-</td>
-    <td>The better nourished your people, the healthier they will be.
+    <td>
+      The better nourished your people, the healthier they will be.
       Your nourishment decreases by 1% for every 200 unfed people each day.
     </td>
   </tr>

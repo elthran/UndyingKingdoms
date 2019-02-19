@@ -36,8 +36,10 @@
           <th>Projected Losses</th>
           <th>Notes</th>
         </tr>
-        <economy-population-row></economy-population-row>
-        <economy-gold-row></economy-gold-row>
+        <economy-population-row />
+        <economy-gold-row
+          v-model="selectedTaxRate"
+        />
         <!-- <economy-food-row></economy-food-row>
         <economy-wood-row></economy-wood-row>
         <economy-iron-row></economy-iron-row>
@@ -102,7 +104,8 @@ export default {
   },
   watch: {
     selectedTaxRate () {
-      this.sendForm($('#economy-form'), this.updatePage)
+      console.log("select tax rate in EconomyForm.vue detected change.")
+      // this.sendForm($('#economy-form'), this.updatePage)
     },
     selectedRations () {
       this.sendForm($('#economy-form'), this.updatePage)

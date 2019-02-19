@@ -20,15 +20,17 @@ class GoldAPI(MethodView):
         form = dict(
             tax=dict(
                 choices=vue_safe(tax_options, for_template=False),
-                ID=form.tax.id
+                id=form.tax.id
             ),
             rations=dict(
                 choices=vue_safe(rations_terminology, for_template=False),
-                ID=form.rations.id
+                id=form.rations.id
             )
         )
 
-        data = dict(
+        return jsonify(
+            status='success',
+            message='You called on the gold api.',
             tax=county.tax,
             gold=county.gold,
             rations=county.rations,
@@ -36,17 +38,10 @@ class GoldAPI(MethodView):
             happinessChange=county.get_happiness_change(),
             grainStorageChange=county.grain_storage_change(),
             foodEaten=county.get_food_to_be_eaten(),
-            nourishmentChange=county.get_nourishment_change()
-        )
-
-        return jsonify(
-            status='success',
-            message='You called on the gold api.',
-            selectedTaxRate=county.tax,
-            county=data,
+            nourishmentChange=county.get_nourishment_change(),
             form=form,
-            birth_rate_modifier=birth_rate_modifier,
-            income_modifier=income_modifier,
-            food_consumed_modifier=food_consumed_modifier,
-            happiness_modifier=happiness_modifier,
+            # birth_rate_modifier=birth_rate_modifier,
+            # income_modifier=income_modifier,
+            # food_consumed_modifier=food_consumed_modifier,
+            # happiness_modifier=happiness_modifier,
         )

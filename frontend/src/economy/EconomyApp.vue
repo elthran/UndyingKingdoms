@@ -1,9 +1,9 @@
 <template>
   <div id="economy-app">
-    <prefix-title title="Economy"></prefix-title>
+    <prefix-title title="Economy" />
     <div id="layout-body">
-      <side-bar></side-bar>
-      <economy-form></economy-form>
+      <side-bar />
+      <economy-form />
     </div>
   </div>
 </template>
