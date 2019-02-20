@@ -2,14 +2,15 @@ from flask import jsonify
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
-class NourishmentAPI(MethodView):
+class HealthAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
 
         return jsonify(
             status='success',
-            message='You called the nourishment api.',
-            nourishment=county.nourishment,
-            nourishmentChange=county.get_nourishment_change(),
+            message='You called the health api.',
+            health=county.health,
+            healthChange=county.get_health_change(),
+            healthTerminology=county.health_terminology.title(),
         )

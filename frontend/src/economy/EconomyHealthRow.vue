@@ -1,23 +1,16 @@
 <template>
   <tr>
     <td>Health</td>
-    {% if county.health >= 75 %}
-    <td style="color:green;">
-      {% else %}
-    </td><td style="color:red;">
-      {% endif %}
-      {{ county.health_terminology.title() }}
+    <td>
+      <status-text 
+        :condition="health >= 75"
+        :text="healthTerminology"
+      />
     </td>
-    {% if county.get_health_change() > 0 %}
-    <td style="color:green;">
-      Positive
-      {% elif county.get_health_change() == 0 %}
-    </td><td>
-      None
-      {% else %}
-    </td><td style="color:red;">
-      Negative
-      {% endif %}
+    <td>
+      <three-status-text 
+        :number="healthChange"
+      />
     </td>
     <td>-</td>
     <td>-</td>
@@ -30,7 +23,24 @@
 </template>
 
 <script>
+import StatusText from '@/components/StatusText.vue'
+import ThreeStatusText from '@/components/ThreeStatusText.vue'
+
 export default {
-  name: 'EconomyHealthRow'
+  name: 'EconomyHealthRow',
+  components: {
+    'status-text': StatusText,
+    'three-status-text': ThreeStatusText
+  },
+  data () {
+    return {
+      health: -1,
+      healthChange: -1,
+      healthTerminology: ""
+    }
+  },
+  beforeCreate () {
+    this.$getData('/api/economy/health', this.$deployData)
+  }
 }
 </script>

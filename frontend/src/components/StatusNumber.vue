@@ -12,9 +12,9 @@ export default {
     'value': Number
   },
   computed: {
-  	fancyNum () {
-  		return (this.number <= 0 ? '\u00a0':'+\u00a0') + this.number
-  	}
+    fancyNum () {
+      return (this.number <= 0 ? '\u00a0':'+\u00a0') + this.number
+    }
   }
 }
 </script>

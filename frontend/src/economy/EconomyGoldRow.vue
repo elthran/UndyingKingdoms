@@ -55,11 +55,11 @@
       >
         Your current tax rate has a positive effect on happiness
       </p>
-      <p v-if="tax == 7">
+      <p v-else-if="tax == 7">
         Your current tax rate has no effect on happiness
       </p>
       <p
-        v-if="tax > 7"
+        v-else
         class="negative"
       >
         Your current tax rate has a negative effect on happiness
