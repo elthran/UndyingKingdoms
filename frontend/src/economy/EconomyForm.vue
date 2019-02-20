@@ -60,8 +60,8 @@
         <economy-stone-row />
         <economy-mana-row />
         <economy-happiness-row />
-        <!-- <economy-nourishment-row></economy-nourishment-row>
-        <economy-health-row></economy-health-row> -->
+        <economy-nourishment-row />
+        <!-- <economy-health-row></economy-health-row> -->
       </table>
     </form>
   </div>
@@ -77,7 +77,7 @@ import EconomyIronRow from './EconomyIronRow.vue'
 import EconomyStoneRow from './EconomyStoneRow.vue'
 import EconomyManaRow from './EconomyManaRow.vue'
 import EconomyHappinessRow from './EconomyHappinessRow.vue'
-// import EconomyNourishmentRow from './EconomyNourishmentRow.vue'
+import EconomyNourishmentRow from './EconomyNourishmentRow.vue'
 // import EconomyHealthRow from './EconomyHealthRow.vue'
 
 // The constants are defined at the beginning and use evil Jinja in JS.
@@ -91,8 +91,8 @@ export default {
     'economy-iron-row': EconomyIronRow,
     'economy-stone-row': EconomyStoneRow,
     'economy-mana-row': EconomyManaRow,
-    'economy-happiness-row': EconomyHappinessRow
-    // 'economy-nourishment-row': EconomyNourishmentRow,
+    'economy-happiness-row': EconomyHappinessRow,
+    'economy-nourishment-row': EconomyNourishmentRow
     // 'economy-health-row': EconomyHealthRow
   },
   data () {

@@ -1,7 +1,7 @@
 <template>
   <tr>
     <td>Nourishment</td>
-    <td>{{ county.nourishment }}%</td>
+    <td>{{ nourishment }}%</td>
     <td>
       <status-number :number="nourishmentChange" />
     </td>
@@ -16,7 +16,21 @@
 </template>
 
 <script>
+import StatusNumber from '@/components/StatusNumber.vue'
+
 export default {
-  name: 'EconomyNourishmentRow'
+  name: 'EconomyNourishmentRow',
+  components: {
+    'status-number': StatusNumber
+  },
+  data () {
+    return {
+      nourishment: -1,
+      nourishmentChange: -1
+    }
+  },
+  beforeCreate () {
+    this.$getData('/api/economy/nourishment', this.$deployData)
+  }
 }
 </script>
