@@ -1,42 +1,26 @@
-from undyingkingdoms.blueprints.api.views.economy.iron import IronAPI
-from undyingkingdoms.blueprints.api.views.economy.stone import StoneAPI
-from undyingkingdoms.blueprints.api.views.economy.wood import WoodAPI
+from importlib import import_module
+
 from ... import api_blueprint
-from .popluation import PopulationAPI
-from .gold import GoldAPI
-from .food import FoodAPI
 
-prefix = 'economy'
-url = f'/{prefix}'
-view = f'{prefix}_'
+__doc__ = """
+Generically add all routes.
 
-# e.g. /economy/population
-# economy_population_api
-api_blueprint.add_url_rule(
-    f'{url}/population',
-    view_func=PopulationAPI.as_view(f'{view}population_api')
-)
-api_blueprint.add_url_rule(
-    f'{url}/gold',
-    view_func=GoldAPI.as_view(f'{view}gold_api')
-)
+e.g.
+from .population import PopulationAPI
 
 api_blueprint.add_url_rule(
-    f'{url}/food',
-    view_func=FoodAPI.as_view(f'{view}food_api')
-)
+    f'/economy/population',
+    view_func=PopulationAPI.as_view(f'economy_population_api')
+"""
 
-api_blueprint.add_url_rule(
-    f'{url}/wood',
-    view_func=WoodAPI.as_view(f'{view}wood_api')
-)
+endpoints = ['population', 'gold', 'food', 'wood', 'iron', 'stone', 'mana']
 
-api_blueprint.add_url_rule(
-    f'{url}/iron',
-    view_func=IronAPI.as_view(f'{view}iron_api')
-)
+for endpoint in endpoints:
+    mod = import_module('.' + endpoint, __name__)
+    class_name = endpoint.title() + 'API'
+    Class = getattr(mod, class_name)
+    api_blueprint.add_url_rule(
+        f'/economy/{endpoint}',
+        view_func=Class.as_view(f'economy_{endpoint}_api')
+    )
 
-api_blueprint.add_url_rule(
-    f'{url}/stone',
-    view_func=StoneAPI.as_view(f'{view}stone_api')
-)

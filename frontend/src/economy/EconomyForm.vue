@@ -58,6 +58,7 @@
         <economy-wood-row />
         <economy-iron-row />
         <economy-stone-row />
+        <economy-mana-row />
         <!-- <economy-happiness-row></economy-happiness-row>
         <economy-nourishment-row></economy-nourishment-row>
         <economy-health-row></economy-health-row> -->
@@ -74,6 +75,7 @@ import EconomyFoodRow from './EconomyFoodRow.vue'
 import EconomyWoodRow from './EconomyWoodRow.vue'
 import EconomyIronRow from './EconomyIronRow.vue'
 import EconomyStoneRow from './EconomyStoneRow.vue'
+import EconomyManaRow from './EconomyManaRow.vue'
 // import EconomyHappinessRow from './EconomyHappinessRow.vue'
 // import EconomyNourishmentRow from './EconomyNourishmentRow.vue'
 // import EconomyHealthRow from './EconomyHealthRow.vue'
@@ -96,7 +98,8 @@ export default {
     'economy-food-row': EconomyFoodRow,
     'economy-wood-row': EconomyWoodRow,
     'economy-iron-row': EconomyIronRow,
-    'economy-stone-row': EconomyStoneRow
+    'economy-stone-row': EconomyStoneRow,
+    'economy-mana-row': EconomyManaRow
     // 'economy-happiness-row': EconomyHappinessRow,
     // 'economy-nourishment-row': EconomyNourishmentRow,
     // 'economy-health-row': EconomyHealthRow
