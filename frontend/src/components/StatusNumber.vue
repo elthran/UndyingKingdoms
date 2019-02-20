@@ -1,5 +1,5 @@
 <template>
-  <span :style="{ color: number < 0 ?'red':'green' }">
+  <span :class="number < 0 ?'negative':'positive'">
     {{ (number <= 0 ? "&#160;":"+ ") + number }}
   </span>
 </template>
@@ -13,13 +13,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.green {
-    color: green;
-}
-
-.red {
-    color: red;
-}
-</style>

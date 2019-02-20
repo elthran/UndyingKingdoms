@@ -40,16 +40,20 @@
           <th>Current</th>
           <th>Projected Change</th>
           <th>Modifiers</th>
-          <th id="projected-growth-col">Projected Growth</th>
-          <th id="projected-losses-col">Projected Losses</th>
+          <th id="projected-growth-col">
+            Projected Growth
+          </th>
+          <th id="projected-losses-col">
+            Projected Losses
+          </th>
           <th>Notes</th>
         </tr>
         <economy-population-row />
         <economy-gold-row
           v-model="selectedTaxRate"
         />
-        <!-- <economy-food-row></economy-food-row>
-        <economy-wood-row></economy-wood-row>
+        <economy-food-row />
+        <!-- <economy-wood-row></economy-wood-row>
         <economy-iron-row></economy-iron-row>
         <economy-stone-row></economy-stone-row>
         <economy-happiness-row></economy-happiness-row>
@@ -64,7 +68,7 @@
 import $ from 'jquery'
 import EconomyPopulationRow from './EconomyPopulationRow.vue'
 import EconomyGoldRow from './EconomyGoldRow.vue'
-// import EconomyFoodRow from './EconomyFoodRow.vue'
+import EconomyFoodRow from './EconomyFoodRow.vue'
 // import EconomyWoodRow from './EconomyWoodRow.vue'
 // import EconomyIronRow from './EconomyIronRow.vue'
 // import EconomyStoneRow from './EconomyStoneRow.vue'
@@ -86,8 +90,8 @@ export default {
   name: 'EconomyForm',
   components: {
     'economy-population-row': EconomyPopulationRow,
-    'economy-gold-row': EconomyGoldRow
-    // 'economy-food-row': EconomyFoodRow,
+    'economy-gold-row': EconomyGoldRow,
+    'economy-food-row': EconomyFoodRow
     // 'economy-wood-row': EconomyWoodRow,
     // 'economy-iron-row': EconomyIronRow,
     // 'economy-stone-row': EconomyStoneRow,

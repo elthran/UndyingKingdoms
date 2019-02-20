@@ -15,7 +15,7 @@
 .tooltip .tooltip-text {
   visibility: hidden;
   position: absolute;
-  width: 20em;
+  min-width: 12em;
   background-color: #555;
   color: #fff;
   text-align: center;
@@ -29,7 +29,7 @@
 .tooltip-top {
   bottom: 125%;
   left: 50%;
-  margin-left: -10em;
+  margin-left: -6em;
 }
 
 .arrow-box-for-top:after {
@@ -91,7 +91,7 @@
 .tooltip-bottom {
   top: 135%;
   left: 50%;
-  margin-left: -10em;
+  margin-left: -6em;
 }
 
 .arrow-box-for-bottom:after {

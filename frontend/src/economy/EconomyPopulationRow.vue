@@ -9,37 +9,31 @@ td:nth-child(2), td:nth-child(3) {
     <td>
       Population
     </td>
-    <td>{{ county.population }}</td>
+    <td>{{ population }}</td>
     <td>
-      <status-number :number="county.population_projection" />
+      <status-number :number="population_projection" />
       <img
         class="resource_icons"
         src="/static/dist/images/population_icon.jpg"
       >
     </td>
     <td>
-      <ul v-if="county.birth_rate_mod">
-        <li v-if="county.birth_rate_mod.race">
-          <tool-tip
-            :content="county.birth_rate_mod.race.name + ':\u00a0' + county.birth_rate_mod.race.value + '%'"
-            :tip="'Racial Modifier: ' + county.race"
-          />
-        </li>
-        <li v-if="county.birth_rate_mod.background">
-          ({{ county.background }}) {{ county.birth_rate_mod.background.name }}: {{ county.birth_rate_mod.background.value }}%
-        </li>
+      <modifier-list 
+        :modifier="birth_rate_mod"
+        :race="race"
+        :background="background"
+      />
+    </td>
+    <td>
+      <ul>
+        <li>Births: {{ birth_rate }}</li>
+        <li>Immigration: {{ immigration_rate }}</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Births: {{ county.birth_rate }}</li>
-        <li>Immigration: {{ county.immigration_rate }}</li>
-      </ul>
-    </td>
-    <td>
-      <ul>
-        <li>Deaths: {{ county.death_rate }}</li>
-        <li>Emigration: {{ county.emigration_rate }}</li>
+        <li>Deaths: {{ death_rate }}</li>
+        <li>Emigration: {{ emigration_rate }}</li>
       </ul>
     </td>
     <td>Raise happiness to lower the amount of emigrants leaving your county.</td>
@@ -48,38 +42,30 @@ td:nth-child(2), td:nth-child(3) {
 
 <script>
 import StatusNumber from '@/components/StatusNumber.vue'
-import ToolTip from '@/components/ToolTip.vue'
+import ModifierList from '@/components/ModifierList.vue'
 
 export default {
   name: 'EconomyPopulationRow',
   components: {
     'status-number': StatusNumber,
-    'tool-tip': ToolTip
+    'modifier-list': ModifierList
   },
   data () {
     return {
-      county: Object,
+      background: "",
+      race: "",
+      birth_rate: -1,
+      birth_rate_mod: Object,
+      death_rate: -1,
+      emigration_rate: -1,
+      immigration_rate: -1,
+      population: -1,
+      population_projection: -1,
       errors: Object
     }
   },
   beforeCreate () {
-    this.axios.get('/api/economy/population')
-      .then((response) => {
-        if (response.data.status === 'success') {
-          this.updatePage(response.data)
-        } else {
-          this.errors = response
-        }
-      })
-      .catch((error) => {
-        this.errors = error.response
-      })
-  },
-  methods: {
-    updatePage (data) {
-      // console.log(data);
-      this.county = data.county
-    }
+    this.$getData('/api/economy/population', this.$deployData)
   }
 }
 </script>

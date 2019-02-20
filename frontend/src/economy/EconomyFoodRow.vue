@@ -1,15 +1,15 @@
 <template>
   <tr>
     <td>Food</td>
-    <td>{{ county.grain_stores }}</td>
+    <td>{{ grain_stores }}</td>
     <td>
       <status-number :number="grainStorageChange" />
       <img
         class="resource_icons"
-        src="/static/images/grain_icon.jpg"
+        src="/static/dist/images/grain_icon.jpg"
       >
     </td>
-    <td>
+    <!-- <td>
       <ul>
         <li>
           Rations:
@@ -59,7 +59,7 @@
       <ul>
         <li>To be Eaten: v{ foodEaten }</li>
       </ul>
-    </td>
+    </td> -->
     <td>
       Excess dairy can not be stored in your granaries. If you do not have enough food, your populace will
       begin to starve.
@@ -68,7 +68,21 @@
 </template>
 
 <script>
+import StatusNumber from '@/components/StatusNumber.vue'
+
 export default {
-  name: 'EconomyFoodRow'
+  name: 'EconomyFoodRow',
+  components: {
+    'status-number': StatusNumber
+  },
+  data () {
+    return {
+      grain_stores: -1,
+      grainStorageChange: -1,
+    }
+  },
+  beforeCreate () {
+    this.$getData('/api/economy/food', this.$deployData)
+  }
 }
 </script>
