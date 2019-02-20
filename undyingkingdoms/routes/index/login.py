@@ -26,7 +26,7 @@ def login(template):
             if user.county is None:
                 login_user(user)
                 return redirect(url_for('initialize'))
-            if user.get_last_logout() and user.county.county_age > 0 and (datetime.utcnow() - user.get_last_logout()).total_seconds() // 3600 > 6:
+            if user.get_last_logout() and user.county.day > 0 and (datetime.utcnow() - user.get_last_logout()).total_seconds() // 3600 > 6:
                 gold_reward = min((datetime.utcnow() - user.get_last_logout()).seconds // 3600, 48) * randint(5, 7)
                 user.county.gold += gold_reward
                 notification = Notification(user.county.id, "Login Reward", "Your people appreciate your trust in letting them run their own affairs. They give you {} gold as a thank you.".format(gold_reward), user.county.kingdom.world.day)

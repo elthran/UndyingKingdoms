@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
 
-from sqlalchemy import cast, Date
-
 from extensions import flask_db as db
 from undyingkingdoms.models import Session, User
 from undyingkingdoms.models.bases import GameEvent
@@ -16,22 +14,27 @@ class DAU(GameEvent):
     minutes_played = db.Column(db.Integer)
     ads_watched = db.Column(db.Integer)
     # Game data
-    world_age = db.Column(db.Integer)
-    county_age = db.Column(db.Integer)
-    current_score = db.Column(db.Integer)
+    world_day = db.Column(db.Integer)
+    county_day = db.Column(db.Integer)
+    score = db.Column(db.Integer)
     land = db.Column(db.Integer)
     population = db.Column(db.Integer)
+    happiness = db.Column(db.Integer)
+    nourishment = db.Column(db.Integer)
+    health = db.Column(db.Integer)
+    # Resources
     gold = db.Column(db.Integer)
     wood = db.Column(db.Integer)
     iron = db.Column(db.Integer)
     stone = db.Column(db.Integer)
+    research = db.Column(db.Integer)
+    mana = db.Column(db.Integer)
     lifetime_gold = db.Column(db.Integer)
     lifetime_wood = db.Column(db.Integer)
     lifetime_iron = db.Column(db.Integer)
     lifetime_stone = db.Column(db.Integer)
-    happiness = db.Column(db.Integer)
-    nourishment = db.Column(db.Integer)
-    health = db.Column(db.Integer)
+    lifetime_research = db.Column(db.Integer)
+    lifetime_mana = db.Column(db.Integer)
     # Military data
     peasant = db.Column(db.Integer)
     soldier = db.Column(db.Integer)
@@ -46,37 +49,43 @@ class DAU(GameEvent):
     mine = db.Column(db.Integer)
     fort = db.Column(db.Integer)
     stables = db.Column(db.Integer)
-    guild = db.Column(db.Integer)
     bank = db.Column(db.Integer)
+    tavern = db.Column(db.Integer)
+    lab = db.Column(db.Integer)
+    arcane = db.Column(db.Integer)
     quarry = db.Column(db.Integer)
     lair = db.Column(db.Integer)
 
-    def __init__(self, user_id, county_age, world_age):
+    def __init__(self, user_id):
         self.user_id = user_id
-        self.county_age = county_age
-        self.world_age = world_age
+        self.update_self(user_id)
         self.sessions = self.get_sessions(user_id)
         self.minutes_played = self.get_minutes_played(user_id)
         self.ads_watched = 0
-        self.update_self(user_id)
 
     def update_self(self, user_id):
-        user = User.query.filter_by(id=user_id).first()
+        user = User.query.get(user_id)
         county = user.county
         
+        self.world_day = county.kingdom.world.day
+        self.county_day = county.day
         self.account_age_in_days = (datetime.utcnow() - user.time_created).days
         self.county_id = county.id
-        self.current_score = user.get_current_leaderboard_score()
+        self.score = user.get_current_leaderboard_score()
         self.land = county.land
         self.population = county.population
         self.gold = county.gold
         self.wood = county.wood
         self.iron = county.iron
         self.stone = county.stone
+        self.research = county.research
+        self.mana = county.mana
         self.lifetime_gold = county.lifetime_gold
         self.lifetime_wood = county.lifetime_wood
         self.lifetime_iron = county.lifetime_iron
         self.lifetime_stone = county.lifetime_stone
+        self.lifetime_research = county.lifetime_research
+        self.lifetime_mana = county.lifetime_mana
         self.happiness = county.happiness
         self.nourishment = county.nourishment
         self.health = county.health
@@ -94,8 +103,10 @@ class DAU(GameEvent):
         self.mine = county.buildings['mine'].total
         self.fort = county.buildings['fort'].total
         self.stables = county.buildings['stables'].total
-        self.guild = county.buildings['guild'].total
         self.bank = county.buildings['bank'].total
+        self.tavern = county.buildings['tavern'].total
+        self.lab = county.buildings['lab'].total
+        self.arcane = county.buildings['arcane'].total
         self.quarry = county.buildings['quarry'].total
         self.lair = county.buildings['lair'].total
 

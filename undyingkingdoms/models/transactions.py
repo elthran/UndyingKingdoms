@@ -7,8 +7,8 @@ transactions = ["buy", "sell"]
 
 class Transaction(GameEvent):
     county_id = db.Column(db.Integer)
-    county_age = db.Column(db.Integer)
-    world_age = db.Column(db.Integer)
+    county_day = db.Column(db.Integer)
+    world_day = db.Column(db.Integer)
     activity = db.Column(db.String(16))
 
     gold_spent = db.Column(db.Integer)
@@ -23,8 +23,10 @@ class Transaction(GameEvent):
     mine = db.Column(db.Integer)
     fort = db.Column(db.Integer)
     stables = db.Column(db.Integer)
-    guild = db.Column(db.Integer)
     bank = db.Column(db.Integer)
+    tavern = db.Column(db.Integer)
+    lab = db.Column(db.Integer)
+    arcane = db.Column(db.Integer)
     quarry = db.Column(db.Integer)
     lair = db.Column(db.Integer)
 
@@ -34,10 +36,10 @@ class Transaction(GameEvent):
     elite = db.Column(db.Integer)
     monster = db.Column(db.Integer)
 
-    def __init__(self, county_id, county_age, world_age, activity):
+    def __init__(self, county_id, county_day, world_day, activity):
         self.county_id = county_id
-        self.county_age = county_age
-        self.world_age_in_days = world_age
+        self.county_day = county_day
+        self.world_day = world_day
         self.activity = activity if activity in transactions else "unknown"
 
         self.house = 0
@@ -47,8 +49,10 @@ class Transaction(GameEvent):
         self.mine = 0
         self.fort = 0
         self.stables = 0
-        self.guild = 0
         self.bank = 0
+        self.tavern = 0
+        self.lab = 0
+        self.arcane = 0
         self.quarry = 0
         self.lair = 0
 

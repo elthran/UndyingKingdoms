@@ -12,15 +12,19 @@ from undyingkingdoms.models.bases import GameState
 
 from extensions import flask_db as db
 
+seasons = ["Spring", "Summer", "Autumn", "Winter"]
+
 
 class World(GameState):
     kingdoms = db.relationship('Kingdom', backref='world')
     age = db.Column(db.Integer)  # How many 'reset events'
     day = db.Column(db.Integer)  # How many in-game days have passed this age
+    season = db.Column(db.String(16))  # The current season
 
     def __init__(self):
         self.age = 1
         self.day = 0
+        self.season = seasons[0]
 
     def advance_day(self):
         if self.day >= 0:
@@ -29,7 +33,12 @@ class World(GameState):
                 if county.user.is_bot:
                     county.temporary_bot_tweaks()
         self.day += 1
-
+        if self.day % 36 == 0:  # Every 36 game days we advance the season
+            season_index = seasons.index(self.season) + 1
+            if season_index == len(seasons):
+                season_index = 0
+            self.season = seasons[season_index]
+            
     def advance_analytics(self):
         users = User.query.filter_by(is_bot=False).filter(User.county != None).all()
         for user in users:
@@ -48,7 +57,7 @@ class World(GameState):
                 user.day7_retention = retention
             # If they are playing this age, create a DAU for them
             if user.county:
-                dau_event = DAU(user.id, user.county.county_age, user.county.kingdom.world.day)
+                dau_event = DAU(user.id)
                 dau_event.save()
         self.export_data_to_csv()
 

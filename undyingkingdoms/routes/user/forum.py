@@ -12,8 +12,8 @@ from undyingkingdoms.models.forum import Forum, Thread, Post
 @login_required
 def forum(template, thread_id=0, post_id=0):
     the_forum = Forum.query.first()
-    the_thread = Thread.query.filter_by(id=thread_id).first()
-    the_post = Post.query.filter_by(id=post_id).first()
+    the_thread = Thread.query.get(thread_id)
+    the_post = Post.query.get(post_id)
     form = MessageForm()
     if the_thread is None:
         the_thread = "None"

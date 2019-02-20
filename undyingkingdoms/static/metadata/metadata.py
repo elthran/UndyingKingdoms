@@ -17,7 +17,7 @@ tax_options = [(i, i) for i in range(11)]
 rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (0.75, "Three-Quarters"), (1, "Normal"),
                        (1.5, "One-and-a-half"), (2, "Double"), (3, "Triple")]
 
-all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'quarry', 'fort', 'stables', 'guild', 'bank', 'lair']
+all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'quarry', 'fort', 'stables', 'tavern', 'bank', 'lab', 'arcane', 'lair']
 
 all_achievements = {
     'land': Achievement(name="land", category="reach_x_amount_in_one_age", sub_category="land",
@@ -50,6 +50,16 @@ all_achievements = {
                          description="Have your county reach x stone in one playthrough.",
                          tier1=250, tier2=500, tier3=1000, tier4=1500, tier5=2000, maximum_tier=5,
                          points_rewarded=5),
+    'research': Achievement(name="research", category="reach_x_amount_in_one_age", sub_category="research",
+                            display_title="Genius",
+                            description="Have your county reach x research in one playthrough.",
+                            tier1=250, tier2=500, tier3=1000, tier4=1500, tier5=2000, maximum_tier=5,
+                            points_rewarded=5),
+    'mana': Achievement(name="mana", category="reach_x_amount_in_one_age", sub_category="mana",
+                        display_title="Wizard Master",
+                        description="Have your county reach x mana in one playthrough.",
+                        tier1=250, tier2=500, tier3=1000, tier4=1500, tier5=2000, maximum_tier=5,
+                        points_rewarded=5),
     'dwarf_class_leader': Achievement(name="dwarf_class_leader", category="class_leader", sub_category="dwarf",
                                       display_title="Lord Under the Mountain!",
                                       description="Become the leader of your kingdom while playing as Dwarves.",

@@ -8,7 +8,7 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
-<h2>Thieves available: {{ county.get_number_of_available_thieves() }} / {{ county.buildings['guild'].total }}</h2>
+<h2>Thieves available: {{ county.get_number_of_available_thieves() }} / {{ county.buildings['tavern'].total }}</h2>
 <h3>Chance of enemy successfully infiltrating you: {{ county.get_chance_to_be_successfully_infiltrated() }}% (Note: Each available thieves helps defend your county from enemy thieves)</h3>
 <br><br>
 <h2>Active Missions</h2>

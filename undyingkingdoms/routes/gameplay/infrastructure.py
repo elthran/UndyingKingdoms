@@ -47,17 +47,18 @@ def infrastructure(template):
 @login_required
 def build_buildings():
     county = current_user.county
-    world = World.query.filter_by(id=county.kingdom.world_id).first()
+    world = World.query.get(county.kingdom.world_id)
 
     build_form = InfrastructureForm()
     build_form.county_id.data = county.id
 
     if build_form.validate_on_submit():
-        transaction = Transaction(county.id, county.county_age, world.day, "buy")
+        transaction = Transaction(county.id, county.day, world.day, "buy")
         for building in all_buildings:
             if build_form.data[building] > 0:
                 county.gold -= build_form.data[building] * county.buildings[building].gold_cost
                 county.wood -= build_form.data[building] * county.buildings[building].wood_cost
+                county.stone -= build_form.data[building] * county.buildings[building].stone_cost
                 county.buildings[building].pending += build_form.data[building]
                 transaction.add_purchase(item_name=building,
                                          item_amount=build_form.data[building],

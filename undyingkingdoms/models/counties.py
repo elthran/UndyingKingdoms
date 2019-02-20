@@ -34,30 +34,39 @@ class County(GameState):
     leader = db.Column(db.String(128))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
-    county_age = db.Column(db.Integer)
+    day = db.Column(db.Integer)
     vote = db.Column(db.Integer)
     last_vote_date = db.Column(db.DateTime)
 
     messages = db.relationship('Message', backref='county')
 
-    _land = db.Column(db.Integer)
     race = db.Column(db.String(32))
     title = db.Column(db.String(16))
     background = db.Column(db.String(32))
-    tax = db.Column(db.Integer)
+    
     _population = db.Column(db.Integer)
+    _land = db.Column(db.Integer)
+    _happiness = db.Column(db.Integer)  # Out of 100
+    _nourishment = db.Column(db.Integer)  # Out of 100
+    _health = db.Column(db.Integer)  # Out of 100
+    
+    tax = db.Column(db.Integer)
+    rations = db.Column(db.Float)
+    production_choice = db.Column(db.Integer)  # the current setting the user chose
+
     _gold = db.Column(db.Integer)
     _wood = db.Column(db.Integer)
     _iron = db.Column(db.Integer)
     _stone = db.Column(db.Integer)
+    _research = db.Column(db.Integer)
+    _mana = db.Column(db.Integer)
     lifetime_gold = db.Column(db.Integer)
     lifetime_wood = db.Column(db.Integer)
     lifetime_iron = db.Column(db.Integer)
     lifetime_stone = db.Column(db.Integer)
-    rations = db.Column(db.Float)
-    _happiness = db.Column(db.Integer)  # Out of 100
-    _nourishment = db.Column(db.Integer)  # Out of 100
-    _health = db.Column(db.Integer)  # Out of 100
+    lifetime_research = db.Column(db.Integer)
+    lifetime_mana = db.Column(db.Integer)
+
     weather = db.Column(db.String(32))
     grain_stores = db.Column(db.Integer)
     notifications = db.relationship('Notification', backref='county')
@@ -65,8 +74,6 @@ class County(GameState):
     expeditions = db.relationship('Expedition', backref='county')
     infiltrations = db.relationship('Infiltration', backref='county')
 
-    # Excess Production
-    production_choice = db.Column(db.Integer)  # the current setting the user chose
     produce_land = db.Column(db.Integer)  # Progress towards next land
 
     births = db.Column(db.Integer)
@@ -74,10 +81,10 @@ class County(GameState):
     immigration = db.Column(db.Integer)
     emigration = db.Column(db.Integer)
     buildings = db.relationship("Building",
-                                collection_class=attribute_mapped_collection('base_name'),
+                                collection_class=attribute_mapped_collection('name'),
                                 cascade="all, delete, delete-orphan", passive_deletes=True)
     armies = db.relationship("Army",
-                             collection_class=attribute_mapped_collection('base_name'),
+                             collection_class=attribute_mapped_collection('name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
 
     def __init__(self, kingdom_id, name, leader, user_id, race, title, background):
@@ -88,52 +95,56 @@ class County(GameState):
         self.race = race
         self.title = title
         self.background = background
-        self.county_age = 0
+        self.day = 0
         self.vote = None
         self.last_vote_date = None
-
+        # Basic resources
         self._population = 500
         self._land = 150
         self._nourishment = 75
         self._happiness = 75
         self._health = 75
+        self.weather = "Sunny"
+        # Set values / preferences
         self.tax = 5
+        self.rations = 1
+        self.production_choice = 0
+        # Resources
         self._gold = 500
         self._wood = 100
         self._iron = 0
         self._stone = 0
+        self._research = 0
+        self._mana = 0
+        self.grain_stores = 500
+        self.produce_land = 0  # Progress towards next land
+        # Lifetime accrued resources
         self.lifetime_gold = self._gold
         self.lifetime_wood = self._wood
         self.lifetime_iron = self._iron
         self.lifetime_stone = self._stone
-        self.rations = 1
-        self.grain_stores = 500
-        self.weather = "Sunny"
-
+        self.lifetime_research = self._research
+        self.lifetime_mana = self._mana
+        # Predictions from advisors
         self.births = 0
         self.deaths = 0
         self.immigration = 0
         self.emigration = 0
-
-        self.production_choice = 0
-        self.produce_land = 0
-
-        buildings = None
-        armies = None
+        # Buildings and Armies extracted from metadata
         if self.race == 'Dwarf':
-            buildings = deepcopy(dwarf_buildings)
-            armies = deepcopy(dwarf_armies)
+            self.buildings = deepcopy(dwarf_buildings)
+            self.armies = deepcopy(dwarf_armies)
         elif self.race == 'Human':
-            buildings = deepcopy(human_buildings)
-            armies = deepcopy(human_armies)
+            self.buildings = deepcopy(human_buildings)
+            self.armies = deepcopy(human_armies)
         elif self.race == 'Elf':
-            buildings = deepcopy(elf_buildings)
-            armies = deepcopy(elf_armies)
+            self.buildings = deepcopy(elf_buildings)
+            self.armies = deepcopy(elf_armies)
         elif self.race == 'Goblin':
-            buildings = deepcopy(goblin_buildings)
-            armies = deepcopy(goblin_armies)
-        self.buildings = buildings
-        self.armies = armies
+            self.buildings = deepcopy(goblin_buildings)
+            self.armies = deepcopy(goblin_armies)
+        else:
+            raise AttributeError('Buildings and Armies were not found in metadata')
 
     @property
     def population(self):
@@ -207,6 +218,30 @@ class County(GameState):
         self.check_incremental_achievement("stone", self._stone)
 
     @property
+    def research(self):
+        return self._research
+
+    @research.setter
+    def research(self, value):
+        difference = value - self._research
+        if difference > 0:
+            self.lifetime_research += difference
+        self._research = max(value, 0)
+        self.check_incremental_achievement("research", self._research)
+
+    @property
+    def mana(self):
+        return self._mana
+
+    @mana.setter
+    def mana(self, value):
+        difference = value - self._mana
+        if difference > 0:
+            self.lifetime_mana += difference
+        self._mana = max(value, 0)
+        self.check_incremental_achievement("mana", self._mana)
+
+    @property
     def happiness(self):
         return self._happiness
 
@@ -253,7 +288,7 @@ class County(GameState):
         self.kingdom.count_votes()
 
     def display_vote(self):
-        vote = County.query.filter_by(id=self.vote).first()
+        vote = County.query.get(self.vote)
         return vote.name
 
     # Advance day
@@ -292,7 +327,7 @@ class County(GameState):
                 self.gold += trade.gold_to_give
                 self.wood += trade.wood_to_give
                 self.iron += trade.iron_to_give
-                target_county = County.query.filter_by(id=trade.target_id).first()
+                target_county = County.query.get(trade.target_id)
                 notification = Notification(self.id, "Trade Offer",
                                             "Your trade offer to {} has expired and your resources have been return".format(
                                                 target_county.name), self.kingdom.world.day)
@@ -302,10 +337,10 @@ class County(GameState):
         for infiltration in infiltrations:
             infiltration.duration -= 1
 
-        self.county_age += 1
+        self.day += 1
 
     def temporary_bot_tweaks(self):
-        if randint(1, 10) == 10 and self.county_age > 10:
+        if randint(1, 10) == 10 and self.day > 10:
             self.land += randint(-5, 15)
         if randint(1, 10) == 10:
             self.armies['peasant'].total += randint(1, 4)
@@ -314,7 +349,7 @@ class County(GameState):
             self.armies['elite'].total += 1
         if randint(1, 10) > 8:
             self.gold -= 25
-        if randint(1, 12) == 12 and self.kingdom.leader == 0:
+        if randint(1, 24) == 24 and self.kingdom.leader == 0:
             friendly_counties = County.query.filter_by(kingdom_id=self.kingdom_id).all()
             friendly_counties = [county for county in friendly_counties if not county.user.is_bot]
             self.vote = choice(friendly_counties).id
@@ -361,7 +396,7 @@ class County(GameState):
         random_chance = randint(1, 200)
         notification = None
         if random_chance == 1 and self.grain_stores > 0:
-            amount = min(self.county_age * randint(1, 2), self.grain_stores)
+            amount = min(self.day * randint(1, 2), self.grain_stores)
             notification = Notification(self.id,
                                         "Rats have gotten into your grain silos",
                                         "Your county lost {} of its stored grain.".format(amount),
@@ -428,7 +463,7 @@ class County(GameState):
                                         "Sickness",
                                         "A disease has spread throughout your lands, lowering your county's health by {}.".format(
                                             amount), self.kingdom.world.day)
-            self.nourishment -= amount
+            self.health -= amount
 
         if notification:
             notification.save()
@@ -624,7 +659,7 @@ class County(GameState):
         """
         Gets a list of all buildings which can be built today. Builds it. Then recalls function.
         """
-        buildings_to_be_built = 2 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
+        buildings_to_be_built = 3 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
                                 + buildings_built_per_day_modifier.get(self.background, ("", 0))[1]
         while buildings_to_be_built > 0:
             buildings_to_be_built -= 1
@@ -662,8 +697,8 @@ class County(GameState):
                    + offensive_power_modifier.get(self.background, ("", 0))[1]
         if army:
             for unit in self.armies.values():
-                if unit.base_name != 'archer':
-                    strength += army[unit.base_name] * unit.attack
+                if unit.name != 'archer':
+                    strength += army[unit.name] * unit.attack
         elif county:
             for unit in county.armies.values():
                 if scoreboard:
@@ -722,7 +757,7 @@ class County(GameState):
         if army:
             hit_points_lost *= 1.25  # The attacker takes extra casualties
             duration = self.get_army_duration(sum(army.values()))
-            expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, self.county_age, duration, "attack")
+            expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, self.day, duration, "attack")
             expedition.save()
             while hit_points_to_be_removed > 0:
                 army = {key: value for key, value in army.items() if value > 0}  # Remove dead troops
@@ -813,7 +848,7 @@ class County(GameState):
 
     # Infiltrations
     def get_number_of_available_thieves(self):
-        total_thieves = self.buildings['guild'].total
+        total_thieves = self.buildings['tavern'].total
         all_current_missions = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
         unavailable_thieves = sum(mission.amount_of_thieves for mission in all_current_missions)
         return total_thieves - unavailable_thieves

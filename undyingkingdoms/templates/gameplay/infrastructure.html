@@ -175,7 +175,7 @@ h2 {
             <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
           </div>
           <span class="display">0</span>
-          <input class="value" name="{{ building.base_name }}" value="0" hidden/>
+          <input class="value" name="{{ building.name }}" value="0" hidden/>
         </td>
         <td><span class="pending">{{ building.pending }}</span></td>
         <td>
@@ -216,7 +216,7 @@ h2 {
       Land Required: <span id="landCost">0</span> / {{ county.get_available_land() }}
     </div>
     <br>
-    <p>Each day, up to {% if county.background == 'Engineer' %}5{% else %}3{% endif %} buildings in your queue will be built.</p>
+    <p>Each day, up to {% if county.background == 'Engineer' %}4{% else %}3{% endif %} buildings in your queue will be built.</p>
     <br>
     <button id="buildSubmit" type="submit">Build</button>
     <br>

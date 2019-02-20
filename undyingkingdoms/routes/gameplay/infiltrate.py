@@ -20,7 +20,7 @@ def infiltrate(template, county_id):
     if county_id == current_user.county.id:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
 
-    target = County.query.filter_by(id=county_id).first()
+    target = County.query.get(county_id)
 
     form = InfiltrateForm()
     form.county_id.data = current_user.county.id
@@ -32,7 +32,7 @@ def infiltrate(template, county_id):
     if form.validate_on_submit():
         mission = infiltration_missions[form.mission.data]
         report = Infiltration(current_user.county.id, target.id, current_user.county.kingdom.world.day,
-                              current_user.county.county_age, mission, form.amount.data)
+                              current_user.county.county_day, mission, form.amount.data)
         report.save()
 
         chance_of_success = target.get_chance_to_be_successfully_infiltrated() + form.amount.data

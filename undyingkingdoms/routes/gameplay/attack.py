@@ -13,7 +13,7 @@ from undyingkingdoms.models.forms.attack import AttackForm
 def attack(template, county_id):
     if county_id == current_user.county.id:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
-    enemy = County.query.filter_by(id=county_id).first()
+    enemy = County.query.get(county_id)
     form = AttackForm()
 
     peasant = current_user.county.armies['peasant'].available
@@ -49,10 +49,10 @@ def attack(template, county_id):
     if form.validate_on_submit():
         army = {}
         for unit in current_user.county.armies.values():
-            if unit.base_name != 'archer':
-                if unit.total < form.data[unit.base_name]:
+            if unit.name != 'archer':
+                if unit.total < form.data[unit.name]:
                     return render_template(template, enemy=enemy, form=form)
-                army[unit.base_name] = form.data[unit.base_name]
+                army[unit.name] = form.data[unit.name]
         results = current_user.county.battle_results(army, enemy)
 
         # Would like to move to a attack_results route of some kind.

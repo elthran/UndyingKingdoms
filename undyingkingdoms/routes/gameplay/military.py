@@ -20,7 +20,7 @@ def max_trainable_by_cost(county, army):
         county.wood // army.wood,
         county.iron // army.iron
     )
-    if army.base_name == 'monster':
+    if army.name == 'monster':
         return min(
             max_size,
             monsters_buildable(county)
@@ -33,12 +33,12 @@ def max_trainable_by_cost(county, army):
 @login_required
 def military(template):
     county = current_user.county
-    world = World.query.filter_by(id=county.kingdom.world_id).first()
+    world = World.query.get(county.kingdom.world_id)
     form = MilitaryForm()
     form.county_id.data = county.id
     if form.validate_on_submit():
         total_trained = 0
-        transaction = Transaction(county.id, county.county_age, world.day, "buy")
+        transaction = Transaction(county.id, county.day, world.day, "buy")
         for army in all_armies:
             if form.data[army] > 0:
                 total_trained += form.data[army]

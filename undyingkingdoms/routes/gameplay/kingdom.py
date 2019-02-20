@@ -11,7 +11,7 @@ from undyingkingdoms.models.forms.votes import VoteForm
 @mobile_template('{mobile/}gameplay/kingdom.html')
 @login_required
 def kingdom(template, kingdom_id=0):
-    kingdom = Kingdom.query.filter_by(id=kingdom_id).first()
+    kingdom = Kingdom.query.get(kingdom_id)
     form = VoteForm(vote=current_user.county.vote)
     form.vote.choices = [(county.id, county.name) for county in current_user.county.kingdom.counties]
     if form.validate_on_submit():

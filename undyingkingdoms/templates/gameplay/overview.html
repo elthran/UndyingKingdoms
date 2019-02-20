@@ -6,26 +6,41 @@
 
 {% set user = current_user %}
 {% set county = current_user.county %}
-<h1 style="text-align:center;">{{ county.name }}</h1>
-<ul>
-    <li>Leader: {{ county.title }} {{ county.leader }}</li>
-    <li>Race: {{ county.race }}</li>
-    <li>Title: {{ county.background }}</li>
+<h1 style="text-align:center;">The {{ county.race }} county of {{ county.name }}, led by {{ county.title }} {{
+    county.leader }} the {{ county.background }}</h1>
+<h2>Basics:</h2>
+<ul style="margin-left:25px">
+    {% if county.kingdom.leader == 0 %}
+    <li style="color:red">Kingdom is in civil war{% else %}
+    <li style="color:green">Kingdom is at peace{% endif %}</li>
     <li>Land: {{ county.land }} acres</li>
     {% if county.kingdom.world.day < 0 %}
-    <li>Calendar Day: 0 <span style="color:red;">(This age will begin in {{ county.kingdom.world.day|abs }} hours)</span></li>
+    <li>Calendar Day: 0 <span
+            style="color:red;">(This age will begin in {{ county.kingdom.world.day|abs }} hours)</span></li>
     {% else %}
-    <li>Calendar: Day {{ county.kingdom.world.day }} <span style="color:red;">(This round of testing will end on day 145)</span></li>
+    <li>Calendar: Day {{ county.kingdom.world.day }} ({{ county.kingdom.world.season }}) --> This test ends on day 145
+    </li>
     {% endif %}
-    <li>Stored Grain: {{ county.grain_stores }} <img class="resource_icons" src="/static/images/grain_icon.jpg"></li>
+    <li>Weather: {{ county.weather.title() }}</li>
+</ul>
+<h2>Treasury:</h2>
+<ul style="margin-left:25px">
     <li>Coffers: {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"></li>
+    <li>Lumber: {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"></li>
+    <li>Iron: {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+    <li>Stone: {{ county.stone }} <img class="resource_icons" src="/static/images/stone_icon.jpg"></li>
+    <li>Research: {{ county.research }} <img class="resource_icons" src="/static/images/research_icon.jpg"></li>
+    <li>Mana: {{ county.mana }} <img class="resource_icons" src="/static/images/mana_icon.jpg"></li>
+</ul>
+<h2>Citizens:</h2>
+<ul style="margin-left:25px">
     <li>Population: {{ county.population }} <img class="resource_icons" src="/static/images/population_icon.jpg"></li>
     <li>Happiness: {{ county.happiness_terminology.title() }}</li>
     <li>Nourishment: {{ county.nourishment_terminology.title() }}</li>
-    <li>Weather: {{ county.weather.title() }}</li>
+    <li>Health: {{ county.health_terminology.title() }}</li>
 </ul>
 <br>
-{% if county.county_age < 1 %}
+{% if county.day < 1 %}
 <p style="color:red;" id="serverMessageToPlayers"></p>
 {% endif %}
 <h2>News</h2>
@@ -39,14 +54,14 @@
 <br><br>
 <button onclick="oldNewsDisplay()">Show Old News</button>
 <div id="oldNews" style="display:none;">
-<br>
-<ul>
-    {% for event in county.display_old_news()|sort(attribute='day', reverse=True) %}
-    <li>{{ event.title }} (Day: {{ event.day }}): {{ event.content }}</li>
-    {% else %}
-    <li>There is no news in your history.</li>
-    {% endfor %}
-</ul>
+    <br>
+    <ul>
+        {% for event in county.display_old_news()|sort(attribute='day', reverse=True) %}
+        <li>{{ event.title }} (Day: {{ event.day }}): {{ event.content }}</li>
+        {% else %}
+        <li>There is no news in your history.</li>
+        {% endfor %}
+    </ul>
 </div>
 
 <script type="text/javascript">
@@ -58,6 +73,7 @@ function oldNewsDisplay() {
     x.style.display = "none";
   }
 }
+
 </script>
 
 {% endblock %}

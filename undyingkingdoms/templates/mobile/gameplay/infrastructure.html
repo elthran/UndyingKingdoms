@@ -203,7 +203,7 @@ th {
         <td>
           {{ dynamic_cost }}
           {{ select_field(max_buildable_by_cost(county, building)) }}
-          <input class="value" name="{{ building.base_name }}" value="0" hidden/>
+          <input class="value" name="{{ building.name }}" value="0" hidden/>
           <button class="submitButton" type="submit">Build <span class="display">0</span></button>
         </td>
       </tr>

@@ -2,35 +2,70 @@
 
 {% block title %}Diplomacy: {{ super() }}{% endblock %}
 
-{% block content2 %}
+{% block style %}
+{{ super () }}
+<style>
+#content {
+    margin: 1em;
+}
 
+h1 {
+    margin-bottom: 0.3em;
+}
+
+div[id|=trade] {
+    margin-bottom: 1em;
+}
+
+button {
+    margin-top: 0.3em;
+    margin-left: 1em;
+}
+
+#spacer {
+    margin-bottom: 0.6em;
+}
+</style>
+{% endblock %}
+
+{% block content2 %}
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
-
-<br>
-<h1>Trades We Offered</h1>
-{% for trade in trades_offered if trade.status == 'Pending' %}
-    <br>
-    We offered a trade to county id: {{ trade.target_id }}.
-    We offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, {{ trade.iron_to_give }} iron, and {{ trade.stone_to_give }} stone
-    in exchange for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, and {{ trade.stone_to_receive }} stone.
-    The trade expires in {{ trade.duration }} days if they do not reply. <button class="cancel" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Cancel</button>
-{% else %}
-    We currently have not offered any county a trade.
-{% endfor %}
-<br><br>
-<h1>Trades Offered To Us</h1>
-{% for trade in trades_received if trade.status == 'Pending' %}
-    <br>
-    We were offered a trade by county id: {{ trade.target_id }}.
-    We were offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, and {{ trade.iron_to_give }} iron
-    in exchange for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, and {{ trade.iron_to_receive }} iron.
-    The trade expires in {{ trade.duration }} days if we do not reply. <button class="accept" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Accept</button><button class="reject" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Reject</button>
-{% else %}
-    We currently have no offers by any county to trade.
-{% endfor %}
-
+<div id="content">
+  <h1>Trades We Offered</h1>
+  <div id="trades-we-offered">
+    {% for trade in trades_offered if trade.status == 'Pending' %}
+      <div id="trade-{{ trade.id }}">
+        <p>We offered a trade to county id: {{ trade.target_id }}.</p>
+        <p>We offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, {{ trade.iron_to_give }} iron, and {{ trade.stone_to_give }} stone.</p>
+        <p> We asked for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.</p>
+        <p>The trade expires in {{ trade.duration }} days if they do not reply.</p>
+        <button class="cancel" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Cancel</button>
+      </div>
+    {% else %}
+      <p>We currently have not offered any county a trade.</p>
+    {% endfor %}
+  </div>
+  <p id="we-offered-no-trades" class="invisible">We currently have not offered any county a trade.</p>
+  <div id="spacer"></div>
+  <h1>Trades Offered To Us</h1>
+  <div id="trades-they-offered">
+    {% for trade in trades_received if trade.status == 'Pending' %}
+      <div id="trade-{{ trade.id }}">
+        <p>We were offered a trade by county id: {{ trade.target_id }}.</p>
+        <p>We were offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, and {{ trade.iron_to_give }} iron.</p>
+        <p> We asked for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.</p>
+        <p>The trade expires in {{ trade.duration }} days if we do not reply.</p>
+        <button class="accept" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Accept</button>
+        <button class="reject" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Reject</button>
+      </div>
+    {% else %}
+      <p>We currently have no offers by any county to trade.</p>
+    {% endfor %}
+  </div>
+  <p id="they-offered-no-trades" class="invisible">We currently have no offers by any county to trade.</p>
+</div>
 {% endblock %}
 
 {% block script %}
@@ -43,9 +78,14 @@
 $(".accept").click(function () {
     $.get(
         $(this).val() + "?accept=1",
-        function (response, status) {
-            if (status === "success") {
-                console.log(response);
+        (response) => {
+            if (response.status === "success") {
+                $(this).parent().remove();
+                if ($("#trades-they-offered").children().length === 0) {
+                    $("#they-offered-no-trades").removeClass('invisible');
+                }
+            } else if (response.status === "fail") {
+                alert(response.message);
             } else {
                 console.log(response);
             }
@@ -58,9 +98,12 @@ $(".accept").click(function () {
 $(".reject").click(function () {
     $.get(
         $(this).val() + "?reject=1",
-        function (response, status) {
-            if (status === "success") {
-                console.log(response);
+        (response) => {
+            if (response.status === "success") {
+                $(this).parent().remove();
+                if ($("#trades-they-offered").children().length === 0) {
+                    $("#they-offered-no-trades").removeClass('invisible');
+                }
             } else {
                 console.log(response);
             }
@@ -70,9 +113,12 @@ $(".reject").click(function () {
 $(".cancel").click(function () {
     $.get(
         $(this).val() + "?cancel=1",
-        function (response, status) {
-            if (status === "success") {
-                console.log(response);
+        (response) => {
+            if (response.status === "success") {
+                $(this).parent().remove();
+                if ($("#trades-we-offered").children().length === 0) {
+                    $("#we-offered-no-trades").removeClass('invisible');
+                }
             } else {
                 console.log(response);
             }

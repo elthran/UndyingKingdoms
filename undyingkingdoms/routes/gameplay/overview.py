@@ -20,13 +20,13 @@ its own route. Even though this cause duplication of code it is much
 easier to test and debug. If you use a major concept in 2 places
 you can make that a 'utility' function and import it into both routes.
 
-The Routes that return JSON could be made to return a redirect to 
+The Routes that return JSON could be made to return a redirect to
 the overview or overiew_enemy pages but JSON is easier to handle with
 JS ... You would need a JS function to submit you form and handle the
 callback. The callback would update any relvant data on the page
-on the success of the Trade or Send Message routes. 
+on the success of the Trade or Send Message routes.
 
-The Trade and Send Message routes might need to return more data 
+The Trade and Send Message routes might need to return more data
 than they currently are.
 """
 
@@ -48,8 +48,10 @@ def overview(template):
 @login_required
 def enemy_overview(template, kingdom_id=0, county_id=0):
     county = current_user.county
-    target_county = County.query.filter_by(id=county_id).first()
-    target_kingdom = Kingdom.query.filter_by(id=kingdom_id).first()
+    target_county = County.query.get(county_id)
+    if county == target_county:
+        return redirect(url_for('overview', kingdom_id=0, county_id=0))
+    target_kingdom = Kingdom.query.get(kingdom_id)
 
     message_form = MessageForm()
     trade_form = TradeForm()
@@ -60,11 +62,14 @@ def enemy_overview(template, kingdom_id=0, county_id=0):
     trade_form.offer_wood.choices = [(i * 10, i * 10) for i in range(county.wood // 10 + 1)]
     trade_form.offer_iron.choices = [(i * 10, i * 10) for i in range(county.iron // 10 + 1)]
     trade_form.offer_stone.choices = [(i * 10, i * 10) for i in range(county.stone // 10 + 1)]
+    trade_form.offer_grain.choices = [(i * 10, i * 10) for i in range(county.grain_stores // 10 + 1)]
+    
     trade_form.receive_gold.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_wood.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_iron.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_stone.choices = [(i * 10, i * 10) for i in range(51)]
-    trade_form.duration.choices = [(i, i) for i in range(3, 25)]
+    trade_form.receive_grain.choices = [(i * 10, i * 10) for i in range(51)]
+    trade_form.duration.choices = [(i, i) for i in range(12, 25)]
 
     return render_template(
         template,
@@ -110,16 +115,33 @@ def trade(county_id):
     trade_form.offer_wood.choices = [(i * 10, i * 10) for i in range(county.wood // 10 + 1)]
     trade_form.offer_iron.choices = [(i * 10, i * 10) for i in range(county.iron // 10 + 1)]
     trade_form.offer_stone.choices = [(i * 10, i * 10) for i in range(county.stone // 10 + 1)]
+    trade_form.offer_grain.choices = [(i * 10, i * 10) for i in range(county.grain_stores // 10 + 1)]
+    
     trade_form.receive_gold.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_wood.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_iron.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_stone.choices = [(i * 10, i * 10) for i in range(51)]
-    trade_form.duration.choices = [(i, i) for i in range(3, 25)]
+    trade_form.receive_grain.choices = [(i * 10, i * 10) for i in range(51)]
+    trade_form.duration.choices = [(i, i) for i in range(12, 25)]
 
     if trade_form.validate_on_submit():
-        trade_offered = Trade(county.id, target_county.id, current_user.county.kingdom.world.day, 12,
-                              trade_form.offer_gold.data, trade_form.offer_wood.data, trade_form.offer_iron.data, trade_form.offer_stone.data,
-                              trade_form.receive_gold.data, trade_form.receive_wood.data, trade_form.receive_iron.data, trade_form.receive_stone.data)
+        # Consider just passing in the form object.
+        trade_offered = Trade(
+            county.id,
+            target_county.id,
+            current_user.county.kingdom.world.day,
+            trade_form.duration.data,
+            trade_form.offer_gold.data,
+            trade_form.offer_wood.data,
+            trade_form.offer_iron.data,
+            trade_form.offer_stone.data,
+            trade_form.offer_grain.data,
+            trade_form.receive_gold.data,
+            trade_form.receive_wood.data,
+            trade_form.receive_iron.data,
+            trade_form.receive_stone.data,
+            trade_form.receive_grain.data
+        )
         trade_offered.save()
 
         county.gold -= trade_form.offer_gold.data
@@ -127,9 +149,11 @@ def trade(county_id):
         county.iron -= trade_form.offer_iron.data
         county.stone -= trade_form.offer_stone.data
 
-        trade_notice = Notification(target_county.id, "You were offered a trade",
-                                    "{} has offered you a trade. Visit the diplomacy page.".format(county.name),
-                                    county.kingdom.world.day)
+        trade_notice = Notification(
+            target_county.id,
+            "You were offered a trade",
+            "{} has offered you a trade. Visit the diplomacy page.".format(county.name),
+            county.kingdom.world.day)
         trade_notice.save()
 
         return redirect(url_for('diplomacy'))

@@ -159,7 +159,7 @@ button {
           {{ dynamic_cost }}
           <!--This code should be dynamic JS but isn't-->
           {% set size = ([county.gold // army.gold, county.wood // army.wood, county.iron // army.iron] | sort)[0] %}
-          {% if army.base_name == 'monster' %}
+          {% if army.name == 'monster' %}
             {% set monsters_available = county.buildings['lair'].total - county.armies['monster'].total - county.armies['monster'].currently_training %}
             {% if monsters_available <= 0 %}
               <div id="requiresBuilding">Requires {{ county.buildings['lair'].class_name_plural.title() }}</div>
@@ -170,7 +170,7 @@ button {
             {{ select_field(size) }}
             <button class="submitButton" type="submit">Build <span class="display">0</span></button>
           {% endif %}
-          <input class="value" name="{{ army.base_name }}" value="0" hidden/>
+          <input class="value" name="{{ army.name }}" value="0" hidden/>
         </td>
       </tr>
       <tr>

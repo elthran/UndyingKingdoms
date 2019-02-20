@@ -16,7 +16,7 @@ class Chatroom(GameState):
         self.is_global = is_global
 
     def get_county_leader_name(self):
-        county = County.query.filter_by(id=self.county_id).first()
+        county = County.query.get(self.county_id)
         return county.leader
 
     def get_pretty_timestamp(self):

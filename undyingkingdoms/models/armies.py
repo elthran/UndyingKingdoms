@@ -6,7 +6,7 @@ from undyingkingdoms.models.bases import GameState
 
 class Army(GameState):
     county_id = db.Column(db.Integer, db.ForeignKey('county.id', ondelete="CASCADE"), nullable=False)
-    base_name = db.Column(db.String(64))
+    name = db.Column(db.String(64))
     class_name = db.Column(db.String(64))
     class_name_plural = db.Column(db.String(64))
     total = db.Column(db.Integer)
@@ -22,8 +22,8 @@ class Army(GameState):
     health = db.Column(db.Integer)
     description = db.Column(db.String(128))
 
-    def __init__(self, base_name, class_name, class_name_plural, total, trainable_per_day, gold, iron, wood, upkeep, attack, defence, health, description):
-        self.base_name = base_name
+    def __init__(self, name, class_name, class_name_plural, total, trainable_per_day, gold, iron, wood, upkeep, attack, defence, health, description):
+        self.name = name
         self.class_name = class_name
         self.class_name_plural = class_name_plural
         self.total = total
