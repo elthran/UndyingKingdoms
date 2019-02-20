@@ -6,7 +6,7 @@ def vue_safe_nbsp(s):
     return '\u00a0'.join(s.split())
 
 
-def vue_safe_metadata_mod(mod, county):
+def vue_safe_metadata_mod(mod, county, is_percent=True):
     """Simplify a metatdata object to race and background.
 
     All values are assumed to be percents.
@@ -15,14 +15,16 @@ def vue_safe_metadata_mod(mod, county):
     race_mod = mod.get(county.race)
     background_mod = mod.get(county.background)
     if race_mod:
+        value = int(race_mod[1] * 100) if is_percent else race_mod[1]
         vue_safe_mod['race'] = dict(
             name=vue_safe_nbsp(race_mod[0]),
-            value=int(race_mod[1] * 100)
+            value=value
         )
     if background_mod:
+        value = int(background_mod[1] * 100) if is_percent else background_mod[1]
         vue_safe_mod['background'] = dict(
             name=vue_safe_nbsp(background_mod[0]),
-            value=int(background_mod[1] * 100)
+            value=value
         )
 
     return vue_safe_mod

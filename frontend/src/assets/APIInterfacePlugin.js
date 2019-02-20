@@ -8,6 +8,9 @@ APIInterface.install = function (Vue, options) {
         delete response.data.status
         delete response.data.message
         callback(this, response.data)
+      } else if (!(response.data.hasOwnProperty('status'))) {
+        console.log('You need to add as "success" attribute to the api return jsonify.')
+        console.log('You should probably add a "message" attribute as well for debugging purposes.')
       } else {
         this.errors = response
       }

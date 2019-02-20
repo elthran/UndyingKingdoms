@@ -10,47 +10,40 @@
       >
     </td>
     <td>-</td>
-    <!-- <td>
+    <td>
       <ul>
         <li>
           Natural: +7 <img
             class="resource_icons"
-            src="/static/images/heart_icon.jpg"
+            src="/static/dist/images/heart_icon.jpg"
           >
         </li>
-        {% if county.production_choice == 3 %}
-        <li>
-          Relax: + {{ county.get_excess_production_value(3) }}
+        <li v-if="areRelaxing">
+          Relax: +&nbsp;{{ excessProduction }}
           <img 
             class="resource_icons"
-            src="/static/images/heart_icon.jpg"
+            src="/static/dist/images/heart_icon.jpg"
           >
         </li>
-        {% endif %}
       </ul>
     </td>
     <td>
       <ul>
-        {% if happiness_modifier.get(county.race)[0] %}
         <li>
-          <div class="tooltip">
-            {{ happiness_modifier.get(county.race)[0] }}: {{
-              happiness_modifier.get(county.race)[1] }}<span class="tooltipText">Racial Modifier: {{ county.race }}</span>
-          </div>
-          <img
+          Taxes: {{ -taxRate }} <img
             class="resource_icons"
-            src="/static/images/heart_icon.jpg"
-          >
-        </li>
-        {% endif %}
-        <li>
-          Taxes: v{ -selectedTaxRate } <img
-            class="resource_icons"
-            src="/static/images/heart_icon.jpg"
+            src="/static/dist/images/heart_icon.jpg"
           >
         </li>
       </ul>
-    </td> -->
+      <modifier-list 
+        :modifier="happinessMod"
+        :race="race"
+        :background="background"
+        value-icon=""
+        img="/static/dist/images/heart_icon.jpg"
+      />
+    </td>
     <td>
       Happiness affects emigration rate and how productive your workers are. If they become too unhappy,
       they may start to question your rule.
@@ -60,16 +53,24 @@
 
 <script>
 import StatusNumber from '@/components/StatusNumber.vue'
+import ModifierList from '@/components/ModifierList.vue'
 
 export default {
   name: 'EconomyHappinessRow',
   components: {
-    'status-number': StatusNumber
+    'status-number': StatusNumber,
+    'modifier-list': ModifierList
   },
   data () {
     return {
       happiness: -1,
       happinessChange: -1,
+      areRelaxing: false,
+      excessProduction: -1,
+      happinessMod: Object,
+      race: "",
+      background: "",
+      taxRate: -1
     }
   },
   beforeCreate () {
