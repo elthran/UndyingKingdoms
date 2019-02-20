@@ -25,7 +25,7 @@ export default {
   },
   props: {
     modifier: {
-      type: Object,
+      type: [Object, Function],
       race: {
         name: String,
         value: -1

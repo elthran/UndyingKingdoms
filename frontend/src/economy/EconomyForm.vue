@@ -52,7 +52,9 @@
         <economy-gold-row
           v-model="selectedTaxRate"
         />
-        <economy-food-row />
+        <economy-food-row 
+          v-model="selectedRations"
+        />
         <!-- <economy-wood-row></economy-wood-row>
         <economy-iron-row></economy-iron-row>
         <economy-stone-row></economy-stone-row>
@@ -103,24 +105,20 @@ export default {
     return {
       form: Object,
       urlFor: Object,
-      goldChange: Number,
       taxIncome: Number,
       selectedTaxRate: Number,
-      happinessChange: Number,
-      grainStorageChange: Number,
       selectedRations: Number,
-      foodEaten: Number,
-      nourishmentChange: Number,
       errors: Object
     }
   },
   watch: {
     selectedTaxRate () {
-      console.log("select tax rate in EconomyForm.vue detected change.")
+      console.log("select tax rate, detected change on EconomyForm.vue.")
       // this.sendForm($('#economy-form'), this.updatePage)
     },
     selectedRations () {
-      this.sendForm($('#economy-form'), this.updatePage)
+      console.log('select rations rate, detected change on EconomyForm.vue.')
+      // this.sendForm($('#economy-form'), this.updatePage)
     }
   },
   beforeCreate () {

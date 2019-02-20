@@ -1,5 +1,8 @@
 <template>
-  <tr>
+  <tr 
+    :value="rations"
+    @input="$emit('input', $event.target.value)"
+  >
     <td>Food</td>
     <td>{{ grain_stores }}</td>
     <td>
@@ -9,57 +12,47 @@
         src="/static/dist/images/grain_icon.jpg"
       >
     </td>
-    <!-- <td>
-      <ul>
-        <li>
-          Rations:
-          <select-generator
-            v-model="selectedRations"
-            :options="{{ form.rations.choices | vuesafe }}"
-            id-name="{{ form.rations.id }}"
-          />
-        </li>
-        {% if food_consumed_modifier.get(county.race)[1] %}
-        <li>
-          <div class="tooltip">
-            {{ food_consumed_modifier.get(county.race)[0] }}: {{
-            (food_consumed_modifier.get(county.race)[1] * 100)| }}%<span class="tooltipText">
-              Racial Modifier: {{ county.race }}
-            </span>
-          </div>
-        </li>
-        {% endif %}
-      </ul>
+    <td>
+      Rations:<br>
+      <select-generator
+        v-model="rations"
+        :options="form.rations.choices"
+        :selected="rations"
+        id-name="form.rations.id"
+      />
+      <modifier-list 
+        :modifer="food_consumed_mod"
+        :race="race"
+        :background="background"
+      />
     </td>
     <td>
       <ul>
         <li>
-          Fields: + {{ county.get_produced_grain() }} <img
+          Fields: + {{ producedGrain }} <img
             class="resource_icons"
-            src="/static/images/grain_icon.jpg"
+            src="/static/dist/images/grain_icon.jpg"
           >
         </li>
         <li>
-          Pastures: + {{ county.get_produced_dairy() }} <img
+          Pastures: + {{ producedDairy }} <img
             class="resource_icons"
-            src="/static/images/dairy_icon.jpg"
+            src="/static/dist/images/dairy_icon.jpg"
           >
         </li>
-        {% if county.production_choice == 2 %}
-        <li>
-          Foraging: + {{ county.get_excess_production_value(2) }} <img
+        <li v-if="isForaging">
+          Foraging: + {{ excessProduction }} <img
             class="resource_icons"
-            src="/static/images/dairy_icon.jpg"
+            src="/static/dist/images/dairy_icon.jpg"
           >
         </li>
-        {% endif %}
       </ul>
     </td>
     <td>
       <ul>
-        <li>To be Eaten: v{ foodEaten }</li>
+        <li>To be Eaten: {{ foodEaten }}</li>
       </ul>
-    </td> -->
+    </td>
     <td>
       Excess dairy can not be stored in your granaries. If you do not have enough food, your populace will
       begin to starve.
@@ -69,16 +62,36 @@
 
 <script>
 import StatusNumber from '@/components/StatusNumber.vue'
+import SelectGenerator from '@/components/SelectGenerator.vue'
+import ModifierList from '@/components/ModifierList.vue'
 
 export default {
   name: 'EconomyFoodRow',
   components: {
-    'status-number': StatusNumber
+    'status-number': StatusNumber,
+    'select-generator': SelectGenerator,
+    'modifier-list': ModifierList
   },
   data () {
     return {
       grain_stores: -1,
       grainStorageChange: -1,
+      foodEaten: -1,
+      rations: -1,
+      race: "",
+      background: "",
+      food_consumed_mod: Object,
+      form: {
+        rations: {
+          choices: [Array],
+          id: ""
+        }
+      },
+      producedGrain: -1,
+      producedDairy: -1,
+      isForaging: false,
+      excessProduction: -1,
+      errors: Object
     }
   },
   beforeCreate () {
