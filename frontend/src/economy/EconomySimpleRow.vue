@@ -13,7 +13,7 @@
     <td>
       <ul>
         <li>
-          {{ plural }}: {{ '+\u00a0' + income }} <img
+          {{ descriptiveName }}: {{ '+\u00a0' + income }} <img
             class="resource_icons"
             :src="icon"
           >
@@ -31,21 +31,19 @@ import StatusNumber from '@/components/StatusNumber.vue'
 export default {
   name: 'EconomySimpleRow',
   props: {
-    title: "Somename",
-    name: "somename",
-    plural: "somenames",
-    amount: -1,
-    income: -1,
-    description: "Example description."
+    title: String,
+    resourceName: String,
+    descriptiveName: String,
+    amount: Number,
+    income: Number,
+    description: String
   },
   components: {
     'status-number': StatusNumber
   },
-  data () {
-    return {
-      icon () {
-        return '/static/dist/images/' + name + '_icon.jpg'
-      }
+  computed: {
+    icon () {
+      return '/static/dist/images/' + this.resourceName + '_icon.jpg'
     }
   }
 }

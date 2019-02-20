@@ -13,5 +13,5 @@ class StoneAPI(MethodView):
             message='You called the stone api.',
             stoneAmount=county.stone,
             stoneIncome=county.get_stone_income(),
-            quarries=county.buildings['quarry'].class_name_plural.title(),
+            descriptiveName=county.buildings['quarry'].class_name_plural.title(),
         )

@@ -1,16 +1,16 @@
 <template>
   <economy-simple-row 
     title="Stone" 
-  />
-</template>
-
-<!-- name="stone"
-    plural="quarries"
+    resourceName="stone"
+    :descriptiveName="descriptiveName"
     description="Stone is used to build your most powerful buildings."
     :amount="stoneAmount"
     :income="stoneIncome"
-  /> -->
-  <!-- <tr>
+  />
+</template>
+
+<!-- 
+  <tr>
     <td>Stone</td>
     <td>{{ county.stone }}</td>
     {% if county.get_stone_income() >= 0 %}
@@ -49,7 +49,7 @@ export default {
     return {
       stoneAmount: -1,
       stoneIncome: -1,
-      quarries: ""
+      descriptiveName: ""
     }
   },
   beforeCreate () {
