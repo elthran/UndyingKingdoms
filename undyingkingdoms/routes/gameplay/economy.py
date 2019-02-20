@@ -9,7 +9,7 @@ from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_
 
 
 @app.route('/gameplay/economy/', methods=['GET'])
-@mobile_template('{mobile/}economy.html')
+@mobile_template('{mobile/}gameplay/economy.html')
 @login_required
 def economy(template):
     form = EconomyForm(tax=current_user.county.tax_rate, rations=current_user.county.rations)
@@ -17,13 +17,14 @@ def economy(template):
     form.tax.choices = [(i, i) for i in range(11)]
     form.rations.choices = [(pairing[0], pairing[1]) for pairing in rations_terminology]
 
-    # return render_template(template,
+    # return render_template(
+    #     template,
     #     form=form,
     #     birth_rate_modifier=birth_rate_modifier,
     #     income_modifier=income_modifier,
     #     food_consumed_modifier=food_consumed_modifier,
     #     happiness_modifier=happiness_modifier)
-    return send_from_directory('static/dist', template)
+    return send_from_directory('static/dist', 'economy.html')
 
 
 @app.route('/gameplay/economy/update', methods=['POST'])

@@ -13,8 +13,7 @@ class FoodAPI(MethodView):
         county = current_user.county
 
         # probably should move to a function.
-        form = EconomyForm(tax=current_user.county.tax, rations=current_user.county.rations)
-        form.tax.choices = tax_options
+        form = EconomyForm(rations=current_user.county.rations)
         form.rations.choices = rations_terminology
 
         # happinessChange=county.get_happiness_change(),

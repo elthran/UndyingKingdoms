@@ -13,14 +13,13 @@ class GoldAPI(MethodView):
         county = current_user.county
 
         # overwrite and vueify form, probably should be a method.
-        form = EconomyForm(tax=current_user.county.tax, rations=current_user.county.rations)
+        form = EconomyForm(tax=current_user.county.tax_rate, rations=current_user.county.rations)
         form.tax.choices = tax_options
-        form.rations.choices = rations_terminology
 
         return jsonify(
             status='success',
             message='You called on the gold api.',
-            tax=county.tax,
+            tax=county.tax_rate,
             gold=county.gold,
             rations=county.rations,
             goldChange=county.get_gold_change(),

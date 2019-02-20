@@ -1,6 +1,6 @@
 <template>
   <span :class="number < 0 ?'negative':'positive'">
-    {{ (number <= 0 ? "&#160;":"+ ") + number }}
+    {{ fancyNum }}
   </span>
 </template>
 
@@ -10,6 +10,11 @@ export default {
   props: {
     'number': Number,
     'value': Number
+  },
+  computed: {
+  	fancyNum () {
+  		return (this.number <= 0 ? '\u00a0':'+\u00a0') + this.number
+  	}
   }
 }
 </script>

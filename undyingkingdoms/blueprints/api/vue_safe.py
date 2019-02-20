@@ -35,12 +35,14 @@ def vue_safe_array(value):
     """
 
     new = []
-    for item in value:
-        if isinstance(item, tuple):
-            new.append(list(item))
-        else:
-            new.append(item)
-    return new
+    if value is not None:
+        for item in value:
+            if isinstance(item, tuple):
+                new.append(list(item))
+            else:
+                new.append(item)
+        return new
+    return None
 
 
 def vue_safe_form(form):
