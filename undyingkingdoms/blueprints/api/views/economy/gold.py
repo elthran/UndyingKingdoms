@@ -31,5 +31,11 @@ class GoldAPI(MethodView):
             form=vue_safe_form(form),
             income_mod=vue_safe_metadata_mod(income_modifier, county),
             race=county.race,
-            background=county.background
+            background=county.background,
+            taxIncome=county.get_tax_income(),
+            bankIncome=county.get_bank_income(),
+            hasBanks=county.buildings['bank'].total > 0,
+            isOverworking=county.production_choice == 0,
+            excessProduction=county.get_excess_production_value(0),
+            militaryExpenses=county.get_upkeep_costs(),
         )

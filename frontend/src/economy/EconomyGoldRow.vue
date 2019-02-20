@@ -36,23 +36,20 @@
         </li>
       </ul>
     </td>
-    <!-- <td>
+    <td>
       <ul>
-        <li>Taxes: v{ taxIncome }</li>
-        {% if county.buildings['bank'].total > 0 %}
-        <li>Banks: {{ county.get_bank_income() }}</li>
-        {% endif %}
-        {% if county.production_choice == 0 %}
-        <li>Overworking: + {{ county.get_excess_production_value(0) }}</li>
-        {% endif %}
+        <li>Taxes: {{ taxIncome }}</li>
+        <li v-if="hasBanks">Banks: {{ bankIncome }}</li>
+        <li v-if="isOverworking">Overworking: {{ '+\u00a0' + excessProduction }}</li>
       </ul>
     </td>
     <td>
       <ul>
-        <li>Military Expenses: {{ county.get_upkeep_costs() }}</li>
+        <li>Military Expenses: {{ militaryExpenses }}</li>
       </ul>
-    </td> -->
+    </td>
     <!-- These conditions must not occur together or it will break the table. -->
+    <!-- Also note tha v-if, v-if-else, v-else doesn't seem to work. -->
     <td
       v-if="tax < 7"
       class="green"
@@ -85,23 +82,29 @@ export default {
   },
   data () {
     return {
-      gold: 50,
-      tax: 7,
-      rations: 0,
-      goldChange: 7,
-      happinessChange: 7,
-      grainStorageChange: 7,
-      foodEaten: 7,
-      nourishmentChange: 7,
-      income_mod: Object,
-      race: String,
-      background: String,
+      gold: -1,
+      tax: -1,
+      rations: -1,
+      goldChange: -1,
+      happinessChange: -1,
+      grainStorageChange: -1,
+      foodEaten: -1,
+      nourishmentChange: -1,
       form: {
         tax: {
           choices: [Array],  // for some reason using default args this way fixes the linting bug.
           id: ""
         }
       },
+      income_mod: Object,
+      race: String,
+      background: String,
+      taxIncome: -1,
+      bankIncome: -1,
+      hasBanks: Boolean,
+      isOverworking: Boolean,
+      excessProduction: -1,
+      militaryExpenses: -1,
       errors: Object
     }
   },

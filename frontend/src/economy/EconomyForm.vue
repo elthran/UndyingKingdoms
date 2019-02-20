@@ -11,6 +11,14 @@
   left: 50%;
   margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
 }
+
+#projected-growth-col {
+  min-width: 7em;
+}
+
+#projected-losses-col {
+  min-width: 9.5em;
+}
 </style>
 
 <template>
@@ -32,8 +40,8 @@
           <th>Current</th>
           <th>Projected Change</th>
           <th>Modifiers</th>
-          <th>Projected Growth</th>
-          <th>Projected Losses</th>
+          <th id="projected-growth-col">Projected Growth</th>
+          <th id="projected-losses-col">Projected Losses</th>
           <th>Notes</th>
         </tr>
         <economy-population-row />
