@@ -13,15 +13,15 @@
       >
     </td>
     <td>
-      Tax Rate:<br>
+      Tax Rate:
       <select-generator
         v-model="tax"
         :options="form.tax.choices"
         :selected="tax"
         :id-name="form.tax.id"
-      />%
+      />&nbsp;%
       <modifier-list 
-        :modifer="income_mod"
+        :modifier="income_mod"
         :race="race"
         :background="background"
       />
@@ -46,9 +46,9 @@
         </li>
       </ul>
     </td>
-    <!-- These conditions must not occur together or it will break the table. -->
-    <!-- Also note tha v-if, v-if-else, v-else doesn't seem to work. -->
     <td>
+      <!-- These conditions must not occur together or it will break the table. -->
+      <!-- Also note tha v-if, v-if-else, v-else doesn't seem to work. -->
       <p 
         v-if="tax < 7"
         class="positive"

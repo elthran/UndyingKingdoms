@@ -24,17 +24,7 @@ export default {
     'tool-tip': ToolTip
   },
   props: {
-    modifier: {
-      type: [Object, Function],
-      race: {
-        name: String,
-        value: -1
-      },
-      background: {
-        name: String,
-        value: -1
-      }
-    },
+    modifier: Object,
     race: String,
     background: String
   }

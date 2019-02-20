@@ -21,7 +21,7 @@
         id-name="form.rations.id"
       />
       <modifier-list 
-        :modifer="food_consumed_mod"
+        :modifier="food_consumed_mod"
         :race="race"
         :background="background"
       />
