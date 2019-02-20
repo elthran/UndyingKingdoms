@@ -1,16 +1,16 @@
 <template>
   <tr>
     <td>Happiness</td>
-    <td>{{ county.happiness }}%</td>
+    <td>{{ happiness }}%</td>
     <td>
       <status-number :number="happinessChange" />
       <img
         class="resource_icons"
-        src="/static/images/heart_icon.jpg"
+        src="/static/dist/images/heart_icon.jpg"
       >
     </td>
     <td>-</td>
-    <td>
+    <!-- <td>
       <ul>
         <li>
           Natural: +7 <img
@@ -20,7 +20,8 @@
         </li>
         {% if county.production_choice == 3 %}
         <li>
-          Relax: + {{ county.get_excess_production_value(3) }} <img
+          Relax: + {{ county.get_excess_production_value(3) }}
+          <img 
             class="resource_icons"
             src="/static/images/heart_icon.jpg"
           >
@@ -34,9 +35,7 @@
         <li>
           <div class="tooltip">
             {{ happiness_modifier.get(county.race)[0] }}: {{
-              happiness_modifier.get(county.race)[1] }}<span class="tooltipText">
-              Racial Modifier: {{ county.race }}
-            </span>
+              happiness_modifier.get(county.race)[1] }}<span class="tooltipText">Racial Modifier: {{ county.race }}</span>
           </div>
           <img
             class="resource_icons"
@@ -51,7 +50,7 @@
           >
         </li>
       </ul>
-    </td>
+    </td> -->
     <td>
       Happiness affects emigration rate and how productive your workers are. If they become too unhappy,
       they may start to question your rule.
@@ -60,7 +59,21 @@
 </template>
 
 <script>
+import StatusNumber from '@/components/StatusNumber.vue'
+
 export default {
-  name: 'EconomyHappinessRow'
+  name: 'EconomyHappinessRow',
+  components: {
+    'status-number': StatusNumber
+  },
+  data () {
+    return {
+      happiness: -1,
+      happinessChange: -1,
+    }
+  },
+  beforeCreate () {
+    this.$getData('/api/economy/happiness', this.$deployData)
+  }
 }
 </script>

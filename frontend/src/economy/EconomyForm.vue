@@ -59,8 +59,8 @@
         <economy-iron-row />
         <economy-stone-row />
         <economy-mana-row />
-        <!-- <economy-happiness-row></economy-happiness-row>
-        <economy-nourishment-row></economy-nourishment-row>
+        <economy-happiness-row />
+        <!-- <economy-nourishment-row></economy-nourishment-row>
         <economy-health-row></economy-health-row> -->
       </table>
     </form>
@@ -76,18 +76,9 @@ import EconomyWoodRow from './EconomyWoodRow.vue'
 import EconomyIronRow from './EconomyIronRow.vue'
 import EconomyStoneRow from './EconomyStoneRow.vue'
 import EconomyManaRow from './EconomyManaRow.vue'
-// import EconomyHappinessRow from './EconomyHappinessRow.vue'
+import EconomyHappinessRow from './EconomyHappinessRow.vue'
 // import EconomyNourishmentRow from './EconomyNourishmentRow.vue'
 // import EconomyHealthRow from './EconomyHealthRow.vue'
-// // ugly Jinja hacked in variables.
-// var TAX = {{ county.tax }};
-// var GOLD_CHANGE = {{ county.get_gold_change() }};
-// var HAPPINESS_CHANGE = {{ county.get_happiness_change() }};
-// var GRAIN_STORAGE_CHANGE = {{ county.grain_storage_change() }};
-// var RATIONS = {{ county.rations }};
-// var FOOD_EATEN = {{ county.get_food_to_be_eaten() }};
-// var NOURISHMENT_CHANGE = {{ county.get_nourishment_change() }};
-// // end of Jinja code. Please keep it inside here.
 
 // The constants are defined at the beginning and use evil Jinja in JS.
 export default {
@@ -99,8 +90,8 @@ export default {
     'economy-wood-row': EconomyWoodRow,
     'economy-iron-row': EconomyIronRow,
     'economy-stone-row': EconomyStoneRow,
-    'economy-mana-row': EconomyManaRow
-    // 'economy-happiness-row': EconomyHappinessRow,
+    'economy-mana-row': EconomyManaRow,
+    'economy-happiness-row': EconomyHappinessRow
     // 'economy-nourishment-row': EconomyNourishmentRow,
     // 'economy-health-row': EconomyHealthRow
   },
