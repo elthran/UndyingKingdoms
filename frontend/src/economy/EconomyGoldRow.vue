@@ -13,30 +13,27 @@
       >
     </td>
     <td>
-      <ul>
-        <li>
-          Tax Rate:<br>
-          <select-generator
-            v-model="tax"
-            :options="form.tax.choices"
-            :selected="tax"
-            :id-name="form.tax.id"
-          />%
+      Tax Rate:<br>
+      <select-generator
+        v-model="tax"
+        :options="form.tax.choices"
+        :selected="tax"
+        :id-name="form.tax.id"
+      />%
+      <!-- Consider making this a component. -->
+      <ul v-if="income_mod">
+        <li v-if="income_mod.race">
+          <tool-tip 
+            :content="income_mod.race.name + ':\u00a0' + income_mod.race.value + '%'"
+            :tip="'Racial Modifier: ' + race"
+          />
         </li>
-        <!-- {% if income_modifier.get(county.race)[1] %}
-        <li>
-          <div class="tooltip">{{ income_modifier.get(county.race)[0] }}: {{
-            (income_modifier.get(county.race)[1] * 100)|int }}%<span class="tooltipText">Racial Modifier: {{ county.race }}</span>
-          </div>
+        <li v-if="income_mod.background">
+          <tool-tip
+            :content="income_mod.background.name + ':\u00a0' + income_mod.background.value + '%'"
+            :tip="'Class Modifier' + background"
+          />
         </li>
-        {% endif %}
-        {% if income_modifier.get(county.background)[1] %}
-        <li>
-          <div class="tooltip">{{ income_modifier.get(county.background)[0] }}: {{
-            (income_modifier.get(county.background)[1] * 100)|int }}%<span class="tooltipText">Class Modifier: {{ county.background }}</span>
-          </div>
-        </li>
-        {% endif %} -->
       </ul>
     </td>
     <!-- <td>
@@ -77,12 +74,14 @@
 <script>
 import SelectGenerator from '@/components/SelectGenerator.vue'
 import StatusNumber from '@/components/StatusNumber.vue'
+import ToolTip from '@/components/ToolTip.vue'
 
 export default {
   name: 'EconomyGoldRow',
   components: {
     'status-number': StatusNumber,
-    'select-generator': SelectGenerator
+    'select-generator': SelectGenerator,
+    'tool-tip': ToolTip
   },
   data () {
     return {
@@ -94,6 +93,9 @@ export default {
       grainStorageChange: 7,
       foodEaten: 7,
       nourishmentChange: 7,
+      income_mod: Object,
+      race: String,
+      background: String,
       form: {
         tax: {
           choices: [Array],  // for some reason using default args this way fixes the linting bug.

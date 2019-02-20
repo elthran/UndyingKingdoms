@@ -2,10 +2,9 @@ from flask import jsonify
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
-from undyingkingdoms.jinja_filters import vue_safe
+from ...vue_safe import vue_safe_metadata_mod, vue_safe_form
 from undyingkingdoms.models.forms.economy import EconomyForm
-from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_rate_modifier, income_modifier, \
-    food_consumed_modifier, happiness_modifier, tax_options
+from undyingkingdoms.static.metadata.metadata import rations_terminology, income_modifier, tax_options
 
 
 class GoldAPI(MethodView):
@@ -15,18 +14,8 @@ class GoldAPI(MethodView):
 
         # overwrite and vueify form, probably should be a method.
         form = EconomyForm(tax=current_user.county.tax, rations=current_user.county.rations)
-
-        # fake form
-        form = dict(
-            tax=dict(
-                choices=vue_safe(tax_options, for_template=False),
-                id=form.tax.id
-            ),
-            rations=dict(
-                choices=vue_safe(rations_terminology, for_template=False),
-                id=form.rations.id
-            )
-        )
+        form.tax.choices = tax_options
+        form.rations.choices = rations_terminology
 
         return jsonify(
             status='success',
@@ -39,9 +28,8 @@ class GoldAPI(MethodView):
             grainStorageChange=county.grain_storage_change(),
             foodEaten=county.get_food_to_be_eaten(),
             nourishmentChange=county.get_nourishment_change(),
-            form=form,
-            # birth_rate_modifier=birth_rate_modifier,
-            # income_modifier=income_modifier,
-            # food_consumed_modifier=food_consumed_modifier,
-            # happiness_modifier=happiness_modifier,
+            form=vue_safe_form(form),
+            income_mod=vue_safe_metadata_mod(income_modifier, county),
+            race=county.race,
+            background=county.background
         )

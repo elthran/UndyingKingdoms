@@ -5,10 +5,10 @@ import _ from 'lodash'
 import {customAxios, devLogin} from '@/assets/devHelpers.js'
 import VueAxios from 'vue-axios'
 import PrefixTitle from '@/components/PrefixTitle.vue'
-import {APIInterface} from '@/assets/APIInterfacePlugin.js'
+import {APIInterfacePlugin} from '@/assets/APIInterfacePlugin.js'
 
 Vue.use(VueAxios, customAxios)  // allows this.axios, which is an axios with custom config.
-Vue.use(APIInterface)
+Vue.use(APIInterfacePlugin)
 Vue.component('prefix-title', PrefixTitle)
 
 new Vue({
