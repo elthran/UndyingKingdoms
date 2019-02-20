@@ -123,7 +123,7 @@ def trade(county_id):
     trade_form.receive_grain.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.duration.choices = [(i, i) for i in range(12, 25)]
 
-    if trade_form.validate_on_submit():
+    if trade_form.validate_on_submit() and county != target_county:
         # Consider just passing in the form object.
         trade_offered = Trade(
             county.id,

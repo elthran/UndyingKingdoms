@@ -41,6 +41,7 @@ class DAU(GameEvent):
     archer = db.Column(db.Integer)
     elite = db.Column(db.Integer)
     monster = db.Column(db.Integer)
+    standing_defence = db.Column(db.Integer)
     # Building Data
     house = db.Column(db.Integer)
     field = db.Column(db.Integer)
@@ -95,6 +96,7 @@ class DAU(GameEvent):
         self.archer = county.armies['archer'].total
         self.elite = county.armies['elite'].total
         self.monster = county.armies['monster'].total
+        self.standing_defence = county.get_defensive_strength()
 
         self.house = county.buildings['house'].total
         self.field = county.buildings['field'].total

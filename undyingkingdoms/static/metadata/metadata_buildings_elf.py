@@ -20,7 +20,9 @@ elf_buildings['arcane'].class_name, elf_buildings['arcane'].class_name_plural = 
 elf_buildings['lair'].class_name, elf_buildings['lair'].class_name_plural = 'dragon den', 'dragon dens'
 # Goblins:
 elf_buildings['stables'].output += 1
-elf_buildings['stables'].stone_cost += 5
 elf_buildings['stables'].description = 'Each stables lets your army return from battle 11% faster.'
+
+elf_buildings['lab'].output += 1
+
 
 

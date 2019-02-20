@@ -10,6 +10,8 @@ from undyingkingdoms.models.helpers import cached_random
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
+from undyingkingdoms.models.preferences import Preferences
+from undyingkingdoms.models.technologies import Technology
 from undyingkingdoms.models.trades import Trade
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
@@ -25,6 +27,9 @@ from undyingkingdoms.static.metadata.metadata_buildings_dwarf import dwarf_build
 from undyingkingdoms.static.metadata.metadata_buildings_elf import elf_buildings
 from undyingkingdoms.static.metadata.metadata_buildings_goblin import goblin_buildings
 from undyingkingdoms.static.metadata.metadata_buildings_human import human_buildings
+from undyingkingdoms.static.metadata.metadata_magic_all import generic_spells
+from undyingkingdoms.static.metadata.metadata_magic_elf import elf_spells
+from undyingkingdoms.static.metadata.metadata_research_all import generic_technology
 
 
 class County(GameState):
@@ -43,16 +48,12 @@ class County(GameState):
     race = db.Column(db.String(32))
     title = db.Column(db.String(16))
     background = db.Column(db.String(32))
-    
+
     _population = db.Column(db.Integer)
     _land = db.Column(db.Integer)
     _happiness = db.Column(db.Integer)  # Out of 100
     _nourishment = db.Column(db.Integer)  # Out of 100
     _health = db.Column(db.Integer)  # Out of 100
-    
-    tax = db.Column(db.Integer)
-    rations = db.Column(db.Float)
-    production_choice = db.Column(db.Integer)  # the current setting the user chose
 
     _gold = db.Column(db.Integer)
     _wood = db.Column(db.Integer)
@@ -86,6 +87,12 @@ class County(GameState):
     armies = db.relationship("Army",
                              collection_class=attribute_mapped_collection('name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
+    technologies = db.relationship("Technology",
+                                   collection_class=attribute_mapped_collection('name'),
+                                   cascade="all, delete, delete-orphan", passive_deletes=True)
+    spells = db.relationship("Spell",
+                             collection_class=attribute_mapped_collection('name'),
+                             cascade="all, delete, delete-orphan", passive_deletes=True)
 
     def __init__(self, kingdom_id, name, leader, user_id, race, title, background):
         self.name = name
@@ -105,10 +112,6 @@ class County(GameState):
         self._happiness = 75
         self._health = 75
         self.weather = "Sunny"
-        # Set values / preferences
-        self.tax = 5
-        self.rations = 1
-        self.production_choice = 0
         # Resources
         self._gold = 500
         self._wood = 100
@@ -131,6 +134,7 @@ class County(GameState):
         self.immigration = 0
         self.emigration = 0
         # Buildings and Armies extracted from metadata
+        self.spells = deepcopy(generic_spells)
         if self.race == 'Dwarf':
             self.buildings = deepcopy(dwarf_buildings)
             self.armies = deepcopy(dwarf_armies)
@@ -140,11 +144,13 @@ class County(GameState):
         elif self.race == 'Elf':
             self.buildings = deepcopy(elf_buildings)
             self.armies = deepcopy(elf_armies)
+            self.spells = deepcopy(elf_spells)
         elif self.race == 'Goblin':
             self.buildings = deepcopy(goblin_buildings)
             self.armies = deepcopy(goblin_armies)
         else:
             raise AttributeError('Buildings and Armies were not found in metadata')
+        self.technologies = deepcopy(generic_technology)
 
     @property
     def population(self):
@@ -266,6 +272,42 @@ class County(GameState):
         self._health = int(min(max(value, 1), 100))
 
     @property
+    def tax_rate(self):
+        return Preferences.query.filter_by(county_id=self.id).first().tax_rate
+
+    @tax_rate.setter
+    def tax_rate(self, value):
+        preference = Preferences.query.filter_by(county_id=self.id).first()
+        preference.tax_rate = value
+
+    @property
+    def rations(self):
+        return Preferences.query.filter_by(county_id=self.id).first().rations
+
+    @rations.setter
+    def rations(self, value):
+        preference = Preferences.query.filter_by(county_id=self.id).first()
+        preference.rations = value
+
+    @property
+    def production_choice(self):
+        return Preferences.query.filter_by(county_id=self.id).first().production_choice
+
+    @production_choice.setter
+    def production_choice(self, value):
+        preference = Preferences.query.filter_by(county_id=self.id).first()
+        preference.production_choice = value
+
+    @property
+    def research_choice(self):
+        return Preferences.query.filter_by(county_id=self.id).first().research_choice
+
+    @research_choice.setter
+    def research_choice(self, value):
+        preference = Preferences.query.filter_by(county_id=self.id).first()
+        preference.research_choice = value
+
+    @property
     def seed(self):
         return self.kingdom.world.day
 
@@ -297,6 +339,7 @@ class County(GameState):
         Add a WORLD. Tracks day. Has game clock.
         """
         self.update_daily_resources()
+        self.advance_research()
         self.produce_pending_buildings()
         self.produce_pending_armies()
         self.apply_excess_production_value()
@@ -320,13 +363,15 @@ class County(GameState):
                                             self.kingdom.world.day)
                 notification.save()
 
-        trades = Trade.query.filter_by(county_id=self.id).filter(Trade.duration > 0).all()
+        trades = Trade.query.filter_by(county_id=self.id).filter_by(status='Pending').filter(Trade.duration > 0).all()
         for trade in trades:
             trade.duration -= 1
             if trade.duration == 0:
                 self.gold += trade.gold_to_give
                 self.wood += trade.wood_to_give
                 self.iron += trade.iron_to_give
+                self.stone += trade.stone_to_give
+                self.grain += trade.grain_to_give
                 target_county = County.query.get(trade.target_id)
                 notification = Notification(self.id, "Trade Offer",
                                             "Your trade offer to {} has expired and your resources have been return".format(
@@ -364,8 +409,22 @@ class County(GameState):
         self.wood += self.get_wood_income()
         self.iron += self.get_iron_income()
         self.stone += self.get_stone_income()
+        self.mana += self.get_mana_change()
+        self.research += self.get_research_change()
         self.happiness += self.get_happiness_change()
         self.health += self.get_health_change()
+
+    def advance_research(self):
+        technology = self.technologies[self.research_choice]
+        technology.current += self.research
+        print("Research", technology.current, technology.required, self.research)
+        if technology.current >= technology.required:  # You save left over research
+            self.research = technology.current - technology.required
+            technology.completed = True
+            available_technologies = Technology.query.filter_by(county_id=self.id).filter_by(completed=False).first()
+            self.research_choice = available_technologies.name
+        else:  # You don't keep research as a resource; it's spent
+            self.research = 0
 
     def get_health_change(self):
         if self.nourishment > 90:
@@ -383,7 +442,7 @@ class County(GameState):
         return -4
 
     def get_happiness_change(self):
-        change = 7 - self.tax
+        change = 7 - self.tax_rate
         if self.production_choice == 3:
             change += self.get_excess_production_value(self.production_choice)
         modifier = happiness_modifier.get(self.race, ("", 0))[1] + happiness_modifier.get(self.background, ("", 0))[1]
@@ -496,10 +555,16 @@ class County(GameState):
             self.nourishment -= min(nourishment_loss, 5)
 
     def get_produced_grain(self):
-        return self.buildings['field'].total * self.buildings['field'].output
+        modifier = 1
+        if self.technologies['agriculture'].completed:
+            modifier += 0.5
+        return int(self.buildings['field'].total * self.buildings['field'].output * modifier)
 
     def get_produced_dairy(self):
-        return self.buildings['pasture'].total * self.buildings['pasture'].output
+        modifier = 1
+        if self.technologies['animal husbandry'].completed:
+            modifier += 0.5
+        return int(self.buildings['pasture'].total * self.buildings['pasture'].output * modifier)
 
     def get_excess_worker_produced_food(self):
         if self.production_choice == 2:
@@ -585,7 +650,7 @@ class County(GameState):
 
     # Resources
     def get_tax_income(self):
-        return int(self.population * (self.tax / 100))
+        return int(self.population * (self.tax_rate / 100))
 
     def get_bank_income(self):
         return self.buildings['bank'].total * self.buildings['bank'].output
@@ -612,6 +677,12 @@ class County(GameState):
 
     def get_stone_income(self):
         return self.buildings['quarry'].total * self.buildings['quarry'].output
+
+    def get_mana_change(self):
+        return self.buildings['arcane'].total * self.buildings['arcane'].output
+
+    def get_research_change(self):
+        return self.buildings['lab'].total * self.buildings['lab'].output
 
     # Building
     def get_production_modifier(self):  # Modifiers your excess production
@@ -655,12 +726,18 @@ class County(GameState):
         if self.production_choice == 3:
             pass  # Already handled in self.get_happiness_change()
 
+    def get_number_of_buildings_produced_per_day(self):
+        amount = 3 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
+                                + buildings_built_per_day_modifier.get(self.background, ("", 0))[1]
+        if self.technologies['engineering'].completed:
+            amount += 1
+        return amount
+
     def produce_pending_buildings(self):
         """
         Gets a list of all buildings which can be built today. Builds it. Then recalls function.
         """
-        buildings_to_be_built = 3 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
-                                + buildings_built_per_day_modifier.get(self.background, ("", 0))[1]
+        buildings_to_be_built = self.get_number_of_buildings_produced_per_day()
         while buildings_to_be_built > 0:
             buildings_to_be_built -= 1
             queue = [building for building in self.buildings.values() if building.pending > 0]
@@ -759,6 +836,8 @@ class County(GameState):
             duration = self.get_army_duration(sum(army.values()))
             expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, self.day, duration, "attack")
             expedition.save()
+            for unit in army.keys():
+                setattr(expedition, unit + '_sent', army[unit])
             while hit_points_to_be_removed > 0:
                 army = {key: value for key, value in army.items() if value > 0}  # Remove dead troops
                 if army == {}:
@@ -846,12 +925,14 @@ class County(GameState):
         events = [event for event in Notification.query.filter_by(county_id=self.id).all() if event.new is False]
         return events
 
+    def get_total_number_of_thieves(self):
+        return self.buildings['tavern'].total * self.buildings['tavern'].output
+
     # Infiltrations
     def get_number_of_available_thieves(self):
-        total_thieves = self.buildings['tavern'].total
         all_current_missions = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
         unavailable_thieves = sum(mission.amount_of_thieves for mission in all_current_missions)
-        return total_thieves - unavailable_thieves
+        return self.get_total_number_of_thieves() - unavailable_thieves
 
     def get_thief_report_military(self, target_id):
         current_report = Infiltration.query.filter_by(county_id=self.id, target_id=target_id,
@@ -872,7 +953,7 @@ class County(GameState):
         operations_on_target = Infiltration.query.filter_by(target_id=self.id).filter_by(success=True).filter(
             Infiltration.time_created > buffer_time).count()
         reduction = 10 + (self.get_number_of_available_thieves() * 3500 / self.land) ** 0.7 + (
-                    10 * operations_on_target)
+                10 * operations_on_target)
         return max(int(100 - reduction), 10)
 
     # Terminology
