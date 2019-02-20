@@ -13,7 +13,7 @@
 }
 
 #projected-growth-col {
-  min-width: 7em;
+  min-width: 10.1em;
 }
 
 #projected-losses-col {
@@ -55,10 +55,10 @@
         <economy-food-row 
           v-model="selectedRations"
         />
-        <!-- <economy-wood-row></economy-wood-row>
-        <economy-iron-row></economy-iron-row>
-        <economy-stone-row></economy-stone-row>
-        <economy-happiness-row></economy-happiness-row>
+        <economy-wood-row />
+        <economy-iron-row />
+        <economy-stone-row />
+        <!-- <economy-happiness-row></economy-happiness-row>
         <economy-nourishment-row></economy-nourishment-row>
         <economy-health-row></economy-health-row> -->
       </table>
@@ -71,8 +71,8 @@ import $ from 'jquery'
 import EconomyPopulationRow from './EconomyPopulationRow.vue'
 import EconomyGoldRow from './EconomyGoldRow.vue'
 import EconomyFoodRow from './EconomyFoodRow.vue'
-// import EconomyWoodRow from './EconomyWoodRow.vue'
-// import EconomyIronRow from './EconomyIronRow.vue'
+import EconomyWoodRow from './EconomyWoodRow.vue'
+import EconomyIronRow from './EconomyIronRow.vue'
 // import EconomyStoneRow from './EconomyStoneRow.vue'
 // import EconomyHappinessRow from './EconomyHappinessRow.vue'
 // import EconomyNourishmentRow from './EconomyNourishmentRow.vue'
@@ -93,10 +93,10 @@ export default {
   components: {
     'economy-population-row': EconomyPopulationRow,
     'economy-gold-row': EconomyGoldRow,
-    'economy-food-row': EconomyFoodRow
-    // 'economy-wood-row': EconomyWoodRow,
-    // 'economy-iron-row': EconomyIronRow,
-    // 'economy-stone-row': EconomyStoneRow,
+    'economy-food-row': EconomyFoodRow,
+    'economy-wood-row': EconomyWoodRow,
+    'economy-iron-row': EconomyIronRow,
+    // 'economy-stone-row': EconomyStoneRow
     // 'economy-happiness-row': EconomyHappinessRow,
     // 'economy-nourishment-row': EconomyNourishmentRow,
     // 'economy-health-row': EconomyHealthRow

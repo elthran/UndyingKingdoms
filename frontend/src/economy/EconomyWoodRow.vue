@@ -1,25 +1,22 @@
 <template>
   <tr>
     <td>Lumber</td>
-    <td>{{ county.wood }}</td>
-    {% if county.get_wood_income() >= 0 %}
-    <td style="color:green;">
-      +
-      {% else %}
-    </td><td style="color:red;">
-      {% endif %}
-      {{ county.get_wood_income() }} <img
+    <td>{{ wood }}</td>
+    <td>
+      <status-number :number="woodIncome" />
+      <img
         class="resource_icons"
-        src="/static/images/wood_icon.jpg"
+        src="/static/dist/images/wood_icon.jpg"
       >
     </td>
     <td>-</td>
     <td>
       <ul>
         <li>
-          {{ county.buildings['mill'].class_name_plural.title() }}: + {{ county.get_wood_income() }} <img
+          {{ mills }}: {{'+\u00a0' + woodIncome }}
+          <img
             class="resource_icons"
-            src="/static/images/wood_icon.jpg"
+            src="/static/dist/images/wood_icon.jpg"
           >
         </li>
       </ul>
@@ -30,7 +27,22 @@
 </template>
 
 <script>
+import StatusNumber from '@/components/StatusNumber.vue'
+
 export default {
-  name: 'EconomyWoodRow'
+  name: 'EconomyWoodRow',
+  components: {
+    'status-number': StatusNumber
+  },
+  data () {
+    return {
+      wood: -1,
+      woodIncome: -1,
+      mills: "",
+    }
+  },
+  beforeCreate () {
+    this.$getData('/api/economy/wood', this.$deployData)
+  }
 }
 </script>

@@ -1,5 +1,16 @@
 <template>
-  <tr>
+  <economy-simple-row 
+    title="Stone" 
+  />
+</template>
+
+<!-- name="stone"
+    plural="quarries"
+    description="Stone is used to build your most powerful buildings."
+    :amount="stoneAmount"
+    :income="stoneIncome"
+  /> -->
+  <!-- <tr>
     <td>Stone</td>
     <td>{{ county.stone }}</td>
     {% if county.get_stone_income() >= 0 %}
@@ -24,11 +35,25 @@
     </td>
     <td>-</td>
     <td>Stone is used to build your most powerful buildings.</td>
-  </tr>
-</template>
+  </tr> -->
 
 <script>
+import EconomySimpleRow from './EconomySimpleRow.vue'
+
 export default {
-  name: 'EconomyStoneRow'
+  name: 'EconomyStoneRow',
+  components: {
+    'economy-simple-row': EconomySimpleRow
+  },
+  data () {
+    return {
+      stoneAmount: -1,
+      stoneIncome: -1,
+      quarries: ""
+    }
+  },
+  beforeCreate () {
+    this.$getData('/api/economy/stone', this.$deployData)
+  }
 }
 </script>

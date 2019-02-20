@@ -20,13 +20,6 @@ class FoodAPI(MethodView):
         # happinessChange=county.get_happiness_change(),
         # nourishmentChange=county.get_nourishment_change(),
 
-#         { % if food_consumed_modifier.get(county.race)[1] %}
-#         {{food_consumed_modifier.get(county.race)[0]}}: {{
-#             (food_consumed_modifier.get(county.race)[1] * 100) |}} % < span
-#         class ="tooltipText" >
-#         Racial
-#         Modifier: {{county.race}}
-
         return jsonify(
             status='success',
             message='You called the food api.',

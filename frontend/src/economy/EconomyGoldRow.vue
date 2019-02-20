@@ -20,7 +20,6 @@
         :selected="tax"
         :id-name="form.tax.id"
       />%
-      <!-- Consider making this a component. -->
       <modifier-list 
         :modifer="income_mod"
         :race="race"

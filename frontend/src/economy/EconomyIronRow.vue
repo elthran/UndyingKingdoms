@@ -1,25 +1,22 @@
 <template>
+  <!-- This entire thing could be a component ... a generic one. -->
   <tr>
     <td>Iron</td>
-    <td>{{ county.iron }}</td>
-    {% if county.get_iron_income() >= 0 %}
-    <td style="color:green;">
-      +
-      {% else %}
-    </td><td style="color:red;">
-      {% endif %}
-      {{ county.get_iron_income() }} <img
+    <td>{{ iron }}</td>
+    <td>
+      <status-number :number="ironIncome" />
+      <img
         class="resource_icons"
-        src="/static/images/iron_icon.jpg"
+        src="/static/dist/images/iron_icon.jpg"
       >
     </td>
     <td>-</td>
     <td>
       <ul>
         <li>
-          {{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.get_iron_income() }} <img
+          {{ mines }}: {{ '+\u00a0' + ironIncome }} <img
             class="resource_icons"
-            src="/static/images/iron_icon.jpg"
+            src="/static/dist/images/iron_icon.jpg"
           >
         </li>
       </ul>
@@ -30,7 +27,22 @@
 </template>
 
 <script>
+import StatusNumber from '@/components/StatusNumber.vue'
+
 export default {
-  name: 'EconomyIronRow'
+  name: 'EconomyIronRow',
+  components: {
+    'status-number': StatusNumber
+  },
+  data () {
+    return {
+      iron: -1,
+      ironIncome: -1,
+      mines: ""
+    }
+  },
+  beforeCreate () {
+    this.$getData('/api/economy/iron', this.$deployData)
+  }
 }
 </script>
