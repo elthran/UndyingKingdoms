@@ -16,9 +16,10 @@ goblin_armies['monster'].class_name, goblin_armies['monster'].class_name_plural,
     'monster'].description = 'wyvern', 'wyverns', 'Wyverns are devastating to any who cross their path.'
 # Goblins: Lower health and damage, also lower costs
 # Peasants=
-goblin_armies['peasant'].gold -= 1
+goblin_armies['peasant'].gold -= 2
 goblin_armies['peasant'].iron -= 1
 goblin_armies['peasant'].upkeep -= 1
+goblin_armies['peasant'].defence -= 1
 # Soldiers
 goblin_armies['soldier'].defence -= 1
 goblin_armies['soldier'].health -= 1
@@ -36,5 +37,5 @@ goblin_armies['elite'].attack -= 2
 goblin_armies['elite'].defence -= 2
 goblin_armies['elite'].health -= 1
 goblin_armies['elite'].gold -= 10
-goblin_armies['elite'].iron -= 5
+goblin_armies['elite'].iron -= 4
 goblin_armies['elite'].upkeep -= 5

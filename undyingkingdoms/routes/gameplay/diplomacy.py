@@ -21,9 +21,9 @@ def diplomacy(template):
 @login_required
 def diplomacy_reply(trade_id):
     trade = Trade.query.get(trade_id)
+    county = County.query.get(trade.county_id)
+    target_county = current_user.county  # This will be the current user
     if "accept" in request.args:
-        county = County.query.get(trade.county_id)
-        target_county = current_user.county  # This will be the current user
         if target_county.gold >= trade.gold_to_receive and target_county.wood >= trade.wood_to_receive and target_county.iron >= trade.iron_to_receive and target_county.stone >= trade.stone_to_receive and target_county.grain_stores >= trade.grain_to_receive:
             target_county.gold += trade.gold_to_give
             target_county.gold -= trade.gold_to_receive
@@ -58,6 +58,11 @@ def diplomacy_reply(trade_id):
         )
     elif "cancel" in request.args:
         trade.status = "Cancelled"
+        county.gold += trade.gold_to_give
+        county.wood += trade.wood_to_give
+        county.iron += trade.iron_to_give
+        county.stone += trade.stone_to_give
+        county.grain += trade.grain_to_give
         return jsonify(
             status="success",
             message=f"You cancelled a trade to {trade_id}"

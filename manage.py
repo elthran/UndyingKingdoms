@@ -12,6 +12,7 @@ from private_config import JACOB_TEMPORARY_EMAIL, JACOB_TEMPORARY_ACCOUNT_PASSWO
 from undyingkingdoms import app
 from undyingkingdoms.models import World, Kingdom, County, User
 from undyingkingdoms.models.forum import Forum, Thread
+from undyingkingdoms.models.preferences import Preferences
 from undyingkingdoms.static.metadata.metadata import kingdom_names
 
 manager = Manager(app)
@@ -75,6 +76,8 @@ def populate_db():
         county = County(1, "Ulthuan", "Elthran", user.id, 'Goblin', 'Sir', 'Merchant')
         county.save()
         county.vote = county.id
+        preferences = Preferences(county.id, user.id)
+        preferences.save()
 
         # Create Haldon
         user = User("haldon", MARLEN_TEMPORARY_EMAIL, MARLEN_TEMPORARY_ACCOUNT_PASSWORD)
@@ -84,6 +87,8 @@ def populate_db():
         county = County(1, "Northern Wastes", "Haldon", user.id, 'Dwarf', 'Sir', 'Merchant')
         county.save()
         county.vote = county.id
+        preferences = Preferences(county.id, user.id)
+        preferences.save()
 
         # Create AI1 (He is weak and easier to attack for testing)
         user = User("ai1", "1@gmail.com", "star")
@@ -93,6 +98,8 @@ def populate_db():
         county.vote = county.id
         county.armies['peasant'].amount = 0
         county.armies['archer'].amount = 0
+        preferences = Preferences(county.id, user.id)
+        preferences.save()
         # Create AI2 (He is weak and easier to attack for testing)
         user = User("ai2", "2@gmail.com", "star")
         user.save()
@@ -101,6 +108,8 @@ def populate_db():
         county.vote = county.id
         county.armies['peasant'].amount = 0
         county.armies['archer'].amount = 0
+        preferences = Preferences(county.id, user.id)
+        preferences.save()
         # Create AI3 (He is weak and easier to attack for testing)
         user = User("ai3", "3@gmail.com", "star")
         user.save()
@@ -109,6 +118,8 @@ def populate_db():
         county.vote = county.id
         county.armies['peasant'].amount = 0
         county.armies['archer'].amount = 0
+        preferences = Preferences(county.id, user.id)
+        preferences.save()
 
         # Create Forum shell
         forum = Forum()

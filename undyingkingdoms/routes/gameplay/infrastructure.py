@@ -67,15 +67,6 @@ def build_buildings():
                                          stone_per_item=county.buildings[building].stone_cost)
         transaction.save()
     return redirect(url_for('infrastructure'))
-    #     return jsonify(
-    #         status="success",
-    #         message="You purchased x buildings ..."
-    #     )
-    # return jsonify(
-    #     status="fail",
-    #     message="Your build form failed to pass validation."
-    # )
-
 
 @app.route('/gameplay/infrastructure/allocate/', methods=['POST'])
 @login_required

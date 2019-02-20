@@ -1,0 +1,54 @@
+{% extends "mobile/gameplay/layout.html" %}
+
+{% block title %}Research: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 1em;
+}
+
+#header {
+    max-width: 400px;
+    margin: auto auto 1.3em;
+}
+
+#footer {
+    max-width: 400px;
+    margin: auto;
+}
+
+h2 {
+    margin-bottom: 0.3em;
+}
+</style>
+{% endblock %}
+
+{% block content1 %}
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+<div id="content">
+  <div id="header">
+    Choose current research:
+ </div>
+  <div id="footer">
+    <h2>Previous Research</h2>
+    <ul>
+      None.
+    </ul>
+  </div>
+</div>
+{{ super() }}
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script type="text/javascript">
+
+</script>
+{% endblock %}

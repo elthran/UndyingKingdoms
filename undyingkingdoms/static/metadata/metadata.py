@@ -83,17 +83,20 @@ all_achievements = {
 }
 
 # Racial/Class Modifiers (A modifier of 0 means +0%. A modifier of 1 would mean +100%)
-happiness_modifier = {'Goblin': ("Infighting", -1)}
+    # Percents
 birth_rate_modifier = {'Elf': ("Elders", -0.15), 'Goblin': ("Expendable", 0.15)}
 death_rate_modifier = {}
 income_modifier = {'Merchant': ("Silver Tongue", 0.15)}
 offensive_power_modifier = {'Warlord': ("Relentless", 0.15)}
 infiltration_success_modifier = {'Rogue': ("Master of Disguise", 0.15), 'Goblin': ("Sneaky", 0.10)}
-amount_of_thieves_modifier = {'Rogue': ("Army of Shadows", 2)}
 production_per_worker_modifier = {'Dwarf': ("Dwarven Steel", 0.15), 'Engineer': ("Artisan", 0.20)}
 defense_per_citizen_modifier = {'Elf': ("Citizen Militia", 1.00)}
 food_consumed_modifier = {'Dwarf': ("Ravenous", 0.15)}
+    # Amounts
+happiness_modifier = {'Goblin': ("Infighting", -1)}
 buildings_built_per_day_modifier = {'Engineer': ("Craftsman", 1)}
+amount_of_thieves_modifier = {'Rogue': ("Army of Shadows", 2)}
+
 
 all_armies = ["peasant", "archer", "soldier", "elite", "monster"]
 

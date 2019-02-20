@@ -12,10 +12,7 @@ from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_
 @mobile_template('{mobile/}economy.html')
 @login_required
 def economy(template):
-    # county = current_user.county
-    # kingdom = county.kingdom
-
-    form = EconomyForm(tax=current_user.county.tax, rations=current_user.county.rations)
+    form = EconomyForm(tax=current_user.county.tax_rate, rations=current_user.county.rations)
 
     form.tax.choices = [(i, i) for i in range(11)]
     form.rations.choices = [(pairing[0], pairing[1]) for pairing in rations_terminology]
@@ -40,7 +37,7 @@ def update_economy():
     """
     county = current_user.county
 
-    form = EconomyForm(tax=county.tax, rations=county.rations)
+    form = EconomyForm(tax=county.tax_rate, rations=county.rations)
     form.tax.choices = [(i, i) for i in range(11)]
     form.rations.choices = [
         (pairing[0], pairing[1])
@@ -48,7 +45,7 @@ def update_economy():
     ]
 
     if form.validate_on_submit():
-        county.tax = form.tax.data
+        county.tax_rate = form.tax.data
         county.rations = form.rations.data
 
         # Because I'm too lazy to update the mobile page right now.
@@ -63,6 +60,7 @@ def update_economy():
             food_consumed_modifier=food_consumed_modifier,
             happiness_modifier=happiness_modifier,
             goldChange=county.get_gold_change(),
+            taxIncome=county.get_tax_income(),
             happinessChange=county.get_happiness_change(),
             grainStorageChange=county.grain_storage_change(),
             foodEaten=county.get_food_to_be_eaten(),

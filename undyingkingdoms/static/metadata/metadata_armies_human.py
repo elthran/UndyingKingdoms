@@ -17,8 +17,9 @@ human_armies['monster'].class_name, human_armies['monster'].class_name_plural, h
 # Humans: Slightly faster training and lower iron costs
 # Peasants
 human_armies['peasant'].trainable_per_day += 25
-human_armies['peasant'].gold -= 1
+human_armies['peasant'].gold -= 3
 human_armies['peasant'].iron -= 1
+human_armies['peasant'].attack -= 1
 # Soldiers
 human_armies['soldier'].trainable_per_day += 5
 human_armies['soldier'].iron -= 1

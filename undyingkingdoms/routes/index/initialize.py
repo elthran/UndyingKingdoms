@@ -5,6 +5,7 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import County, Kingdom
 from undyingkingdoms.models.forms.initialize import InitializeForm
+from undyingkingdoms.models.preferences import Preferences
 from undyingkingdoms.static.metadata.metadata import metadata_races, metadata_backgrounds, metadata_titles
 from undyingkingdoms.static.metadata.metadata_armies_dwarf import dwarf_armies
 from undyingkingdoms.static.metadata.metadata_armies_elf import elf_armies
@@ -39,6 +40,8 @@ def initialize(template):
                         backgrounds[form.background.data])
         county.save()
         county.vote = county.id
+        preferences = Preferences(county.id, county.user.id)
+        preferences.save()
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
     return render_template(template, form=form,
                            dwarf_armies=dwarf_armies,
