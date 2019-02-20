@@ -28,6 +28,8 @@ class SideBarAPI(MethodView):
             infrastructure=url_for('infrastructure'),
             military=url_for('military'),
             infiltration=url_for('infiltration'),
+            magic=url_for('magic'),
+            research=url_for('research'),
             diplomacy=url_for('diplomacy'),
             messages=url_for('messages'),
             chatroomAPI=url_for('chatroom_api'),
@@ -42,6 +44,8 @@ class SideBarAPI(MethodView):
         )
 
         return jsonify(
+            status="success",
+            message="You called on the sidebar api.",
             user=user,
             urlFor=urls
         )

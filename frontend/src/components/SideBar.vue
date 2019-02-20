@@ -31,30 +31,37 @@
     id="side-bar"
     class=".text-center"
   >
-    <h1>Gameplay</h1>
     <a :href="urlFor.overview">
       County&nbsp;Overview
     </a>
+    <h2>Advisors</h2>
     <a :href="urlFor.economy">
-      Economy
+      Economist
     </a>
     <a :href="urlFor.infrastructure">
-      Infrastructure
+      City Planner
     </a>
     <a :href="urlFor.military">
-      Military
+      War
     </a>
     <a :href="urlFor.infiltration">
-      Infiltration
+      Thieves Guild
     </a>
+    <a :href="urlFor.magic">
+      Wizard Council
+    </a>
+    <a :href="urlFor.research">
+      Scientist
+    </a>
+    <h2>Diplomacy</h2>
     <a :href="urlFor.diplomacy">
-      Diplomacy
+      Trades
     </a>
     <a
       :href="urlFor.messages"
       :class="{ bold: user.hasMail }"
     >
-      Inbox
+      Messages
     </a>
     <a
       :href="urlFor.chatroomAPI"
@@ -66,7 +73,7 @@
       Kingdom&nbsp;Overview
     </a>
     <div class="spacer" />
-    <h1>About the Game</h1>
+    <h2>About the Game</h2>
     <a :href="urlFor.achievements">
       Achievements
     </a>
@@ -107,24 +114,7 @@ export default {
   beforeCreate () {
     // if development
     // this.axios.get('http://localhost:5000/api/sidebar')
-    this.axios.get('/api/sidebar')
-      .then((response) => {
-        if (response.status === 200) {
-          this.updatePage(response.data)
-        } else {
-          this.errors = response
-        }
-      })
-      .catch((error) => {
-        this.errors = error.response
-      })
-  },
-  methods: {
-    updatePage (data) {
-      // console.log(data);
-      this.urlFor = data.urlFor
-      this.user = data.user
-    }
+    this.$getData('/api/sidebar', this.$deployData)
   }
 }
 </script>
