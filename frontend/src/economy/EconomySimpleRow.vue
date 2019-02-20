@@ -30,6 +30,9 @@ import StatusNumber from '@/components/StatusNumber.vue'
 
 export default {
   name: 'EconomySimpleRow',
+  components: {
+    'status-number': StatusNumber
+  },
   props: {
     title: String,
     resourceName: String,
@@ -37,9 +40,6 @@ export default {
     amount: Number,
     income: Number,
     description: String
-  },
-  components: {
-    'status-number': StatusNumber
   },
   computed: {
     icon () {
