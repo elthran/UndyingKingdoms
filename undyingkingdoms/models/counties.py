@@ -293,7 +293,10 @@ class County(GameState):
 
     @property
     def production_choice(self):
-        return Preferences.query.filter_by(county_id=self.id).first().production_choice
+        my_choice = Preferences.query.filter_by(county_id=self.id).first().production_choice
+        if my_choice is None:
+            my_choice = 0
+        return my_choice
 
     @production_choice.setter
     def production_choice(self, value):
