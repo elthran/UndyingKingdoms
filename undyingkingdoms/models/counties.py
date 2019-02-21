@@ -275,7 +275,11 @@ class County(GameState):
 
     @property
     def tax_rate(self):
-        return Preferences.query.filter_by(county_id=self.id).first().tax_rate
+        county = Preferences.query.filter_by(county_id=self.id).first()
+        if county:
+            rcounty.tax_rate
+        else:
+            return 0
 
     @tax_rate.setter
     def tax_rate(self, value):
