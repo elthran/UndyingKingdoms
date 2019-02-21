@@ -43,8 +43,10 @@ def build_race_table():
                 if val > 0:
                     val = '+' + str(int(val))
             else:  # is a percent
-                if val > 0:
-                    val = '+' + str(int(val * 100))
+                if -1 < val < 1:
+                    val = int(val * 100)
+                    if val > 0:
+                        val = '+' + str(val)
                 val = str(val) + '%'
             label = df.loc[row, "Modifier Type"].iloc[0][:-9]
             df.loc[row, 'Modifier Description'] = '{}: {} {}'.format(name, val, label)
