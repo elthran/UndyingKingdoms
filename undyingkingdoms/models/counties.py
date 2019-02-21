@@ -292,6 +292,7 @@ class County(GameState):
 
     @property
     def production_choice(self):
+        print(self)
         return self.preferences.production_choice
 
     @production_choice.setter
