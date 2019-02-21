@@ -277,7 +277,7 @@ class County(GameState):
     def tax_rate(self):
         county = Preferences.query.filter_by(county_id=self.id).first()
         if county:
-            rcounty.tax_rate
+            county.tax_rate
         else:
             return 0
 
