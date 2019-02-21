@@ -151,6 +151,8 @@ class County(GameState):
         else:
             raise AttributeError('Buildings and Armies were not found in metadata')
         self.technologies = deepcopy(generic_technology)
+        for building in self.buildings:
+            self.buildings[building].update_description()
 
     @property
     def population(self):
@@ -772,6 +774,8 @@ class County(GameState):
         strength = 0
         modifier = 1 + offensive_power_modifier.get(self.race, ("", 0))[1] \
                    + offensive_power_modifier.get(self.background, ("", 0))[1]
+        if self.technologies['steel'].completed:
+            modifier += 0.2
         if army:
             for unit in self.armies.values():
                 if unit.name != 'archer':
