@@ -34,6 +34,9 @@ APIInterface.install = function (Vue, options) {
   }
 
   Vue.prototype.$sendForm = function (form, callback) {
+    if (!(form instanceof $)) {
+      form = $(form)
+    }
     this.axios({
       url: form.attr("action"),
       method: 'POST',

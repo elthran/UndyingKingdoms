@@ -28,7 +28,7 @@
       Economy
     </h1>
     <form
-      id="economy-form"
+      ref="form"
       action="/api/economy/update"
       accept-charset="UTF-8"
     >
@@ -74,7 +74,6 @@
 </template>
 
 <script>
-import $ from 'jquery'
 import EconomyPopulationRow from './EconomyPopulationRow.vue'
 import EconomyGoldRow from './EconomyGoldRow.vue'
 import EconomyFoodRow from './EconomyFoodRow.vue'
@@ -119,13 +118,13 @@ export default {
   },
   watch: {
     selectedTaxRate () {
-      this.$sendForm($('#economy-form'), () => {
+      this.$sendForm(this.$refs.form, () => {
         this.updateGold = !this.updateGold;
         this.updateHappines = !this.updateHappines;
       })
     },
     selectedRations () {
-      this.$sendForm($('#economy-form'), () => {
+      this.$sendForm(this.$refs.form, () => {
         this.updateFood = !this.updateFood;
         this.updateNourishment = !this.updateNourishment;
       })
