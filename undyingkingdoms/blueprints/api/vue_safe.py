@@ -65,6 +65,7 @@ def vue_safe_form(form):
         else:
             vs_form[key] = dict(
                 value=field.current_token,
-                id=key
+                id=key,
+                html=form.csrf_token
             )
     return vs_form

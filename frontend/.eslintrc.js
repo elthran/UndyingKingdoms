@@ -5,7 +5,8 @@ module.exports = {
     'plugin:vue/recommended'
   ],
   rules: {
-    'vue/require-default-prop': "off",
+    'vue/require-default-prop': 'off',
+    'vue/no-v-html': 'off'
     //    'no-console': 'off'
     //    'vue/no-parsing-error': [2, {
     //        "invalid-first-character-of-tag-name": false

@@ -29,10 +29,10 @@
     </h1>
     <form
       id="economy-form"
-      :action="urlFor.update_economy"
+      action="/api/economy/update"
       accept-charset="UTF-8"
     >
-      {{ form.csrf_token }}
+      <span v-html="form.csrf_token.html" />
       <h2>Resources</h2>
       <table class="top-spacer-1">
         <tr class="grey-border">
@@ -51,6 +51,7 @@
         <economy-population-row />
         <economy-gold-row
           v-model="selectedTaxRate"
+          :update="updateGold"
         />
         <economy-food-row 
           v-model="selectedRations"
@@ -59,7 +60,9 @@
         <economy-iron-row />
         <economy-stone-row />
         <economy-mana-row />
-        <economy-happiness-row />
+        <economy-happiness-row 
+          :update="updateHappines"
+        />
         <economy-nourishment-row />
         <economy-health-row />
       </table>
@@ -97,18 +100,24 @@ export default {
   },
   data () {
     return {
-      form: Object,
+      form: {
+        type: Object,
+        csrf_token: Object
+      },
       urlFor: Object,
-      taxIncome: Number,
       selectedTaxRate: Number,
       selectedRations: Number,
+      updateGold: false,
+      updateHappines: false,
       errors: Object
     }
   },
   watch: {
     selectedTaxRate () {
-      console.log("select tax rate, detected change on EconomyForm.vue.")
-      // this.sendForm($('#economy-form'), this.updatePage)
+      this.$sendForm($('#economy-form'), () => {
+        this.updateGold = !this.updateGold;
+        this.updateHappines = !this.updateHappines;
+      })
     },
     selectedRations () {
       console.log('select rations rate, detected change on EconomyForm.vue.')
@@ -116,47 +125,7 @@ export default {
     }
   },
   beforeCreate () {
-    // consider putting this in a general function?
-    // this.axios.get('/api/economy')
-    //   .then((response, status) => {
-    //     if (status === 200) {
-    //       this.updatePage(response.data)
-    //     } else {
-    //       this.errors = response
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     this.errors = error.response
-    //   })
-  },
-  methods: {
-    updatePage (data) {
-      this.form = data.form
-      this.urlFor = data.urlFor
-      this.goldChange = data.goldChange
-      this.taxIncome = data.taxIncome
-      this.happinessChange = data.happinessChange
-      this.grainStorageChange = data.grainStorageChange
-      this.foodEaten = data.foodEaten
-      this.nourishmentChange = data.nourishmentChange
-    },
-    sendForm (form, callback) {
-      $.ajax({
-        url: form.attr('action'),
-        method: 'POST',
-        // need to verify csrf id, I might be wrong.
-        headers: { 'X-CSRF-TOKEN': $('#csrf_token').val() },
-        data: form.serialize(),
-        dataType: 'json' // type of data returned, not type sent.
-      })
-        .always(function (data, status) {
-          if (status === 'success') {
-            callback(data)
-          } else {
-            this.errors = data
-          }
-        })
-    }
+    this.$getData('/api/economy/update', this.$deployData)
   }
 }
 </script>

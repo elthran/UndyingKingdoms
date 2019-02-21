@@ -13,7 +13,7 @@ class GoldAPI(MethodView):
         county = current_user.county
 
         # overwrite and vueify form, probably should be a method.
-        form = EconomyForm(tax=current_user.county.tax_rate, rations=current_user.county.rations)
+        form = EconomyForm(tax=county.tax_rate)
         form.tax.choices = tax_options
 
         return jsonify(

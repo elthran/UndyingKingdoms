@@ -61,6 +61,9 @@ export default {
     'status-number': StatusNumber,
     'modifier-list': ModifierList
   },
+  props: {
+    update: Boolean
+  },
   data () {
     return {
       happiness: -1,
@@ -71,6 +74,11 @@ export default {
       race: "",
       background: "",
       taxRate: -1
+    }
+  },
+  watch: {
+    update () {
+      this.$getData('/api/economy/happiness', this.$deployData)
     }
   },
   beforeCreate () {

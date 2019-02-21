@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 
 from undyingkingdoms.blueprints.api.vue_safe import vue_safe_form, vue_safe_metadata_mod
 from undyingkingdoms.models.forms.economy import EconomyForm
-from undyingkingdoms.static.metadata.metadata import tax_options, rations_terminology, food_consumed_modifier
+from undyingkingdoms.static.metadata.metadata import rations_terminology, food_consumed_modifier
 
 
 class FoodAPI(MethodView):
@@ -15,9 +15,6 @@ class FoodAPI(MethodView):
         # probably should move to a function.
         form = EconomyForm(rations=current_user.county.rations)
         form.rations.choices = rations_terminology
-
-        # happinessChange=county.get_happiness_change(),
-        # nourishmentChange=county.get_nourishment_change(),
 
         return jsonify(
             status='success',

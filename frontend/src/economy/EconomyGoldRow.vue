@@ -80,6 +80,9 @@ export default {
     'select-generator': SelectGenerator,
     'modifier-list': ModifierList
   },
+  props: {
+    update: Boolean
+  },
   data () {
     return {
       gold: -1,
@@ -102,6 +105,11 @@ export default {
         }
       },
       errors: Object
+    }
+  },
+  watch: {
+    update () {
+      this.$getData('/api/economy/gold', this.$deployData)
     }
   },
   beforeCreate () {
