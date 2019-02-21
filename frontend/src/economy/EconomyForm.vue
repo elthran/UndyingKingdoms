@@ -55,6 +55,7 @@
         />
         <economy-food-row 
           v-model="selectedRations"
+          :update="updateFood"
         />
         <economy-wood-row />
         <economy-iron-row />
@@ -63,7 +64,9 @@
         <economy-happiness-row 
           :update="updateHappines"
         />
-        <economy-nourishment-row />
+        <economy-nourishment-row 
+          :update="updateNourishment"
+        />
         <economy-health-row />
       </table>
     </form>
@@ -109,6 +112,8 @@ export default {
       selectedRations: Number,
       updateGold: false,
       updateHappines: false,
+      updateFood: false,
+      updateNourishment: false,
       errors: Object
     }
   },
@@ -120,8 +125,10 @@ export default {
       })
     },
     selectedRations () {
-      console.log('select rations rate, detected change on EconomyForm.vue.')
-      // this.sendForm($('#economy-form'), this.updatePage)
+      this.$sendForm($('#economy-form'), () => {
+        this.updateFood = !this.updateFood;
+        this.updateNourishment = !this.updateNourishment;
+      })
     }
   },
   beforeCreate () {

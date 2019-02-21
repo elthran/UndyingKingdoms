@@ -23,10 +23,18 @@ export default {
   components: {
     'status-number': StatusNumber
   },
+  props: {
+    update: Boolean
+  },
   data () {
     return {
       nourishment: -1,
       nourishmentChange: -1
+    }
+  },
+  watch: {
+    update () {
+      this.$getData('/api/economy/nourishment', this.$deployData)
     }
   },
   beforeCreate () {

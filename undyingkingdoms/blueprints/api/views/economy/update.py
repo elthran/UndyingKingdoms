@@ -34,7 +34,7 @@ class UpdateAPI(MethodView):
         """
         county = current_user.county
 
-        form = EconomyForm(tax=county.tax_rate, rations=county.rations)
+        form = EconomyForm()
         form.tax.choices = tax_options
         form.rations.choices = rations_terminology
 
@@ -50,16 +50,6 @@ class UpdateAPI(MethodView):
             return jsonify(
                 status="success",
                 message="You have submitted your economy form.",
-                # birth_rate_modifier=birth_rate_modifier,
-                # income_modifier=income_modifier,
-                # food_consumed_modifier=food_consumed_modifier,
-                # happiness_modifier=happiness_modifier,
-                # goldChange=county.get_gold_change(),
-                # taxIncome=county.get_tax_income(),
-                # happinessChange=county.get_happiness_change(),
-                # grainStorageChange=county.grain_storage_change(),
-                # foodEaten=county.get_food_to_be_eaten(),
-                # nourishmentChange=county.get_nourishment_change()
             )
         return jsonify(
             status="fail",

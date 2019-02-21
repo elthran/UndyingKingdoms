@@ -18,7 +18,7 @@
         v-model="rations"
         :options="form.rations.choices"
         :selected="rations"
-        id-name="form.rations.id"
+        :id-name="form.rations.id"
       />
       <modifier-list 
         :modifier="food_consumed_mod"
@@ -72,6 +72,9 @@ export default {
     'select-generator': SelectGenerator,
     'modifier-list': ModifierList
   },
+  props: {
+    update: Boolean
+  },
   data () {
     return {
       grain_stores: -1,
@@ -92,6 +95,11 @@ export default {
       isForaging: false,
       excessProduction: -1,
       errors: Object
+    }
+  },
+  watch: {
+    update () {
+      this.$getData('/api/economy/food', this.$deployData)
     }
   },
   beforeCreate () {
