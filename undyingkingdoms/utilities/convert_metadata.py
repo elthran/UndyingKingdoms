@@ -57,10 +57,10 @@ def build_race_table():
 def build_modifier_table():
     """Generate a spreadsheet of all army data."""
     gen_armies = metadata_armies_all.generic_armies
-    army_args = ['base_name', 'class_name', 'class_name_plural', 'total', 'trainable_per_day',
+    army_args = ['name', 'class_name', 'class_name_plural', 'total', 'trainable_per_day',
                  'gold', 'iron', 'wood', 'upkeep', 'attack', 'defence', 'health', 'description']
 
-    cols = ['Race', 'Base Name', 'Class Name', 'Class Name Plural', 'Total',
+    cols = ['Race', 'Name', 'Class Name', 'Class Name Plural', 'Total',
             'Trainable Per Day', 'Gold', 'Iron', 'Wood', 'Upkeep', 'Attack',
             'Defence', 'Health', 'Description']
     size = len(gen_armies) * len(metadata.metadata_races)
