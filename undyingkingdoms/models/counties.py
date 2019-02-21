@@ -939,7 +939,7 @@ class County(GameState):
         return self.get_total_number_of_thieves() - unavailable_thieves
 
     def get_thief_report_military(self, target_id):
-        current_report = Infiltration.query.filter_by(county_id=self.id, target_id=target_id,
+        current_report = Infiltration.query.filter_by(county_id=self.id, target_id=target_id, success=True,
                                                       mission="scout military").order_by(desc('time_created')).first()
         return current_report
 
