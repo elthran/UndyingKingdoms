@@ -33,7 +33,7 @@ class Preferences(GameState):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     tax_rate = db.Column(db.Integer)
-    rations = db.Column(db.Integer)
+    rations = db.Column(db.Float)
     production_choice = db.Column(db.Integer)
     research_choice = db.Column(db.String(128))
 
