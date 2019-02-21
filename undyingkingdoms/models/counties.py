@@ -292,7 +292,6 @@ class County(GameState):
 
     @property
     def production_choice(self):
-        print(self)
         return self.preferences.production_choice
 
     @production_choice.setter
@@ -662,6 +661,10 @@ class County(GameState):
         modifier = 1 + income_modifier.get(self.race, ("", 0))[1] \
                    + income_modifier.get(self.background, ("", 0))[1]
         if self.production_choice == 0:
+            print("!!!!!!!!!!!!!!!!!")
+            print(self)
+            print(self.id)
+            print(self.preferences)
             excess_worker_income = self.get_excess_production_value(self.production_choice)
         else:
             excess_worker_income = 0
