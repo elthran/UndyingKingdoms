@@ -421,7 +421,10 @@ class County(GameState):
             self.research = technology.current - technology.required
             technology.completed = True
             available_technologies = Technology.query.filter_by(county_id=self.id).filter_by(completed=False).first()
-            self.research_choice = available_technologies.name
+            if available_technologies:
+                self.research_choice = available_technologies.name
+            else:  # you have researched everything?
+                self.research = 0  # just do nothing?
         else:  # You don't keep research as a resource; it's spent
             self.research = 0
 
