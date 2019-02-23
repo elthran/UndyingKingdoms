@@ -1,5 +1,4 @@
 /* eslint-disable */
-import $ from "jquery";
 import axios from 'axios';
 
 function baseURL () {
@@ -10,7 +9,8 @@ function baseURL () {
   }
 }
 
-function login () {
+async function login () {
+  const { default: $ } = await import(/* webpackChunkName: "jquery" */ 'jquery')
   var loginUrl = 'http://localhost:5000/login/'
   var csrfToken;
 
