@@ -27,4 +27,8 @@ class Building(GameState):
         self.wood_cost = wood_cost
         self.stone_cost = stone_cost
         self.output = output
-        self.description = description.format(self.class_name, self.output)
+        self.description = description
+
+    def update_description(self):
+        self.description = self.description.format(self.class_name, self.output)
+

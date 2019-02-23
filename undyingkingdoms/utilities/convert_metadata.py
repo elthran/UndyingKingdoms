@@ -43,8 +43,9 @@ def build_race_table():
                 if val > 0:
                     val = '+' + str(int(val))
             else:  # is a percent
+                val = int(val * 100)
                 if val > 0:
-                    val = '+' + str(int(val * 100))
+                    val = '+' + str(val)
                 val = str(val) + '%'
             label = df.loc[row, "Modifier Type"].iloc[0][:-9]
             df.loc[row, 'Modifier Description'] = '{}: {} {}'.format(name, val, label)
@@ -57,10 +58,10 @@ def build_race_table():
 def build_modifier_table():
     """Generate a spreadsheet of all army data."""
     gen_armies = metadata_armies_all.generic_armies
-    army_args = ['base_name', 'class_name', 'class_name_plural', 'total', 'trainable_per_day',
+    army_args = ['name', 'class_name', 'class_name_plural', 'total', 'trainable_per_day',
                  'gold', 'iron', 'wood', 'upkeep', 'attack', 'defence', 'health', 'description']
 
-    cols = ['Race', 'Base Name', 'Class Name', 'Class Name Plural', 'Total',
+    cols = ['Race', 'Name', 'Class Name', 'Class Name Plural', 'Total',
             'Trainable Per Day', 'Gold', 'Iron', 'Wood', 'Upkeep', 'Attack',
             'Defence', 'Health', 'Description']
     size = len(gen_armies) * len(metadata.metadata_races)

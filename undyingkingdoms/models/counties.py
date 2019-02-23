@@ -10,7 +10,6 @@ from undyingkingdoms.models.helpers import cached_random
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
-from undyingkingdoms.models.preferences import Preferences
 from undyingkingdoms.models.technologies import Technology
 from undyingkingdoms.models.trades import Trade
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
@@ -94,6 +93,8 @@ class County(GameState):
                              collection_class=attribute_mapped_collection('name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
 
+    preferences = db.relationship("Preferences", uselist=False)
+
     def __init__(self, kingdom_id, name, leader, user_id, race, title, background):
         self.name = name
         self.leader = leader
@@ -151,6 +152,8 @@ class County(GameState):
         else:
             raise AttributeError('Buildings and Armies were not found in metadata')
         self.technologies = deepcopy(generic_technology)
+        for building in self.buildings:
+            self.buildings[building].update_description()
 
     @property
     def population(self):
@@ -273,39 +276,35 @@ class County(GameState):
 
     @property
     def tax_rate(self):
-        return Preferences.query.filter_by(county_id=self.id).first().tax_rate
+        return self.preferences.tax_rate
 
     @tax_rate.setter
     def tax_rate(self, value):
-        preference = Preferences.query.filter_by(county_id=self.id).first()
-        preference.tax_rate = value
+        self.preferences.tax_rate = value
 
     @property
     def rations(self):
-        return Preferences.query.filter_by(county_id=self.id).first().rations
+        return self.preferences.rations
 
     @rations.setter
     def rations(self, value):
-        preference = Preferences.query.filter_by(county_id=self.id).first()
-        preference.rations = value
+        self.preferences.rations = value
 
     @property
     def production_choice(self):
-        return Preferences.query.filter_by(county_id=self.id).first().production_choice
+        return self.preferences.production_choice or 0
 
     @production_choice.setter
     def production_choice(self, value):
-        preference = Preferences.query.filter_by(county_id=self.id).first()
-        preference.production_choice = value
+        self.preferences.production_choice = value
 
     @property
     def research_choice(self):
-        return Preferences.query.filter_by(county_id=self.id).first().research_choice
+        return self.preferences.research_choice
 
     @research_choice.setter
     def research_choice(self, value):
-        preference = Preferences.query.filter_by(county_id=self.id).first()
-        preference.research_choice = value
+        self.preferences.research_choice = value
 
     @property
     def seed(self):
@@ -772,6 +771,8 @@ class County(GameState):
         strength = 0
         modifier = 1 + offensive_power_modifier.get(self.race, ("", 0))[1] \
                    + offensive_power_modifier.get(self.background, ("", 0))[1]
+        if self.technologies['steel'].completed:
+            modifier += 0.2
         if army:
             for unit in self.armies.values():
                 if unit.name != 'archer':
@@ -935,7 +936,7 @@ class County(GameState):
         return self.get_total_number_of_thieves() - unavailable_thieves
 
     def get_thief_report_military(self, target_id):
-        current_report = Infiltration.query.filter_by(county_id=self.id, target_id=target_id,
+        current_report = Infiltration.query.filter_by(county_id=self.id, target_id=target_id, success=True,
                                                       mission="scout military").order_by(desc('time_created')).first()
         return current_report
 

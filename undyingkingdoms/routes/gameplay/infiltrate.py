@@ -32,7 +32,7 @@ def infiltrate(template, county_id):
     if form.validate_on_submit():
         mission = infiltration_missions[form.mission.data]
         report = Infiltration(current_user.county.id, target.id, current_user.county.kingdom.world.day,
-                              current_user.county.county_age, mission, form.amount.data)
+                              current_user.county.day, mission, form.amount.data)
         report.save()
 
         chance_of_success = target.get_chance_to_be_successfully_infiltrated() + form.amount.data

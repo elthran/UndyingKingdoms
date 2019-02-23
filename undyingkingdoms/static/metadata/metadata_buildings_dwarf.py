@@ -4,8 +4,7 @@ from undyingkingdoms.static.metadata.metadata_buildings_all import generic_build
 
 dwarf_buildings = deepcopy(generic_buildings)
 # First the strings and descriptions
-dwarf_buildings['house'].class_name, dwarf_buildings['house'].class_name_plural, dwarf_buildings[
-	'house'].description = 'cottage', 'cottages', 'Each {} adds +{} to your birth rate.'
+dwarf_buildings['house'].class_name, dwarf_buildings['house'].class_name_plural = 'cottage', 'cottages'
 dwarf_buildings['field'].class_name, dwarf_buildings['field'].class_name_plural = 'rye field', 'rye fields'
 dwarf_buildings['pasture'].class_name, dwarf_buildings['pasture'].class_name_plural = 'goat farm', 'goat farms'
 dwarf_buildings['mill'].class_name, dwarf_buildings['mill'].class_name_plural = 'lumber mill', 'lumber mills'
