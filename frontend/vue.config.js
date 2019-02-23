@@ -1,5 +1,7 @@
 // vue.config.js
 
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+
 module.exports = {
   publicPath: '/static/dist',
   // options
@@ -14,8 +16,11 @@ module.exports = {
 			      filename: 'economy.html'
     }
   },
-  runtimeCompiler: undefined,
-  productionSourceMap: undefined,
-  parallel: undefined,
-  css: undefined
+  configureWebpack: {
+    plugins: [
+      new BundleAnalyzerPlugin(
+        { analyzerMode: 'disable' }
+      )
+    ]
+  }
 }

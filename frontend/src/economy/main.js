@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import EconomyApp from './EconomyApp.vue'
-import _ from 'lodash'
 // eslint-disable-next-line
 import {customAxios, devLogin} from '@/assets/devHelpers.js'
 import VueAxios from 'vue-axios'

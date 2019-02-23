@@ -11,5 +11,11 @@ module.exports = {
     //    'vue/no-parsing-error': [2, {
     //        "invalid-first-character-of-tag-name": false
     //    }]
+  },
+  parser: "vue-eslint-parser",
+  parserOptions: {
+    parser: "babel-eslint",
+    sourceType: "module",
+    ecmaVersion: 8
   }
 }

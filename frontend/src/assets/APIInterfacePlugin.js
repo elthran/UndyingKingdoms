@@ -1,4 +1,5 @@
 import $ from 'jquery'
+// import {forEach} from 'lodash'
 
 var APIInterface = {}
 
@@ -23,13 +24,15 @@ APIInterface.install = function (Vue, options) {
   }
 
   Vue.prototype.$deployData = function (self, articles) {
-    _.forEach(articles, function (article, key) {
-      if (self.hasOwnProperty(key)) {
-        self[key] = article
-      } else {
-        console.log('You need to add "' + key + '" to this vue component.')
-        console.log('Its value is: ', article)
-      }
+    import(/* webpackChunkName: "lodash" */ 'lodash').then(_ => {
+      _.forEach(articles, function (article, key) {
+        if (self.hasOwnProperty(key)) {
+          self[key] = article
+        } else {
+          console.log('You need to add "' + key + '" to this vue component.')
+          console.log('Its value is: ', article)
+        }
+      })
     })
   }
 
