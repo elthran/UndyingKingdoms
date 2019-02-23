@@ -1,6 +1,7 @@
 from copy import deepcopy
 from datetime import datetime
 from random import randint
+from undyingkingdoms.static.metadata.metadata import all_achievements
 
 from flask import url_for, redirect, render_template, flash, jsonify
 from flask.views import MethodView
@@ -8,7 +9,7 @@ from flask_login import current_user
 from flask_login import login_user
 from flask_mobility.decorators import mobile_template
 
-from undyingkingdoms import app, User
+from undyingkingdoms import app, User, db
 from undyingkingdoms.models import Notification
 from undyingkingdoms.models.forms.login import LoginForm
 from undyingkingdoms.static.metadata.metadata import all_achievements
