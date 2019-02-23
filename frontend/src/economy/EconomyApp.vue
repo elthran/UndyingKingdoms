@@ -1,6 +1,6 @@
 <template>
   <div id="economy-app">
-    <prefix-title title="Economy" />
+    <prefix-title title="Economist" />
     <div id="layout-body">
       <side-bar />
       <economy-form />
