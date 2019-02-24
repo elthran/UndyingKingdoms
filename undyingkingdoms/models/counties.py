@@ -424,7 +424,7 @@ class County(GameState):
             if available_technologies:
                 self.research_choice = available_technologies.name
             else:  # you have researched everything?
-                self.research = 0  # just do nothing?
+                pass  # just do nothing?
         else:  # You don't keep research as a resource; it's spent
             self.research = 0
 
