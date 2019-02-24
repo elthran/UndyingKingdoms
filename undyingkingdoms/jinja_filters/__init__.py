@@ -1,5 +1,7 @@
 from markupsafe import Markup
 
+from undyingkingdoms.blueprints.api.vue_safe import vue_safe_array
+
 def vue_safe(value):
     """Convert all tuples to lists.
 
@@ -7,11 +9,4 @@ def vue_safe(value):
     I may need to make this more complex over time.
     """
 
-    new = []
-    for item in value:
-        if isinstance(item, tuple):
-            new.append(list(item))
-        else:
-            new.append(item)
-
-    return Markup(new)
+    return Markup(vue_safe_array(value))

@@ -29,7 +29,8 @@ setup(
         'PyJWT',
         'requests',
         'flask-script',
-        'Flask-Mobility'
+        'Flask-Mobility',
+        'flask-cors'
     ],
 )
 

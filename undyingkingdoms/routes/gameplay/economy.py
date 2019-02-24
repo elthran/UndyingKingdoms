@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, jsonify, request
+from flask import render_template, redirect, url_for, jsonify, request, send_from_directory, current_app
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
@@ -18,11 +18,13 @@ def economy(template):
     form.rations.choices = [(pairing[0], pairing[1]) for pairing in rations_terminology]
 
     return render_template(
-        template, form=form,
+        template,
+        form=form,
         birth_rate_modifier=birth_rate_modifier,
         income_modifier=income_modifier,
         food_consumed_modifier=food_consumed_modifier,
         happiness_modifier=happiness_modifier)
+    # return send_from_directory('static/dist', 'economy.html')
 
 
 @app.route('/gameplay/economy/update', methods=['POST'])

@@ -6,12 +6,14 @@ venv/
 /undyingkingdoms.egg-info
 /export
 env/
-*.pyc
 undyingkingdoms/routes/gameplay/testing_page.py
 *scratchpad*
 .ipynb_checkpoints
-/npm-debug.log
-/undyingkingdoms/static/dist/
-/undyingkingdoms/static/js/vue.js
-/frontend/
+frontend/node_modules
+/undyingkingdoms/static/dist
+/undyingkingdoms/templates/dist
 /System Volume Information/
+
+# Log files
+npm-debug.log*
+
