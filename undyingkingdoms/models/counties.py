@@ -370,7 +370,7 @@ class County(GameState):
                 self.wood += trade.wood_to_give
                 self.iron += trade.iron_to_give
                 self.stone += trade.stone_to_give
-                self.grain += trade.grain_to_give
+                self.grain_stores += trade.grain_to_give
                 target_county = County.query.get(trade.target_id)
                 notification = Notification(self.id, "Trade Offer",
                                             "Your trade offer to {} has expired and your resources have been return".format(
