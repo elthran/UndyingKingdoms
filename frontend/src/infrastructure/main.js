@@ -15,7 +15,7 @@ new Vue({
 }).$mount('#app')
 
 export default {
-  name: 'main',
+  name: 'InfrastructureMain',
   data () {
     return {
       errors: Object

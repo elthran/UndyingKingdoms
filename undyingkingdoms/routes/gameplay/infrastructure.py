@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request, jsonify
+from flask import render_template, redirect, url_for, request, jsonify, send_from_directory
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
@@ -33,6 +33,9 @@ def infrastructure(template):
     excess_worker_form = ExcessProductionForm(goal=county.production_choice)
     goal_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
     excess_worker_form.goal.choices = [(pairing[0], pairing[1]) for pairing in goal_choices]
+
+    if 'mobile' in template:
+        return send_from_directory('static/dist', 'infrastructure.html')
 
     return render_template(
         template,

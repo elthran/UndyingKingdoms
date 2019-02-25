@@ -16,9 +16,9 @@ module.exports = {
       filename: 'economy.html'
     },
     insfrastructure: {
-      entry: 'src/insfrastructure/main.js',
+      entry: 'src/infrastructure/main.js',
       template: 'public/index.html',
-      filename: 'insfrastructure.html'
+      filename: 'infrastructure.html'
     }
   },
   configureWebpack: {

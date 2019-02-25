@@ -2,8 +2,8 @@
   <div id="infrastructure-app">
     <prefix-title title="City Planner" />
     <div id="layout-body">
-      <side-bar />
-      <economy-form />
+      <nav-bar />
+      <!-- <economy-form /> -->
     </div>
   </div>
 </template>
