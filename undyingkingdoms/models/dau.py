@@ -35,12 +35,20 @@ class DAU(GameEvent):
     lifetime_stone = db.Column(db.Integer)
     lifetime_research = db.Column(db.Integer)
     lifetime_mana = db.Column(db.Integer)
+    # Choices
+    production_choice = db.Column(db.Integer)
+    research_choice = db.Column(db.String(128))
+    rations = db.Column(db.Float)
+    taxes = db.Column(db.Integer)
+    technologies = db.Column(db.Integer)
     # Military data
     peasant = db.Column(db.Integer)
     soldier = db.Column(db.Integer)
     archer = db.Column(db.Integer)
     elite = db.Column(db.Integer)
     monster = db.Column(db.Integer)
+    standing_offense = db.Column(db.Integer)
+    maximum_offense = db.Column(db.Integer)
     standing_defence = db.Column(db.Integer)
     # Building Data
     house = db.Column(db.Integer)
@@ -90,12 +98,20 @@ class DAU(GameEvent):
         self.happiness = county.happiness
         self.nourishment = county.nourishment
         self.health = county.health
+
+        self.production_choice = county.production_choice
+        self.research_choice = county.research_choice
+        self.rations = county.rations
+        self.taxes = county.tax_rate
+        self.technologies = len(county.technologies)
         
         self.peasant = county.armies['peasant'].total
         self.soldier = county.armies['soldier'].total
         self.archer = county.armies['archer'].total
         self.elite = county.armies['elite'].total
         self.monster = county.armies['monster'].total
+        self.standing_offense = county.get_offensive_strength(scoreboard=True)
+        self.maximum_offense = county.get_offensive_strength()
         self.standing_defence = county.get_defensive_strength()
 
         self.house = county.buildings['house'].total
@@ -114,11 +130,11 @@ class DAU(GameEvent):
 
     @staticmethod
     def get_sessions(user_id):
-        time_cutoff = datetime.utcnow() - timedelta(hours=4)
+        time_cutoff = datetime.utcnow() - timedelta(hours=1)
         return Session.query.filter_by(user_id=user_id).filter(Session.time_logged_out > time_cutoff).count()
 
     @staticmethod
     def get_minutes_played(user_id):
-        time_cutoff = datetime.utcnow() - timedelta(hours=4)
+        time_cutoff = datetime.utcnow() - timedelta(hours=1)
         sessions = Session.query.filter_by(user_id=user_id).filter(Session.time_logged_out > time_cutoff).all()
         return sum(session.minutes for session in sessions if session.minutes is not None)

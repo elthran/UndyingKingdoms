@@ -776,11 +776,13 @@ class County(GameState):
         Returns the attack power of your army. If no army is sent in, it checks the full potential of the county.
         params: scoreboard - Looks at total possible power, even for troops who are unavailable
         """
+        if army is None and county is None:
+            county = self
         strength = 0
         modifier = 1 + offensive_power_modifier.get(self.race, ("", 0))[1] \
                    + offensive_power_modifier.get(self.background, ("", 0))[1]
         if self.technologies['steel'].completed:
-            modifier += 0.2
+            modifier += 0.10
         if army:
             for unit in self.armies.values():
                 if unit.name != 'archer':
