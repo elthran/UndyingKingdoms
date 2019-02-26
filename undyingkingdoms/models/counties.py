@@ -422,9 +422,9 @@ class County(GameState):
             available_technologies = Technology.query.filter_by(county_id=self.id).filter_by(completed=False).first()
             if available_technologies:
                 self.research_choice = available_technologies.name
-            else:  # you have researched everything?
-                pass  # just do nothing?
-        else:  # You don't keep research as a resource; it's spent
+            else:
+                self.research = 0
+        else:
             self.research = 0
 
     def get_health_change(self):
