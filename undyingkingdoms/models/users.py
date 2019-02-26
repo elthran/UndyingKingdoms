@@ -8,7 +8,6 @@ from undyingkingdoms.models.sessions import Session
 from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.bases import GameState, db
 from werkzeug.security import generate_password_hash, check_password_hash
-from undyingkingdoms.models.counties import County
 from undyingkingdoms.static.metadata.metadata import all_achievements
 
 
@@ -17,7 +16,6 @@ class User(GameState):
     username = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), nullable=False, unique=True)
     password_hash = db.Column(db.String(192), nullable=False)
-    county = db.relationship('County', backref='user', uselist=False)
 
     # Analytics
     ages_completed = db.Column(db.Integer)
@@ -113,7 +111,7 @@ class User(GameState):
         return self.id
 
     def has_county(self):
-        return True if County.query.filter_by(user_id=self.id) else False
+        return True if self.county is not None else False
 
     def check_incremental_achievement(self, name, amount):
         achievement = Achievement.query.filter_by(category="reach_x_amount_in_one_age",

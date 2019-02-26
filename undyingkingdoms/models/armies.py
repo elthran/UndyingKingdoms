@@ -1,6 +1,7 @@
 from random import randint
 
 from extensions import flask_db as db
+from undyingkingdoms.calculations.modifiers import get_modifiers
 from undyingkingdoms.models.bases import GameState
 
 
@@ -18,7 +19,7 @@ class Army(GameState):
     wood = db.Column(db.Integer)
     upkeep = db.Column(db.Integer)
     attack = db.Column(db.Integer)
-    defence = db.Column(db.Integer)
+    _defence = db.Column(db.Integer)
     health = db.Column(db.Integer)
     description = db.Column(db.String(128))
 
@@ -46,3 +47,16 @@ class Army(GameState):
     def get_estimated_total(self, enemy_county):
         noise_factor = 0
         return int(max((self.total - self.traveling) * randint(50, 150) / 100, 0))
+
+    @property
+    def defence(self):
+        mods = 0
+        try:
+            mods = get_modifiers(self.county, 'unit_defence', self.name)
+        except AttributeError:
+            pass
+        return self._defence + mods
+
+    @defence.setter
+    def defence(self, value):
+        self._defence = value
