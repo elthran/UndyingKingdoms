@@ -83,15 +83,15 @@ class User(GameState):
         if value:  # Logging in
             last_session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
             if not last_session:  # Never logged in before
-                session = Session(self.id)
+                session = Session(self.id, self.county.day)
                 session.save()
             else:  # Has logged in before
                 if last_session.time_logged_out:  # Last session successfully logged out
-                    session = Session(self.id)  # Simply start a new log in
+                    session = Session(self.id, self.county.day)  # Simply start a new log in
                     session.save()
                 else:
                     last_session.time_logged_out = self.time_modified
-                    session = Session(self.id)
+                    session = Session(self.id, self.county.day)
                     session.save()
         else:  # Logging out
             session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
