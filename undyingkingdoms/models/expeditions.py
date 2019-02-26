@@ -11,6 +11,9 @@ class Expedition(GameEvent):
     mission = db.Column(db.String(64))
 
     # Results
+    success = db.Column(db.Boolean)
+    attack_power = db.Column(db.Integer)
+    defence_power = db.Column(db.Integer)
     land_acquired = db.Column(db.Integer)
 
     # Troops remaining

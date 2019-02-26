@@ -416,7 +416,6 @@ class County(GameState):
     def advance_research(self):
         technology = self.technologies[self.research_choice]
         technology.current += self.research
-        print("Research", technology.current, technology.required, self.research)
         if technology.current >= technology.required:  # You save left over research
             self.research = technology.current - technology.required
             technology.completed = True
@@ -836,7 +835,7 @@ class County(GameState):
             self.population -= min(hit_points_to_be_removed, self.population)
             return casualties
         if army:
-            hit_points_lost *= 1.25  # The attacker takes extra casualties
+            hit_points_lost *= 2.50  # The attacker takes extra casualties
             duration = self.get_army_duration(sum(army.values()))
             expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, self.day, duration, "attack")
             expedition.save()
@@ -856,9 +855,53 @@ class County(GameState):
                 setattr(expedition, unit, army[unit])
         return casualties, expedition
 
-    def destroy_buildings(self, county, land_destroyed):
-        destroyed = randint(0,
-                            county.get_available_land())  # The more available land, the less likely building are destroyed
+    def battle_results(self, army, enemy):
+        offence = self.get_offensive_strength(army=army)
+        defence = enemy.get_defensive_strength()
+        percent_difference_in_power = abs(defence - offence) / ((defence + offence) / 2) * 100
+        if percent_difference_in_power < 25:
+            battle_word = "minor"
+        elif percent_difference_in_power < 50:
+            battle_word = "major"
+        else:
+            battle_word = "massive"
+        offence_casualties, expedition = self.get_casualties(attack_power=defence,
+                                                             army=army,
+                                                             enemy_id=enemy.id,
+                                                             results=battle_word)
+        defence_casualties = enemy.get_casualties(attack_power=offence,
+                                                  results=battle_word)
+        expedition.attack_power, expedition.defence_power = offence, defence
+        if offence > defence:
+            expedition.success = True
+            land_gained = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1)
+            land_gained = int(min(land_gained, enemy.land * 0.2))
+            expedition.land_acquired = land_gained
+            enemy.land -= land_gained
+            notification = Notification(enemy.id,
+                                        "You were attacked by {} and suffered a {} loss.".format(self.name,
+                                                                                                 battle_word),
+                                        "You lost {} acres and {} troops in the battle.".format(land_gained,
+                                                                                                defence_casualties),
+                                        self.kingdom.world.day)
+            message = "You claimed a {} victory and gained {} acres, but lost {} troops in the battle.".format(
+                battle_word,
+                land_gained,
+                offence_casualties)
+        else:
+            expedition.success = False
+            notification = Notification(enemy.id,
+                                        "You were attacked by {}".format(self.name),
+                                        "You achieved a {} victory but lost {} troops.".format(battle_word,
+                                                                                               defence_casualties),
+                                        self.kingdom.world.day)
+            message = "You suffered a {} failure in battle and lost {} troops".format(battle_word, offence_casualties)
+        notification.save()
+        return message
+
+    @staticmethod
+    def destroy_buildings(county, land_destroyed):
+        destroyed = randint(0, county.get_available_land())  # The more available land, the less likely building are destroyed
         need_list = True
         while destroyed < land_destroyed:
             if need_list:
@@ -872,47 +915,6 @@ class County(GameState):
             if county.buildings[this_choice].total == 0:
                 need_list = True
             destroyed += 1
-
-    def battle_results(self, army, enemy):
-        offence = self.get_offensive_strength(army=army)
-        defence = enemy.get_defensive_strength()
-        percent_difference_in_power = abs(defence - offence) / ((defence + offence) / 2) * 100
-        if percent_difference_in_power < 25:
-            battle_word = "minor"
-        elif percent_difference_in_power < 50:
-            battle_word = "major"
-        else:
-            battle_word = "massive"
-        offence_casaulties, expedition = self.get_casualties(attack_power=defence,
-                                                             army=army,
-                                                             enemy_id=enemy.id,
-                                                             results=battle_word)
-        defence_casaulties = enemy.get_casualties(attack_power=offence,
-                                                  results=battle_word)
-        if offence > defence:
-            land_gained = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1)
-            land_gained = int(min(land_gained, enemy.land * 0.2))
-            expedition.land_acquired = land_gained
-            enemy.land -= land_gained
-            notification = Notification(enemy.id,
-                                        "You were attacked by {} and suffered a {} loss.".format(self.name,
-                                                                                                 battle_word),
-                                        "You lost {} acres and {} troops in the battle.".format(land_gained,
-                                                                                                defence_casaulties),
-                                        self.kingdom.world.day)
-            message = "You claimed a {} victory and gained {} acres, but lost {} troops in the battle.".format(
-                battle_word,
-                land_gained,
-                offence_casaulties)
-        else:
-            notification = Notification(enemy.id,
-                                        "You were attacked by {}".format(self.name),
-                                        "You achieved a {} victory but lost {} troops.".format(battle_word,
-                                                                                               defence_casaulties),
-                                        self.kingdom.world.day)
-            message = "You suffered a {} failure in battle and lost {} troops".format(battle_word, offence_casaulties)
-        notification.save()
-        return message
 
     # Achievements
     def check_incremental_achievement(self, name, amount):
