@@ -1,4 +1,3 @@
-import math
 from datetime import datetime, timedelta
 from random import choice, uniform, randint
 
@@ -29,6 +28,10 @@ from undyingkingdoms.static.metadata.metadata_buildings_human import human_build
 from undyingkingdoms.static.metadata.metadata_magic_all import generic_spells
 from undyingkingdoms.static.metadata.metadata_magic_elf import elf_spells
 from undyingkingdoms.static.metadata.metadata_research_all import generic_technology
+from undyingkingdoms.static.metadata.metadata_research_dwarf import dwarf_technology
+from undyingkingdoms.static.metadata.metadata_research_elf import elf_technology
+from undyingkingdoms.static.metadata.metadata_research_goblin import goblin_technology
+from undyingkingdoms.static.metadata.metadata_research_human import human_technology
 
 
 class County(GameState):
@@ -139,19 +142,22 @@ class County(GameState):
         if self.race == 'Dwarf':
             self.buildings = deepcopy(dwarf_buildings)
             self.armies = deepcopy(dwarf_armies)
+            self.technologies = {**deepcopy(generic_technology), **deepcopy(dwarf_technology)}
         elif self.race == 'Human':
             self.buildings = deepcopy(human_buildings)
             self.armies = deepcopy(human_armies)
+            self.technologies = {**deepcopy(generic_technology), **deepcopy(human_technology)}
         elif self.race == 'Elf':
             self.buildings = deepcopy(elf_buildings)
             self.armies = deepcopy(elf_armies)
             self.spells = deepcopy(elf_spells)
+            self.technologies = {**deepcopy(generic_technology), **deepcopy(elf_technology)}
         elif self.race == 'Goblin':
             self.buildings = deepcopy(goblin_buildings)
             self.armies = deepcopy(goblin_armies)
+            self.technologies = {**deepcopy(generic_technology), **deepcopy(goblin_technology)}
         else:
             raise AttributeError('Buildings and Armies were not found in metadata')
-        self.technologies = deepcopy(generic_technology)
         for building in self.buildings:
             self.buildings[building].update_description()
 
