@@ -425,14 +425,24 @@ class County(GameState):
         if technology.current >= technology.required:  # You save left over research
             self.research = technology.current - technology.required
             technology.completed = True
-            available_technologies = Technology.query.filter_by(county_id=self.id).filter_by(completed=False).first()
+            available_technologies = self.get_available_technologies()
             if available_technologies:
-                self.research_choice = available_technologies.name
+                self.research_choice = available_technologies[0].name
             else:
                 self.research = 0
         else:
             self.research = 0
-
+            
+    def get_available_technologies(self):
+        if all:
+            return Technology.query.filter_by(county_id=self.id).filter_by(completed=False).all()
+        available_technologies = Technology.query.filter_by(county_id=self.id).filter_by(completed=False).filter_by(tier=1).all()
+        if not available_technologies:
+            available_technologies = Technology.query.filter_by(county_id=self.id).filter_by(completed=False).filter_by(tier=2).all()
+        if not available_technologies:
+            available_technologies = Technology.query.filter_by(county_id=self.id).filter_by(completed=False).filter_by(tier=3).all()
+        return available_technologies
+    
     def get_health_change(self):
         if self.nourishment > 90:
             return 2
@@ -681,6 +691,8 @@ class County(GameState):
         return self.buildings['mill'].total * self.buildings['mill'].output
 
     def get_iron_income(self):
+        if self.technologies.get("smelting") and self.technologies.["smelting"].complete:
+            return self.buildings['mine'].total * (self.buildings['mine'].output + 1)
         return self.buildings['mine'].total * self.buildings['mine'].output
 
     def get_stone_income(self):
@@ -690,6 +702,8 @@ class County(GameState):
         return self.buildings['arcane'].total * self.buildings['arcane'].output
 
     def get_research_change(self):
+        if self.technologies.get("arcane knowledge")  and self.technologies.["arcane knowledge"].complete:
+            return self.buildings['lab'].total * (self.buildings['lab'].output + 1)
         return self.buildings['lab'].total * self.buildings['lab'].output
 
     # Building
@@ -701,6 +715,8 @@ class County(GameState):
         """
         Returns the amount of excess production you get each turn
         """
+        if self.technologies.get("slavery")  and self.technologies.["slavery"].complete:
+            return max(int(self.get_production_modifier() * self.get_available_workers() * 2), 0)
         return max(int(self.get_production_modifier() * self.get_available_workers()), 0)
 
     def get_excess_production_value(self, value=-1):
@@ -737,7 +753,7 @@ class County(GameState):
     def get_number_of_buildings_produced_per_day(self):
         amount = 3 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
                                 + buildings_built_per_day_modifier.get(self.background, ("", 0))[1]
-        if self.technologies['engineering'].completed:
+        if self.technologies.get("engineering")self.technologies["engineering"].completed:
             amount += 1
         return amount
 

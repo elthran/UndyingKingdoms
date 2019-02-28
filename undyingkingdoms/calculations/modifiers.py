@@ -52,4 +52,8 @@ def get_modifiers(county, mod_type, filter_key):
         if county.technologies['dwarven muskets'].completed:
             if filter_key == 'archer':
                 mod_sum += 1  # later will be mod.value
+    if mod_type == 'unit_health':
+        if county.technologies['mithril armour'].completed:
+            if filter_key != 'monster':
+                mod_sum += 1  # later will be mod.value
     return mod_sum

@@ -14,7 +14,7 @@ def research(template):
     county = current_user.county
     form = TechnologyForm()
 
-    available_technologies = Technology.query.filter_by(county_id=county.id).filter_by(completed=False).all()
+    available_technologies = county.get_available_technologies()
     known_technologies = Technology.query.filter_by(county_id=county.id).filter_by(completed=True).all()
     form.technology.choices = [(tech.id, tech.name.title()) for tech in available_technologies]
 
@@ -36,7 +36,7 @@ def research_api():
     county = current_user.county
     form = TechnologyForm()
 
-    available_technologies = Technology.query.filter_by(county_id=county.id).filter_by(completed=False).all()
+    available_technologies = county.get_available_technologies()
     form.technology.choices = [(tech.id, tech.name) for tech in available_technologies]
 
     if form.validate_on_submit():

@@ -18,7 +18,7 @@ class Army(GameState):
     upkeep = db.Column(db.Integer)
     attack = db.Column(db.Integer)
     _defence = db.Column(db.Integer)
-    health = db.Column(db.Integer)
+    _health = db.Column(db.Integer)
     description = db.Column(db.String(128))
 
     def __init__(self, name, class_name, class_name_plural, total, trainable_per_day, gold, iron, wood, upkeep, attack, defence, health, description):
@@ -54,3 +54,16 @@ class Army(GameState):
     @defence.setter
     def defence(self, value):
         self._defence = value
+
+    @property
+    def health(self):
+        bonuses = 1
+        try:
+            bonuses = get_modifiers(self.county, 'unit_health', self.name)  # County, Health, Unit Name
+        except AttributeError:
+            pass
+        return self._health + bonuses
+
+    @health.setter
+    def health(self, value):
+        self._health = value
