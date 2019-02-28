@@ -44,18 +44,14 @@ class Army(GameState):
     def available(self):
         return self.total - self.traveling
 
-    def get_estimated_total(self, enemy_county):
-        noise_factor = 0
-        return int(max((self.total - self.traveling) * randint(50, 150) / 100, 0))
-
     @property
     def defence(self):
-        mods = 0
+        bonuses = 1
         try:
-            mods = get_modifiers(self.county, 'unit_defence', self.name)
+            bonuses = get_modifiers(self.county, 'unit_defence', self.name)  # County, Defence, Unit Name
         except AttributeError:
             pass
-        return self._defence + mods
+        return self._defence + bonuses
 
     @defence.setter
     def defence(self, value):

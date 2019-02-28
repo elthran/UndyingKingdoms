@@ -49,9 +49,7 @@ def get_modifiers(county, mod_type, filter_key):
     # Then you could run a simple for loop and sum all the values.
     # We should have a master modifier table listing all modifiers.
     if mod_type == 'unit_defence':
-        if county.race == 'Dwarf':
-            if county.technologies['dwarven muskets'].completed:
-                if filter_key == 'rifleman':
-                    mod_sum += 0.1  # later will be mod.value
-
+        if county.technologies['dwarven muskets'].completed:
+            if filter_key == 'archer':
+                mod_sum += 1  # later will be mod.value
     return mod_sum
