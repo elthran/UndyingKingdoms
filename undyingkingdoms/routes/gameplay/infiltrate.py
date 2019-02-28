@@ -83,6 +83,7 @@ def infiltrate(template, county_id):
                                         current_user.county.kingdom.world.day)
             report.duration = randint(20, 26)
             report.success = False
+        notification.category = "Infiltration"
         notification.save()
 
         return redirect(url_for('infiltration'))

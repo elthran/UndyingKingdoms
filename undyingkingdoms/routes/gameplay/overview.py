@@ -153,7 +153,7 @@ def trade(county_id):
             target_county.id,
             "You were offered a trade",
             "{} has offered you a trade. Visit the diplomacy page.".format(county.name),
-            county.kingdom.world.day)
+            county.kingdom.world.day, "Trade")
         trade_notice.save()
 
         return redirect(url_for('diplomacy'))

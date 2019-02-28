@@ -1,6 +1,6 @@
 from undyingkingdoms.models.achievements import Achievement
 
-# Current price balance: 1 iron == 2 wood == 4 gold == 8 food
+# Current price balance: 1 stone == 2 iron == 4 wood == 4 research == 6 gold == 8 food
 
 
 metadata_races = ['Human', 'Elf', 'Dwarf', 'Goblin']

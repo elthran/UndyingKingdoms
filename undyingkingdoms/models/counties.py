@@ -365,7 +365,7 @@ class County(GameState):
                 notification = Notification(self.id, "Your army has returned",
                                             "{} new land has been added to your county".format(
                                                 expedition.land_acquired),
-                                            self.kingdom.world.day)
+                                            self.kingdom.world.day, "Military")
                 notification.save()
 
         trades = Trade.query.filter_by(county_id=self.id).filter_by(status='Pending').filter(Trade.duration > 0).all()
@@ -380,7 +380,7 @@ class County(GameState):
                 target_county = County.query.get(trade.target_id)
                 notification = Notification(self.id, "Trade Offer",
                                             "Your trade offer to {} has expired and your resources have been return".format(
-                                                target_county.name), self.kingdom.world.day)
+                                                target_county.name), self.kingdom.world.day, "Trade")
                 notification.save()
 
         infiltrations = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
@@ -532,6 +532,7 @@ class County(GameState):
             self.health -= amount
 
         if notification:
+            notification.category = "Random Event"
             notification.save()
 
     def get_nourishment_change(self):
@@ -626,7 +627,7 @@ class County(GameState):
     def get_death_rate(self):
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + \
                    death_rate_modifier.get(self.background, ("", 0))[1]
-        death_rate = (uniform(1.7, 2.1) / self.health) * modifier
+        death_rate = (uniform(2.0, 2.5) / self.health) * modifier
         return int(death_rate * self.population)
 
     def get_birth_rate(self):
@@ -904,6 +905,7 @@ class County(GameState):
                                                                                                defence_casualties),
                                         self.kingdom.world.day)
             message = "You suffered a {} failure in battle and lost {} troops".format(battle_word, offence_casualties)
+        notification.category = "Military"
         notification.save()
         return message
 
