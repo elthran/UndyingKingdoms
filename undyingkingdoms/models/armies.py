@@ -1,5 +1,3 @@
-from random import randint
-
 from extensions import flask_db as db
 from undyingkingdoms.calculations.modifiers import get_modifiers
 from undyingkingdoms.models.bases import GameState

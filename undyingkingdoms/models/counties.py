@@ -812,9 +812,13 @@ class County(GameState):
         return int(strength)
 
     def get_army_duration(self, army_size):
-        base_duration = 2 + army_size // 20
-        stables_modifier = 100 / (self.buildings['stables'].total * self.buildings['stables'].output + 100)
-        return int(max(base_duration * stables_modifier, 3))
+        base_duration = 2 + army_size / 20
+        speed_reduction = 100
+        speed_reduction += self.buildings['stables'].total * self.buildings['stables'].output
+        duration = base_duration * 100 / speed_reduction
+        if self.technologies["logistics"].completed:
+            duration -= 1
+        return int(max(duration, 3))
 
     def get_casualties(self, attack_power, army=(), enemy_id=-1, results="Draw"):
         """
@@ -862,7 +866,7 @@ class County(GameState):
             for unit in army.keys():
                 self.armies[unit].traveling += army[unit]  # Surviving troops are marked as absent
                 setattr(expedition, unit, army[unit])
-        return casualties, expedition
+            return casualties, expedition
 
     def battle_results(self, army, enemy):
         offence = self.get_offensive_strength(army=army)

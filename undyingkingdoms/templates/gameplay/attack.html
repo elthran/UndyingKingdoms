@@ -23,9 +23,6 @@
     It would be expected to return in roughly <span id="attackDuration">0</span> days.
     <br><br>
     <button type="submit">Attack</button>
-    <br><br>
-    <p style="width:70%">Note: You will typically lose around 20% of any soldiers sent. However, if your army is much weaker,
-        then your troops will take heavy casualties. Conversely, if you greatly overpower them you will lose very few troops.</p>
 </form>
 
 <script type="text/javascript">
@@ -49,8 +46,7 @@ function updateDuration() {
     var days_to_return = 0;
     var total_units = 0;
     total_units = 0{% for unit in county.armies.values() %}{% if unit.name != 'archer' %}  + parseInt({{ unit.name }}_amount.value){% endif %}{% endfor %};
-    console.log(total_units);
-    days_to_return = Math.ceil(total_units / 20) + 2;
+    days_to_return = {{ county.get_army_duration(total_units) }};
     attackDuration.innerHTML = days_to_return;
 }
 
