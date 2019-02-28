@@ -27,6 +27,8 @@ class Infiltration(GameEvent):
     archer = db.Column(db.Integer)
     soldier = db.Column(db.Integer)
     elite = db.Column(db.Integer)
+    
+    fort = db.Column(db.Integer)
 
     def __init__(self, county_id, target_id, world_day, county_day, mission, amount):
 
@@ -43,6 +45,8 @@ class Infiltration(GameEvent):
         self.archer = 0
         self.soldier = 0
         self.elite = 0
+        
+        self.fort = 0
 
         self.crops_burned = 0
         self.pilfer_amount = 0
@@ -61,10 +65,14 @@ class Infiltration(GameEvent):
         soldier_inaccuracy = int(max(enemy_county.armies['soldier'].total * inaccuracy, 10))
         elite_inaccuracy = int(max(enemy_county.armies['elite'].total * inaccuracy, 10))
 
+        fort_inaccuracy = int(max(enemy_county.buildings['fort'].total * inaccuracy, 10))
+
         self.peasant = max(enemy_county.armies['peasant'].total + randint(-peasant_inaccuracy, peasant_inaccuracy), 0)
         self.archer = max(enemy_county.armies['archer'].total + randint(-archer_inaccuracy, archer_inaccuracy), 0)
         self.soldier = max(enemy_county.armies['soldier'].total + randint(-soldier_inaccuracy, soldier_inaccuracy), 0)
         self.elite = max(enemy_county.armies['elite'].total + randint(-elite_inaccuracy, elite_inaccuracy), 0)
+        
+        self.fort = max(enemy_county.buildings['fort'].total + randint(-fort_inaccuracy, fort_inaccuracy), 0)
 
     def get_report_age(self, day):
         return day - self.world_day
