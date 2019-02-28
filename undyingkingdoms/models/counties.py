@@ -691,7 +691,7 @@ class County(GameState):
         return self.buildings['mill'].total * self.buildings['mill'].output
 
     def get_iron_income(self):
-        if self.technologies.get("smelting") and self.technologies.["smelting"].complete:
+        if self.technologies.get("smelting") and self.technologies["smelting"].complete:
             return self.buildings['mine'].total * (self.buildings['mine'].output + 1)
         return self.buildings['mine'].total * self.buildings['mine'].output
 
@@ -702,7 +702,7 @@ class County(GameState):
         return self.buildings['arcane'].total * self.buildings['arcane'].output
 
     def get_research_change(self):
-        if self.technologies.get("arcane knowledge")  and self.technologies.["arcane knowledge"].complete:
+        if self.technologies.get("arcane knowledge")  and self.technologies["arcane knowledge"].complete:
             return self.buildings['lab'].total * (self.buildings['lab'].output + 1)
         return self.buildings['lab'].total * self.buildings['lab'].output
 
@@ -715,7 +715,7 @@ class County(GameState):
         """
         Returns the amount of excess production you get each turn
         """
-        if self.technologies.get("slavery")  and self.technologies.["slavery"].complete:
+        if self.technologies.get("slavery")  and self.technologies["slavery"].complete:
             return max(int(self.get_production_modifier() * self.get_available_workers() * 2), 0)
         return max(int(self.get_production_modifier() * self.get_available_workers()), 0)
 
@@ -753,7 +753,7 @@ class County(GameState):
     def get_number_of_buildings_produced_per_day(self):
         amount = 3 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
                                 + buildings_built_per_day_modifier.get(self.background, ("", 0))[1]
-        if self.technologies.get("engineering")self.technologies["engineering"].completed:
+        if self.technologies.get("engineering") and self.technologies["engineering"].completed:
             amount += 1
         return amount
 
