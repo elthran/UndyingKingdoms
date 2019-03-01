@@ -29,7 +29,6 @@
     <li>Lumber: {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"></li>
     <li>Iron: {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
     <li>Stone: {{ county.stone }} <img class="resource_icons" src="/static/images/stone_icon.jpg"></li>
-    <li>Research: {{ county.research }} <img class="resource_icons" src="/static/images/research_icon.jpg"></li>
     <li>Mana: {{ county.mana }} <img class="resource_icons" src="/static/images/mana_icon.jpg"></li>
 </ul>
 <h2>Citizens:</h2>
@@ -38,6 +37,7 @@
     <li>Happiness: {{ county.happiness_terminology.title() }}</li>
     <li>Nourishment: {{ county.nourishment_terminology.title() }}</li>
     <li>Health: {{ county.health_terminology.title() }}</li>
+    <li>Stored Grain: {{ county.grain_stores }} <img class="resource_icons" src="/static/images/grain_icon.jpg"></li>
 </ul>
 <br>
 {% if county.day < 1 %}
