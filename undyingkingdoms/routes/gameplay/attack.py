@@ -46,6 +46,8 @@ def attack(template, county_id):
     else:
         form.monster.choices = [(monster * i // 10, monster * i // 10) for i in range(0, 11)]
 
+    form.attack_type.choices = [(pairing[0], pairing[1]) for pairing in [(0, "Attack"), (1, "Pillage")]]
+
     if form.validate_on_submit():
         army = {}
         for unit in current_user.county.armies.values():
@@ -53,7 +55,7 @@ def attack(template, county_id):
                 if unit.total < form.data[unit.name]:
                     return render_template(template, enemy=enemy, form=form)
                 army[unit.name] = form.data[unit.name]
-        results = current_user.county.battle_results(army, enemy)
+        results = current_user.county.battle_results(army, enemy, form.data["attack_type"])
 
         # Would like to move to a attack_results route of some kind.
         # Ugly hack to return '{mobile/}gameplay/attack_results.html'

@@ -868,7 +868,7 @@ class County(GameState):
         if army:
             hit_points_lost *= 2.50  # The attacker takes extra casualties
             duration = self.get_army_duration(sum(army.values()))
-            expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, self.day, duration, "attack")
+            expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, self.day, duration)
             expedition.save()
             for unit in army.keys():
                 setattr(expedition, unit + '_sent', army[unit])
@@ -886,7 +886,7 @@ class County(GameState):
                 setattr(expedition, unit, army[unit])
             return casualties, expedition
 
-    def battle_results(self, army, enemy):
+    def battle_results(self, army, enemy, attack_type):
         offence = self.get_offensive_strength(army=army)
         defence = enemy.get_defensive_strength()
         percent_difference_in_power = abs(defence - offence) / ((defence + offence) / 2) * 100
@@ -902,23 +902,39 @@ class County(GameState):
                                                              results=battle_word)
         defence_casualties = enemy.get_casualties(attack_power=offence,
                                                   results=battle_word)
-        expedition.attack_power, expedition.defence_power = offence, defence
+        expedition.attack_power, expedition.defence_power, expedition.mission = offence, defence, attack_type
         if offence > defence:
             expedition.success = True
-            land_gained = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1)
-            land_gained = int(min(land_gained, enemy.land * 0.2))
-            expedition.land_acquired = land_gained
-            enemy.land -= land_gained
-            notification = Notification(enemy.id,
-                                        "You were attacked by {} and suffered a {} loss.".format(self.name,
-                                                                                                 battle_word),
-                                        "You lost {} acres and {} troops in the battle.".format(land_gained,
-                                                                                                defence_casualties),
-                                        self.kingdom.world.day)
-            message = "You claimed a {} victory and gained {} acres, but lost {} troops in the battle.".format(
-                battle_word,
-                land_gained,
-                offence_casualties)
+            if expedition.mission == "Attack":
+                land_gained = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1)
+                land_gained = int(min(land_gained, enemy.land * 0.2))
+                expedition.land_acquired = land_gained
+                enemy.land -= land_gained
+                notification = Notification(enemy.id,
+                                            "You were attacked by {} and suffered a {} loss.".format(self.name, battle_word),
+                                            "You lost {} acres and {} troops in the battle.".format(land_gained, defence_casualties),
+                                            self.kingdom.world.day)
+                message = "You claimed a {} victory and gained {} acres, but lost {} troops in the battle.".format(battle_word, land_gained, offence_casualties)
+            elif expedition.mission == "Pillage":
+                gold_gained = int(enemy.gold * 0.20)
+                wood_gained = int(enemy.wood * 0.20)
+                iron_gained = int(enemy.iron * 0.20)
+                expedition.gold_gained = gold_gained
+                expedition.wood_gained = wood_gained
+                expedition.iron_gained = iron_gained
+                enemy.gold -= gold_gained
+                enemy.wood -= wood_gained
+                enemy.iron -= iron_gained
+                notification = Notification(enemy.id,
+                                            "You were attacked by {} and suffered a {} loss.".format(self.name, battle_word),
+                                            "The enemy army stole {}, gold, {} wood, and {} iron after the battle.".format(gold_gained, wood_gained, iron_gained),
+                                            self.kingdom.world.day)
+                message = "You claimed a {} victory and gained {} gold, {} wood, and {} iron, but lost {} troops in the battle.".format(battle_word,
+                                                                                                                                        gold_gained,
+                                                                                                                                        wood_gained,
+                                                                                                                                        iron_gained,
+                                                                                                                                        offence_casualties)
+
         else:
             expedition.success = False
             notification = Notification(enemy.id,
