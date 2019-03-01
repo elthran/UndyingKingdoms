@@ -24,5 +24,10 @@ generic_technology = {'agriculture': Technology(name='agriculture',
                                               required=500,
                                               tier=1,
                                               max_level=1,
-                                              description='Your armies return from battle one day sooner.')
+                                              description='Your armies return from battle one day sooner.'),
+                      'public works': Technology(name='public works',
+                                                 required=750,
+                                                 tier=2,
+                                                 max_level=1,
+                                                 description='Your county generates an additional 1 happiness each day.')
                       }

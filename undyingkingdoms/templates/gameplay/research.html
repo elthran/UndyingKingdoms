@@ -32,7 +32,11 @@
     {% else %}
       <li>No technologies have been researched yet.</li>
     {% endfor %}
-  </ul>
+  </ul><br><br><br>
+  <h2>All Technologies (still in testing): When all techs of a tier are researched, the next tier is unlocked</h2>
+  {% for technology in all_technologies %}
+    <li>{{ technology.name.title() }} (Tier {{ technology.tier }}): {{ technology.description }}</li>
+    {% endfor %}
 </div>
 {% endblock %}
 

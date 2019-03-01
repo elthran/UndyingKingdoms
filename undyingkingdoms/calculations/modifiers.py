@@ -51,13 +51,17 @@ def get_modifiers(county, mod_type, filter_key):
     if mod_type == 'unit_attack':
         if county.technologies.get('cross-breeding') and county.technologies['cross-breeding'].completed:
             if filter_key == 'elite':
-                mod_sum += 1  # later will be mod.value
+                mod_sum += 2  # later will be mod.value
     if mod_type == 'unit_defence':
         if county.technologies.get('dwarven muskets') and county.technologies['dwarven muskets'].completed:
             if filter_key == 'archer':
-                mod_sum += 1  # later will be mod.value
+                mod_sum += 1
     if mod_type == 'unit_health':
         if county.technologies.get('mithril armour') and county.technologies['mithril armour'].completed:
             if filter_key != 'monster':
-                mod_sum += 1  # later will be mod.value
+                mod_sum += 1
+    if mod_type == 'unit_upkeep':
+        if county.technologies.get('civic duty') and county.technologies['civic duty'].completed:
+            if filter_key == 'peasant':
+                mod_sum -= 5
     return mod_sum
