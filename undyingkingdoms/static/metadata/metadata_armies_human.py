@@ -17,21 +17,26 @@ human_armies['monster'].class_name, human_armies['monster'].class_name_plural, h
 # Humans: Slightly faster training and lower iron costs
 # Peasants
 human_armies['peasant'].category = "Infantry"
+human_armies['peasant'].armour_type = "Unarmoured"
 human_armies['peasant'].trainable_per_day += 25
 human_armies['peasant'].gold -= 3
 human_armies['peasant'].iron -= 1
 human_armies['peasant'].attack -= 1
 # Soldiers
 human_armies['soldier'].category = "Infantry"
+human_armies['soldier'].armour_type = "Leather"
 human_armies['soldier'].trainable_per_day += 5
 human_armies['soldier'].iron -= 1
 # Archers
 human_armies['archer'].category = "Infantry"
+human_armies['archer'].armour_type = "Leather"
 human_armies['archer'].trainable_per_day += 5
 human_armies['archer'].iron -= 1
 # Elites
 human_armies['elite'].category = "Cavalry"
+human_armies['elite'].armour_type = "Plate"
 human_armies['elite'].trainable_per_day += 3
 human_armies['elite'].iron -= 1
 # Monsters
 human_armies['monster'].category = "Monster"
+human_armies['monster'].armour_type = "Plate"

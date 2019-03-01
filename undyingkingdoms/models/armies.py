@@ -20,9 +20,10 @@ class Army(GameState):
     _attack = db.Column(db.Integer)
     _defence = db.Column(db.Integer)
     _health = db.Column(db.Integer)
+    armour_type = db.Column(db.String(32))
     description = db.Column(db.String(128))
 
-    def __init__(self, name, class_name, class_name_plural, total, trainable_per_day, gold, iron, wood, upkeep, category, attack, defence, health, description):
+    def __init__(self, name, class_name, class_name_plural, total, trainable_per_day, gold, iron, wood, upkeep, category, attack, defence, health, armour_type, description):
         self.name = name
         self.class_name = class_name
         self.class_name_plural = class_name_plural
@@ -38,6 +39,7 @@ class Army(GameState):
         self.attack = attack
         self.defence = defence
         self.health = health
+        self.armour_type = armour_type
         self.description = description
 
     @property
