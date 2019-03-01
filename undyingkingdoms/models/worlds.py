@@ -42,6 +42,8 @@ class World(GameState):
             self.season = seasons[season_index]
             
     def advance_analytics(self):
+        if self.day < 0:
+            return
         users = User.query.filter_by(is_bot=False).filter(User.county != None).all()
         for user in users:
             # First check and set their retention
