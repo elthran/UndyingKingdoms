@@ -117,9 +117,9 @@ class County(GameState):
         self._health = 75
         self.weather = "Sunny"
         # Resources
-        self._gold = 500
-        self._wood = 100
-        self._iron = 0
+        self._gold = 750
+        self._wood = 250
+        self._iron = 50
         self._stone = 0
         self._research = 0
         self._mana = 0

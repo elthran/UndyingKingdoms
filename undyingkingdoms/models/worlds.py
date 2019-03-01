@@ -79,8 +79,8 @@ class World(GameState):
             kingdom.leader = 0
             kingdom.save()
 
-        tables = ['army', 'building', 'notification', 'expedition', 'infiltration', 'chatroom', 'message',
-                  'session', 'transaction', 'spell', 'technology', 'county']
+        tables = ['DAU', 'army', 'building', 'chatroom', 'notification', 'expedition', 'infiltration', 'message',
+                  'preferences', 'session', 'trade', 'transaction', 'spell', 'technology', 'county']
         helpers.drop_then_rebuild_tables(db, tables)
         self.age += 1
         self.day = -12
