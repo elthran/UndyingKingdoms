@@ -472,7 +472,7 @@ class County(GameState):
         random_chance = randint(1, 200)
         notification = None
         if random_chance == 1 and self.grain_stores > 0:
-            amount = min(self.day * randint(1, 2), self.grain_stores)
+            amount = int(randint(3, 7) * self.grain_stores / 100)
             notification = Notification(self.id,
                                         "Rats have gotten into your grain silos",
                                         "Your county lost {} of its stored grain.".format(amount),
@@ -488,7 +488,7 @@ class County(GameState):
             self.gold += amount
 
         elif random_chance == 3 and self.buildings['pasture'].total > 0:
-            amount = min(randint(3, 6), self.buildings['pasture'].total)
+            amount = min(randint(2, 4), self.buildings['pasture'].total)
             notification = Notification(self.id,
                                         "A disease has affected your cattle",
                                         "Your county has lost {} of its dairy farms.".format(amount),
@@ -496,7 +496,7 @@ class County(GameState):
             self.buildings['pasture'].total -= amount
 
         elif random_chance == 4 and self.buildings['field'].total > 0:
-            amount = min(randint(2, 4), self.buildings['field'].total)
+            amount = min(randint(1, 3), self.buildings['field'].total)
             notification = Notification(self.id,
                                         "Storms have ravaged your crops",
                                         "A massive storm has destroyed {} of your fields.".format(amount),
@@ -505,7 +505,7 @@ class County(GameState):
             self.weather = 'thunderstorm'
 
         elif random_chance == 5 and self.buildings['field'].total > 0:
-            amount = self.buildings['field'].total * 3
+            amount = self.buildings['field'].total * 15
             notification = Notification(self.id,
                                         "Booster crops",
                                         "Due to excellent weather this season, your crops produced an addition {} grain today.".format(
@@ -702,7 +702,7 @@ class County(GameState):
         return self.buildings['arcane'].total * self.buildings['arcane'].output
 
     def get_research_change(self):
-        if self.technologies.get("arcane knowledge")  and self.technologies["arcane knowledge"].complete:
+        if self.technologies.get("arcane knowledge") and self.technologies["arcane knowledge"].complete:
             return self.buildings['lab'].total * (self.buildings['lab'].output + 1)
         return self.buildings['lab'].total * self.buildings['lab'].output
 

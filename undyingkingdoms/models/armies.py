@@ -16,7 +16,7 @@ class Army(GameState):
     iron = db.Column(db.Integer)
     wood = db.Column(db.Integer)
     upkeep = db.Column(db.Integer)
-    attack = db.Column(db.Integer)
+    _attack = db.Column(db.Integer)
     _defence = db.Column(db.Integer)
     _health = db.Column(db.Integer)
     description = db.Column(db.String(128))
@@ -41,6 +41,19 @@ class Army(GameState):
     @property
     def available(self):
         return self.total - self.traveling
+
+    @property
+    def attack(self):
+        bonuses = 1
+        try:
+            bonuses = get_modifiers(self.county, 'unit_attack', self.name)  # County, Attack, Unit Name
+        except AttributeError:
+            pass
+        return self._attack + bonuses
+
+    @attack.setter
+    def attack(self, value):
+        self._attack = value
 
     @property
     def defence(self):

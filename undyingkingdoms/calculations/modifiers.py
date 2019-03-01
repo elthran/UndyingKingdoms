@@ -48,12 +48,16 @@ def get_modifiers(county, mod_type, filter_key):
     # e.g. Modifiers.query.filter_by(race, background, type, type2).all()
     # Then you could run a simple for loop and sum all the values.
     # We should have a master modifier table listing all modifiers.
+    if mod_type == 'unit_attack':
+        if county.technologies.get('cross-breeding') and county.technologies['cross-breeding'].completed:
+            if filter_key == 'elite':
+                mod_sum += 1  # later will be mod.value
     if mod_type == 'unit_defence':
-        if county.technologies['dwarven muskets'].completed:
+        if county.technologies.get('dwarven muskets') and county.technologies['dwarven muskets'].completed:
             if filter_key == 'archer':
                 mod_sum += 1  # later will be mod.value
     if mod_type == 'unit_health':
-        if county.technologies['mithril armour'].completed:
+        if county.technologies.get('mithril armour') and county.technologies['mithril armour'].completed:
             if filter_key != 'monster':
                 mod_sum += 1  # later will be mod.value
     return mod_sum
