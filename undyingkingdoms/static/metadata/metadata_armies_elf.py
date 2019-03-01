@@ -16,16 +16,22 @@ elf_armies['monster'].class_name, elf_armies['monster'].class_name_plural, elf_a
     'monster'].description = 'dragon', 'dragons', 'Dragons are incredibly powerful monsters.'
 # Elves: Slightly more damage and wood
 # Peasants
+elf_armies['peasant'].category = "Infantry"
 elf_armies['peasant'].attack += 1
 elf_armies['peasant'].defence += 1
 elf_armies['peasant'].wood += 2
 # Soldiers
+elf_armies['soldier'].category = "Infantry"
 elf_armies['soldier'].attack += 1
 elf_armies['soldier'].wood += 3
 # Archers
+elf_armies['archer'].category = "Infantry"
 elf_armies['archer'].defence += 1
 elf_armies['archer'].wood += 3
 # Elites
+elf_armies['elite'].category = "Cavalry"
 elf_armies['elite'].attack += 1
 elf_armies['elite'].defence += 1
 elf_armies['elite'].wood += 4
+# Monsters
+elf_armies['monster'].category = "Monster"
