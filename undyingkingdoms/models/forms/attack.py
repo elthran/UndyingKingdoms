@@ -7,6 +7,8 @@ class AttackForm(FlaskForm):
     soldier = SelectField('soldier', coerce=int)
     elite = SelectField('elite', coerce=int)
     monster = SelectField('monster', coerce=int)
+    
+    attack_type = SelectField('attack_type', coerce=int)
 
     def validate(self):
         if not FlaskForm.validate(self):
