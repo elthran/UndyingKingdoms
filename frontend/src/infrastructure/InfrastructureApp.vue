@@ -1,21 +1,22 @@
 <template>
   <div id="infrastructure-app">
     <prefix-title title="City Planner" />
-    <div id="layout-body">
-      <nav-bar />
-      <!-- <economy-form /> -->
-    </div>
+    <resource-header />
+    <!-- <economy-form /> -->
+    <nav-bar />
   </div>
 </template>
 
 <script>
 import NavBar from '@/components/NavBar.vue'
+import ResourceHeader from './ResourceHeader.vue'
 // import EconomyForm from './EconomyForm.vue'
 
 export default {
   name: 'InfrastructureApp',
   components: {
-    'nav-bar': NavBar
+    'nav-bar': NavBar,
+    'resource-header': ResourceHeader
     // 'economy-form': EconomyForm
   }
 }

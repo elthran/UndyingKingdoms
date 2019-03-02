@@ -2,13 +2,13 @@
 /* The main sidebar which is always visible when logged in */
 .mobile-sidebar {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   font-size: 1.5em;
   margin: 0 1em 0.5em;
 }
 
-.mobile-link {
+a {
   margin: 0.1em;
   padding: 0.1em;
   border: solid;
@@ -19,106 +19,121 @@
 }
 
 .bold {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .spacer {
-    margin-bottom: 1em;
+  margin-bottom: 1em;
 }
 </style>
 
 <template>
   <nav class="mobile-sidebar">
     <a
-      class="mobile-link"
       :href="urlFor.overview"
     >
       County&nbsp;Overview
     </a>
-    <div>
-      <h2>Advisors</h2>
+    <div class="top-spacer-dot-3">
+      <h2 class="center">
+        Advisors
+      </h2>
       <a
-        class="mobile-link" 
         :href="urlFor.economy"
       >
         Economist
       </a>
       <a
-        class="mobile-link" 
         :href="urlFor.infrastructure"
       >
         City Planner
       </a>
       <a
-        class="mobile-link" 
         :href="urlFor.military"
       >
         War
       </a>
       <a
-        class="mobile-link" 
         :href="urlFor.infiltration"
       >
         Thieves Guild
       </a>
       <a
-        class="mobile-link" 
         :href="urlFor.magic"
       >
         Wizard Council
       </a>
       <a
-        class="mobile-link" 
         :href="urlFor.research"
       >
         Scientist
       </a>
     </div>
-    <h2>Diplomacy</h2>
-    <a
-      class="mobile-link" 
-      :href="urlFor.diplomacy"
-    >
-      Trades
-    </a>
-    <a
-      :href="urlFor.messages"
-      :class="{ bold: user.hasMail }"
-    >
-      Messages
-    </a>
-    <a
-      :href="urlFor.chatroomAPI"
-      :class="{ bold: user.hasChatMessage }"
-    >
-      Town&nbsp;Hall
-    </a>
-    <a :href="urlFor.kingdom">
-      Kingdom&nbsp;Overview
-    </a>
-    <div class="spacer" />
-    <h2>About the Game</h2>
-    <a :href="urlFor.achievements">
-      Achievements
-    </a>
-    <a :href="urlFor.forum">
-      Forum
-    </a>
-    <a :href="urlFor.guide">
-      Player&nbsp;Guide
-    </a>
-    <a :href="urlFor.leaderboard">
-      Leaderboard
-    </a>
-    <a :href="urlFor.versions">
-      Read&nbsp;About&nbsp;Updates
-    </a>
-    <a
-      v-if="user.isAdmin"
-      :href="urlFor.adminHomeAPI"
-    >
-      Admin
-    </a>
+    <div class="top-spacer-dot-3">
+      <h2 class="center">
+        Diplomacy
+      </h2>
+      <a
+        :href="urlFor.diplomacy"
+      >
+        Trades
+      </a>
+      <a
+        :href="urlFor.messages"
+        :class="{ bold: user.hasMail }"
+      >
+        Messages
+      </a>
+      <a
+        :href="urlFor.chatroomAPI"
+        :class="{ bold: user.hasChatMessage }"
+      >
+        Town&nbsp;Hall
+      </a>
+      <a 
+        class="mobile-link"
+        :href="urlFor.kingdom"
+      >
+        Kingdom&nbsp;Overview
+      </a>
+    </div>
+    <div class="top-spacer-dot-3">
+      <h2 class="center">
+        About the Game
+      </h2>
+      <a
+        :href="urlFor.achievements"
+      >
+        Achievements
+      </a>
+      <a
+        :href="urlFor.forum"
+      >
+        Forum
+      </a>
+      <a
+        :href="urlFor.guide"
+      >
+        Player&nbsp;Guide
+      </a>
+      <a
+        :href="urlFor.leaderboard"
+      >
+        Leaderboard
+      </a>
+      <a
+        :href="urlFor.versions"
+      >
+        Read&nbsp;About&nbsp;Updates
+      </a>
+      <a
+        v-if="user.isAdmin"
+        :href="urlFor.adminHomeAPI"
+      >
+        Admin
+      </a>
+    </div>
+    <div class="top-spacer-dot-3" />
     <a :href="urlFor.logout">
       Logout
     </a>
