@@ -362,6 +362,9 @@ class County(GameState):
                 self.armies['elite'].traveling -= expedition.elite
                 self.armies['monster'].traveling -= expedition.monster
                 self.land += expedition.land_acquired
+                self.gold += expedition.gold_gained
+                self.wood += expedition.wood_gained
+                self.iron += expedition.iron_gained
                 notification = Notification(self.id, "Your army has returned",
                                             "{} new land has been added to your county".format(
                                                 expedition.land_acquired),
@@ -397,15 +400,16 @@ class County(GameState):
             self.armies['soldier'].total += randint(1, 3)
             self.armies['archer'].total += randint(1, 2)
             self.armies['elite'].total += 1
-        if randint(1, 10) > 8:
-            self.gold -= 25
+        self.gold += randint(1, 6)
+        self.wood += randint(1, 3)
+        self.iron += 1
         if randint(1, 24) == 24 and self.kingdom.leader == 0:
             friendly_counties = County.query.filter_by(kingdom_id=self.kingdom_id).all()
             friendly_counties = [county for county in friendly_counties if not county.user.is_bot]
             self.vote = choice(friendly_counties).id
             self.kingdom.count_votes()
-        if randint(1, 5) == 5:
-            self.buildings['house'].total += 2
+        if randint(1, 10) == 10 and self.get_available_land() >= 5:
+            self.buildings['house'].total += 3
             self.buildings['field'].total += 1
             self.buildings['pasture'].total += 1
 

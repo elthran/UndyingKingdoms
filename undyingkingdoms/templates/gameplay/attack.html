@@ -17,6 +17,7 @@
         <li>{{ army.class_name }}: {{ form[army.name] }} (Available: {{ army.available }} / {{ army.total }}) (Attack Power: {{ army.attack }} per troop)</li>
         {% endif %}{% endfor %}
     </ul>
+    <p>Choose to make a traditional attack to conquer land or to pillage and steal gold, wood, and iron. {{ form[attack_type] }}</p>
     <br>
     Current Army has <span id="calculatedAttack">0</span> attack power.
     <br>
