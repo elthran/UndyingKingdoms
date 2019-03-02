@@ -17,7 +17,8 @@
         <li>{{ army.class_name }}: {{ form[army.name] }} (Available: {{ army.available }} / {{ army.total }}) (Attack Power: {{ army.attack }} per troop)</li>
         {% endif %}{% endfor %}
     </ul>
-    <p>Choose to make a traditional attack to conquer land or to pillage and steal gold, wood, and iron. {{ form[attack_type] }}</p>
+    <p>Choose to make a traditional attack to conquer land or to pillage and steal gold, wood, and iron.</p>
+    <p>{{ form.attack_type }}</p>
     <br>
     Current Army has <span id="calculatedAttack">0</span> attack power.
     <br>
@@ -47,7 +48,7 @@ function updateDuration() {
     var days_to_return = 0;
     var total_units = 0;
     total_units = 0{% for unit in county.armies.values() %}{% if unit.name != 'archer' %}  + parseInt({{ unit.name }}_amount.value){% endif %}{% endfor %};
-    days_to_return = {{ county.get_army_duration(total_units) }};
+    days_to_return = 0;
     attackDuration.innerHTML = days_to_return;
 }
 
