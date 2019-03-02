@@ -365,10 +365,18 @@ class County(GameState):
                 self.gold += expedition.gold_gained
                 self.wood += expedition.wood_gained
                 self.iron += expedition.iron_gained
-                notification = Notification(self.id, "Your army has returned",
-                                            "{} new land has been added to your county".format(
-                                                expedition.land_acquired),
-                                            self.kingdom.world.day, "Military")
+                if expedition.mission == "Attack":
+                    notification = Notification(self.id, "Your army has returned",
+                                                "{} new land has been added to your county".format(
+                                                    expedition.land_acquired),
+                                                self.kingdom.world.day, "Military")
+                elif expedition.mission == "Pillage":
+                    notification = Notification(self.id, "Your army has returned",
+                                                "They have brought with them {} gold, {} wood, and {} iron.".format(
+                                                    expedition.gold_gained,
+                                                    expedition.wood_gained,
+                                                    expedition.iron_gained),
+                                                self.kingdom.world.day, "Military")
                 notification.save()
 
         trades = Trade.query.filter_by(county_id=self.id).filter_by(status='Pending').filter(Trade.duration > 0).all()
