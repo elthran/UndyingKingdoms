@@ -868,7 +868,7 @@ class County(GameState):
                     unit.total -= this_dead
                     casualties += this_dead
             self.population -= min(hit_points_to_be_removed, self.population)
-            return casualties
+            return int(casualties)
         if army:
             hit_points_lost *= 2.50  # The attacker takes extra casualties
             duration = self.get_army_duration(sum(army.values()))
@@ -888,7 +888,7 @@ class County(GameState):
             for unit in army.keys():
                 self.armies[unit].traveling += army[unit]  # Surviving troops are marked as absent
                 setattr(expedition, unit, army[unit])
-            return casualties, expedition
+            return int(casualties), expedition
 
     def battle_results(self, army, enemy, attack_type):
         offence = self.get_offensive_strength(army=army)
@@ -931,14 +931,13 @@ class County(GameState):
                 enemy.iron -= iron_gained
                 notification = Notification(enemy.id,
                                             "You were attacked by {} and suffered a {} loss.".format(self.name, battle_word),
-                                            "The enemy army stole {}, gold, {} wood, and {} iron after the battle.".format(gold_gained, wood_gained, iron_gained),
+                                            "The enemy army stole {} gold, {} wood, and {} iron after the battle.".format(gold_gained, wood_gained, iron_gained),
                                             self.kingdom.world.day)
                 message = "You claimed a {} victory and gained {} gold, {} wood, and {} iron, but lost {} troops in the battle.".format(battle_word,
                                                                                                                                         gold_gained,
                                                                                                                                         wood_gained,
                                                                                                                                         iron_gained,
                                                                                                                                         offence_casualties)
-
         else:
             expedition.success = False
             notification = Notification(enemy.id,
