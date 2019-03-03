@@ -83,6 +83,8 @@ class County(GameState):
     deaths = db.Column(db.Integer)
     immigration = db.Column(db.Integer)
     emigration = db.Column(db.Integer)
+
+    days_since_event = db.Column(db.Integer)
     buildings = db.relationship("Building",
                                 collection_class=attribute_mapped_collection('name'),
                                 cascade="all, delete, delete-orphan", passive_deletes=True)
@@ -137,6 +139,7 @@ class County(GameState):
         self.deaths = 0
         self.immigration = 0
         self.emigration = 0
+        self.days_since_event = 0
         # Buildings and Armies extracted from metadata
         self.spells = deepcopy(generic_spells)
         if self.race == 'Dwarf':
@@ -481,7 +484,11 @@ class County(GameState):
         self.weather = choice(self.weather_choices)
 
     def get_random_daily_events(self):
-        random_chance = randint(1, 200)
+        self.days_since_event += 1
+        random_chance = randint(0, self.days_since_event)
+        if random_chance < 15:
+            return
+        random_chance = randint(1, 8)
         notification = None
         if random_chance == 1 and self.grain_stores > 0:
             amount = int(randint(3, 7) * self.grain_stores / 100)
@@ -556,6 +563,7 @@ class County(GameState):
         if notification:
             notification.category = "Random Event"
             notification.save()
+            self.days_since_event = 0
 
     def get_nourishment_change(self):
         hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
