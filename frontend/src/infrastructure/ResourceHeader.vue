@@ -1,11 +1,11 @@
 <style>
 #header {
-    width: 310px;
+    max-width: 19em;
     margin: auto;
 }
 
 h2 {
-    margin: 0 1em 0.3em;
+    margin-bottom: 0.3em;
 }
 
 .tab {

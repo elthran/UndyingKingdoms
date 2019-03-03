@@ -23,8 +23,7 @@ export default {
 </script>
 
 <style scoped>
-#layout-body {
-    display: flex;
-    margin: 1em;
+#infrastructure-app {
+  margin: 1em 1em 0.6em;
 }
 </style>
