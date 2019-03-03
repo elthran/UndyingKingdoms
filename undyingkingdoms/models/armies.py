@@ -13,8 +13,8 @@ class Army(GameState):
     currently_training = db.Column(db.Integer)
     trainable_per_day = db.Column(db.Integer)
     gold = db.Column(db.Integer)
-    iron = db.Column(db.Integer)
     wood = db.Column(db.Integer)
+    iron = db.Column(db.Integer)
     _upkeep = db.Column(db.Integer)
     category = db.Column(db.String(32))
     _attack = db.Column(db.Integer)
@@ -23,7 +23,8 @@ class Army(GameState):
     armour_type = db.Column(db.String(32))
     description = db.Column(db.String(128))
 
-    def __init__(self, name, class_name, class_name_plural, total, trainable_per_day, gold, iron, wood, upkeep, category, attack, defence, health, armour_type, description):
+    def __init__(self, name, class_name, class_name_plural, total, trainable_per_day, gold, wood, iron, upkeep,
+                 category, attack, defence, health, armour_type, description):
         self.name = name
         self.class_name = class_name
         self.class_name_plural = class_name_plural
@@ -32,8 +33,8 @@ class Army(GameState):
         self.currently_training = 0
         self.trainable_per_day = trainable_per_day  # Number than can train per game-day
         self.gold = gold
-        self.iron = iron
         self.wood = wood
+        self.iron = iron
         self.upkeep = upkeep
         self.category = category
         self.attack = attack
@@ -48,7 +49,7 @@ class Army(GameState):
 
     @property
     def upkeep(self):
-        bonuses = 1
+        bonuses = 0
         try:
             bonuses = get_modifiers(self.county, 'unit_upkeep', self.name)  # County, Upkeep, Unit Name
         except AttributeError:
@@ -61,7 +62,7 @@ class Army(GameState):
 
     @property
     def attack(self):
-        bonuses = 1
+        bonuses = 0
         try:
             bonuses = get_modifiers(self.county, 'unit_attack', self.name)  # County, Attack, Unit Name
         except AttributeError:
@@ -74,7 +75,7 @@ class Army(GameState):
 
     @property
     def defence(self):
-        bonuses = 1
+        bonuses = 0
         try:
             bonuses = get_modifiers(self.county, 'unit_defence', self.name)  # County, Defence, Unit Name
         except AttributeError:
@@ -87,7 +88,7 @@ class Army(GameState):
 
     @property
     def health(self):
-        bonuses = 1
+        bonuses = 0
         try:
             bonuses = get_modifiers(self.county, 'unit_health', self.name)  # County, Health, Unit Name
         except AttributeError:
