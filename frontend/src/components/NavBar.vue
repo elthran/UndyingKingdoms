@@ -25,6 +25,11 @@ a {
 .spacer {
   margin-bottom: 1em;
 }
+
+.flex-group {
+  display: flex;
+  flex-wrap: wrap;
+}
 </style>
 
 <template>
@@ -34,8 +39,8 @@ a {
     >
       County&nbsp;Overview
     </a>
-    <div class="top-spacer-dot-3">
-      <h2 class="center">
+    <div class="top-spacer-dot-3 flex-group">
+      <h2 class="center width-100-percent">
         Advisors
       </h2>
       <a
@@ -69,8 +74,8 @@ a {
         Scientist
       </a>
     </div>
-    <div class="top-spacer-dot-3">
-      <h2 class="center">
+    <div class="top-spacer-dot-3 flex-group">
+      <h2 class="center width-100-percent">
         Diplomacy
       </h2>
       <a
@@ -97,8 +102,8 @@ a {
         Kingdom&nbsp;Overview
       </a>
     </div>
-    <div class="top-spacer-dot-3">
-      <h2 class="center">
+    <div class="top-spacer-dot-3 flex-group">
+      <h2 class="center width-100-percent">
         About the Game
       </h2>
       <a
