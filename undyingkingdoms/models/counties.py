@@ -742,13 +742,13 @@ class County(GameState):
         else:
             excess_worker_choice = value
         if excess_worker_choice == 0:  # Gold
-            return self.get_excess_production() // 14
+            return self.get_excess_production() // 10
         if excess_worker_choice == 1:  # Land
             return self.get_excess_production()
         if excess_worker_choice == 2:  # Food
-            return self.get_excess_production() // 7
+            return self.get_excess_production()
         if excess_worker_choice == 3:  # Happiness
-            return 1
+            return 2
 
     def apply_excess_production_value(self):
         if self.production_choice == 0:
@@ -756,8 +756,8 @@ class County(GameState):
         if self.production_choice == 1:
             self.produce_land += self.get_excess_production_value()
             # Every 1000 production towards land gives you one acre
-            if self.produce_land >= 2000:
-                self.produce_land -= 2000
+            if self.produce_land >= 1500:
+                self.produce_land -= 1500
                 self.land += 1
         if self.production_choice == 2:
             self.grain_stores += self.get_excess_production_value()
