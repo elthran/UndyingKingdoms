@@ -21,7 +21,7 @@ human_buildings['lair'].class_name, human_buildings['lair'].class_name_plural = 
 # Goblins:
 human_buildings['bank'].output += 2
 human_buildings['bank'].stone_cost += 5
-human_buildings['bank'].description = 'Each bank gives you 10 additional gold per day.'
+human_buildings['bank'].description = 'Each bank gives you 8 additional gold per day.'
 
 human_buildings['mill'].output += 1
 human_buildings['mill'].description = 'Each lumber mill produces 5 wood a day.'

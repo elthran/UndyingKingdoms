@@ -13,8 +13,8 @@ class Army(GameState):
     currently_training = db.Column(db.Integer)
     trainable_per_day = db.Column(db.Integer)
     gold = db.Column(db.Integer)
-    iron = db.Column(db.Integer)
     wood = db.Column(db.Integer)
+    iron = db.Column(db.Integer)
     _upkeep = db.Column(db.Integer)
     _attack = db.Column(db.Integer)
     _defence = db.Column(db.Integer)
@@ -30,8 +30,8 @@ class Army(GameState):
         self.currently_training = 0
         self.trainable_per_day = trainable_per_day  # Number than can train per game-day
         self.gold = gold
-        self.iron = iron
         self.wood = wood
+        self.iron = iron
         self.upkeep = upkeep
         self.attack = attack
         self.defence = defence
@@ -44,7 +44,7 @@ class Army(GameState):
 
     @property
     def upkeep(self):
-        bonuses = 1
+        bonuses = 0
         try:
             bonuses = get_modifiers(self.county, 'unit_upkeep', self.name)  # County, Upkeep, Unit Name
         except AttributeError:
@@ -57,7 +57,7 @@ class Army(GameState):
 
     @property
     def attack(self):
-        bonuses = 1
+        bonuses = 0
         try:
             bonuses = get_modifiers(self.county, 'unit_attack', self.name)  # County, Attack, Unit Name
         except AttributeError:
@@ -70,7 +70,7 @@ class Army(GameState):
 
     @property
     def defence(self):
-        bonuses = 1
+        bonuses = 0
         try:
             bonuses = get_modifiers(self.county, 'unit_defence', self.name)  # County, Defence, Unit Name
         except AttributeError:
@@ -83,7 +83,7 @@ class Army(GameState):
 
     @property
     def health(self):
-        bonuses = 1
+        bonuses = 0
         try:
             bonuses = get_modifiers(self.county, 'unit_health', self.name)  # County, Health, Unit Name
         except AttributeError:
