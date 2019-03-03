@@ -11,6 +11,7 @@
     {% if county.research > 0 %} and you have {{ county.research }} research left over from your last completed technology{% endif %}.</h2><br>
 
   <h2>Current Research:</h2>
+  <p>Note: More technologies become available as you complete all research within a tier.</p>
   <form id="research-form" action="{{ url_for('research_api') }}" accept-charset="UTF-8">
     {{ form.csrf_token }}
     <p>Name:
@@ -31,7 +32,11 @@
     {% else %}
       <li>No technologies have been researched yet.</li>
     {% endfor %}
-  </ul>
+  </ul><br><br><br>
+  <h2>All Technologies (still in testing): When all techs of a tier are researched, the next tier is unlocked</h2>
+  {% for technology in all_technologies %}
+    <li>{{ technology.name.title() }} (Tier {{ technology.tier }}): {{ technology.description }}</li>
+    {% endfor %}
 </div>
 {% endblock %}
 

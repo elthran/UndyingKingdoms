@@ -24,6 +24,8 @@ class MilitaryForm(FlaskForm):
             return False
         if self.insufficient_lairs():
             return False
+        if self.insufficient_population():
+            return False
         return True
 
     def insufficient_gold(self):
@@ -60,6 +62,16 @@ class MilitaryForm(FlaskForm):
         available = max_monsters - current_monsters
         if self.monster.data > available:
             self.county_id.errors.append("Not enough {}.".format(county.buildings['lair'].class_name))
+            return True
+        
+    def insufficient_population(self):
+        county = County.query.get(self.county_id.data)
+        available_population = county.get_available_workers()
+        required_population = 0
+        for army in [self.peasant, self.archer, self.soldier, self.elite, self.monster]:
+            required_population += army.data
+        if required_population > available_population:
+            self.county_id.errors.append("Not enough people are available.")
             return True
 
 

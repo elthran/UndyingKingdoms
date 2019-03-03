@@ -43,7 +43,7 @@ def create_bots(n=3):
 def create_notification(message):
     world = World.query.first()
     for county in County.query.all():
-        notification = Notification(county.id, "Admin Update", message, world.day)
+        notification = Notification(county.id, "Admin Update", message, world.day, "Admin")
         notification.save()
     return jsonify(
         status="success",

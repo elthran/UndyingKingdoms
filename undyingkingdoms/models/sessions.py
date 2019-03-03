@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from extensions import flask_db as db
 from undyingkingdoms.models.bases import GameEvent
 
@@ -7,10 +5,12 @@ from undyingkingdoms.models.bases import GameEvent
 class Session(GameEvent):
     time_logged_out = db.Column(db.DateTime)
     user_id = db.Column(db.Integer)
+    county_day = db.Column(db.Integer)
     minutes = db.Column(db.Integer)
 
-    def __init__(self, user_id):
+    def __init__(self, user_id, county_day):
         self.user_id = user_id
+        self.county_day = county_day
         self.seconds = None
         self.valid = True
 

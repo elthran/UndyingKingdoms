@@ -1,6 +1,6 @@
 from undyingkingdoms.models.achievements import Achievement
 
-# Current price balance: 1 iron == 2 wood == 4 gold == 8 food
+# Current price balance: 1 stone == 2 iron == 2 mana == 4 wood == 4 research == 6 gold == 60 food
 
 
 metadata_races = ['Human', 'Elf', 'Dwarf', 'Goblin']
@@ -87,7 +87,7 @@ all_achievements = {
 birth_rate_modifier = {'Elf': ("Elders", -0.15), 'Goblin': ("Expendable", 0.15)}
 death_rate_modifier = {}
 income_modifier = {'Merchant': ("Silver Tongue", 0.15)}
-offensive_power_modifier = {'Warlord': ("Relentless", 0.15)}
+offensive_power_modifier = {'Warlord': ("Relentless", 0.10)}
 infiltration_success_modifier = {'Rogue': ("Master of Disguise", 0.15), 'Goblin': ("Sneaky", 0.10)}
 production_per_worker_modifier = {'Dwarf': ("Dwarven Steel", 0.15), 'Engineer': ("Artisan", 0.20)}
 defense_per_citizen_modifier = {'Elf': ("Citizen Militia", 1.00)}

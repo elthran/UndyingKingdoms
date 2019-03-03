@@ -19,7 +19,7 @@ app.jinja_env.trim_blocks = True
 app.jinja_env.filters['vuesafe'] = jinja_filters.vue_safe
 app.config.from_object('private_config')
 
-if 'liveweb' in socket.gethostname():
+if 'live' in socket.gethostname():
     app.config.from_object('config.ProductionConfig')
 else:
     app.config.from_object('config.DevelopmentConfig')
