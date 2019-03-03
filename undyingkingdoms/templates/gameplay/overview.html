@@ -9,7 +9,7 @@
 <h1 style="text-align:center;">The {{ county.race }} county of {{ county.name }}, led by {{ county.title }} {{
     county.leader }} the {{ county.background }}</h1>
 <h2>Basics:</h2>
-<ul style="margin-left:25px">
+<ul>
     {% if county.kingdom.leader == 0 %}
     <li style="color:red">Kingdom is in civil war{% else %}
     <li style="color:green">Kingdom is at peace{% endif %}</li>
@@ -24,7 +24,7 @@
     <li>Weather: {{ county.weather.title() }}</li>
 </ul>
 <h2>Treasury:</h2>
-<ul style="margin-left:25px">
+<ul>
     <li>Coffers: {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"></li>
     <li>Lumber: {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"></li>
     <li>Iron: {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
@@ -32,7 +32,7 @@
     <li>Mana: {{ county.mana }} <img class="resource_icons" src="/static/images/mana_icon.jpg"></li>
 </ul>
 <h2>Citizens:</h2>
-<ul style="margin-left:25px">
+<ul>
     <li>Population: {{ county.population }} <img class="resource_icons" src="/static/images/population_icon.jpg"></li>
     <li>Happiness: {{ county.happiness_terminology.title() }}</li>
     <li>Nourishment: {{ county.nourishment_terminology.title() }}</li>

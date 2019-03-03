@@ -41,7 +41,7 @@ button {
         <p>We offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, {{ trade.iron_to_give }} iron, {{ trade.stone_to_give }} stone, and {{ trade.grain_to_give }} grain.</p>
         <p> We asked for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.</p>
         <p>The trade expires in {{ trade.duration }} days if they do not reply.</p>
-        <button class="cancel" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Cancel</button>
+        <button class="cancel" value="{{ url_for('trading_reply', trade_id=trade.id) }}">Cancel</button>
       </div>
     {% else %}
       <p>We currently have not offered any county a trade.</p>
@@ -57,8 +57,8 @@ button {
         <p>We offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, {{ trade.iron_to_give }} iron, {{ trade.stone_to_give }} stone, and {{ trade.grain_to_give }} grain.</p>
         <p> We asked for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.</p>
         <p>The trade expires in {{ trade.duration }} days if we do not reply.</p>
-        <button class="accept" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Accept</button>
-        <button class="reject" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Reject</button>
+        <button class="accept" value="{{ url_for('trading_reply', trade_id=trade.id) }}">Accept</button>
+        <button class="reject" value="{{ url_for('trading_reply', trade_id=trade.id) }}">Reject</button>
       </div>
     {% else %}
       <p>We currently have no offers by any county to trade.</p>

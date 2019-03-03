@@ -1,0 +1,22 @@
+{% extends "gameplay/layout.html" %}
+
+{% block title %}Decrees: {{ super() }}{% endblock %}
+
+{% block content2 %}
+
+{% set user = current_user %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+
+<h1>As the ruler of your kingdom, it is up to you to make decisions regarding your kingdom's actions.</h1><br><br>
+
+<h2>Send a royal decree which will message all counties under your control:</h2>
+<input id="notice" type="text" name="notice" placeholder="Notification to send ..">
+
+<h2>Declare war on another kingdom:</h2>
+
+<h2>Offer an alliance to another kingdom:</h2>
+
+<h2>Demand a tribute from all conties under your control:</h2>
+
+{% endblock %}
