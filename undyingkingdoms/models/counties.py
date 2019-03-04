@@ -1024,9 +1024,12 @@ class County(GameState):
     def get_chance_to_be_successfully_infiltrated(self):
         buffer_time = datetime.utcnow() - timedelta(hours=12)
         operations_on_target = Infiltration.query.filter_by(target_id=self.id).filter_by(success=True).filter(
-            Infiltration.time_created > buffer_time).count()
+            Infiltration.time_created > buffer_time).all()
+        counter = 0
+        for mission in operations_on_target:
+            counter += mission.amount_of_thieves
         reduction = 10 + (self.get_number_of_available_thieves() * 3500 / self.land) ** 0.7 + (
-                10 * operations_on_target)
+                5 * counter)
         return max(int(100 - reduction), 10)
 
     # Terminology

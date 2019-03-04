@@ -10,13 +10,31 @@
 
 <h1>As the ruler of your kingdom, it is up to you to make decisions regarding your kingdom's actions.</h1><br><br>
 
+<h2>Current Relations:</h2>
+{% for enemy in enemy_kingdoms %}
+<p style="color:red">At war with <a href="{{ url_for('kingdom', kingdom_id=enemy.id) }}">{{ enemy.name }}</a></p>
+{% else %}
+We are not at war with anyone.
+{% endfor %}
+
 <h2>Send a royal decree which will message all counties under your control:</h2>
-<input id="notice" type="text" name="notice" placeholder="Notification to send ..">
-
+<form id="message_form" method="POST" accept-charset="UTF-8" action="{{ url_for('send_decree') }}">
+    {{ message_form.csrf_token(id="message-form-csrf-token") }}
+    <textarea id="message-content" cols="100" rows="10" name="content" placeholder="Content" maxlength=256></textarea>
+    <div class="spacer"></div><br>
+    <button type="submit">Send Decree</button>
+  </form>
+<br><br>
 <h2>Declare war on another kingdom:</h2>
-
+<form id="relations_form" method="POST" accept-charset="UTF-8" action="{{ url_for('declare_war', kingdom_id=2) }}">
+    {{ relations_form.csrf_token(id="message-form-csrf-token") }}
+    {{ relations_form.target_id }}
+    <div class="spacer"></div><br>
+    <button type="submit">Declare War</button>
+  </form>
+<br><br>
 <h2>Offer an alliance to another kingdom:</h2>
-
-<h2>Demand a tribute from all conties under your control:</h2>
+<br><br>
+<h2>Demand a tribute from all counties under your control:</h2>
 
 {% endblock %}

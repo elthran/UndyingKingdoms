@@ -50,3 +50,6 @@ class Kingdom(GameState):
         if len(chosen_kingdom.counties) == 0:  # If it's empty, skip it and go to next kingdom in that direction
             return self.kingdom_button(direction, current_id)
         return current_id
+
+    def get_land_sum(self):
+        return sum(county.land for county in self.counties)
