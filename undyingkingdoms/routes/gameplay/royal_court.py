@@ -7,6 +7,13 @@ from undyingkingdoms.models import Kingdom, County, Notification, Diplomacy
 from undyingkingdoms.models.forms.royal_court import RoyalCourtMessageForm, RoyalCourtRelationsForm
 
 
+def build_relations_form(county):
+    form = RoyalCourtRelationsForm()
+    all_other_kingdoms = Kingdom.query.filter(Kingdom.id != county.kingdom_id).all()
+    form.target_id.choices = [(kingdom.id, kingdom.name) for kingdom in all_other_kingdoms]
+    return form
+
+
 @app.route('/gameplay/royal_court/', methods=['GET', 'POST'])
 @mobile_template('{mobile/}gameplay/royal_court.html')
 @login_required
@@ -15,10 +22,8 @@ def royal_court(template):
     if county.id != county.kingdom.leader:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
     message_form = RoyalCourtMessageForm()
-    relations_form = RoyalCourtRelationsForm()
 
-    all_other_kingdoms = Kingdom.query.filter(Kingdom.id != county.kingdom_id).all()
-    relations_form.target_id.choices = [(i, all_other_kingdoms[i].name) for i in range(len(all_other_kingdoms))]
+    relations_form = build_relations_form(county)
 
     wars = Diplomacy.query.filter_by(status="In Progress").filter_by(action="War")\
         .filter((Diplomacy.kingdom_id == county.kingdom_id) | (Diplomacy.target_id == county.kingdom_id))\
@@ -57,16 +62,17 @@ def send_decree():
         message="Your message didn't pass form validation.")
 
 
-@app.route('/gameplay/declare_war/<int:kingdom_id>', methods=['POST'])
+@app.route('/gameplay/declare_war', methods=['POST'])
 @login_required
-def declare_war(kingdom_id):
+def declare_war():
     county = current_user.county
     if county.id != county.kingdom.leader:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
-    relations_form = RoyalCourtRelationsForm()
-    all_other_kingdoms = Kingdom.query.filter(Kingdom.id != county.kingdom_id).all()
-    relations_form.target_id.choices = [(i, all_other_kingdoms[i].name) for i in range(len(all_other_kingdoms))]
+
+    relations_form = build_relations_form(county)
+
     if relations_form.validate_on_submit():
+        kingdom_id = relations_form.target_id.data
         enemy = Kingdom.query.get(kingdom_id)
         war = Diplomacy(county.kingdom_id, enemy.id, enemy.world.day, action="War", status="In Progress")
         war.attacker_goal = enemy.get_land_sum() // 15
@@ -75,4 +81,5 @@ def declare_war(kingdom_id):
         return redirect(url_for('royal_court'))
     return jsonify(
         status='fail',
-        message="Your message didn't pass form validation.")
+        message="Your message didn't pass form validation."
+    )

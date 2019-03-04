@@ -26,7 +26,7 @@ We are not at war with anyone.
   </form>
 <br><br>
 <h2>Declare war on another kingdom:</h2>
-<form id="relations_form" method="POST" accept-charset="UTF-8" action="{{ url_for('declare_war', kingdom_id=2) }}">
+<form id="relations_form" method="POST" accept-charset="UTF-8" action="{{ url_for('declare_war') }}">
     {{ relations_form.csrf_token(id="message-form-csrf-token") }}
     {{ relations_form.target_id }}
     <div class="spacer"></div><br>
