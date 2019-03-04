@@ -1,5 +1,6 @@
 from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.counties import County
+from undyingkingdoms.models.diplomacy import Diplomacy
 from undyingkingdoms.models.bases import GameState, db
 from undyingkingdoms.static.metadata.metadata import kingdom_names
 
@@ -18,6 +19,15 @@ class Kingdom(GameState):
     def __repr__(self):
         return '<Kingdom %r (%r)>' % (self.name, self.id)
 
+    def advance_day(self):
+        alliances = Diplomacy.query.filter_by(status="In Progress")\
+            .filter_by(action="Alliance")\
+            .filter(Diplomacy.kingdom_id == self.id).all()
+        for alliance in alliances:
+            alliance.duration -= 1
+            if alliance.duration == 0:
+                alliance.action = "Completed"
+
     def get_votes_needed(self):
         return max(len(self.counties) // 3, 3)
 
@@ -34,7 +44,8 @@ class Kingdom(GameState):
             if achievement:  # This should be unneeded and SHOULD be throwing errors. But while it's in beta we can leave it in
                 achievement.current_tier += 1
 
-    def get_leader_name(self, county_id):
+    @staticmethod
+    def get_leader_name(county_id):
         return County.query.get(county_id).name
 
     def kingdom_button(self, direction, current_id):
@@ -53,3 +64,50 @@ class Kingdom(GameState):
 
     def get_land_sum(self):
         return sum(county.land for county in self.counties)
+
+    def get_enemies(self):
+        kingdom_ids = []
+        kingdoms = []
+        wars = Diplomacy.query.filter_by(status="In Progress").filter_by(action="War") \
+            .filter((Diplomacy.kingdom_id == self.id) | (Diplomacy.target_id == self.id)) \
+            .all()
+        for war in wars:
+            if war.kingdom_id != self.id:
+                kingdom_ids.append(war.kingdom_id)
+            elif war.target_id != self.id:
+                kingdom_ids.append(war.target_id)
+        for kingdom_id in kingdom_ids:
+            kingdoms.append(Kingdom.query.get(kingdom_id))
+        return kingdoms
+
+    def get_allies(self):
+        kingdom_ids = []
+        kingdoms = []
+        alliances = Diplomacy.query.filter_by(status="In Progress").filter_by(action="Alliance") \
+            .filter((Diplomacy.kingdom_id == self.id) | (Diplomacy.target_id == self.id)) \
+            .all()
+        for alliance in alliances:
+            if alliance.kingdom_id != self.id:
+                kingdom_ids.append(alliance.kingdom_id)
+            elif alliance.target_id != self.id:
+                kingdom_ids.append(alliance.target_id)
+        for kingdom_id in kingdom_ids:
+            kingdoms.append(Kingdom.query.get(kingdom_id))
+        return kingdoms
+
+    def get_pending_alliance(self, keyword="from"):
+        kingdom_ids = []
+        kingdoms = []
+        if keyword == "from":
+            alliances = Diplomacy.query.filter_by(status="Pending").filter_by(action="Alliance").filter(
+                Diplomacy.kingdom_id == self.id).all()
+            for alliance in alliances:
+                kingdom_ids.append(alliance.target_id)
+        else:
+            alliances = Diplomacy.query.filter_by(status="Pending").filter_by(action="Alliance").filter(
+                Diplomacy.target_id == self.id).all()
+            for alliance in alliances:
+                kingdom_ids.append(alliance.kingdom_id)
+        for kingdom_id in kingdom_ids:
+            kingdoms.append(Kingdom.query.get(kingdom_id))
+        return kingdoms

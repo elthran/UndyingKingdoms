@@ -10,11 +10,45 @@
 
 <h1>As the ruler of your kingdom, it is up to you to make decisions regarding your kingdom's actions.</h1><br><br>
 
-<h2>Current Relations:</h2>
+<h2>Current Wars:</h2>
 {% for enemy in enemy_kingdoms %}
 <p style="color:red">At war with <a href="{{ url_for('kingdom', kingdom_id=enemy.id) }}">{{ enemy.name }}</a></p>
 {% else %}
 We are not at war with anyone.
+{% endfor %}
+<h2>Current Allies:</h2>
+{% for alliance in alliances %}
+  {% if alliance.target_id == kingdom.id %}
+    {% set ally = allies[alliance.kingdom_id] %}
+  {% else %}
+    {% set ally = allies[alliance.target_id] %}
+  {% endif %}
+  <p style="color:green">Allied with <a href="{{ url_for('kingdom', kingdom_id=ally.id) }}">{{ ally.name }}</a> for {{ alliance.duration }} more days.</p>
+{% else %}
+We are not at allied with anyone.
+{% endfor %}
+<h2>Pending Alliance Offers:</h2>
+{% for ally in offers_from_us %}
+<p style="color:green">Alliance pending with <a href="{{ url_for('kingdom', kingdom_id=ally.id) }}">{{ ally.name }}</a></p>
+<form id="cancel_alliance_form" method="POST" accept-charset="UTF-8" action="{{ url_for('cancel_alliance', kingdom_id=ally.id) }}">
+    {{ message_form.csrf_token(id="message-form-csrf-token") }}
+    <button type="submit">Cancel</button>
+  </form>
+{% else %}
+<p>We have not offered any alliances</p>
+{% endfor %}
+{% for ally in offers_to_us %}
+<p style="color:green">Alliance pending with <a href="{{ url_for('kingdom', kingdom_id=ally.id) }}">{{ ally.name }}</a></p>
+<form id="accept_alliance_form" method="POST" accept-charset="UTF-8" action="{{ url_for('accept_alliance', kingdom_id=ally.id) }}">
+    {{ message_form.csrf_token(id="message-form-csrf-token") }}
+    <button type="submit">Accept</button>
+  </form>
+<form id="decline_alliance_form" method="POST" accept-charset="UTF-8" action="{{ url_for('decline_alliance', kingdom_id=ally.id) }}">
+    {{ message_form.csrf_token(id="message-form-csrf-token") }}
+    <button type="submit">Decline</button>
+  </form>
+{% else %}
+<p>No one has offered us any alliances</p>
 {% endfor %}
 
 <h2>Send a royal decree which will message all counties under your control:</h2>
@@ -26,7 +60,7 @@ We are not at war with anyone.
   </form>
 <br><br>
 <h2>Declare war on another kingdom:</h2>
-<form id="relations_form" method="POST" accept-charset="UTF-8" action="{{ url_for('declare_war') }}">
+<form id="relations_form1" method="POST" accept-charset="UTF-8" action="{{ url_for('declare_war') }}">
     {{ relations_form.csrf_token(id="message-form-csrf-token") }}
     {{ relations_form.target_id }}
     <div class="spacer"></div><br>
@@ -34,7 +68,14 @@ We are not at war with anyone.
   </form>
 <br><br>
 <h2>Offer an alliance to another kingdom:</h2>
+<form id="relations_form2" method="POST" accept-charset="UTF-8" action="{{ url_for('offer_alliance') }}">
+    {{ relations_form.csrf_token(id="message-form-csrf-token") }}
+    {{ relations_form.target_id }}
+    <div class="spacer"></div><br>
+    <button type="submit">Offer Alliance</button>
+  </form>
 <br><br>
 <h2>Demand a tribute from all counties under your control:</h2>
+<button value="create" disabled="disabled">Not Yet Implemented</button>
 
 {% endblock %}

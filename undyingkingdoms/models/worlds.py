@@ -33,9 +33,11 @@ class World(GameState):
                     county.temporary_bot_tweaks()
                 else:
                     county.advance_day()
+            for kingdom in Kingdom.query.all():
+                kingdom.advance_day()
 
         self.day += 1
-        if self.day % 36 == 0:  # Every 36 game days we advance the season
+        if self.day % 36 == 0:  # Every 36 game days we advance the game season
             season_index = seasons.index(self.season) + 1
             if season_index == len(seasons):
                 season_index = 0
