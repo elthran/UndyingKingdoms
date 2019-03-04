@@ -18,11 +18,7 @@ We are not at war with anyone.
 {% endfor %}
 <h2>Current Allies:</h2>
 {% for alliance in alliances %}
-  {% if alliance.target_id == kingdom.id %}
-    {% set ally = allies[alliance.kingdom_id] %}
-  {% else %}
-    {% set ally = allies[alliance.target_id] %}
-  {% endif %}
+  {% set ally = alliance.get_other_kingdom(kingdom) %}
   <p style="color:green">Allied with <a href="{{ url_for('kingdom', kingdom_id=ally.id) }}">{{ ally.name }}</a> for {{ alliance.duration }} more days.</p>
 {% else %}
 We are not at allied with anyone.

@@ -4,12 +4,111 @@ from undyingkingdoms.models.diplomacy import Diplomacy
 from undyingkingdoms.models.bases import GameState, db
 from undyingkingdoms.static.metadata.metadata import kingdom_names
 
+def active_ally_condition(id_join):
+    return (
+        f"and_("
+        f"{id_join}, "
+        "diplomacy.c.status=='In Progress', "
+        "diplomacy.c.action=='Alliance'"
+        ")"
+    )
+
+def pending_ally_condition(id_join):
+    return (
+        f"and_("
+        f"{id_join}, "
+        "diplomacy.c.status=='Pending', "
+        "diplomacy.c.action=='Alliance'"
+        ")"
+    )
+
+def war_condition(id_join):
+    return (
+        f"and_("
+        f"{id_join}, "
+        "diplomacy.c.status=='In Progress', "
+        "diplomacy.c.action=='War'"
+        ")"
+    )
+
 
 class Kingdom(GameState):
     name = db.Column(db.String(128), nullable=False, unique=True)
     world_id = db.Column(db.Integer, db.ForeignKey('world.id'), nullable=False)
     counties = db.relationship('County', backref='kingdom')
     leader = db.Column(db.Integer)  # county.id of leader
+
+    _kingdoms_you_allied_with = db.relationship(
+        'Kingdom',
+        secondary="diplomacy",
+        primaryjoin=active_ally_condition("Kingdom.id==diplomacy.c.kingdom_id"),
+        secondaryjoin=active_ally_condition("Kingdom.id==diplomacy.c.target_id"),
+        backref="_kingdoms_that_allied_with_you"
+    )
+
+    _kingdoms_you_started_wars_with = db.relationship(
+        'Kingdom',
+        secondary='diplomacy',
+        primaryjoin=war_condition("Kingdom.id==diplomacy.c.kingdom_id"),
+        secondaryjoin=war_condition("Kingdom.id==diplomacy.c.target_id"),
+        backref="_kingdoms_that_started_wars_with_you"
+    )
+
+    _pending_alliances_you_started = db.relationship(
+        'Diplomacy',
+        primaryjoin=pending_ally_condition("Kingdom.id==diplomacy.c.kingdom_id"),
+    )
+
+    _pending_alliances_started_with_you = db.relationship(
+        'Diplomacy',
+        primaryjoin=active_ally_condition("Kingdom.id==diplomacy.c.target_id"),
+    )
+
+    _kingdoms_who_we_offered_alliances = db.relationship(
+        'Kingdom',
+        secondary='diplomacy',
+        primaryjoin=pending_ally_condition("Kingdom.id==diplomacy.c.kingdom_id"),
+        secondaryjoin=pending_ally_condition("Kingdom.id==diplomacy.c.target_id"),
+        backref="_kingdoms_who_offered_us_alliances"
+    )
+
+    _alliances_you_started = db.relationship(
+        'Diplomacy',
+        primaryjoin=active_ally_condition("Kingdom.id==diplomacy.c.kingdom_id")
+    )
+
+    _alliances_started_with_you = db.relationship(
+        'Diplomacy',
+        primaryjoin=active_ally_condition("Kingdom.id==diplomacy.c.target_id")
+    )
+
+    @property
+    def allies(self):
+        return self._kingdoms_you_allied_with + self._kingdoms_that_allied_with_you
+
+    @property
+    def pending_alliances(self):
+        return self._pending_alliances_you_started + self._pending_alliances_started_with_you
+
+    @property
+    def alliances(self):
+        return self._alliances_you_started + self._alliances_started_with_you
+
+    @property
+    def enemies(self):
+        return self._kingdoms_you_started_wars_with + self._kingdoms_that_started_wars_with_you
+
+    @property
+    def kingdoms_who_offered_us_alliances(self):
+        return self._kingdoms_who_offered_us_alliances
+
+    @property
+    def kingdoms_who_we_offered_alliances_to(self):
+        return self._kingdoms_who_we_offered_alliances
+
+    @property
+    def kingdoms_with_pending_alliances(self):
+        return self._kingdoms_who_offered_us_alliances + self._kingdoms_who_we_offered_alliances
 
     def __init__(self, name):
         self.name = name

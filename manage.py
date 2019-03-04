@@ -80,7 +80,7 @@ def populate_db():
         preferences.save()
 
         # Create Haldon
-        user = User("haldon", MARLEN_TEMPORARY_EMAIL, MARLEN_TEMPORARY_ACCOUNT_PASSWORD)
+        user  = User("haldon", MARLEN_TEMPORARY_EMAIL, MARLEN_TEMPORARY_ACCOUNT_PASSWORD)
         user.is_admin = True
         user.is_active = True
         user.save()
@@ -89,6 +89,11 @@ def populate_db():
         county.vote = county.id
         preferences = Preferences(county.id, user.id)
         preferences.save()
+
+        # make me the leader of Faenoth for testing.
+        faenoth = Kingdom.query.filter_by(name="Faenoth").one()
+        faenoth.leader = user.id
+        faenoth.save()
 
         # Create AI1 (He is weak and easier to attack for testing)
         user = User("ai1", "1@gmail.com", "star")
@@ -100,6 +105,7 @@ def populate_db():
         county.armies['archer'].amount = 0
         preferences = Preferences(county.id, user.id)
         preferences.save()
+
         # Create AI2 (He is weak and easier to attack for testing)
         user = User("ai2", "2@gmail.com", "star")
         user.save()
@@ -110,6 +116,12 @@ def populate_db():
         county.armies['archer'].amount = 0
         preferences = Preferences(county.id, user.id)
         preferences.save()
+
+        # make ai2 the leader of Aldoroth for testing.
+        aldoroth = Kingdom.query.filter_by(name="Aldoroth").one()
+        aldoroth.leader = user.id
+        aldoroth.save()
+
         # Create AI3 (He is weak and easier to attack for testing)
         user = User("ai3", "3@gmail.com", "star")
         user.save()
