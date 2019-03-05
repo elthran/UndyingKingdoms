@@ -17,15 +17,15 @@ h2 {
   <div id="header">
     <h2>Available Land: {{ availableLand }}&nbsp;/&nbsp;{{ land }}</h2>
     <h2>Citizens Available: {{ availableCitizens }}&nbsp;/&nbsp;{{ population }}</h2>
+    <idle-population-form />
     <h2>
       Current Resources:
-      <!-- above from mobile version of site, below from desktop version-->
       <div class="tab">
         Gold Cost: {{ goldCost }}
         <img
           class="resource_icons"
           src="/static/dist/images/gold_icon.jpg"
-        > / {{ gold }} 
+        > / {{ gold }}
         <img
           class="resource_icons"
           src="/static/dist/images/gold_icon.jpg"
@@ -36,7 +36,7 @@ h2 {
         <img
           class="resource_icons"
           src="/static/dist/images/wood_icon.jpg"
-        > / {{ wood }} 
+        > / {{ wood }}
         <img
           class="resource_icons"
           src="/static/dist/images/wood_icon.jpg"
@@ -64,8 +64,13 @@ h2 {
 </template>
 
 <script>
+import IdlePopulationForm from './IdlePopulationForm.vue'
+
 export default {
-  name: "ResourceHeader",
+  name: 'ResourceHeader',
+  components: {
+    'idle-population-form': IdlePopulationForm
+  },
   data () {
     return {
       availableLand: -1,

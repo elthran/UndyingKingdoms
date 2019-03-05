@@ -1,5 +1,6 @@
 from importlib import import_module
 
+from ..helpers import to_class_name
 from ... import api_blueprint
 
 __doc__ = """
@@ -13,11 +14,11 @@ api_blueprint.add_url_rule(
     view_func=PopulationAPI.as_view(f'economy_population_api')
 """
 
-endpoints = ['resources']
+endpoints = ['resources', 'idle_population']
 
 for endpoint in endpoints:
     mod = import_module('.' + endpoint, __name__)
-    class_name = endpoint.title() + 'API'
+    class_name = to_class_name(endpoint) + 'API'
     Class = getattr(mod, class_name)
     api_blueprint.add_url_rule(
         f'/infrastructure/{endpoint}',
