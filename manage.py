@@ -80,7 +80,7 @@ def populate_db():
         preferences.save()
 
         # Create Haldon
-        user  = User("haldon", MARLEN_TEMPORARY_EMAIL, MARLEN_TEMPORARY_ACCOUNT_PASSWORD)
+        user = User("haldon", MARLEN_TEMPORARY_EMAIL, MARLEN_TEMPORARY_ACCOUNT_PASSWORD)
         user.is_admin = True
         user.is_active = True
         user.save()

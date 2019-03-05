@@ -4,6 +4,7 @@ from undyingkingdoms.models.diplomacy import Diplomacy
 from undyingkingdoms.models.bases import GameState, db
 from undyingkingdoms.static.metadata.metadata import kingdom_names
 
+
 def active_ally_condition(id_join):
     return (
         f"and_("
@@ -13,6 +14,7 @@ def active_ally_condition(id_join):
         ")"
     )
 
+
 def pending_ally_condition(id_join):
     return (
         f"and_("
@@ -21,6 +23,7 @@ def pending_ally_condition(id_join):
         "diplomacy.c.action=='Alliance'"
         ")"
     )
+
 
 def war_condition(id_join):
     return (
@@ -59,6 +62,26 @@ class Kingdom(GameState):
         primaryjoin=pending_ally_condition("Kingdom.id==diplomacy.c.kingdom_id"),
     )
 
+    _alliances_you_started = db.relationship(
+        'Diplomacy',
+        primaryjoin=active_ally_condition("Kingdom.id==diplomacy.c.kingdom_id")
+    )
+
+    _alliances_started_with_you = db.relationship(
+        'Diplomacy',
+        primaryjoin=active_ally_condition("Kingdom.id==diplomacy.c.target_id")
+    )
+
+    _wars_you_started = db.relationship(
+        'Diplomacy',
+        primaryjoin=war_condition("Kingdom.id==diplomacy.c.kingdom_id")
+    )
+
+    _wars_started_with_you = db.relationship(
+        'Diplomacy',
+        primaryjoin=war_condition("Kingdom.id==diplomacy.c.target_id")
+    )
+
     _pending_alliances_started_with_you = db.relationship(
         'Diplomacy',
         primaryjoin=active_ally_condition("Kingdom.id==diplomacy.c.target_id"),
@@ -72,20 +95,6 @@ class Kingdom(GameState):
         backref="_kingdoms_who_offered_us_alliances"
     )
 
-    _alliances_you_started = db.relationship(
-        'Diplomacy',
-        primaryjoin=active_ally_condition("Kingdom.id==diplomacy.c.kingdom_id")
-    )
-
-    _alliances_started_with_you = db.relationship(
-        'Diplomacy',
-        primaryjoin=active_ally_condition("Kingdom.id==diplomacy.c.target_id")
-    )
-
-    @property
-    def allies(self):
-        return self._kingdoms_you_allied_with + self._kingdoms_that_allied_with_you
-
     @property
     def pending_alliances(self):
         return self._pending_alliances_you_started + self._pending_alliances_started_with_you
@@ -93,6 +102,14 @@ class Kingdom(GameState):
     @property
     def alliances(self):
         return self._alliances_you_started + self._alliances_started_with_you
+
+    @property
+    def wars(self):
+        return self._wars_you_started + self._wars_started_with_you
+
+    @property
+    def allies(self):
+        return self._kingdoms_you_allied_with + self._kingdoms_that_allied_with_you
 
     @property
     def enemies(self):
@@ -163,50 +180,3 @@ class Kingdom(GameState):
 
     def get_land_sum(self):
         return sum(county.land for county in self.counties)
-
-    def get_enemies(self):
-        kingdom_ids = []
-        kingdoms = []
-        wars = Diplomacy.query.filter_by(status="In Progress").filter_by(action="War") \
-            .filter((Diplomacy.kingdom_id == self.id) | (Diplomacy.target_id == self.id)) \
-            .all()
-        for war in wars:
-            if war.kingdom_id != self.id:
-                kingdom_ids.append(war.kingdom_id)
-            elif war.target_id != self.id:
-                kingdom_ids.append(war.target_id)
-        for kingdom_id in kingdom_ids:
-            kingdoms.append(Kingdom.query.get(kingdom_id))
-        return kingdoms
-
-    def get_allies(self):
-        kingdom_ids = []
-        kingdoms = []
-        alliances = Diplomacy.query.filter_by(status="In Progress").filter_by(action="Alliance") \
-            .filter((Diplomacy.kingdom_id == self.id) | (Diplomacy.target_id == self.id)) \
-            .all()
-        for alliance in alliances:
-            if alliance.kingdom_id != self.id:
-                kingdom_ids.append(alliance.kingdom_id)
-            elif alliance.target_id != self.id:
-                kingdom_ids.append(alliance.target_id)
-        for kingdom_id in kingdom_ids:
-            kingdoms.append(Kingdom.query.get(kingdom_id))
-        return kingdoms
-
-    def get_pending_alliance(self, keyword="from"):
-        kingdom_ids = []
-        kingdoms = []
-        if keyword == "from":
-            alliances = Diplomacy.query.filter_by(status="Pending").filter_by(action="Alliance").filter(
-                Diplomacy.kingdom_id == self.id).all()
-            for alliance in alliances:
-                kingdom_ids.append(alliance.target_id)
-        else:
-            alliances = Diplomacy.query.filter_by(status="Pending").filter_by(action="Alliance").filter(
-                Diplomacy.target_id == self.id).all()
-            for alliance in alliances:
-                kingdom_ids.append(alliance.kingdom_id)
-        for kingdom_id in kingdom_ids:
-            kingdoms.append(Kingdom.query.get(kingdom_id))
-        return kingdoms

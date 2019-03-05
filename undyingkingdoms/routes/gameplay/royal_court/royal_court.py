@@ -21,23 +21,12 @@ def royal_court(template):
 
     relations_form = build_relations_form(county.kingdom)
 
-    # enemy_kingdoms = county.kingdom.get_enemies()
-    # ally_list = county.kingdom.get_allies()
-    # allies = {}
-    # for ally in ally_list:
-    #     allies[ally.id] = ally
-    # alliances = Diplomacy.query.filter_by(status="In Progress").filter_by(action="Alliance") \
-    #         .filter((Diplomacy.kingdom_id == county.kingdom.id) | (Diplomacy.target_id == county.kingdom.id)) \
-    #         .all()
-    # offers_to_us = county.kingdom.get_pending_alliance(keyword="to")
-    # offers_from_us = county.kingdom.get_pending_alliance(keyword="from")
     return render_template(
         template,
         message_form=message_form,
         relations_form=relations_form,
         allies=kingdom.allies,
         enemy_kingdoms=kingdom.enemies,
-        alliances=kingdom.alliances,
         pending_alliances=kingdom.pending_alliances,
         offers_to_us=kingdom.kingdoms_who_offered_us_alliances,
         offers_from_us=kingdom.kingdoms_who_we_offered_alliances_to
