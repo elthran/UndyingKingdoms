@@ -13,9 +13,15 @@
 <h2>Current Wars:</h2>
 {% for war in kingdom.wars %}
   {% set enemy = war.get_other_kingdom(kingdom) %}
+  {% set attacker = war.kingdom %}
   <p style="color:red">At war with <a href="{{ url_for('kingdom', kingdom_id=enemy.id) }}">{{ enemy.name }}</a></p>
-  Our progress: {{ war.attacker_current }} / {{ war.attacker_goal }}<br>
-  Enemy progress: {{ war.defender_current }} / {{ war.defender_goal }}<br>
+  {% if attacker.id == kingdom.id %}
+    Our progress: {{ war.attacker_current }} / {{ war.attacker_goal }}<br>
+    Enemy progress: {{ war.defender_current }} / {{ war.defender_goal }}<br>
+  {% else %}
+    Our progress: {{ war.defender_current }} / {{ war.defender_goal }}<br>
+    Enemy progress: {{ war.attacker_current }} / {{ war.attacker_goal }}<br>
+  {% endif %}
 {% else %}
 We are not at war with anyone.
 {% endfor %}
