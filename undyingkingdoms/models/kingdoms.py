@@ -40,6 +40,10 @@ class Kingdom(GameState):
     world_id = db.Column(db.Integer, db.ForeignKey('world.id'), nullable=False)
     counties = db.relationship('County', backref='kingdom')
     leader = db.Column(db.Integer)  # county.id of leader
+    wars_total_lt = db.Column(db.Integer)
+    wars_won_lt = db.Column(db.Integer)
+    wars_total_ta = db.Column(db.Integer)
+    wars_won_ta = db.Column(db.Integer) 
 
     _kingdoms_you_allied_with = db.relationship(
         'Kingdom',
@@ -131,6 +135,10 @@ class Kingdom(GameState):
         self.name = name
         self.leader = 0
         self.world_id = 1
+        self.wars_total_lt = 0
+        self.wars_won_lt = 0
+        self.wars_total_ta = 0
+        self.wars_won_ta = 0
 
     def __repr__(self):
         return '<Kingdom %r (%r)>' % (self.name, self.id)
@@ -180,3 +188,9 @@ class Kingdom(GameState):
 
     def get_land_sum(self):
         return sum(county.land for county in self.counties)
+
+    def return_top_3_land(self):
+        counties = sorted(self.counties, key=lambda x: x.land)
+        return sum(county.land for county in counties[:2])
+
+

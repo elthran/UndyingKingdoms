@@ -894,6 +894,7 @@ class County(GameState):
             if expedition.mission == "Attack":
                 land_gained = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1)
                 land_gained = int(min(land_gained, enemy.land * 0.2))
+                war_score = land_gained
                 expedition.land_acquired = land_gained
                 enemy.land -= land_gained
                 notification = Notification(enemy.id,
@@ -902,6 +903,7 @@ class County(GameState):
                                             self.kingdom.world.day)
                 message = "You claimed a {} victory and gained {} acres, but lost {} troops in the battle.".format(battle_word, land_gained, offence_casualties)
             elif expedition.mission == "Pillage":
+                war_score = 15
                 gold_gained = int(enemy.gold * 0.20)
                 wood_gained = int(enemy.wood * 0.20)
                 iron_gained = int(enemy.iron * 0.20)
@@ -920,6 +922,21 @@ class County(GameState):
                                                                                                                                         wood_gained,
                                                                                                                                         iron_gained,
                                                                                                                                         offence_casualties)
+            # Add war clause since it was a successful attack
+            for war in self.kingdom.wars:
+                if war.get_other_kingdom(self.kingdom) == enemy.kingdom:  # If this is true, we are at war with them
+                    if war.kingdom_id == self.kingdom.id:  # We are the attack
+                        war.attacker_current += war_score
+                        if war.attacker_current >= war.attacker_goal:
+                            war.status = "Won"
+                            self.kingdom.wars_won_ta += 1
+                            self.kingdom.wars_won_lt += 1
+                    else:
+                        war.defender_current += war_score
+                        if war.defender_current >= war.defender_goal:
+                            war.status = "Lost"
+                            self.kingdom.wars_won_ta += 1
+                            self.kingdom.wars_won_lt += 1
         else:
             expedition.success = False
             notification = Notification(enemy.id,

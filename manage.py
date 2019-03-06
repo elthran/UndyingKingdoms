@@ -76,8 +76,11 @@ def populate_db():
         county = County(1, "Ulthuan", "Elthran", user.id, 'Goblin', 'Sir', 'Merchant')
         county.save()
         county.vote = county.id
+        county.kingdom_id = 1
         preferences = Preferences(county.id, user.id)
         preferences.save()
+        aldoroth = Kingdom.query.get(1)
+        aldoroth.leader = county.id
 
         # Create Haldon
         user = User("haldon", MARLEN_TEMPORARY_EMAIL, MARLEN_TEMPORARY_ACCOUNT_PASSWORD)
@@ -87,13 +90,11 @@ def populate_db():
         county = County(1, "Northern Wastes", "Haldon", user.id, 'Dwarf', 'Sir', 'Merchant')
         county.save()
         county.vote = county.id
+        county.kingdom_id = 2
         preferences = Preferences(county.id, user.id)
         preferences.save()
-
-        # make me the leader of Faenoth for testing.
-        faenoth = Kingdom.query.filter_by(name="Faenoth").one()
-        faenoth.leader = user.id
-        faenoth.save()
+        faenoth = Kingdom.query.get(2)
+        faenoth.leader = county.id
 
         # Create AI1 (He is weak and easier to attack for testing)
         user = User("ai1", "1@gmail.com", "star")
@@ -117,17 +118,13 @@ def populate_db():
         preferences = Preferences(county.id, user.id)
         preferences.save()
 
-        # make ai2 the leader of Aldoroth for testing.
-        aldoroth = Kingdom.query.filter_by(name="Aldoroth").one()
-        aldoroth.leader = user.id
-        aldoroth.save()
-
         # Create AI3 (He is weak and easier to attack for testing)
         user = User("ai3", "3@gmail.com", "star")
         user.save()
         county = County(2, "Robotica3", "Mr. Roboto3", user.id, 'Human', 'Lady', 'Engineer')
         county.save()
         county.vote = county.id
+        county.kingdom_id = 3
         county.armies['peasant'].amount = 0
         county.armies['archer'].amount = 0
         preferences = Preferences(county.id, user.id)

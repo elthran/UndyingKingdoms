@@ -79,7 +79,6 @@ class DAU(GameEvent):
         self.county_day = county.day
         self.account_age_in_days = (datetime.utcnow() - user.time_created).days
         self.county_id = county.id
-        self.score = user.get_current_leaderboard_score()
         self.land = county.land
         self.population = county.population
         self.gold = county.gold

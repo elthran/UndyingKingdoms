@@ -16,6 +16,7 @@ class User(GameState):
     username = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), nullable=False, unique=True)
     password_hash = db.Column(db.String(192), nullable=False)
+    gems = db.Column(db.Integer)
 
     # Analytics
     ages_completed = db.Column(db.Integer)
@@ -31,7 +32,6 @@ class User(GameState):
                                    collection_class=attribute_mapped_collection('name'),
                                    cascade="all, delete, delete-orphan", passive_deletes=True)
     achievement_points = db.Column(db.Integer)
-    alpha_wins = db.Column(db.Integer)
     global_chat_on = db.Column(db.Boolean, default=False)
 
     # Flask
@@ -46,6 +46,7 @@ class User(GameState):
         self.username = username
         self.email = email
         self.set_password_hash(password)
+        self.gems = 0
 
         # Analytics
         self.ages_completed = 0
@@ -68,8 +69,6 @@ class User(GameState):
         # Administrative
         self.is_admin = False
         self.is_bot = False
-
-        self.alpha_wins = 0
 
     @property
     def in_active_session(self):
@@ -129,15 +128,11 @@ class User(GameState):
             return False
         return session.time_logged_out
 
-    def get_current_leaderboard_score(self):
-        # TEMPORARY FOR ALPHA. Just a quick way to add some fun
-        try:  # if user has no county give 0 score.
-            score = self.county.land * 10
-            score += self.county.population // 2
-            score += max(self.county.get_offensive_strength(scoreboard=True), self.county.get_defensive_strength(scoreboard=True))
-            return score
-        except AttributeError:
-            return 0
-
     def __repr__(self):
         return '<User %r (%r)>' % (self.username, self.id)
+
+    def get_previous_session(self):
+        session = Session.query.filter_by(user_id=self.id).order_by(desc('time_logged_out')).first()
+        if session is None:
+            return False
+        return session.time_created

@@ -69,12 +69,6 @@ class World(GameState):
 
     def advance_age(self):
         users = User.query.all()
-        top_user = sorted(users, key=lambda user: user.get_current_leaderboard_score()).pop()
-
-        # the player actually played this round
-        if top_user.county is not None:
-            top_user.alpha_wins += 1
-            top_user.save()
 
         kingdoms = Kingdom.query.all()
         for kingdom in kingdoms:
