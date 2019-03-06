@@ -54,8 +54,7 @@ class County(GameState):
     _population = db.Column(db.Integer)
     _land = db.Column(db.Integer)
     _happiness = db.Column(db.Integer)  # Out of 100
-    _nourishment = db.Column(db.Integer)  # Out of 100
-    _health = db.Column(db.Integer)  # Out of 100
+    _healthiness = db.Column(db.Integer)  # Out of 100
 
     _gold = db.Column(db.Integer)
     _wood = db.Column(db.Integer)
@@ -114,9 +113,8 @@ class County(GameState):
         # Basic resources
         self._population = 500
         self._land = 150
-        self._nourishment = 75
-        self._happiness = 75
-        self._health = 75
+        self._healthiness = 75
+        self._happiness = 100
         self.weather = "Sunny"
         # Resources
         self._gold = 750
@@ -268,20 +266,12 @@ class County(GameState):
         self._happiness = min(max(value, 1), 100)
 
     @property
-    def nourishment(self):
-        return self._nourishment
+    def healthiness(self):
+        return self._healthiness
 
-    @nourishment.setter
-    def nourishment(self, value):
-        self._nourishment = int(min(max(value, 1), 100))
-
-    @property
-    def health(self):
-        return self._health
-
-    @health.setter
-    def health(self, value):
-        self._health = int(min(max(value, 1), 100))
+    @healthiness.setter
+    def healthiness(self, value):
+        self._healthiness = int(min(max(value, 1), 100))
 
     @property
     def tax_rate(self):
@@ -432,7 +422,6 @@ class County(GameState):
         self.mana += self.get_mana_change()
         self.research += self.get_research_change()
         self.happiness += self.get_happiness_change()
-        self.health += self.get_health_change()
 
     def advance_research(self):
         technology = self.technologies[self.research_choice]
@@ -455,21 +444,6 @@ class County(GameState):
         if not available_technologies:
             available_technologies = Technology.query.filter_by(county_id=self.id).filter_by(completed=False).filter_by(tier=3).all()
         return available_technologies
-    
-    def get_health_change(self):
-        if self.nourishment > 90:
-            return 2
-        elif self.nourishment > 80:
-            return 1
-        elif self.nourishment > 70:
-            return 0
-        elif self.nourishment > 60:
-            return -1
-        elif self.nourishment > 50:
-            return -2
-        elif self.nourishment > 40:
-            return -3
-        return -4
 
     def get_happiness_change(self):
         change = 7 - self.tax_rate
@@ -534,7 +508,7 @@ class County(GameState):
             self.weather = 'lovely'
 
         elif random_chance == 6:
-            modifier = ((101 - self.nourishment) // 20 + 1) / 100  # Percent of people who will die (1% -> 5%)
+            modifier = ((101 - self.healthiness) // 20 + 1) / 100  # Percent of people who will die (1% -> 5%)
             amount = int(modifier * self.population)
             notification = Notification(self.id,
                                         "Black Death",
@@ -552,20 +526,12 @@ class County(GameState):
                                         self.kingdom.world.day)
             self.buildings['house'].total -= amount
 
-        elif random_chance == 8:
-            amount = min(randint(3, 7), self.nourishment)
-            notification = Notification(self.id,
-                                        "Sickness",
-                                        "A disease has spread throughout your lands, lowering your county's health by {}.".format(
-                                            amount), self.kingdom.world.day)
-            self.health -= amount
-
         if notification:
             notification.category = "Random Event"
             notification.save()
             self.days_since_event = 0
 
-    def get_nourishment_change(self):
+    def get_healthiness_change(self):
         hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
         if hungry_people <= 0:  # You fed everyone
             if self.rations == 0:
@@ -581,16 +547,16 @@ class County(GameState):
         total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores + self.get_excess_worker_produced_food()
         food_eaten = self.get_food_to_be_eaten()
         if total_food >= food_eaten:
-            # If you have enough food, you lose it and your nourishment changes based on rations
+            # If you have enough food, you lose it and your healthiness changes based on rations
             self.grain_stores += min(self.get_produced_dairy() + self.get_produced_grain() - food_eaten,
                                      self.get_produced_grain())
-            self.nourishment += self.get_nourishment_change()
+            self.healthiness += self.get_healthiness_change()
         else:
-            # If you don't have enough food, you lose it all and lose nourishment based on leftover people
+            # If you don't have enough food, you lose it all and lose healthiness based on leftover people
             self.grain_stores = 0
             hungry_people = food_eaten - total_food
-            nourishment_loss = (hungry_people // 200) + 1  # 1 plus 1 for every 200 unfed people
-            self.nourishment -= min(nourishment_loss, 5)
+            healthiness_loss = (hungry_people // 200) + 1  # 1 plus 1 for every 200 unfed people
+            self.healthiness -= min(healthiness_loss, 5)
 
     def get_produced_grain(self):
         modifier = 1
@@ -657,7 +623,7 @@ class County(GameState):
     def get_death_rate(self):
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + \
                    death_rate_modifier.get(self.background, ("", 0))[1]
-        death_rate = (uniform(2.0, 2.5) / self.health) * modifier
+        death_rate = (uniform(2.0, 2.5) / self.healthiness) * modifier
         return int(death_rate * self.population)
 
     def get_birth_rate(self):
@@ -1034,16 +1000,16 @@ class County(GameState):
 
     # Terminology
     @property
-    def nourishment_terminology(self):
-        if self.nourishment < 20:
-            return "dying of hunger"
-        if self.nourishment < 50:
-            return "starving"
-        if self.nourishment < 75:
+    def healthiness_terminology(self):
+        if self.healthiness < 20:
+            return "dying of disease and hunger"
+        if self.healthiness < 50:
+            return "sick and starving"
+        if self.healthiness < 75:
             return "hungry"
-        if self.nourishment < 90:
-            return "sated"
-        return "well nourished"
+        if self.healthiness < 90:
+            return "healthy"
+        return "perfect health"
 
     @property
     def happiness_terminology(self):
@@ -1056,18 +1022,6 @@ class County(GameState):
         if self.happiness < 90:
             return "content"
         return "pleased"
-
-    @property
-    def health_terminology(self):
-        if self.health < 20:
-            return "diseased"
-        if self.health < 50:
-            return "sickly"
-        if self.health < 75:
-            return "average"
-        if self.health < 90:
-            return "hale"
-        return "perfect"
 
     @property
     def rations_terminology(self):

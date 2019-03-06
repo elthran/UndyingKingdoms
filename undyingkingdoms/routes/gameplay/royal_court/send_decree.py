@@ -20,7 +20,7 @@ def send_decree():
                 county_id=county.id,
                 title="Royal Decree from {} {}".format(county.title, county.leader),
                 content=message_form.content.data,
-                day=county.id,
+                day=county.kingdom.world.day,
                 category="Royal Decree")
             message.save()
         return redirect(url_for('royal_court'))
