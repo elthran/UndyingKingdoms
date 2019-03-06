@@ -12,6 +12,6 @@ from undyingkingdoms.models import Kingdom
 def leaderboard(template):
     users = User.query.all()
     current_users = [user for user in users if user.county is not None]
-    counties = [user.county for user in users]
+    counties = [user.county for user in current_users]
     kingdoms = Kingdom.query.all()
     return render_template(template, counties=counties, kingdoms=kingdoms)
