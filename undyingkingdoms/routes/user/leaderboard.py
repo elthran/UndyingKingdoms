@@ -14,4 +14,4 @@ def leaderboard(template):
     current_users = [user for user in users if user.county is not None]
     counties = [user.county for user in current_users]
     kingdoms = Kingdom.query.all()
-    return render_template(template, counties=counties, kingdoms=kingdoms)
+    return render_template(template, counties=counties, kingdoms=kingdoms, users=current_users)
