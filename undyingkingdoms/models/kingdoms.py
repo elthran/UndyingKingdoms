@@ -41,6 +41,7 @@ class Kingdom(GameState):
     world_id = db.Column(db.Integer, db.ForeignKey('world.id'), nullable=False)
     counties = db.relationship('County', backref='kingdom')
     leader = db.Column(db.Integer)  # county.id of leader
+    approval_rating = db.Column(db.Integer)  # How well liked the leader is
     wars_total_lt = db.Column(db.Integer)
     wars_won_lt = db.Column(db.Integer)
     wars_total_ta = db.Column(db.Integer)
@@ -135,6 +136,7 @@ class Kingdom(GameState):
     def __init__(self, name):
         self.name = name
         self.leader = 0
+        self.approval_rating = 60
         self.world_id = 1
         self.wars_total_lt = 0
         self.wars_won_lt = 0
