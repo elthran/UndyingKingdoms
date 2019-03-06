@@ -9,7 +9,7 @@ class WoodAPI(MethodView):
         county = current_user.county
 
         # happinessChange=county.get_happiness_change(),
-        # nourishmentChange=county.get_nourishment_change(),
+        # healthinessChange=county.get_healthiness_change(),
 
         return jsonify(
             status='success',

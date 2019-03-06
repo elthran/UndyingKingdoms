@@ -9,7 +9,7 @@
 <h1 style="text-align:center;">The {{ county.race }} county of {{ county.name }}, led by {{ county.title }} {{
     county.leader }} the {{ county.background }}</h1>
 <h2>Basics:</h2>
-<ul style="margin-left:25px">
+<ul>
     {% if county.kingdom.leader == 0 %}
     <li style="color:red">Kingdom is in civil war{% else %}
     <li style="color:green">Kingdom is at peace{% endif %}</li>
@@ -18,13 +18,13 @@
     <li>Calendar Day: 0 <span
             style="color:red;">(This age will begin in {{ county.kingdom.world.day|abs }} hours)</span></li>
     {% else %}
-    <li>Calendar: Day {{ county.kingdom.world.day }} ({{ county.kingdom.world.season }}) --> This test ends on day 190
+    <li>Calendar: Day {{ county.kingdom.world.day }} ({{ county.kingdom.world.season }}) --> This test ends on day 210
     </li>
     {% endif %}
     <li>Weather: {{ county.weather.title() }}</li>
 </ul>
 <h2>Treasury:</h2>
-<ul style="margin-left:25px">
+<ul>
     <li>Coffers: {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"></li>
     <li>Lumber: {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"></li>
     <li>Iron: {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
@@ -32,11 +32,10 @@
     <li>Mana: {{ county.mana }} <img class="resource_icons" src="/static/images/mana_icon.jpg"></li>
 </ul>
 <h2>Citizens:</h2>
-<ul style="margin-left:25px">
+<ul>
     <li>Population: {{ county.population }} <img class="resource_icons" src="/static/images/population_icon.jpg"></li>
-    <li>Happiness: {{ county.happiness_terminology.title() }}</li>
-    <li>Nourishment: {{ county.nourishment_terminology.title() }}</li>
-    <li>Health: {{ county.health_terminology.title() }}</li>
+    <li>Happiness: {{ county.happiness_terminology.title() }} <img class="resource_icons" src="/static/images/happiness_icon.jpg"></li>
+    <li>Healthiness: {{ county.healthiness_terminology.title() }} <img class="resource_icons" src="/static/images/healthiness_icon.jpg"></li>
     <li>Stored Grain: {{ county.grain_stores }} <img class="resource_icons" src="/static/images/grain_icon.jpg"></li>
 </ul>
 <br>
@@ -46,7 +45,7 @@
 <h2>News</h2>
 <ul>
     {% for event in county.display_news()|sort(attribute='day', reverse=True) %}
-    <li>{{ event.title }} (Day: {{ event.day }}): {{ event.content }}</li>
+    <li>Day: {{ event.day }} - {{ event.title }}: {{ event.content }}</li>
     {% else %}
     <li>No new events to report.</li>
     {% endfor %}
@@ -57,7 +56,7 @@
     <br>
     <ul>
         {% for event in county.display_old_news()|sort(attribute='day', reverse=True) %}
-        <li>{{ event.title }} (Day: {{ event.day }}): {{ event.content }}</li>
+        <li>Day: {{ event.day }} - {{ event.title }}: {{ event.content }}</li>
         {% else %}
         <li>There is no news in your history.</li>
         {% endfor %}
