@@ -56,7 +56,6 @@
       <li><a href="{{ url_for('forum', thread_id=0, post_id=0) }}">Forum</a></li>
       <li><a href="{{ url_for('guide') }}">Player&nbsp;Guide</a></li>
       <li><a href="{{ url_for('leaderboard') }}">Leaderboard</a></li>
-      <li><a href="{{ url_for('versions') }}">Read&nbsp;About&nbsp;Updates</a></li>
       <li><a href="{{ url_for('profile') }}">Profile</a></li>
       {% if user.is_admin %}<li><a href="{{ url_for('admin.home_api') }}">Admin</a></li>{% endif %}
       <li><a href="{{ url_for('logout') }}">Logout</a></li>

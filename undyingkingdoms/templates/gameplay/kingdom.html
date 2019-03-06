@@ -46,6 +46,11 @@
             {% endif %}
         {% endfor %}
     {% else %}
+        {% if kingdom in my_county.kingdom.allies %}
+            <p style="color:blue;">You are allied with this kingdom</p>
+        {% elif kingdom in my_county.kingdom.enemies %}
+            <p style="color:red;">You are at war with this kingdom</p>
+        {% endif %}
         {% for county in kingdom.counties %}
             <li>
                 {% if kingdom.leader == county.id %}<img class="resource_icons" src="/static/images/crown_icon.jpg">{% endif %}
