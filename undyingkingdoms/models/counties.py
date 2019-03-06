@@ -889,7 +889,6 @@ class County(GameState):
         defence_casualties = enemy.get_casualties(attack_power=offence,
                                                   results=battle_word)
         expedition.attack_power, expedition.defence_power, expedition.mission = offence, defence, attack_type
-
         war = None
         for each_war in self.kingdom.wars:
             if each_war.get_other_kingdom(self.kingdom) == enemy.kingdom:  # If this is true, we are at war with them
