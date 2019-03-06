@@ -9,7 +9,7 @@
 <br>
 <h2>(Kingdom) Most Wars Won:</h2>
 <ul>
-{% for kingdom in kingdoms|sort(attribute='wars_won_ta') %}
+{% for kingdom in kingdoms|sort(attribute='wars_won_ta', reverse=True) %}
     <li><a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">{{ kingdom.name }}</a>: {{ kingdom.wars_won_ta }}</li>
 {% endfor %}
 </ul>
@@ -17,7 +17,7 @@
 <br>
 <h2>(Kingdom) Most Land (Top 3 Counties):</h2>
 <ul>
-{% for kingdom in kingdoms|sort(attribute='wars_won_ta') %}
+{% for kingdom in kingdoms|sort(attribute='wars_won_ta', reverse=True) %}
     <li><a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">{{ kingdom.name }}</a>: {{ kingdom.return_top_3_land() }}</li>
 {% endfor %}
 </ul>
@@ -25,7 +25,7 @@
 <br>
 <h2>(County) Most Land (Any County):</h2>
 <ul>
-{% for county in counties|sort(attribute='land') %}
+{% for county in counties|sort(attribute='land', reverse=True) %}
     <li><a href="{{ url_for('overview', kingdom_id=county.kingdom_id, county_id=county.id) }}">
         {{ county.leader }} of {{ county.name }}
         </a>: {{ county.land }}

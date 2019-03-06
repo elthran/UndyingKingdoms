@@ -1,3 +1,4 @@
+from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.diplomacy import Diplomacy
@@ -192,5 +193,16 @@ class Kingdom(GameState):
     def return_top_3_land(self):
         counties = sorted(self.counties, key=lambda x: x.land)
         return sum(county.land for county in counties[:2])
+
+    def war_won(self, war):
+        enemy = war.get_other_kingdom(self)
+        for county in self.counties:
+            notice = Notification(county.id, "War", "We have won the war against {}!".format(enemy.name), self.world.day, "War")
+            notice.save()
+        for county in enemy.counties:
+            notice = Notification(county.id, "War", "We have lost the war against {}!".format(self.name), self.world.day, "War")
+            notice.save()
+        self.wars_won_ta += 1
+        self.wars_won_lt += 1
 
 

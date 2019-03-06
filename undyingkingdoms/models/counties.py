@@ -889,10 +889,18 @@ class County(GameState):
         defence_casualties = enemy.get_casualties(attack_power=offence,
                                                   results=battle_word)
         expedition.attack_power, expedition.defence_power, expedition.mission = offence, defence, attack_type
+
+        war = None
+        for each_war in self.kingdom.wars:
+            if each_war.get_other_kingdom(self.kingdom) == enemy.kingdom:  # If this is true, we are at war with them
+                war = each_war
+                break
         if offence > defence:
             expedition.success = True
             if expedition.mission == "Attack":
                 land_gained = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1)
+                if war:
+                    land_gained *= 1.15
                 land_gained = int(min(land_gained, enemy.land * 0.2))
                 war_score = land_gained
                 expedition.land_acquired = land_gained
@@ -907,6 +915,10 @@ class County(GameState):
                 gold_gained = int(enemy.gold * 0.20)
                 wood_gained = int(enemy.wood * 0.20)
                 iron_gained = int(enemy.iron * 0.20)
+                if war:
+                    gold_gained = int(gold_gained * 1.15)
+                    wood_gained = int(wood_gained * 1.15)
+                    iron_gained = int(iron_gained * 1.15)
                 expedition.gold_gained = gold_gained
                 expedition.wood_gained = wood_gained
                 expedition.iron_gained = iron_gained
@@ -923,20 +935,19 @@ class County(GameState):
                                                                                                                                         iron_gained,
                                                                                                                                         offence_casualties)
             # Add war clause since it was a successful attack
-            for war in self.kingdom.wars:
-                if war.get_other_kingdom(self.kingdom) == enemy.kingdom:  # If this is true, we are at war with them
-                    if war.kingdom_id == self.kingdom.id:  # We are the attack
-                        war.attacker_current += war_score
-                        if war.attacker_current >= war.attacker_goal:
-                            war.status = "Won"
-                            self.kingdom.wars_won_ta += 1
-                            self.kingdom.wars_won_lt += 1
-                    else:
-                        war.defender_current += war_score
-                        if war.defender_current >= war.defender_goal:
-                            war.status = "Lost"
-                            self.kingdom.wars_won_ta += 1
-                            self.kingdom.wars_won_lt += 1
+            if war:
+                if war.kingdom_id == self.kingdom.id:  # We are the attack
+                    war.attacker_current += war_score
+                    if war.attacker_current >= war.attacker_goal:
+                        self.kingdom.war_won(war)
+                        war.status = "Won"
+                        message += " We have won the war against {}!".format(enemy.kingdom.name)
+                else:
+                    war.defender_current += war_score
+                    if war.defender_current >= war.defender_goal:
+                        enemy.kingdom.war_won(war)
+                        war.status = "Lost"
+                        message += " We have won the war against {}!".format(enemy.kingdom.name)
         else:
             expedition.success = False
             notification = Notification(enemy.id,
