@@ -38,10 +38,10 @@ button {
     {% for trade in trades_offered if trade.status == 'Pending' %}
       <div id="trade-{{ trade.id }}">
         <p>We offered a trade to county id: {{ trade.target_id }}.</p>
-        <p>We offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, {{ trade.iron_to_give }} iron, {{ trade.stone_to_give }} stone, and {{ trade.grain_to_give }} grain.</p>
-        <p>We asked for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.</p>
+        <p>We offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, {{ trade.iron_to_give }} iron, and {{ trade.stone_to_give }} stone.</p>
+        <p> We asked for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.</p>
         <p>The trade expires in {{ trade.duration }} days if they do not reply.</p>
-        <button class="cancel" value="{{ url_for('trading_reply', trade_id=trade.id) }}">Cancel</button>
+        <button class="cancel" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Cancel</button>
       </div>
     {% else %}
       <p>We currently have not offered any county a trade.</p>
@@ -54,11 +54,11 @@ button {
     {% for trade in trades_received if trade.status == 'Pending' %}
       <div id="trade-{{ trade.id }}">
         <p>We were offered a trade by county id: {{ trade.target_id }}.</p>
-        <p>They offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, {{ trade.iron_to_give }} iron, {{ trade.stone_to_give }} stone, and {{ trade.grain_to_give }} grain.</p>
-        <p>They asked for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.</p>
+        <p>We were offered {{ trade.gold_to_give }} gold, {{ trade.wood_to_give }} wood, and {{ trade.iron_to_give }} iron.</p>
+        <p> We asked for {{ trade.gold_to_receive }} gold, {{ trade.wood_to_receive }} wood, {{ trade.iron_to_receive }} iron, {{ trade.stone_to_receive }} stone, and {{ trade.grain_to_receive }} grain.</p>
         <p>The trade expires in {{ trade.duration }} days if we do not reply.</p>
-        <button class="accept" value="{{ url_for('trading_reply', trade_id=trade.id) }}">Accept</button>
-        <button class="reject" value="{{ url_for('trading_reply', trade_id=trade.id) }}">Reject</button>
+        <button class="accept" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Accept</button>
+        <button class="reject" value="{{ url_for('diplomacy_reply', trade_id=trade.id) }}">Reject</button>
       </div>
     {% else %}
       <p>We currently have no offers by any county to trade.</p>

@@ -18,26 +18,15 @@ dwarf_armies['monster'].class_name, dwarf_armies['monster'].class_name_plural, d
 
 # Dwarves: Slightly higher health and iron
 # Peasants
-dwarf_armies['peasant'].category = "Infantry"
-dwarf_armies['peasant'].armour_type = "Unarmoured"
 dwarf_armies['peasant'].gold += 1
 dwarf_armies['peasant'].iron += 1
 dwarf_armies['peasant'].attack += 1
 dwarf_armies['peasant'].health += 1
 # Soldiers
-dwarf_armies['soldier'].category = "Infantry"
-dwarf_armies['soldier'].armour_type = "Leather"
 dwarf_armies['soldier'].health += 1
 # Archers
-dwarf_armies['archer'].category = "Infantry"
-dwarf_armies['archer'].armour_type = "Leather"
 dwarf_armies['archer'].health += 1
 # Elites
-dwarf_armies['elite'].category = "Infantry"
-dwarf_armies['elite'].armour_type = "Plate"
 dwarf_armies['elite'].iron += 1
 dwarf_armies['elite'].health += 2
-# Monsters
-dwarf_armies['monster'].category = "Monster"
-dwarf_armies['monster'].armour_type = "Plate"
 

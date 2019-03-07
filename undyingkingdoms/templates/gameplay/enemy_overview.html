@@ -62,12 +62,6 @@ button {
   {% else %}
     {% if target_kingdom == current_user.county.kingdom %} <!-- You can't attack your own kingdom -->
       <p style="color:blue;">You can't attack counties within your own kingdom while you are at peace.</p>
-    {% elif target_kingdom in current_user.county.kingdom.allies %}
-      <p style="color:blue;">You can't attack counties that your kingdom has allied with.</p>
-    {% elif target_kingdom in current_user.county.kingdom.enemies %}
-      <p style="color:red;">You are at war with this kingdom. Your successful military expeditions will capture an +15% in resources.</p><br>
-      <a href="{{ url_for('attack', county_id=target_county.id) }}">Attack</a>
-      <a href="{{ url_for('infiltrate', county_id=target_county.id) }}">Infiltrate</a>
     {% else %}
       <a href="{{ url_for('attack', county_id=target_county.id) }}">Attack</a>
       <a href="{{ url_for('infiltrate', county_id=target_county.id) }}">Infiltrate</a>

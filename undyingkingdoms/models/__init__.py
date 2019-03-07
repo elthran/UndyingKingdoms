@@ -14,7 +14,6 @@ from .infiltrations import Infiltration
 from .upvotes import Upvote
 from .chatroom import Chatroom
 from .messages import Message
-from .diplomacy import Diplomacy
 
 from undyingkingdoms.models.bases import db
 Army.county = db.relationship('County')

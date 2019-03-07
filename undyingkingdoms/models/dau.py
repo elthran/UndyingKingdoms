@@ -20,7 +20,8 @@ class DAU(GameEvent):
     land = db.Column(db.Integer)
     population = db.Column(db.Integer)
     happiness = db.Column(db.Integer)
-    healthiness = db.Column(db.Integer)
+    nourishment = db.Column(db.Integer)
+    health = db.Column(db.Integer)
     # Resources
     gold = db.Column(db.Integer)
     wood = db.Column(db.Integer)
@@ -79,6 +80,7 @@ class DAU(GameEvent):
         self.county_day = county.day
         self.account_age_in_days = (datetime.utcnow() - user.time_created).days
         self.county_id = county.id
+        self.score = user.get_current_leaderboard_score()
         self.land = county.land
         self.population = county.population
         self.gold = county.gold
@@ -94,7 +96,8 @@ class DAU(GameEvent):
         self.lifetime_research = county.lifetime_research
         self.lifetime_mana = county.lifetime_mana
         self.happiness = county.happiness
-        self.healthiness = county.healthiness
+        self.nourishment = county.nourishment
+        self.health = county.health
 
         self.production_choice = county.production_choice
         self.research_choice = county.research_choice

@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, request
+from flask import render_template, jsonify, request, url_for, redirect
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
@@ -7,19 +7,19 @@ from undyingkingdoms.models import County
 from undyingkingdoms.models.trades import Trade
 
 
-@app.route('/gameplay/trading/', methods=['GET'])
-@mobile_template("{mobile/}gameplay/trading.html")
+@app.route('/gameplay/diplomacy/', methods=['GET'])
+@mobile_template("{mobile/}gameplay/diplomacy.html")
 @login_required
-def trading(template):
+def diplomacy(template):
     county = current_user.county
     trades_offered = Trade.query.filter_by(county_id=county.id).filter(Trade.duration > 0).all()
     trades_received = Trade.query.filter_by(target_id=county.id).filter(Trade.duration > 0).all()
     return render_template(template, trades_offered=trades_offered, trades_received=trades_received)
 
 
-@app.route('/gameplay/trading/<int:trade_id>', methods=['GET'])
+@app.route('/gameplay/diplomacy/<int:trade_id>', methods=['GET'])
 @login_required
-def trading_reply(trade_id):
+def diplomacy_reply(trade_id):
     trade = Trade.query.get(trade_id)
     county = County.query.get(trade.county_id)
     target_county = current_user.county  # This will be the current user

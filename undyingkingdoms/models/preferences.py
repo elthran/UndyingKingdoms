@@ -40,7 +40,7 @@ class Preferences(GameState):
     def __init__(self, county_id, user_id):
         self.county_id = county_id
         self.user_id = user_id
-        self.tax_rate = 8
+        self.tax_rate = 5
         self.rations = 1
         self.production_choice = 0
         self.research_choice = 'agriculture'

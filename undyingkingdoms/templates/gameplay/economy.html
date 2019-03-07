@@ -280,19 +280,19 @@ th {
             <td>{{ county.happiness }}%</td>
             <td>
                 <status-number :number="happinessChange"></status-number>
-                <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+                <img class="resource_icons" src="/static/images/heart_icon.jpg">
             </td>
             <td>-</td>
             <td>
                 <ul>
-                    <li>Natural: +7 <img class="resource_icons" src="/static/images/happiness_icon.jpg"></li>
+                    <li>Natural: +7 <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>
                     {% if county.production_choice == 3 %}
                     <li>Relax: + {{ county.get_excess_production_value(3) }} <img class="resource_icons"
-                                                                                  src="/static/images/happiness_icon.jpg">
+                                                                                  src="/static/images/heart_icon.jpg">
                     </li>
                     {% endif %}
                     {% if county.technologies["public works"].completed %}
-                    <li>Public Works: +1 <img class="resource_icons" src="/static/images/happiness_icon.jpg"></li>
+                    <li>Public Works: +1 <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>
                     {% endif %}
                 </ul>
             </td>
@@ -303,10 +303,10 @@ th {
                         <div class="tooltip">{{ happiness_modifier.get(county.race)[0] }}: {{
                             happiness_modifier.get(county.race)[1] }}<span class="tooltipText">Racial Modifier: {{ county.race }}</span>
                         </div>
-                        <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+                        <img class="resource_icons" src="/static/images/heart_icon.jpg">
                     </li>
                     {% endif %}
-                    <li>Taxes: v{ -selectedTaxRate } <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+                    <li>Taxes: v{ -selectedTaxRate } <img class="resource_icons" src="/static/images/heart_icon.jpg">
                     </li>
                 </ul>
             </td>
@@ -315,17 +315,40 @@ th {
             </td>
         </tr>
         <tr>
-            <td>Healthiness</td>
-            <td>{{ county.healthiness }}%</td>
+            <td>Nourishment</td>
+            <td>{{ county.nourishment }}%</td>
             <td>
-                <status-number :number="healthinessChange"></status-number>
-                <img class="resource_icons" src="/static/images/healthiness_icon.jpg">
+                <status-number :number="nourishmentChange"></status-number>
             </td>
             <td>-</td>
             <td>-</td>
             <td>-</td>
-            <td>How healthy your people are. As they become more unhealthy, they die and get sick much more easily.
-                Your healthiness decreases by 1% for every 200 unfed people each day.
+            <td>The better nourished your people, the healthier they will be.
+                Your nourishment decreases by 1% for every 200 unfed people each day.
+            </td>
+        </tr>
+        <tr>
+            <td>Health</td>
+            {% if county.health >= 75 %}
+            <td style="color:green;">
+                {% else %}
+            <td style="color:red;">
+                {% endif %}
+                {{ county.health_terminology.title() }}
+            </td>
+            {% if county.get_health_change() > 0 %}
+            <td style="color:green;">Positive
+                {% elif county.get_health_change() == 0 %}
+            <td>None
+                {% else %}
+            <td style="color:red;">Negative
+                {% endif %}
+            </td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>The current health of your people. If they become unhealthy, they will die at much greater rates and
+                become very susceptible to disease and plague.
             </td>
         </tr>
     </table>
@@ -349,7 +372,7 @@ var HAPPINESS_CHANGE = {{ county.get_happiness_change() }};
 var GRAIN_STORAGE_CHANGE = {{ county.grain_storage_change() }};
 var RATIONS = {{ county.rations }};
 var FOOD_EATEN = {{ county.get_food_to_be_eaten() }};
-var HEALTHINESS_CHANGE = {{ county.get_healthiness_change() }};
+var NOURISHMENT_CHANGE = {{ county.get_nourishment_change() }};
 // end of Jinja code. Please keep it inside here.
 
 function sendForm (form, callback) {
@@ -410,7 +433,7 @@ var app = new Vue({
     grainStorageChange: GRAIN_STORAGE_CHANGE,
     selectedRations: RATIONS,
     foodEaten: FOOD_EATEN,
-    healthinessChange: HEALTHINESS_CHANGE
+    nourishmentChange: NOURISHMENT_CHANGE
   },
   methods: {
     updatePage: function (data) {
@@ -419,7 +442,7 @@ var app = new Vue({
       this.happinessChange = data.happinessChange;
       this.grainStorageChange = data.grainStorageChange;
       this.foodEaten = data.foodEaten;
-      this.healthinessChange = data.healthinessChange;
+      this.nourishmentChange = data.nourishmentChange;
     }
   },
   watch: {

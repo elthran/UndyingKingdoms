@@ -33,11 +33,9 @@ class World(GameState):
                     county.temporary_bot_tweaks()
                 else:
                     county.advance_day()
-            for kingdom in Kingdom.query.all():
-                kingdom.advance_day()
 
         self.day += 1
-        if self.day % 36 == 0:  # Every 36 game days we advance the game season
+        if self.day % 36 == 0:  # Every 36 game days we advance the season
             season_index = seasons.index(self.season) + 1
             if season_index == len(seasons):
                 season_index = 0
@@ -69,14 +67,20 @@ class World(GameState):
 
     def advance_age(self):
         users = User.query.all()
+        top_user = sorted(users, key=lambda user: user.get_current_leaderboard_score()).pop()
+
+        # the player actually played this round
+        if top_user.county is not None:
+            top_user.alpha_wins += 1
+            top_user.save()
 
         kingdoms = Kingdom.query.all()
         for kingdom in kingdoms:
             kingdom.leader = 0
             kingdom.save()
 
-        tables = ['DAU', 'army', 'building', 'chatroom', 'notification', 'expedition', 'infiltration', 'message',
-                  'preferences', 'session', 'trade', 'transaction', 'spell', 'technology', 'county']
+        tables = ['army', 'building', 'notification', 'expedition', 'infiltration', 'chatroom', 'message',
+                  'session', 'transaction', 'spell', 'technology', 'county']
         helpers.drop_then_rebuild_tables(db, tables)
         self.age += 1
         self.day = -12
