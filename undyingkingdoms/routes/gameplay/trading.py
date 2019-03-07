@@ -23,6 +23,7 @@ def trading_reply(trade_id):
     trade = Trade.query.get(trade_id)
     county = County.query.get(trade.county_id)
     target_county = current_user.county  # This will be the current user
+    print(request.args)
     if "accept" in request.args:
         if target_county.gold >= trade.gold_to_receive and target_county.wood >= trade.wood_to_receive and target_county.iron >= trade.iron_to_receive and target_county.stone >= trade.stone_to_receive and target_county.grain_stores >= trade.grain_to_receive:
             target_county.gold += trade.gold_to_give
@@ -62,7 +63,7 @@ def trading_reply(trade_id):
         county.wood += trade.wood_to_give
         county.iron += trade.iron_to_give
         county.stone += trade.stone_to_give
-        county.grain += trade.grain_to_give
+        county.grain_stores += trade.grain_to_give
         return jsonify(
             status="success",
             message=f"You cancelled a trade to {trade_id}"

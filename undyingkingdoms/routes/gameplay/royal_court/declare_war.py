@@ -20,8 +20,8 @@ def declare_war():
         kingdom_id = relations_form.target_id.data
         enemy = Kingdom.query.get(kingdom_id)
         war = Diplomacy(county.kingdom_id, enemy.id, enemy.world.day, action="War", status="In Progress")
-        war.attacker_goal = county.kingdom.get_land_sum() // 5
-        war.defender_goal = enemy.get_land_sum() // 5
+        war.attacker_goal = county.kingdom.get_land_sum() // 10
+        war.defender_goal = enemy.get_land_sum() // 10
         war.save()
         pending_alliance = Diplomacy.query.filter_by(status="Pending").filter_by(action="Alliance") \
             .filter((Diplomacy.kingdom_id == county.kingdom.id) | (Diplomacy.target_id == county.kingdom.id)) \
