@@ -6,7 +6,7 @@
       <status-number :number="happinessChange" />
       <img
         class="resource_icons"
-        src="/static/dist/images/heart_icon.jpg"
+        src="/static/dist/images/happiness_icon.jpg"
       >
     </td>
     <td>-</td>
@@ -15,14 +15,14 @@
         <li>
           Natural: +7 <img
             class="resource_icons"
-            src="/static/dist/images/heart_icon.jpg"
+            src="/static/dist/images/happiness_icon.jpg"
           >
         </li>
         <li v-if="areRelaxing">
           Relax: +&nbsp;{{ excessProduction }}
           <img 
             class="resource_icons"
-            src="/static/dist/images/heart_icon.jpg"
+            src="/static/dist/images/happiness_icon.jpg"
           >
         </li>
       </ul>
@@ -32,7 +32,7 @@
         <li>
           Taxes: {{ -taxRate }} <img
             class="resource_icons"
-            src="/static/dist/images/heart_icon.jpg"
+            src="/static/dist/images/happiness_icon.jpg"
           >
         </li>
       </ul>
@@ -41,7 +41,7 @@
         :race="race"
         :background="background"
         value-icon=""
-        img="/static/dist/images/heart_icon.jpg"
+        img="/static/dist/images/happiness_icon.jpg"
       />
     </td>
     <td>

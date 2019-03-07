@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app, User
+from undyingkingdoms.models import Kingdom
 
 
 @app.route('/user/leaderboard/', methods=['GET', 'POST'])
@@ -10,6 +11,7 @@ from undyingkingdoms import app, User
 @login_required
 def leaderboard(template):
     users = User.query.all()
-    current_users = [user for user in users if user.county is not None]
-    sorted_users = sorted(current_users, key=lambda user: user.get_current_leaderboard_score(), reverse=True)
-    return render_template(template, users=sorted_users)
+    active_users = [user for user in users if user.county is not None and user.is_bot is False]
+    counties = [user.county for user in active_users if user.county is not None]
+    kingdoms = Kingdom.query.all()
+    return render_template(template, counties=counties, kingdoms=kingdoms, users=active_users)

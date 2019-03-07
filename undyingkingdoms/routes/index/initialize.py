@@ -19,7 +19,7 @@ def initialize(template):
     if current_user.county is not None:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
     titles = ["<Title>"] + metadata_titles
-    players_titles = min((current_user.alpha_wins * 2) + 3, len(titles))
+    players_titles = min(7, len(titles))
     races = ["<Race>"] + metadata_races
     backgrounds = ["<Class>"] + metadata_backgrounds
     form = InitializeForm()

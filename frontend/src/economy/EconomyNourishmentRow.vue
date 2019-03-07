@@ -1,16 +1,16 @@
 <template>
   <tr>
-    <td>Nourishment</td>
-    <td>{{ nourishment }}%</td>
+    <td>Healthiness</td>
+    <td>{{ healthiness }}%</td>
     <td>
-      <status-number :number="nourishmentChange" />
+      <status-number :number="healthinessChange" />
     </td>
     <td>-</td>
     <td>-</td>
     <td>-</td>
     <td>
       The better nourished your people, the healthier they will be.
-      Your nourishment decreases by 1% for every 200 unfed people each day.
+      Your healthiness decreases by 1% for every 200 unfed people each day.
     </td>
   </tr>
 </template>
@@ -19,7 +19,7 @@
 import StatusNumber from '@/components/StatusNumber.vue'
 
 export default {
-  name: 'EconomyNourishmentRow',
+  name: 'EconomyHealthinessRow',
   components: {
     'status-number': StatusNumber
   },
@@ -28,17 +28,17 @@ export default {
   },
   data () {
     return {
-      nourishment: -1,
-      nourishmentChange: -1
+      healthiness: -1,
+      healthinessChange: -1
     }
   },
   watch: {
     update () {
-      this.$getData('/api/economy/nourishment', this.$deployData)
+      this.$getData('/api/economy/healthiness', this.$deployData)
     }
   },
   beforeCreate () {
-    this.$getData('/api/economy/nourishment', this.$deployData)
+    this.$getData('/api/economy/healthiness', this.$deployData)
   }
 }
 </script>
