@@ -1,7 +1,8 @@
 from random import choice
 from uuid import uuid4
 
-from flask import jsonify
+from flask import jsonify, url_for
+from flask_login import current_user
 
 from undyingkingdoms.models import World
 from undyingkingdoms.utilities.convert_metadata import build_race_table, build_modifier_table
@@ -43,7 +44,7 @@ def create_bots(n=3):
 def create_notification(message):
     world = World.query.first()
     for county in County.query.all():
-        notification = Notification(county.id, "Admin Update", message, world.day, "Admin")
+        notification = Notification(county.id, "Admin Update from {}".format(current_user.county.leader), message, world.day, "Admin")
         notification.save()
     return jsonify(
         status="success",
