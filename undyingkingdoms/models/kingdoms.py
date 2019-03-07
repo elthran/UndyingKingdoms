@@ -133,6 +133,11 @@ class Kingdom(GameState):
     def kingdoms_with_pending_alliances(self):
         return self._kingdoms_who_offered_us_alliances + self._kingdoms_who_we_offered_alliances
 
+    @property
+    def total_land_of_top_three_counties(self):
+        counties = sorted(self.counties, key=lambda x: x.land, reverse=True)
+        return sum(county.land for county in counties[:3])
+
     def __init__(self, name):
         self.name = name
         self.leader = 0
@@ -191,10 +196,6 @@ class Kingdom(GameState):
 
     def get_land_sum(self):
         return sum(county.land for county in self.counties)
-
-    def return_top_3_land(self):
-        counties = sorted(self.counties, key=lambda x: x.land)
-        return sum(county.land for county in counties[:2])
 
     def war_won(self, war):
         enemy = war.get_other_kingdom(self)

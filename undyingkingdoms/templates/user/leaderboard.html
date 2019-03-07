@@ -17,8 +17,8 @@
 <br>
 <h2>(Kingdom) Most Land (Top 3 Counties):</h2>
 <ul>
-{% for kingdom in kingdoms|sort(attribute='wars_won_ta', reverse=True) %}
-    <li><a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">{{ kingdom.name }}</a>: {{ kingdom.return_top_3_land() }}</li>
+{% for kingdom in kingdoms|sort(attribute='total_land_of_top_three_counties', reverse=True) %}
+    <li><a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">{{ kingdom.name }}</a>: {{ kingdom.total_land_of_top_three_counties }}</li>
 {% endfor %}
 </ul>
 <p style="color:green;">Rewards: Every county in the top kingdom of this category gets 1 gem.</p>
