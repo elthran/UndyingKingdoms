@@ -10,7 +10,7 @@ metadata_backgrounds = ['Warlord', 'Engineer', 'Merchant', 'Rogue']
 
 kingdom_names = ["Faenoth", "Aldoroth", "Ecthalion"]
 
-infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust']
+infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust', 'steal research']
 
 tax_options = [(i, i) for i in range(11)]
 

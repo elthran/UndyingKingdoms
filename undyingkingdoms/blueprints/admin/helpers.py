@@ -1,7 +1,7 @@
 from random import choice
 from uuid import uuid4
 
-from flask import jsonify, url_for
+from flask import jsonify
 from flask_login import current_user
 
 from undyingkingdoms.models import World
@@ -11,6 +11,7 @@ from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.users import User
 from undyingkingdoms.models.kingdoms import Kingdom
+
 
 def create_bots(n=3):
     kingdoms = Kingdom.query.all()
@@ -41,6 +42,7 @@ def create_bots(n=3):
         message=f"Successfully create {n} bots."
     )
 
+
 def create_notification(message):
     world = World.query.first()
     for county in County.query.all():
@@ -50,6 +52,7 @@ def create_notification(message):
         status="success",
         message=f"Successfully sent notice '{message}' to all active users."
     )
+
 
 def build_comparison_files():
     """Build nice spreadsheets from python metadata dictionaries."""

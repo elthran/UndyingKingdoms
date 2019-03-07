@@ -8,7 +8,7 @@
 {% set kingdom = county.kingdom %}
 <div id="research-app">
   <h2>You currently gain v{ researchChange } <img class="resource_icons" src="/static/images/research_icon.jpg"> each day
-    {% if county.research > 0 %} and you have {{ county.research }} research left over from your last completed technology{% endif %}.</h2><br>
+    {% if county.research > 0 %} and you have {{ county.research }} bonus research{% endif %}.</h2><br>
 
   <h2>Current Research:</h2>
   <p>Note: More technologies become available as you complete all research within a tier.</p>

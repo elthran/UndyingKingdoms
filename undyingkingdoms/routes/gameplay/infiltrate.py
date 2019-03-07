@@ -66,35 +66,46 @@ def infiltrate(template, county_id):
                 target.gold -= gold_stolen
                 current_user.county.gold += gold_stolen
                 report.pilfer_amount = gold_stolen
-                report.duration = randint(13, 15)
+                report.duration = randint(11, 13)
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
-                                            "They stole {} gold from our coffers".format(gold_stolen),
+                                            "They stole {} gold from our coffers.".format(gold_stolen),
                                             current_user.county.kingdom.world.day)
             elif mission == 'burn crops':
                 crops_burned = min(target.buildings['field'].total, form.amount.data)
                 target.buildings['field'].total -= crops_burned
                 report.crops_burned = crops_burned
-                report.duration = randint(19, 20)
+                report.duration = randint(17, 18)
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
-                                            "They burned {} of our crops".format(crops_burned),
+                                            "They burned {} of our crops.".format(crops_burned),
                                             current_user.county.kingdom.world.day)
             elif mission == 'sow distrust':
                 happiness_lost = min(target.happiness, form.amount.data * 3)
                 target.happiness -= happiness_lost
                 report.distrust = happiness_lost
-                report.duration = randint(17, 19)
+                report.duration = randint(15, 17)
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
-                                            "They have caused some unrest in our kingdom",
+                                            "They have caused some unrest in our kingdom.",
                                             current_user.county.kingdom.world.day)
             elif mission == 'scout military':
                 report.get_troop_report(current_user.county, target, form.amount.data)
-                report.duration = 6
+                report.duration = 4
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
-                                            "They have found out some secrets regarding our military",
+                                            "They have found out some secrets regarding our military.",
+                                            current_user.county.kingdom.world.day)
+            elif mission == 'steal research':
+                current_technology = target.technologies[target.research_choice]
+                research_stolen = min(current_technology.current, form.amount.data * 10)
+                current_technology.current -= research_stolen
+                current_user.county.research += research_stolen
+                report.research_stolen = research_stolen
+                report.duration = randint(9, 11)
+                notification = Notification(target.id,
+                                            "Thieves raided our lands",
+                                            "They have stolen {} of our research.",
                                             current_user.county.kingdom.world.day)
         else:
             notification = Notification(target.id, "You caught enemy thieves from {}".format(current_user.county.name),
