@@ -394,6 +394,8 @@ class County(GameState):
         self.day += 1
 
     def temporary_bot_tweaks(self):
+        friendly_counties = County.query.filter_by(kingdom_id=self.kingdom_id).all()
+        friendly_counties = [county for county in friendly_counties if not county.user.is_bot]
         if randint(1, 10) == 10 and self.day > 10:
             self.land += randint(-5, 15)
         if randint(1, 10) == 10:
@@ -405,14 +407,29 @@ class County(GameState):
         self.wood += randint(1, 3)
         self.iron += 1
         if randint(1, 24) == 24 and self.kingdom.leader == 0:
-            friendly_counties = County.query.filter_by(kingdom_id=self.kingdom_id).all()
-            friendly_counties = [county for county in friendly_counties if not county.user.is_bot]
             self.vote = choice(friendly_counties).id
             self.kingdom.count_votes()
         if randint(1, 10) == 10 and self.get_available_land() >= 5:
             self.buildings['house'].total += 3
             self.buildings['field'].total += 1
             self.buildings['pasture'].total += 1
+        if randint(1, 20) == 20:
+            trading_partner = choice(friendly_counties).id
+            trade_notice = Notification(trading_partner,
+                                        "You were offered a trade", "{} has offered you a trade. Visit the trading page.".format(self.name),
+                                        self.kingdom.world.day, "Trade")
+            trade_notice.save()
+            random = randint(1, 3)
+            if random == 1:
+                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 40, 0, 0, 0, 60, 0, 0, 0, 0)
+                self.wood -= 40
+            if random == 2:
+                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 0, 30, 0, 0, 90, 0, 0, 0, 0)
+                self.iron -= 30
+            if random == 3:
+                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 120, 0, 0, 0, 0, 0, 40, 20, 0, 0)
+                self.gold -= 120
+            trade_offered.save()
 
     def update_daily_resources(self):
         self.gold += self.get_gold_change()

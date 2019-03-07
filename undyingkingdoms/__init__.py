@@ -78,7 +78,6 @@ def import_routes():
     import undyingkingdoms.routes.user.profile
     import undyingkingdoms.routes.user.guide
     import undyingkingdoms.routes.user.leaderboard
-    import undyingkingdoms.routes.user.versions
     import undyingkingdoms.routes.hooks
 
 
