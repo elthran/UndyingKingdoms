@@ -14,9 +14,9 @@ from undyingkingdoms.routes.gameplay.royal_court.helpers import build_relations_
 def royal_court(template):
     county = current_user.county
     kingdom = county.kingdom
-
-    if county.id != county.kingdom.leader:
+    if kingdom.leader == 0:
         return redirect(url_for('overview', kingdom_id=0, county_id=0))
+    
     message_form = RoyalCourtMessageForm()
 
     relations_form = build_relations_form(county.kingdom)
