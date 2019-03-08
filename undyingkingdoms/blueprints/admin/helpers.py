@@ -5,6 +5,7 @@ from flask import jsonify
 from flask_login import current_user
 
 from undyingkingdoms.models import World
+from undyingkingdoms.models.preferences import Preferences
 from undyingkingdoms.utilities.convert_metadata import build_race_table, build_modifier_table
 from .metadata import bot_county_prefix, bot_county_suffix, bot_leader_prefix, bot_leader_suffix
 from undyingkingdoms.models.notifications import Notification
@@ -37,6 +38,8 @@ def create_bots(n=3):
             choice(["Engineer", "Warlord", "Rogue", "Merchant"]))
         county.save()
         county.vote = county.id
+        preferences = Preferences(county.id, county.user.id)
+        preferences.save()
     return jsonify(
         status="success",
         message=f"Successfully create {n} bots."
