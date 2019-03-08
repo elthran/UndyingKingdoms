@@ -869,7 +869,7 @@ class County(GameState):
             self.population -= min(hit_points_to_be_removed, self.population)
             return int(casualties)
         if army:
-            hit_points_lost *= 2.50  # The attacker takes extra casualties
+            hit_points_lost *= 3.25  # The attacker takes extra casualties
             duration = self.get_army_duration(sum(army.values()))
             expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, self.day, duration)
             expedition.save()
@@ -1074,7 +1074,7 @@ class County(GameState):
         return terminology_dictionary[self.rations]
 
     def has_new_townhall_message(self):
-        if (self.preferences.last_checked_townhall + timedelta(seconds=2)) < self.kingdom.world.get_most_recent_townhall_time():
+        if (self.preferences.last_checked_townhall + timedelta(seconds=2)) < self.kingdom.world.get_most_recent_townhall_time(self.kingdom_id):
             return True
         return False
 
