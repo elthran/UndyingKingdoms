@@ -8,7 +8,11 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
-<h1>As the ruler of your kingdom, it is up to you to make decisions regarding your kingdom's actions.</h1><br><br>
+{% if county.id == kingdom.leader %}
+<h1>As the ruler of your kingdom, it is up to you to make decisions regarding your kingdom's actions.</h1>
+{% else %}
+<h1>Here is where your ruler will issue their decrees.</h1>
+{% endif %}<br><br>
 
 <h2>Current Wars:</h2>
 {% for war in kingdom.wars %}
@@ -25,6 +29,7 @@
 {% else %}
 We are not at war with anyone.
 {% endfor %}
+
 <h2>Current Allies:</h2>
 {% for alliance in kingdom.alliances %}
   {% set ally = alliance.get_other_kingdom(kingdom) %}
@@ -32,55 +37,65 @@ We are not at war with anyone.
 {% else %}
 We are not at allied with anyone.
 {% endfor %}
+
 <h2>Pending Alliance Offers:</h2>
 {% for ally in offers_from_us %}
-<p style="color:green">Alliance pending with <a href="{{ url_for('kingdom', kingdom_id=ally.id) }}">{{ ally.name }}</a></p>
-<form id="cancel_alliance_form" method="POST" accept-charset="UTF-8" action="{{ url_for('cancel_alliance', kingdom_id=ally.id) }}">
-    {{ message_form.csrf_token(id="message-form-csrf-token") }}
-    <button type="submit">Cancel</button>
-  </form>
+    <p style="color:green">Alliance pending with <a href="{{ url_for('kingdom', kingdom_id=ally.id) }}">{{ ally.name }}</a></p>
+    {% if county.id == kingdom.leader %}
+        <form id="cancel_alliance_form" method="POST" accept-charset="UTF-8" action="{{ url_for('cancel_alliance', kingdom_id=ally.id) }}">
+            {{ message_form.csrf_token(id="message-form-csrf-token") }}
+            <button type="submit">Cancel</button>
+        </form>
+    {% endif %}
 {% else %}
-<p>We have not offered any alliances</p>
+    <p>We have not offered any alliances</p>
 {% endfor %}
 {% for ally in offers_to_us %}
-<p style="color:green">Alliance pending with <a href="{{ url_for('kingdom', kingdom_id=ally.id) }}">{{ ally.name }}</a></p>
-<form id="accept_alliance_form" method="POST" accept-charset="UTF-8" action="{{ url_for('accept_alliance', kingdom_id=ally.id) }}">
-    {{ message_form.csrf_token(id="message-form-csrf-token") }}
-    <button type="submit">Accept</button>
-  </form>
-<form id="decline_alliance_form" method="POST" accept-charset="UTF-8" action="{{ url_for('decline_alliance', kingdom_id=ally.id) }}">
-    {{ message_form.csrf_token(id="message-form-csrf-token") }}
-    <button type="submit">Decline</button>
-  </form>
+    <p style="color:green">Alliance pending with <a href="{{ url_for('kingdom', kingdom_id=ally.id) }}">{{ ally.name }}</a></p>
+    {% if county.id == kingdom.leader %}
+        <form id="accept_alliance_form" method="POST" accept-charset="UTF-8" action="{{ url_for('accept_alliance', kingdom_id=ally.id) }}">
+            {{ message_form.csrf_token(id="message-form-csrf-token") }}
+            <button type="submit">Accept</button>
+        </form>
+        <form id="decline_alliance_form" method="POST" accept-charset="UTF-8" action="{{ url_for('decline_alliance', kingdom_id=ally.id) }}">
+            {{ message_form.csrf_token(id="message-form-csrf-token") }}
+            <button type="submit">Decline</button>
+        </form>
+    {% endif %}
 {% else %}
-<p>No one has offered us any alliances</p>
+    <p>No one has offered us any alliances</p>
 {% endfor %}
 
-<h2>Send a royal decree which will message all counties under your control:</h2>
-<form id="message_form" method="POST" accept-charset="UTF-8" action="{{ url_for('send_decree') }}">
-    {{ message_form.csrf_token(id="message-form-csrf-token") }}
-    <textarea id="message-content" cols="100" rows="10" name="content" placeholder="Content" maxlength=256></textarea>
-    <div class="spacer"></div><br>
-    <button type="submit">Send Decree</button>
-  </form>
-<br><br>
-<h2>Declare war on another kingdom:</h2>
-<form id="relations_form1" method="POST" accept-charset="UTF-8" action="{{ url_for('declare_war') }}">
-    {{ relations_form.csrf_token(id="message-form-csrf-token") }}
-    {{ relations_form.target_id }}
-    <div class="spacer"></div><br>
-    <button type="submit">Declare War</button>
-  </form>
-<br><br>
-<h2>Offer an alliance to another kingdom:</h2>
-<form id="relations_form2" method="POST" accept-charset="UTF-8" action="{{ url_for('offer_alliance') }}">
-    {{ relations_form.csrf_token(id="message-form-csrf-token") }}
-    {{ relations_form.target_id }}
-    <div class="spacer"></div><br>
-    <button type="submit">Offer Alliance</button>
-  </form>
-<br><br>
-<h2>Demand a tribute from all counties under your control:</h2>
-<button value="create" disabled="disabled">Not Yet Implemented</button>
+{% if county.id == kingdom.leader %}
+    <h2>Send a royal decree which will message all counties under your control:</h2>
+    <form id="message_form" method="POST" accept-charset="UTF-8" action="{{ url_for('send_decree') }}">
+        {{ message_form.csrf_token(id="message-form-csrf-token") }}
+        <textarea id="message-content" cols="100" rows="10" name="content" placeholder="Content" maxlength=256></textarea>
+        <div class="spacer"></div><br>
+        <button type="submit">Send Decree</button>
+      </form>
+    <br><br>
+
+    <h2>Declare war on another kingdom:</h2>
+    <form id="relations_form1" method="POST" accept-charset="UTF-8" action="{{ url_for('declare_war') }}">
+        {{ relations_form.csrf_token(id="message-form-csrf-token") }}
+        {{ relations_form.target_id }}
+        <div class="spacer"></div><br>
+        <button type="submit">Declare War</button>
+      </form>
+    <br><br>
+
+    <h2>Offer an alliance to another kingdom:</h2>
+    <form id="relations_form2" method="POST" accept-charset="UTF-8" action="{{ url_for('offer_alliance') }}">
+        {{ relations_form.csrf_token(id="message-form-csrf-token") }}
+        {{ relations_form.target_id }}
+        <div class="spacer"></div><br>
+        <button type="submit">Offer Alliance</button>
+      </form>
+    <br><br>
+
+    <h2>Demand a tribute from all counties under your control:</h2>
+    <button value="create" disabled="disabled">Not Yet Implemented</button>
+{% endif %}
 
 {% endblock %}

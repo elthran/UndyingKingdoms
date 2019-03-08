@@ -43,12 +43,9 @@
       <li><a href="{{ url_for('messages') }}" {% if has_mail %}style="color:blue;font-weight:bold;"{% endif %}>Messages</a></li>
       <li><a href="{{ url_for('chatroom_api') }}" {% if county.has_new_townhall_message() %}style="color:blue;font-weight:bold;"{% endif %}>Town&nbsp;Hall</a></li>
       <li><a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom&nbsp;Overview</a></li>
-      {% if kingdom.leader == county.id %}
-      <li><br></li>
-      <li><h1>
-        <img class="resource_icons" src="/static/images/crown_icon.jpg">
-        <a href="{{ url_for('royal_court') }}">Royal Court</a>
-      </h1></li>
+      {% if kingdom.leader != 0 %}
+        <li><br></li>
+        <li><h1><img class="resource_icons" src="/static/images/crown_icon.jpg"><a href="{{ url_for('royal_court') }}">Royal Court</a></h1></li>
       {% endif %}
       <li><br></li>
       <li><h1>About the Game</h1></li>
