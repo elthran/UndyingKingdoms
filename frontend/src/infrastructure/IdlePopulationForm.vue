@@ -1,3 +1,10 @@
+<style>
+.well {
+  padding: 0.8em;
+  border-radius: 5px;
+}
+</style>
+
 <template>
   <div>
     <p class="bottom-spacer-dot-3">
@@ -11,22 +18,23 @@
       <span v-html="form.csrf_token.html" />
       <select-generator
         v-model="goal"
+        class="well"
         :options="form.goal.choices"
         :selected="goal"
         :id-name="form.goal.id"
       />
     </form>
     <div class="top-spacer-dot-3 bottom-spacer-1">
-      <span class="goalDescription invisible">
+      <span v-if="goal == 0">
         Your idle citizens will be forced to work, earning your county an additional {{ overworking }} gold per day.
       </span>
-      <span class="goalDescription invisible">
+      <span v-if="goal == 1">
         Your idle citizens will be forced to reclaim overgrown land surrounding your county. You are currently {{ landProduced }} / 2000 square meters towards reclaiming an acre. You will advance {{ reclaiming }} square meters each day.
       </span>
-      <span class="goalDescription invisible">
+      <span v-if="goal == 2">
         Your idle citizens will be forced to forage for food, gaining enough for {{ foraging }} people each day.
       </span>
-      <span class="goalDescription invisible">
+      <span v-if="goal == 3">
         Your idle citizens will be allowed to relax, gaining {{ relaxing }} happiness per day.
       </span>
     </div>
@@ -61,13 +69,13 @@ export default {
       errors: Object
     }
   },
-  // watch: {
-  //   goal () {
-  //     this.$sendForm(this.$refs.form, () => {
-  //       this.$getData('/api/infrastructure/idle_population', this.$deployData)
-  //     })
-  //   }
-  // },
+  watch: {
+    goal () {
+      this.$sendForm(this.$refs.form, () => {
+        this.$getData('/api/infrastructure/idle_population', this.$deployData)
+      })
+    }
+  },
   beforeCreate () {
     this.$getData('/api/infrastructure/idle_population', this.$deployData)
   }

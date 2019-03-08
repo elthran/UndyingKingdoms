@@ -53,7 +53,7 @@
           v-model="selectedTaxRate"
           :update="updateGold"
         />
-        <economy-food-row 
+        <economy-food-row
           v-model="selectedRations"
           :update="updateFood"
         />
@@ -61,10 +61,10 @@
         <economy-iron-row />
         <economy-stone-row />
         <economy-mana-row />
-        <economy-happiness-row 
+        <economy-happiness-row
           :update="updateHappines"
         />
-        <economy-nourishment-row 
+        <economy-nourishment-row
           :update="updateNourishment"
         />
         <economy-health-row />
