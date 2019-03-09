@@ -20,6 +20,14 @@
       :selected="current"
       id-name="buildings"
     />
+    <div>
+      <div>Owned: {{ currentBuilding.total }}</div>
+      <div>To Be Built: .. drop down selector .. </div>
+      <div>Under Construction: {{ currentBuilding.pending }}</div>
+      <div>Cost {{ currentBuilding.goldCost }}/{{ currentBuilding.woodCost }}/{{ currentBuilding.stoneCost }}</div>
+      <div>Workers Employed: {{ currentBuilding.totalEmployed }} ({{ currentBuilding.workersEmployed }} each)</div>
+      <div>Description: {{ currentBuilding.description }}</div>
+    </div>
   </div>
 </template>
 
@@ -33,13 +41,31 @@ export default {
   },
   data () {
     return {
-      buildingsChoices: [Object],
-      current: -1,
       urlFor: Object,
       form: {
         type: Object,
         csrf_token: Object
-      }
+      },
+      buildingsChoices: [
+        [0, "Example"]
+      ],
+      current: 0,
+      buildings: {
+        "Example": {
+          total: -1
+        }
+      },
+      totalBuilt: -1,
+      totalEmployed: -1,
+      totalPending: -1
+    }
+  },
+  computed: {
+    name () {
+      return this.buildingsChoices[this.current][1]
+    },
+    currentBuilding () {
+      return this.buildings[this.name]
     }
   },
   beforeCreate () {

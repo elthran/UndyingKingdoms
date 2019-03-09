@@ -3,23 +3,10 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
+from undyingkingdoms.blueprints.api.views.infrastructure.helpers import max_buildable_by_cost
 from undyingkingdoms.models import World, Transaction
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm, ExcessProductionForm
 from undyingkingdoms.static.metadata.metadata import all_buildings, game_descriptions, excess_worker_choices
-
-
-def max_buildable_by_cost(county, building):
-    max_size = min(
-        county.gold // building.gold_cost,
-        county.wood // building.wood_cost,
-        (county.stone // building.stone_cost
-            if building.stone_cost
-            else float('inf')),
-        # eventually the 1 will be a land cost.
-        county.get_available_land() // 1,
-        county.get_available_workers()
-    )
-    return max_size
 
 
 @app.route('/gameplay/infrastructure/', methods=['GET'])
