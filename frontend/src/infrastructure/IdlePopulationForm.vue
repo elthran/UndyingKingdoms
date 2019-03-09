@@ -1,8 +1,4 @@
-<style>
-.well {
-  padding: 0.8em;
-  border-radius: 5px;
-}
+<style scoped>
 </style>
 
 <template>
@@ -18,7 +14,6 @@
       <span v-html="form.csrf_token.html" />
       <select-generator
         v-model="goal"
-        class="well"
         :options="form.goal.choices"
         :selected="goal"
         :id-name="form.goal.id"

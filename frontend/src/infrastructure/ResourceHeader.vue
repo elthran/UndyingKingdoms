@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 #header {
     max-width: 19em;
     margin: auto;
@@ -17,7 +17,8 @@ h2 {
   <div id="header">
     <h2>Available Land: {{ availableLand }}&nbsp;/&nbsp;{{ land }}</h2>
     <h2>Citizens Available: {{ availableCitizens }}&nbsp;/&nbsp;{{ population }}</h2>
-    <idle-population-form />
+    <!-- Slot allows me to inject the idle population allocation form here. -->
+    <slot />
     <h2>Current Resources:</h2>
     <div class="tab">
       Gold Cost: {{ goldCost }}
@@ -61,13 +62,8 @@ h2 {
 </template>
 
 <script>
-import IdlePopulationForm from './IdlePopulationForm.vue'
-
 export default {
   name: 'ResourceHeader',
-  components: {
-    'idle-population-form': IdlePopulationForm
-  },
   data () {
     return {
       availableLand: -1,
