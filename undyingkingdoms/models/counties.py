@@ -363,6 +363,12 @@ class County(GameState):
         for expedition in expeditions:
             expedition.duration -= 1
             if expedition.duration == 0:
+                notification = Notification(self.id,
+                                            "Your army has returned",
+                                            "Error: Report to admin",
+                                            self.kingdom.world.day,
+                                            "Military")
+                notification.save()
                 self.armies['peasant'].traveling -= expedition.peasant
                 self.armies['soldier'].traveling -= expedition.soldier
                 self.armies['elite'].traveling -= expedition.elite
@@ -372,18 +378,14 @@ class County(GameState):
                 self.wood += expedition.wood_gained
                 self.iron += expedition.iron_gained
                 if expedition.mission == "Attack":
-                    notification = Notification(self.id, "Your army has returned",
-                                                "{} new land has been added to your county".format(
-                                                    expedition.land_acquired),
-                                                self.kingdom.world.day, "Military")
+                    notification.content = "{} new land has been added to your county".format(expedition.land_acquired)
                 elif expedition.mission == "Pillage":
-                    notification = Notification(self.id, "Your army has returned",
-                                                "They have brought with them {} gold, {} wood, and {} iron.".format(
+                    notification.content = "They have brought with them {} gold, {} wood, and {} iron.".format(
                                                     expedition.gold_gained,
                                                     expedition.wood_gained,
-                                                    expedition.iron_gained),
-                                                self.kingdom.world.day, "Military")
-                notification.save()
+                                                    expedition.iron_gained)
+                elif expedition.mission == "Raze":
+                    notification.content = "They have successfully razed {} enemy acres.".format(expedition.land_razed)
 
         trades = Trade.query.filter_by(county_id=self.id).filter_by(status='Pending').filter(Trade.duration > 0).all()
         for trade in trades:
@@ -403,8 +405,17 @@ class County(GameState):
         infiltrations = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
         for infiltration in infiltrations:
             infiltration.duration -= 1
+            if infiltration.duration == 0:
+                notification = Notification(self.id,
+                                            "Your thieves have returned",
+                                            "Error: Report to admin",
+                                            self.kingdom.world.day,
+                                            "Thieves")
+                notification.save()
+                notification.content = "Your {} thieves have returned after their mission to {}.".format(infiltration.amount_of_thieves,
+                                                                                                         infiltration.mission)
 
-        spells = Casting.query.filter_by(target_id=self.id).filter(Casting.duration > 0).all()
+        #spells = Casting.query.filter_by(target_id=self.id).filter(Casting.duration > 0).all()
 
         self.day += 1
 
