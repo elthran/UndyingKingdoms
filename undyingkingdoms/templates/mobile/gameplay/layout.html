@@ -33,6 +33,7 @@ nav > a {
 	<a href="{{ url_for('infrastructure') }}">Infrastructure</a>
 	<a href="{{ url_for('military') }}">Military</a>
 	<a href="{{ url_for('infiltration') }}">Infiltration</a>
+	<a href="{{ url_for('casting', target_id=county.id) }}">Wizard Council</a>
 	<a href="{{ url_for('messages') }}" {% if has_mail %}style="color:blue;font-weight:bold;"{% endif %}>Inbox</a>
 	<a href="{{ url_for('chatroom_api') }}">Town&nbsp;Hall</a>
 	<a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom&nbsp;Overview</a>

@@ -11,6 +11,7 @@ from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
 from undyingkingdoms.models.technologies import Technology
 from undyingkingdoms.models.trades import Trade
+from undyingkingdoms.models.casting import Casting
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
     happiness_modifier, buildings_built_per_day_modifier
@@ -308,9 +309,14 @@ class County(GameState):
 
     @property
     def max_mana(self):
-        if self.technologies['arcane knowledge'].completed:
-            return 30
-        return 25
+        base = 25
+        if self.technologies['arcane knowledge I'].completed:
+            base += 5
+        if self.technologies['arcane knowledge II'].completed:
+            base += 5
+        if self.technologies['arcane knowledge III'].completed:
+            base += 5
+        return base
 
     @property
     def seed(self):
@@ -397,6 +403,8 @@ class County(GameState):
         infiltrations = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
         for infiltration in infiltrations:
             infiltration.duration -= 1
+
+        spells = Casting.query.filter_by(target_id=self.id).filter(Casting.duration > 0).all()
 
         self.day += 1
 

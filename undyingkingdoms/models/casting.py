@@ -1,7 +1,7 @@
 from undyingkingdoms.models.bases import GameEvent, db
 
 
-class Spell(GameEvent):
+class Casting(GameEvent):
 
     county_id = db.Column(db.Integer)
     target_id = db.Column(db.Integer)

@@ -11,11 +11,22 @@
 <br>Current Mana <img class="resource_icons" src="/static/images/mana_icon.jpg">: {{ county.mana }} / {{ county.max_mana }}
 <br><br>Daily Mana Required: {{ sustain_mana_requirement }} <img class="resource_icons" src="/static/images/mana_icon.jpg">
 
-<h2>Choose Spell to Cast</h2>
+<h2>Choose Spell to Cast on {{ target.name }}</h2>
 {% for spell in known_spells %}
     {{ spell.name.title() }}: {{ spell.mana_cost }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> to cast
+    <br>Can target {{ spell.targets }}
     <br>{{ spell.description }}<br>
-    <a href="{{ url_for('cast_spell', spell_id=spell.id) }}"><button style="float:left;width:100px;">Cast</button></a>
+    <a href="{{ url_for('cast_spell', spell_id=spell.id, target_id=target.id) }}">
+        <!-- Lay out all the cases where the spell is not castable -->
+        {% if (spell.mana_cost > county.mana) or
+        (spell.targets == 'self' and target != county) or
+        (spell.targets == 'friendly' and target.kingdom in county.kingdom.enemies) or
+        (spell.targets == 'hostile' and target.kingdom in county.kingdom.allies) or
+        (spell.targets == 'hostile' and target == county) %}
+        <button style="float:left;width:100px;" disabled>Cast</button></a>
+        {% else %}
+        <button style="float:left;width:100px;">Cast</button></a>
+        {% endif %}
     <br><br><br><br>
 {% endfor %}
 <br>
@@ -32,7 +43,7 @@
 <h2>Casting History</h2>
 <ul>
     {% for spell in casting_history %}
-    (Day {{ spell.county_day }}) {{ spell.name.title() }}<br>
+    (Day {{ spell.county_day }}) You cast {{ spell.name.title() }} on county id {{ spell.target_id }}<br>
     {% else %}
     No active spells
     {% endfor %}

@@ -15,6 +15,8 @@ from .upvotes import Upvote
 from .chatroom import Chatroom
 from .messages import Message
 from .diplomacy import Diplomacy
+from .magic import Magic
+from .casting import Casting
 
 from undyingkingdoms.models.bases import db
 Army.county = db.relationship('County')
