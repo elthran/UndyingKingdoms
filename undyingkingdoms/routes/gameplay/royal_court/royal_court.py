@@ -3,7 +3,6 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.models import Diplomacy
 from undyingkingdoms.models.forms.royal_court import RoyalCourtMessageForm
 from undyingkingdoms.routes.gameplay.royal_court.helpers import build_relations_form
 

@@ -70,12 +70,18 @@ class World(GameState):
         self.export_data_to_csv()
 
     def advance_age(self):
-        users = User.query.all()
-
         kingdoms = Kingdom.query.all()
+        counties = County.query.all()
         for kingdom in kingdoms:
             kingdom.leader = 0
             kingdom.save()
+        winning_kingdoms = [sorted(kingdoms, key=lambda x: x.wars_won_ta, reverse=True)[0],
+                            sorted(kingdoms, key=lambda x: x.total_land_of_top_three_counties, reverse=True)[0]]
+        winning_county = sorted(counties, key=lambda x: x.land, reverse=True)[0]
+        for kingdom in winning_kingdoms:
+            for county in kingdom.counties:
+                county.user.gems += 1
+        winning_county.user.gems += 1
 
         tables = ['DAU', 'army', 'building', 'chatroom', 'notification', 'expedition', 'infiltration', 'message',
                   'preferences', 'session', 'trade', 'transaction', 'spell', 'technology', 'county']
