@@ -882,6 +882,7 @@ class County(GameState):
 
     def battle_results(self, army, enemy, attack_type):
         war = None
+        rewards_modifier = 1.00
         offence_damage = self.get_offensive_strength(army=army)
         defence_damage = enemy.get_defensive_strength()
         expedition = Expedition(self.id, enemy.id, self.kingdom.world.day, self.day, offence_damage, defence_damage, attack_type)
@@ -890,6 +891,7 @@ class County(GameState):
             if each_war.get_other_kingdom(self.kingdom) == enemy.kingdom:  # If this is true, we are at war with them
                 war = each_war
                 expedition.war_id = war.id
+                rewards_modifier += 0.15
                 break
         difference_in_power = abs(offence_damage - defence_damage) / ((offence_damage + defence_damage) / 2) * 100
         if offence_damage > defence_damage:
@@ -897,7 +899,6 @@ class County(GameState):
         else:
             win = False
         if difference_in_power < 25:
-            rewards_modifier = 1.00
             if win:
                 notification_title = "You were attacked by {} and lost a closely matched battle.".format(self.name)
                 message = "You won a closely matched battle."
@@ -907,7 +908,7 @@ class County(GameState):
         elif difference_in_power < 50:
             offence_damage *= 0.50
             defence_damage *= 0.50
-            rewards_modifier = 0.75
+            rewards_modifier -= 0.25
             if win:
                 notification_title = "You were attacked by {} and lost a resounding defeat.".format(self.name)
                 message = "You won a resounding victory."
@@ -917,7 +918,7 @@ class County(GameState):
         else:
             offence_damage *= 0.25
             defence_damage *= 0.25
-            rewards_modifier = 0.25
+            rewards_modifier -= 0.75
             if win:
                 notification_title = "You were attacked by {} and quickly retreated before suffering many losses.".format(self.name)
                 message = "The enemy quickly retreated before you."
@@ -931,8 +932,6 @@ class County(GameState):
             expedition.success = True
             if expedition.mission == "Attack":
                 land_gained = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1) * rewards_modifier
-                if war:
-                    land_gained *= 1.15
                 land_gained = int(min(land_gained, enemy.land * 0.2))
                 war_score = land_gained
                 expedition.land_acquired = land_gained
@@ -941,15 +940,21 @@ class County(GameState):
                                             "You lost {} acres and {} troops in the battle.".format(land_gained, defence_casualties),
                                             self.kingdom.world.day)
                 message += " You gained {} acres, but lost {} troops in the battle.".format(land_gained, casualties)
+            elif expedition.mission == "Raze":
+                land_razed = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1) * rewards_modifier
+                land_razed = int(min(land_razed, enemy.land * 0.2))
+                war_score = land_razed
+                expedition.land_razed = land_razed
+                enemy.land -= land_razed
+                notification = Notification(enemy.id, notification_title,
+                                            "The enemy razed {} acres and {} troops in the battle.".format(land_razed, defence_casualties),
+                                            self.kingdom.world.day)
+                message += " You razed {} acres, but lost {} troops in the battle.".format(land_razed, casualties)
             elif expedition.mission == "Pillage":
                 war_score = 15
                 gold_gained = int(enemy.gold * 0.20 * rewards_modifier)
                 wood_gained = int(enemy.wood * 0.20 * rewards_modifier)
                 iron_gained = int(enemy.iron * 0.20 * rewards_modifier)
-                if war:
-                    gold_gained = int(gold_gained * 1.15)
-                    wood_gained = int(wood_gained * 1.15)
-                    iron_gained = int(iron_gained * 1.15)
                 expedition.gold_gained = gold_gained
                 expedition.wood_gained = wood_gained
                 expedition.iron_gained = iron_gained

@@ -46,7 +46,7 @@ def attack(template, county_id):
     else:
         form.monster.choices = [(monster * i // 10, monster * i // 10) for i in range(0, 11)]
 
-    attack_types = [(0, "Attack"), (1, "Pillage")]
+    attack_types = [(0, "Attack"), (1, "Pillage"), (2, "Raze")]
     form.attack_type.choices = [(pairing[0], pairing[1]) for pairing in attack_types]
 
     if form.validate_on_submit():

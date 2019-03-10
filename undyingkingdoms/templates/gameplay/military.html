@@ -227,6 +227,9 @@ th {
     {% elif expedition.mission == 'Attack' %}
       Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite + expedition.monster }} troops will
       return in {{ expedition.duration }} days with {{ expedition.land_acquired }} acres of newly captured land.
+    {% elif expedition.mission == 'Raze' %}
+      Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite + expedition.monster }} troops will
+      return in {{ expedition.duration }} days after razing {{ expedition.land_razed }} acres of enemy land.
     {% elif expedition.mission == 'Pillage' %}
       Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite + expedition.monster }} troops will
       return in {{ expedition.duration }} days with {{ expedition.gold_gained }} gold, {{ expedition.wood_gained }} wood,
