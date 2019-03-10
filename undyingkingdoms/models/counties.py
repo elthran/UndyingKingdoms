@@ -832,105 +832,120 @@ class County(GameState):
         strength *= (self.buildings['fort'].output * self.buildings['fort'].total) / 100 + 1
         return int(strength)
 
-    def get_army_duration(self, army_size):
-        base_duration = 2 + army_size / 20
+    def get_army_duration(self, win, attack_type):
+        base_duration = {'Attack': 18, 'Pillage': 12, 'Raze': 8}
         speed_reduction = 100
         speed_reduction += self.buildings['stables'].total * self.buildings['stables'].output
-        duration = base_duration * 100 / speed_reduction
+        duration = base_duration[attack_type] * 100 / speed_reduction
         if self.technologies["logistics"].completed:
             duration -= 1
+        if win is False:
+            duration *= 0.5
         return int(max(duration, 3))
 
-    def get_casualties(self, attack_power, army=(), enemy_id=-1, results="Draw"):
-        """
-        Maybe move to a math transform file.
-        army: For attacker, the army is passed in as dict. For defender, it's all active troops.
-        ratio: The greater you outnumber the enemy, the safer your troops are.
-        """
-        if army is ():
-            army = {}
+    def remove_casualties_after_attacking(self, attack_power, army, expedition_id):
         casualties = 0
-        hit_points_lost = randint(attack_power // 10, attack_power // 5)
-        if results == "massive":
-            hit_points_lost = randint(10, 20)
-        elif results == "major":
-            hit_points_lost *= 0.8
+        expedition = Expedition.query.get(expedition_id)
+        hit_points_lost = randint(attack_power // 8, attack_power // 7)
+        for unit in army.keys():
+            setattr(expedition, unit + '_sent', army[unit])
+        while hit_points_lost > 0:
+            army = {key: value for key, value in army.items() if value > 0}  # Remove dead troops
+            if army == {}:
+                break
+            unit = choice(list(army))
+            hit_points_lost -= self.armies[unit].health
+            self.armies[unit].total -= 1
+            army[unit] -= 1
+            casualties += 1
+        for unit in army.keys():
+            self.armies[unit].traveling += army[unit]  # Surviving troops are marked as absent
+            setattr(expedition, unit, army[unit])
+        return casualties
+
+    def remove_casualties_after_being_attacked(self, attack_power):
+        casualties = 0
+        hit_points_lost = randint(attack_power // 8, attack_power // 7)
         hit_points_to_be_removed = hit_points_lost
-        if not army:  # ie. you are the defender and use entire army
-            for unit in self.armies.values():
-                available = unit.available
-                if available > 0:
-                    available_hit_points = available * unit.health
-                    this_units_damage = min(available_hit_points, hit_points_lost // 4)
-                    hit_points_to_be_removed -= this_units_damage
-                    this_dead = this_units_damage // unit.health
-                    unit.total -= this_dead
-                    casualties += this_dead
-            self.population -= min(hit_points_to_be_removed, self.population)
-            return int(casualties)
-        if army:
-            hit_points_lost *= 3.25  # The attacker takes extra casualties
-            duration = self.get_army_duration(sum(army.values()))
-            expedition = Expedition(self.id, enemy_id, self.kingdom.world.day, self.day, duration)
-            expedition.save()
-            for unit in army.keys():
-                setattr(expedition, unit + '_sent', army[unit])
-            while hit_points_to_be_removed > 0:
-                army = {key: value for key, value in army.items() if value > 0}  # Remove dead troops
-                if army == {}:
-                    break
-                unit = choice(list(army))
-                hit_points_to_be_removed -= self.armies[unit].health
-                self.armies[unit].total -= 1
-                casualties += 1
-                army[unit] -= 1
-            for unit in army.keys():
-                self.armies[unit].traveling += army[unit]  # Surviving troops are marked as absent
-                setattr(expedition, unit, army[unit])
-            return int(casualties), expedition
+        for unit in self.armies.values():
+            available = unit.available
+            if available > 0:
+                available_hit_points = available * unit.health
+                this_units_damage = min(available_hit_points, hit_points_lost // 4)
+                hit_points_to_be_removed -= this_units_damage
+                this_dead = this_units_damage // unit.health
+                unit.total -= this_dead
+                casualties += this_dead
+        citizens_killed = min(hit_points_to_be_removed, self.population)
+        self.population -= citizens_killed
+        return casualties + citizens_killed
 
     def battle_results(self, army, enemy, attack_type):
-        offence = self.get_offensive_strength(army=army)
-        defence = enemy.get_defensive_strength()
-        percent_difference_in_power = abs(defence - offence) / ((defence + offence) / 2) * 100
-        if percent_difference_in_power < 25:
-            battle_word = "minor"
-        elif percent_difference_in_power < 50:
-            battle_word = "major"
-        else:
-            battle_word = "massive"
-        offence_casualties, expedition = self.get_casualties(attack_power=defence,
-                                                             army=army,
-                                                             enemy_id=enemy.id,
-                                                             results=battle_word)
-        defence_casualties = enemy.get_casualties(attack_power=offence,
-                                                  results=battle_word)
-        expedition.attack_power, expedition.defence_power, expedition.mission = offence, defence, attack_type
         war = None
+        offence_damage = self.get_offensive_strength(army=army)
+        defence_damage = enemy.get_defensive_strength()
+        expedition = Expedition(self.id, enemy.id, self.kingdom.world.day, self.day, offence_damage, defence_damage, attack_type)
+        expedition.save()
         for each_war in self.kingdom.wars:
             if each_war.get_other_kingdom(self.kingdom) == enemy.kingdom:  # If this is true, we are at war with them
                 war = each_war
+                expedition.war_id = war.id
                 break
-        if offence > defence:
+        difference_in_power = abs(offence_damage - defence_damage) / ((offence_damage + defence_damage) / 2) * 100
+        if offence_damage > defence_damage:
+            win = True
+        else:
+            win = False
+        if difference_in_power < 25:
+            rewards_modifier = 1.00
+            if win:
+                notification_title = "You were attacked by {} and lost a closely matched battle.".format(self.name)
+                message = "You won a closely matched battle."
+            else:
+                notification_title = "You were attacked by {} but drove them off after a closely matched battle.".format(self.name)
+                message = "You lost a closely matched battle."
+        elif difference_in_power < 50:
+            offence_damage *= 0.50
+            defence_damage *= 0.50
+            rewards_modifier = 0.75
+            if win:
+                notification_title = "You were attacked by {} and lost a resounding defeat.".format(self.name)
+                message = "You won a resounding victory."
+            else:
+                notification_title = "You were attacked by {} but easily defeated them.".format(self.name)
+                message = "You were resoundingly defeated."
+        else:
+            offence_damage *= 0.25
+            defence_damage *= 0.25
+            rewards_modifier = 0.25
+            if win:
+                notification_title = "You were attacked by {} and quickly retreated before suffering many losses.".format(self.name)
+                message = "The enemy quickly retreated before you."
+            else:
+                notification_title = "An army from {} attacked you, but they quickly retreated after seeing your forces.".format(self.name)
+                message = "Your army quickly retreated from battle."
+        casualties = self.remove_casualties_after_attacking(defence_damage, army, expedition.id)
+        defence_casualties = enemy.remove_casualties_after_being_attacked(attack_power=offence_damage)
+        expedition.duration = self.get_army_duration(win, attack_type)
+        if win:
             expedition.success = True
             if expedition.mission == "Attack":
-                land_gained = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1)
+                land_gained = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1) * rewards_modifier
                 if war:
                     land_gained *= 1.15
                 land_gained = int(min(land_gained, enemy.land * 0.2))
                 war_score = land_gained
                 expedition.land_acquired = land_gained
                 enemy.land -= land_gained
-                notification = Notification(enemy.id,
-                                            "You were attacked by {} and suffered a {} loss.".format(self.name, battle_word),
+                notification = Notification(enemy.id, notification_title,
                                             "You lost {} acres and {} troops in the battle.".format(land_gained, defence_casualties),
                                             self.kingdom.world.day)
-                message = "You claimed a {} victory and gained {} acres, but lost {} troops in the battle.".format(battle_word, land_gained, offence_casualties)
+                message += " You gained {} acres, but lost {} troops in the battle.".format(land_gained, casualties)
             elif expedition.mission == "Pillage":
                 war_score = 15
-                gold_gained = int(enemy.gold * 0.20)
-                wood_gained = int(enemy.wood * 0.20)
-                iron_gained = int(enemy.iron * 0.20)
+                gold_gained = int(enemy.gold * 0.20 * rewards_modifier)
+                wood_gained = int(enemy.wood * 0.20 * rewards_modifier)
+                iron_gained = int(enemy.iron * 0.20 * rewards_modifier)
                 if war:
                     gold_gained = int(gold_gained * 1.15)
                     wood_gained = int(wood_gained * 1.15)
@@ -941,15 +956,13 @@ class County(GameState):
                 enemy.gold -= gold_gained
                 enemy.wood -= wood_gained
                 enemy.iron -= iron_gained
-                notification = Notification(enemy.id,
-                                            "You were attacked by {} and suffered a {} loss.".format(self.name, battle_word),
+                notification = Notification(enemy.id, notification_title,
                                             "The enemy army stole {} gold, {} wood, and {} iron after the battle.".format(gold_gained, wood_gained, iron_gained),
                                             self.kingdom.world.day)
-                message = "You claimed a {} victory and gained {} gold, {} wood, and {} iron, but lost {} troops in the battle.".format(battle_word,
-                                                                                                                                        gold_gained,
-                                                                                                                                        wood_gained,
-                                                                                                                                        iron_gained,
-                                                                                                                                        offence_casualties)
+                message += " You gained {} gold, {} wood, and {} iron, but lost {} troops in the battle.".format(gold_gained,
+                                                                                                                 wood_gained,
+                                                                                                                 iron_gained,
+                                                                                                                 casualties)
             # Add war clause since it was a successful attack
             if war:
                 if war.kingdom_id == self.kingdom.id:  # We are the attack
@@ -966,12 +979,10 @@ class County(GameState):
                         message += " We have won the war against {}!".format(enemy.kingdom.name)
         else:
             expedition.success = False
-            notification = Notification(enemy.id,
-                                        "You were attacked by {}".format(self.name),
-                                        "You achieved a {} victory but lost {} troops.".format(battle_word,
-                                                                                               defence_casualties),
+            notification = Notification(enemy.id, notification_title,
+                                        "You achieved a victory but lost {} troops.".format(defence_casualties),
                                         self.kingdom.world.day)
-            message = "You suffered a {} failure in battle and lost {} troops".format(battle_word, offence_casualties)
+            message += " You lost {} troops in the battle.".format(casualties)
         notification.category = "Military"
         notification.save()
         return message
