@@ -29,5 +29,10 @@ generic_technology = {'agriculture': Technology(name='agriculture',
                                                  required=750,
                                                  tier=2,
                                                  max_level=1,
-                                                 description='Your county generates an additional 1 happiness each day.')
+                                                 description='Your county generates an additional 1 happiness each day.'),
+                      'arcane knowledge': Technology(name='arcane knowledge',
+                                                 required=500,
+                                                 tier=1,
+                                                 max_level=3,
+                                                 description='Each level raises your maximum mana by 5.')
                       }

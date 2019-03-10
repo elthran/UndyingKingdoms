@@ -93,7 +93,7 @@ class County(GameState):
     technologies = db.relationship("Technology",
                                    collection_class=attribute_mapped_collection('name'),
                                    cascade="all, delete, delete-orphan", passive_deletes=True)
-    spells = db.relationship("Spell",
+    magic = db.relationship("Magic",
                              collection_class=attribute_mapped_collection('name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
 
@@ -139,7 +139,7 @@ class County(GameState):
         self.emigration = 0
         self.days_since_event = 0
         # Buildings and Armies extracted from metadata
-        self.spells = deepcopy(generic_spells)
+        self.magic = deepcopy(generic_spells)
         if self.race == 'Dwarf':
             self.buildings = deepcopy(dwarf_buildings)
             self.armies = deepcopy(dwarf_armies)
@@ -151,7 +151,7 @@ class County(GameState):
         elif self.race == 'Elf':
             self.buildings = deepcopy(elf_buildings)
             self.armies = deepcopy(elf_armies)
-            self.spells = deepcopy(elf_spells)
+            self.magic = deepcopy(elf_spells)
             self.technologies = {**deepcopy(generic_technology), **deepcopy(elf_technology)}
         elif self.race == 'Goblin':
             self.buildings = deepcopy(goblin_buildings)
@@ -251,6 +251,7 @@ class County(GameState):
 
     @mana.setter
     def mana(self, value):
+        value = min(value, self.max_mana)
         difference = value - self._mana
         if difference > 0:
             self.lifetime_mana += difference
@@ -304,6 +305,12 @@ class County(GameState):
     @research_choice.setter
     def research_choice(self, value):
         self.preferences.research_choice = value
+
+    @property
+    def max_mana(self):
+        if self.technologies['arcane knowledge'].completed:
+            return 30
+        return 25
 
     @property
     def seed(self):
