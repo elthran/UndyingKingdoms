@@ -46,9 +46,13 @@
 <h2>Enemy Spells Affecting Us</h2>
 <ul>
     {% for spell in enemy_spells %}
-    {{ spell.name.title() }} (Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)<br>
-    {{ spell.description }}<br>
-    <a href="{{ url_for('dispel_spell', spell_id=spell.id) }}"><button style="float:left;width:100px;">Attempt to Dispel</button></a>
+    {{ spell.name.title() }}
+    {% if spell.mana_sustain %}(Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)
+    {% elif spell.duration %}(Spell ends in {{ spell.duration }} days)
+    {% endif %}<br>
+    Attempt to dispel for 10 <img class="resource_icons" src="/static/images/mana_icon.jpg">
+    <a href="{{ url_for('dispel_spell', spell_id=spell.id) }}">
+        <button style="float:left;width:100px;" {% if county.mana < 10 %}disabled{% endif %}>Attempt to Dispel</button></a>
     {% else %}
     No active spells
     {% endfor %}

@@ -81,9 +81,11 @@ def cancel_spell(spell_id):
 @app.route('/gameplay/dispel_spell/<int:spell_id>', methods=['GET', 'POST'])
 @login_required
 def dispel_spell(spell_id):
+    county = current_user.county
     spell = Casting.query.get(spell_id)
-    if spell is None:
+    if spell is None or county.mana < 10:
         return redirect(url_for('casting', target_id=current_user.county.id))
     spell.active = False
     spell.duration = 0
+    county.mana -= 10
     return redirect(url_for('casting', target_id=current_user.county.id))
