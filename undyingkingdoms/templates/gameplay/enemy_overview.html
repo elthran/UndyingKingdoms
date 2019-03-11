@@ -56,7 +56,6 @@ button {
     {% if target_kingdom == current_user.county.kingdom %} <!-- You can attack your own kingdom -->
       <a href="{{ url_for('attack', county_id=target_county.id) }}">Attack</a><br>
       <a href="{{ url_for('infiltrate', county_id=target_county.id) }}">Infiltrate</a><br>
-      <a href="{{ url_for('casting', target_id=target_county.id) }}">Cast Spells</a>
     {% else %}
       <p style="color:blue;">You can't send troops outside of your kingdom while it is in civil war.</p>
     {% endif %}
@@ -69,13 +68,12 @@ button {
       <p style="color:red;">You are at war with this kingdom. Your successful military expeditions will capture an +15% in resources.</p><br>
       <a href="{{ url_for('attack', county_id=target_county.id) }}">Attack</a><br>
       <a href="{{ url_for('infiltrate', county_id=target_county.id) }}">Infiltrate</a><br>
-      <a href="{{ url_for('casting', target_id=target_county.id) }}">Cast Spells</a>
     {% else %}
       <a href="{{ url_for('attack', county_id=target_county.id) }}">Attack</a><br>
       <a href="{{ url_for('infiltrate', county_id=target_county.id) }}">Infiltrate</a><br>
-      <a href="{{ url_for('casting', target_id=target_county.id) }}">Cast Spells</a>
     {% endif %}
   {% endif %}
+  <a href="{{ url_for('casting', target_id=target_county.id) }}">Cast Spells</a>
   <br><br><br>
   {% if target_kingdom == current_user.county.kingdom %}
   <form method="POST" accept-charset="UTF-8" action="{{ url_for('trade',county_id=target_county.id) }}">

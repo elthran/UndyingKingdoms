@@ -736,7 +736,10 @@ class County(GameState):
         return self.buildings['quarry'].total * self.buildings['quarry'].output
 
     def get_mana_change(self):
-        return self.buildings['arcane'].total * self.buildings['arcane'].output
+        growth = self.buildings['arcane'].total * self.buildings['arcane'].output
+        active_spells = Casting.query.filter_by(county_id=self.id).filter_by(active=True).all()
+        loss = sum(spell.mana_sustain for spell in active_spells)
+        return growth - loss
 
     def get_research_change(self):
         if self.technologies.get("arcane knowledge") and self.technologies["arcane knowledge"].completed:

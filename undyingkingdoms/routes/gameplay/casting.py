@@ -13,23 +13,24 @@ from undyingkingdoms.models.casting import Casting
 @mobile_template("{mobile/}gameplay/casting.html")
 @login_required
 def casting(template, target_id):
+    county = current_user.county
     target_county = County.query.get(target_id)
-    if target_county == current_user.county:
+    if target_county == county:
         targets = 'self'
-    elif target_county.kingdom in current_user.county.kingdom.allies:
+    elif target_county.kingdom in county.kingdom.allies:
         targets = 'friendly'
-    elif target_county.kingdom in current_user.county.kingdom.enemies:
+    elif target_county.kingdom in county.kingdom.enemies:
         targets = 'hostile'
     else:
         targets = 'all'
-    known_spells = Magic.query.filter_by(county_id=current_user.county.id).filter_by(known=True).all()
-    unknown_spells = Magic.query.filter_by(county_id=current_user.county.id).filter_by(known=False).all()
-    active_spells = Casting.query.filter_by(county_id=current_user.county.id).filter((Casting.duration > 0) | (Casting.active==True)).all()
-    enemy_spells = Casting.query.filter_by(target_id=current_user.county.id).filter((Casting.duration > 0) | (Casting.active==True)).all()
+    known_spells = Magic.query.filter_by(county_id=county.id).filter_by(known=True).all()
+    unknown_spells = Magic.query.filter_by(county_id=county.id).filter_by(known=False).all()
+    active_spells = Casting.query.filter_by(county_id=county.id).filter((Casting.duration > 0) | (Casting.active==True)).all()
+    enemy_spells = Casting.query.filter_by(target_id=county.id).filter((Casting.county_id != county.id) & ((Casting.duration > 0) | (Casting.active==True))).all()
+    casting_history = Casting.query.filter_by(county_id=county.id).all()
     print("enemy spell test")
     print(enemy_spells)
-    print(current_user.county.active_enemy_spells)
-    casting_history = Casting.query.filter_by(county_id=current_user.county.id).all()
+    print(county.active_enemy_spells)
     sustain_mana_requirement = sum(spell.mana_sustain for spell in active_spells)
     return render_template(template, target=target_county, targets=targets,
                            known_spells=known_spells,
