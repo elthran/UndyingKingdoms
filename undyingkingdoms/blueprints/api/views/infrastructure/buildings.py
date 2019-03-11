@@ -19,6 +19,7 @@ class BuildingsAPI(MethodView):
             name = building.class_name.title()
             buildingsChoices.append([index, name])
             # import pdb;pdb.set_trace()
+            max_size = max_buildable_by_cost(county, building)
             vue_safe_buildings[name] = dict(
                 total=building.total,
                 pending=building.pending,
@@ -26,7 +27,8 @@ class BuildingsAPI(MethodView):
                 goldCost=building.gold_cost,
                 woodCost=building.wood_cost,
                 stoneCost=building.stone_cost,
-                maxBuildable=max_buildable_by_cost(county, building),
+                maxBuildable=max_size,
+                buildChoices=[[n, n] for n in range(max_size+1)],
                 totalEmployed=building.workers_employed * building.total,
                 workersEmployed=building.workers_employed
             )
