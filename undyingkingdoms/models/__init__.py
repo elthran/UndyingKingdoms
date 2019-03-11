@@ -21,3 +21,4 @@ from .casting import Casting
 from undyingkingdoms.models.bases import db
 Army.county = db.relationship('County')
 User.county = db.relationship('County', backref='user', uselist=False)
+Casting.caster = db.relationship('County')
