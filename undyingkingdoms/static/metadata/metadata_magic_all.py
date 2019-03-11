@@ -18,5 +18,12 @@ generic_spells = {'inspire': Magic(name='inspire',
                                         known=True,
                                         mana_cost=5,
                                         duration=12,
-                                        description='Add a disease to an enemy county for 12 days.')
+                                        description='Add a disease to an enemy county for 12 days.'),
+                  'verdant growth': Magic(name='verdant growth',
+                                          category='aura',
+                                          targets='friendly',
+                                          known=True,
+                                          mana_cost=15,
+                                          mana_sustain=5,
+                                          description='Pastures produce +50% grain will this spell is in effect.')
                   }
