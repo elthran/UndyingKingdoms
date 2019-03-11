@@ -51,8 +51,14 @@ def cast_spell(spell_id, target_id):
         return redirect(url_for('casting', target_id=target.id))
     county.mana -= spell.mana_cost
 
-    cast = Casting(county.id, target.id, county.kingdom.world.day, county.day, spell.name, spell.duration)
+    cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day, county.day, spell.name, spell.duration)
     cast.save()
+    if county == target:
+        cast.target_relation = 'self'
+    elif target in county.allies:
+        cast.target_relation = 'friendly'
+    else:
+        cast.target_relation = 'hostile'
     if spell.mana_sustain > 0:
         cast.active = True
         cast.mana_sustain = spell.mana_sustain
