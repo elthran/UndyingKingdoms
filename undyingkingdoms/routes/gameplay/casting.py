@@ -26,6 +26,9 @@ def casting(template, target_id):
     unknown_spells = Magic.query.filter_by(county_id=current_user.county.id).filter_by(known=False).all()
     active_spells = Casting.query.filter_by(county_id=current_user.county.id).filter((Casting.duration > 0) | (Casting.active==True)).all()
     enemy_spells = Casting.query.filter_by(target_id=current_user.county.id).filter((Casting.duration > 0) | (Casting.active==True)).all()
+    print("enemy spell test")
+    print(enemy_spells)
+    print(current_user.county.active_enemy_spells)
     casting_history = Casting.query.filter_by(county_id=current_user.county.id).all()
     sustain_mana_requirement = sum(spell.mana_sustain for spell in active_spells)
     return render_template(template, target=target_county, targets=targets,

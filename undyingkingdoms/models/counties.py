@@ -1128,3 +1128,9 @@ class County(GameState):
 
     def __repr__(self):
         return '<County %r (%r)>' % (self.name, self.id)
+
+
+# Attach any add-ons needed to the County class.
+from .county_addons.casting_addon import casting_addon
+
+casting_addon(County)

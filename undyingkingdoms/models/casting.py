@@ -3,7 +3,7 @@ from undyingkingdoms.models.bases import GameEvent, db
 
 class Casting(GameEvent):
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'))
-    target_id = db.Column(db.Integer)
+    target_id = db.Column(db.Integer, db.ForeignKey('county.id'))
     spell_id = db.Column(db.Integer)
     world_day = db.Column(db.Integer)
     county_day = db.Column(db.Integer)
