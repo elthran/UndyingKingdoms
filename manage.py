@@ -82,6 +82,7 @@ def populate_db():
         county.technologies['arcane knowledge II'].completed = True
         county.technologies['arcane knowledge III'].completed = True
         county.mana = 500
+        county.happiness = 80
         preferences = Preferences(county.id, user.id)
         preferences.save()
         aldoroth = Kingdom.query.get(1)
@@ -96,6 +97,13 @@ def populate_db():
         county.save()
         county.vote = county.id
         county.kingdom_id = 2
+        county.buildings['arcane'].total = 5
+        county.technologies['arcane knowledge I'].completed = True
+        county.technologies['arcane knowledge II'].completed = True
+        county.technologies['arcane knowledge III'].completed = True
+        county.mana = 500
+        county.happiness = 80
+
         preferences = Preferences(county.id, user.id)
         preferences.save()
         faenoth = Kingdom.query.get(2)

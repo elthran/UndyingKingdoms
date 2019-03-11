@@ -50,7 +50,10 @@
 <h2>Spells From Other Counties Affecting Us</h2>
 <ul>
     {% for spell in enemy_spells %}
-    {{ spell.name.title() }}
+    {{ spell.name.title() }} by
+    <a href="{{ url_for('enemy_overview', kingdom_id=spell.caster.kingdom.id, county_id=spell.caster.id) }}">
+        {{ spell.caster.name }}
+    </a>
     {% if spell.mana_sustain %}(Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)
     {% elif spell.duration %}(Spell ends in {{ spell.duration }} days)
     {% endif %}<br>
