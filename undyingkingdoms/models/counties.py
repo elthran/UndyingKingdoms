@@ -358,7 +358,6 @@ class County(GameState):
         self.update_population()
         self.update_weather()  # Is before random events because they can affect weather
         self.get_random_daily_events()
-
         expeditions = Expedition.query.filter_by(county_id=self.id).filter(Expedition.duration > 0).all()
         for expedition in expeditions:
             expedition.duration -= 1
@@ -386,7 +385,6 @@ class County(GameState):
                                                     expedition.iron_gained)
                 elif expedition.mission == "Raze":
                     notification.content = "They have successfully razed {} enemy acres.".format(expedition.land_razed)
-
         trades = Trade.query.filter_by(county_id=self.id).filter_by(status='Pending').filter(Trade.duration > 0).all()
         for trade in trades:
             trade.duration -= 1
@@ -401,7 +399,6 @@ class County(GameState):
                                             "Your trade offer to {} has expired and your resources have been return".format(
                                                 target_county.name), self.kingdom.world.day, "Trade")
                 notification.save()
-
         infiltrations = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
         for infiltration in infiltrations:
             infiltration.duration -= 1
@@ -415,8 +412,17 @@ class County(GameState):
                 notification.content = "Your {} thieves have returned after their mission to {}.".format(infiltration.amount_of_thieves,
                                                                                                          infiltration.mission)
 
-        #spells = Casting.query.filter_by(target_id=self.id).filter(Casting.duration > 0).all()
-
+        spells = Casting.query.filter_by(target_id=self.id).filter(Casting.duration > 0).all()
+        for spell in spells:
+            spell.duration -= 1
+            if spell.duration == 0:
+                notification = Notification(self.id,
+                                            "A spell has ended",
+                                            "Error: Report to admin",
+                                            self.kingdom.world.day,
+                                            "Magic")
+                notification.save()
+                notification.content = "{} has ended and is no longer affecting your county.".format(spell.name)
         self.day += 1
 
     def temporary_bot_tweaks(self):

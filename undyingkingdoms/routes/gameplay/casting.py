@@ -25,12 +25,14 @@ def casting(template, target_id):
     known_spells = Magic.query.filter_by(county_id=current_user.county.id).filter_by(known=True).all()
     unknown_spells = Magic.query.filter_by(county_id=current_user.county.id).filter_by(known=False).all()
     active_spells = Casting.query.filter_by(county_id=current_user.county.id).filter((Casting.duration > 0) | (Casting.active==True)).all()
+    enemy_spells = Casting.query.filter_by(target_id=current_user.county.id).filter((Casting.duration > 0) | (Casting.active==True)).all()
     casting_history = Casting.query.filter_by(county_id=current_user.county.id).all()
     sustain_mana_requirement = sum(spell.mana_sustain for spell in active_spells)
     return render_template(template, target=target_county, targets=targets,
                            known_spells=known_spells,
                            unknown_spells=unknown_spells,
                            active_spells=active_spells,
+                           enemy_spells=enemy_spells,
                            casting_history=casting_history,
                            sustain_mana_requirement=sustain_mana_requirement)
 
@@ -63,3 +65,25 @@ def cast_spell(spell_id, target_id):
         notification.save()
         pass
     return redirect(url_for('casting', target_id=target.id))
+
+
+@app.route('/gameplay/cancel_spell/<int:spell_id>', methods=['GET', 'POST'])
+@login_required
+def cancel_spell(spell_id):
+    spell = Casting.query.get(spell_id)
+    if spell is None:
+        return redirect(url_for('casting', target_id=current_user.county.id))
+    spell.active = False
+    spell.duration = 0
+    return redirect(url_for('casting', target_id=current_user.county.id))
+
+
+@app.route('/gameplay/dispel_spell/<int:spell_id>', methods=['GET', 'POST'])
+@login_required
+def dispel_spell(spell_id):
+    spell = Casting.query.get(spell_id)
+    if spell is None:
+        return redirect(url_for('casting', target_id=current_user.county.id))
+    spell.active = False
+    spell.duration = 0
+    return redirect(url_for('casting', target_id=current_user.county.id))

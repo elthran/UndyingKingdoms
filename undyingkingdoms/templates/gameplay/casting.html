@@ -27,19 +27,33 @@
         {% else %}
         <button style="float:left;width:100px;">Cast</button></a>
         {% endif %}
-    <br><br><br><br>
+    <br><br><br>
 {% endfor %}
 <br>
-<h2>Active Spells</h2>
+<h2>Our Active Spells</h2>
 <ul>
     {% for spell in active_spells %}
-    {{ spell.name.title() }} (Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)<br>
-    {{ spell.description }}<br>
+    {{ spell.name.title() }}
+    {% if spell.mana_sustain %}(Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)
+    {% elif spell.duration %}(Spell ends in {{ spell.duration }} days)
+    {% endif %}<br>
+    <a href="{{ url_for('cancel_spell', spell_id=spell.id) }}"><button style="float:left;width:100px;">End</button></a>
     {% else %}
     No active spells
     {% endfor %}
 </ul>
-<br>
+<br><br><br>
+<h2>Enemy Spells Affecting Us</h2>
+<ul>
+    {% for spell in enemy_spells %}
+    {{ spell.name.title() }} (Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)<br>
+    {{ spell.description }}<br>
+    <a href="{{ url_for('dispel_spell', spell_id=spell.id) }}"><button style="float:left;width:100px;">Attempt to Dispel</button></a>
+    {% else %}
+    No active spells
+    {% endfor %}
+</ul>
+<br><br><br>
 <h2>Casting History</h2>
 <ul>
     {% for spell in casting_history %}
