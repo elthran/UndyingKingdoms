@@ -16,8 +16,8 @@ class BuildingsAPI(MethodView):
         total_pending = 0
         total_employed = 0
         for index, building in enumerate(county.buildings.values()):
-            name = building.class_name.title()
-            buildingsChoices.append([index, name])
+            name = building.name
+            buildingsChoices.append([name, building.class_name.title()])
             # import pdb;pdb.set_trace()
             max_size = max_buildable_by_cost(county, building)
             vue_safe_buildings[name] = dict(
@@ -45,5 +45,6 @@ class BuildingsAPI(MethodView):
             buildings=vue_safe_buildings,
             totalBuilt=total_built,
             totalPending=total_pending,
-            totalEmployed=total_employed
+            totalEmployed=total_employed,
+            buildBuildingsUrl=url_for('build_buildings')
         )

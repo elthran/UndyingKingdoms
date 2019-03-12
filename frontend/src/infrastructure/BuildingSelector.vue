@@ -12,46 +12,46 @@
 <template>
   <div id="body">
     <form
-      ref="form"
-      :action="urlFor.buildBuildings"
+      ref="build-form"
+      :action="buildBuildingsUrl"
       accept-charset="UTF-8"
+      @submit.prevent="submitForm"
     >
       <span v-html="form.csrf_token.html" />
-    </form>
-    <table>
-      <tr>
-        <td>Name</td>
-        <td>To Be Built</td>
-      </tr>
-      <tr>
-        <td>
+      <div class="top-spacer-1">
+        <div>
+          Name:
           <select-generator
             v-model="current"
             :options="buildingsChoices"
             :selected="current"
             id-name="building"
           />
-        </td>
-        <td class="width-100-percent center">
+        </div>
+        <div class="top-spacer-dot-6">
+          To Be Built:
           <select-generator
+            v-model="amount"
             :options="currentBuilding.buildChoices"
             selected="0"
             id-name="amount"
           />
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2">
-          <div class="top-spacer-dot-3">
-            <div>Owned: {{ currentBuilding.total }}</div>
-            <div>Under Construction: {{ currentBuilding.pending }}</div>
-            <div>Cost: {{ currentBuilding.goldCost }}/{{ currentBuilding.woodCost }}/{{ currentBuilding.stoneCost }}</div>
-            <div>Workers Employed: {{ currentBuilding.totalEmployed }} ({{ currentBuilding.workersEmployed }} each)</div>
-            <div>Description: {{ currentBuilding.description }}</div>
-          </div>
-        </td>
-      </tr>
-    </table>
+        </div>
+        <div class="top-spacer-dot-6">
+          Owned: {{ currentBuilding.total }}
+        </div>
+        <div>Under Construction: {{ currentBuilding.pending }}</div>
+        <div>Cost: {{ currentBuilding.goldCost }}/{{ currentBuilding.woodCost }}/{{ currentBuilding.stoneCost }}</div>
+        <div>Workers Employed: {{ currentBuilding.totalEmployed }} ({{ currentBuilding.workersEmployed }} each)</div>
+        <div>Description: {{ currentBuilding.description }}</div>
+      </div>
+      <button
+        class="top-spacer-dot-6 width-100-percent"
+        type="submit"
+      >
+        Build
+      </button>
+    </form>
   </div>
 </template>
 
@@ -65,36 +65,43 @@ export default {
   },
   data () {
     return {
-      urlFor: Object,
+      buildBuildingsUrl: String,
       form: {
         type: Object,
         csrf_token: Object
       },
       buildingsChoices: [
-        [0, "Example"]
+        ["house", "Cottage"]
       ],
-      current: 0,
+      current: "house",
       buildings: {
-        "Example": {
+        "house": {
           total: -1,
           buildChoices: [0]  // can't use -1 here as it is an invalid Array length.
         }
       },
       totalBuilt: -1,
       totalEmployed: -1,
-      totalPending: -1
+      totalPending: -1,
+      amount: 0,
+      errors: Object
     }
   },
   computed: {
-    name () {
-      return this.buildingsChoices[this.current][1]
-    },
     currentBuilding () {
-      return this.buildings[this.name]
+      return this.buildings[this.current]
     }
   },
   beforeCreate () {
     this.$getData('/api/infrastructure/buildings', this.$deployData)
+  },
+  methods: {
+    submitForm () {
+      this.$sendForm(this.$refs['build-form'], () => {
+        console.log("form submitted")
+        this.$getData('/api/infrastructure/buildings', this.$deployData)
+      })
+    }
   }
 }
 </script>
