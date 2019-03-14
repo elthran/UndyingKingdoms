@@ -25,5 +25,5 @@ generic_spells = {'inspire': Magic(name='inspire',
                                           known=True,
                                           mana_cost=15,
                                           mana_sustain=5,
-                                          description='Pastures produce +50% grain will this spell is in effect.')
+                                          description='Pastures produce +50% grain while this spell is in effect.')
                   }
