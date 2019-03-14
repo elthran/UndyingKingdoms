@@ -15,8 +15,8 @@ class BuildingsAPI(MethodView):
         build_form = InfrastructureForm()
 
         form_data = dict(
-            _action=url_for('build_buildings'),
-            _csrf_token=build_form.csrf_token.current_token,
+            _action=url_for('api.infrastructure_build_buildings_api'),
+            csrf_token=build_form.csrf_token.current_token,
             county_id=county.id
         )
 

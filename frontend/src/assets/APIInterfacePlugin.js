@@ -73,7 +73,7 @@ APIInterface.install = function (Vue, options) {
     this.axios({
       url: formData.get('_action'),
       method: 'POST',
-      headers: {'X-CSRF-TOKEN': formData.get('_csrf_token')},
+      headers: {'X-CSRF-TOKEN': formData.get('csrf_token')},
       data: formData,
       dataType: 'json'  // type of datareturned, not type sent
     })

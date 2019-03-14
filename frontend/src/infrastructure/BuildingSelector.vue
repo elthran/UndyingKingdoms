@@ -100,6 +100,7 @@ export default {
   },
   methods: {
     submitForm () {
+      this.amount = 0
       this.$sendData(this.formData, () => {
         this.$getData('/api/infrastructure/buildings', this.$deployData)
       })

@@ -14,7 +14,8 @@ api_blueprint.add_url_rule(
     view_func=PopulationAPI.as_view(f'economy_population_api')
 """
 
-endpoints = ['resources', 'idle_population', 'allocate', 'buildings']
+endpoints = ['resources', 'idle_population', 'allocate', 'buildings',
+             'build_buildings']
 
 for endpoint in endpoints:
     mod = import_module('.' + endpoint, __name__)
