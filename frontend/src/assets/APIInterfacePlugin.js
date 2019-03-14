@@ -33,6 +33,7 @@ APIInterface.install = function (Vue, options) {
   }
 
   Vue.prototype.$sendForm = async function (form, callback) {
+    console.log("sending form", form)
     const { default: $ } = await import(/* webpackChunkName: "jquery" */ 'jquery')
     if (!(form instanceof $)) {
       form = $(form)
@@ -54,11 +55,42 @@ APIInterface.install = function (Vue, options) {
         console.log('You need to add as "success" attribute to the api "' + url + '" return jsonify.')
         console.log('You should probably add a "message" attribute as well for debugging purposes.')
       } else {
-        this.errors = response
+        console.log(response)
       }
     })
     .catch((error) => {
-      this.errors = error.response
+      console.log(error.response)
+    })
+  }
+
+  Vue.prototype.$sendData = function (data, callback) {
+    var formData = new FormData();
+    for ( var prop in data ) {
+      if (data.hasOwnProperty(prop)) {
+        formData.append(prop, data[prop]);
+      }
+    }
+    this.axios({
+      url: formData.get('_action'),
+      method: 'POST',
+      headers: {'X-CSRF-TOKEN': formData.get('_csrf_token')},
+      data: formData,
+      dataType: 'json'  // type of datareturned, not type sent
+    })
+    .then((response) => {
+      if (response.data.status === 'success') {
+        delete response.data.status
+        delete response.data.message
+        callback(this, response.data)
+      } else if (!(response.data.hasOwnProperty('status'))) {
+        console.log('You need to add as "success" attribute to the api "' + url + '" return jsonify.')
+        console.log('You should probably add a "message" attribute as well for debugging purposes.')
+      } else {
+        console.log(response)
+      }
+    })
+    .catch((error) => {
+      console.log(error.response)
     })
   }
 }

@@ -3,12 +3,22 @@ from flask.views import MethodView
 from flask_login import login_required, current_user
 
 from undyingkingdoms.blueprints.api.views.infrastructure.helpers import max_buildable_by_cost
+from undyingkingdoms.blueprints.api.vue_safe import vue_safe_form
+from undyingkingdoms.models.forms.infrastructure import InfrastructureForm
 
 
 class BuildingsAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
+
+        build_form = InfrastructureForm()
+
+        form_data = dict(
+            _action=url_for('build_buildings'),
+            _csrf_token=build_form.csrf_token.current_token,
+            county_id=county.id
+        )
 
         vue_safe_buildings = {}
         buildingsChoices = []
@@ -17,6 +27,7 @@ class BuildingsAPI(MethodView):
         total_employed = 0
         for index, building in enumerate(county.buildings.values()):
             name = building.name
+            form_data[name] = 0  # add all fields to form_data
             buildingsChoices.append([name, building.class_name.title()])
             # import pdb;pdb.set_trace()
             max_size = max_buildable_by_cost(county, building)
@@ -38,6 +49,7 @@ class BuildingsAPI(MethodView):
 
 
 
+
         return jsonify(
             status="success",
             message="You called on the buildings api.",
@@ -46,5 +58,5 @@ class BuildingsAPI(MethodView):
             totalBuilt=total_built,
             totalPending=total_pending,
             totalEmployed=total_employed,
-            buildBuildingsUrl=url_for('build_buildings')
+            formData=form_data
         )

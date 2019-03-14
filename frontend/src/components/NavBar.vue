@@ -5,7 +5,7 @@
   flex-direction: column;
   align-items: center;
   font-size: 1.5em;
-  margin: 0 1em 0.5em;
+  margin: 0 0 0.5em;
 }
 
 a {
@@ -35,6 +35,7 @@ a {
 
 <template>
   <nav class="mobile-sidebar">
+    <hr class="width-100-percent">
     <a
       :href="urlFor.overview"
     >
@@ -96,7 +97,7 @@ a {
       >
         Town&nbsp;Hall
       </a>
-      <a 
+      <a
         class="mobile-link"
         :href="urlFor.kingdom"
       >

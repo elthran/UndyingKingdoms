@@ -65,10 +65,12 @@ export default {
     }
   },
   watch: {
-    goal () {
-      this.$sendForm(this.$refs.form, () => {
-        this.$getData('/api/infrastructure/idle_population', this.$deployData)
-      })
+    goal (newVal, oldVal) {
+      if (oldVal != -1) {  // ignore watcher until after loading initial data.
+        this.$sendForm(this.$refs.form, () => {
+          this.$getData('/api/infrastructure/idle_population', this.$deployData)
+        })
+      }
     }
   },
   beforeCreate () {
