@@ -1,16 +1,9 @@
-<style scoped>
-#body {
-    max-width: 19em;
-    margin: auto;
-}
-
-.tab {
-  margin-left: 1em;
-}
-</style>
-
 <template>
-  <div id="body">
+  <div
+    id="body"
+    :value="totalCosts"
+    @input="$emit('input', computeTotalCosts())"
+  >
     <div class="top-spacer-1">
       <div>
         Name:
@@ -34,11 +27,28 @@
         Owned: {{ currentBuilding.total }}
       </div>
       <div>Under Construction: {{ currentBuilding.pending }}</div>
-      <div>Cost: {{ currentBuilding.goldCost }}/{{ currentBuilding.woodCost }}/{{ currentBuilding.stoneCost }}</div>
+      <div>
+        Cost: {{ currentBuilding.goldCost }}
+        <img
+          class="resource_icons"
+          src="/static/dist/images/gold_icon.jpg"
+        >
+        / {{ currentBuilding.woodCost }}
+        <img
+          class="resource_icons"
+          src="/static/dist/images/wood_icon.jpg"
+        >
+        / {{ currentBuilding.stoneCost }}
+        <img
+          class="resource_icons"
+          src="/static/dist/images/stone_icon.jpg"
+        >
+      </div>
       <div>Workers Employed: {{ currentBuilding.totalEmployed }} ({{ currentBuilding.workersEmployed }} each)</div>
       <div>Description: {{ currentBuilding.description }}</div>
     </div>
     <button
+      ref="submitButton"
       class="top-spacer-dot-6 width-100-percent"
       @click="submitForm"
     >
@@ -59,6 +69,9 @@ export default {
   name: 'BuildingSelector',
   components: {
     'select-generator': SelectGenerator
+  },
+  props: {
+    totalCosts: Object
   },
   data () {
     return {
@@ -101,10 +114,51 @@ export default {
   methods: {
     submitForm () {
       this.amount = 0
+      this.$refs.submitButton.disabled = true
       this.$sendData(this.formData, () => {
         this.$getData('/api/infrastructure/buildings', this.$deployData)
       })
+      setTimeout(() => {
+        this.$refs.submitButton.disabled = false
+      }, 3000)
+    },
+    computeTotalCosts () {
+      var costs = {
+        goldCost: 0,
+        woodCost: 0,
+        stoneCost: 0,
+        landCost: 0,
+        workersEmployed: 0
+      }
+
+      var count;
+      var building;
+      this.$nextTick(() => {  // fixes bug where computation is one selection delayed.
+        for (var prop in this.buildings) {
+          if (this.buildings.hasOwnProperty(prop)) {
+            count = this.formData[prop]
+            building = this.buildings[prop]
+            costs.goldCost += building.goldCost * count
+            costs.woodCost += building.woodCost * count
+            costs.stoneCost += building.stoneCost * count
+            costs.landCost += 1 * count  // currently all land costs are 1.
+            costs.workersEmployed += building.workersEmployed * count
+          }
+        }
+      })
+      return costs
     }
   }
 }
 </script>
+
+<style scoped>
+#body {
+    max-width: 19em;
+    margin: auto;
+}
+
+.tab {
+  margin-left: 1em;
+}
+</style>

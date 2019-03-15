@@ -6,11 +6,15 @@
 <template>
   <div id="infrastructure-app">
     <prefix-title title="City Planner" />
-    <resource-header>
+    <resource-header
+      :current-costs="totalCosts"
+    >
       <idle-population-form />
     </resource-header>
     <div class="bottom-spacer-dot-6" />
-    <building-selector />
+    <building-selector
+      v-model="totalCosts"
+    />
     <div class="bottom-spacer-1" />
     <nav-bar />
   </div>
@@ -29,6 +33,17 @@ export default {
     'resource-header': ResourceHeader,
     'idle-population-form': IdlePopulationForm,
     'building-selector': BuildingSelector
+  },
+  data () {
+    return {
+      totalCosts: {
+          goldCost: 0,
+          woodCost: 0,
+          stoneCost: 0,
+          landCost: 0,
+          workersEmployed: 0
+        }
+    }
   }
 }
 </script>

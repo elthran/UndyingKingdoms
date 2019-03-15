@@ -33,7 +33,6 @@ APIInterface.install = function (Vue, options) {
   }
 
   Vue.prototype.$sendForm = async function (form, callback) {
-    console.log("sending form", form)
     const { default: $ } = await import(/* webpackChunkName: "jquery" */ 'jquery')
     if (!(form instanceof $)) {
       form = $(form)
