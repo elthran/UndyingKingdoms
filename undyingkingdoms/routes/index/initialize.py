@@ -28,6 +28,7 @@ def initialize(template):
     form.background.choices = [(i, backgrounds[i]) for i in range(len(backgrounds))]
     
     kingdoms = Kingdom.query.all()
+    smallest_kingdom = Kingdom.query.filter(Kingdom.id < 3).all()
     smallest_kingdom = min(kingdoms, key=lambda x: len(x.counties))
     
     if form.validate_on_submit():

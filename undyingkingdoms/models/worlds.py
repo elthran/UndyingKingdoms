@@ -1,13 +1,15 @@
 import os
-from datetime import datetime, date
+from datetime import datetime
 
 from pandas import DataFrame
+from sqlalchemy import desc
 
 from undyingkingdoms.models import helpers
 from undyingkingdoms.models.users import User
 from undyingkingdoms.models.dau import DAU
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.kingdoms import Kingdom
+from undyingkingdoms.models.chatroom import Chatroom
 from undyingkingdoms.models.bases import GameState
 
 from extensions import flask_db as db
@@ -33,9 +35,11 @@ class World(GameState):
                     county.temporary_bot_tweaks()
                 else:
                     county.advance_day()
+            for kingdom in Kingdom.query.all():
+                kingdom.advance_day()
 
         self.day += 1
-        if self.day % 36 == 0:  # Every 36 game days we advance the season
+        if self.day % 36 == 0:  # Every 36 game days we advance the game season
             season_index = seasons.index(self.season) + 1
             if season_index == len(seasons):
                 season_index = 0
@@ -66,21 +70,21 @@ class World(GameState):
         self.export_data_to_csv()
 
     def advance_age(self):
-        users = User.query.all()
-        top_user = sorted(users, key=lambda user: user.get_current_leaderboard_score()).pop()
-
-        # the player actually played this round
-        if top_user.county is not None:
-            top_user.alpha_wins += 1
-            top_user.save()
-
         kingdoms = Kingdom.query.all()
+        counties = County.query.all()
         for kingdom in kingdoms:
             kingdom.leader = 0
             kingdom.save()
+        winning_kingdoms = [sorted(kingdoms, key=lambda x: x.wars_won_ta, reverse=True)[0],
+                            sorted(kingdoms, key=lambda x: x.total_land_of_top_three_counties, reverse=True)[0]]
+        winning_county = sorted(counties, key=lambda x: x.land, reverse=True)[0]
+        for kingdom in winning_kingdoms:
+            for county in kingdom.counties:
+                county.user.gems += 1
+        winning_county.user.gems += 1
 
-        tables = ['army', 'building', 'notification', 'expedition', 'infiltration', 'chatroom', 'message',
-                  'session', 'transaction', 'spell', 'technology', 'county']
+        tables = ['DAU', 'army', 'building', 'chatroom', 'notification', 'expedition', 'infiltration', 'message',
+                  'preferences', 'session', 'trade', 'transaction', 'spell', 'technology', 'county']
         helpers.drop_then_rebuild_tables(db, tables)
         self.age += 1
         self.day = -12
@@ -121,6 +125,19 @@ class World(GameState):
             filename = "{}/{}_table.csv".format(current_path, name)
             df = DataFrame(table)
             df.to_csv(filename, header=headers)
+
+    def get_most_recent_townhall_time(self, kingdom_id):
+        most_recent_global_chat = Chatroom.query.filter_by(is_global=True).order_by(desc('time_created')).first()
+        if not most_recent_global_chat:
+            most_recent_global_time = self.time_created
+        else:
+            most_recent_global_time = most_recent_global_chat.time_created
+        most_recent_kingdom_chat = Chatroom.query.filter_by(is_global=False).filter_by(kingdom_id=kingdom_id).order_by(desc('time_created')).first()
+        if not most_recent_kingdom_chat:
+            most_recent_kingdom_time = self.time_created
+        else:
+            most_recent_kingdom_time = most_recent_kingdom_chat.time_created
+        return max(most_recent_kingdom_time, most_recent_global_time)
 
     def __repr__(self):
         return '<World %r (%r)>' % ('id:', self.id)

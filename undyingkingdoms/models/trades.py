@@ -41,4 +41,3 @@ class Trade(GameEvent):
         self.iron_to_receive = iron_to_receive
         self.stone_to_receive = stone_to_receive
         self.grain_to_receive = grain_to_receive
-

@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.models import County
+from undyingkingdoms.models import County, Notification
 from undyingkingdoms.models.trades import Trade
 
 
@@ -41,6 +41,9 @@ def diplomacy_reply(trade_id):
             target_county.grain_stores -= trade.grain_to_receive
             county.grain_stores += trade.grain_to_receive
             trade.status = "Accepted"
+            notice = Notification(county.id, "Trade", "Your trade was accepted by {}".format(current_user.county.name),
+                                  current_user.county.kingdom.world.day, category="Trade")
+            notice.save()
             return jsonify(
                 status='success',
                 message='Trade was accepted.'
@@ -52,6 +55,9 @@ def diplomacy_reply(trade_id):
             )
     elif "reject" in request.args:
         trade.status = "Rejected"
+        notice = Notification(county.id, "Trade", "Your trade was rejected by {}".format(current_user.county.name),
+                              current_user.county.kingdom.world.day, category="Trade")
+        notice.save()
         return jsonify(
             status="success",
             message=f"You rejected a trade from {trade_id}"
@@ -62,7 +68,7 @@ def diplomacy_reply(trade_id):
         county.wood += trade.wood_to_give
         county.iron += trade.iron_to_give
         county.stone += trade.stone_to_give
-        county.grain += trade.grain_to_give
+        county.grain_stores += trade.grain_to_give
         return jsonify(
             status="success",
             message=f"You cancelled a trade to {trade_id}"

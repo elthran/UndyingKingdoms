@@ -29,6 +29,9 @@
         {% if mission.mission == 'scout military' %}
         <li>Your {{ mission.amount_of_thieves }} thieves have successfully scouted the enemy's military. (Ready for next mission in {{ mission.duration }} days).</li>
         {% endif %}
+        {% if mission.mission == 'steal research' %}
+        <li>Your {{ mission.amount_of_thieves }} thieves have successfully stolen {{ mission.research_stolen }} research. (Ready for next mission in {{ mission.duration }} days).</li>
+        {% endif %}
     {% else %}
        <li>The {{ mission.amount_of_thieves }} thieves you sent were caught. You will have trained new thieves to replace them in {{ mission.duration }} days.</li>
     {% endif %}

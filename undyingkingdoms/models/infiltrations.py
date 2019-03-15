@@ -13,21 +13,19 @@ class Infiltration(GameEvent):
     mission = db.Column(db.String(64))
     amount_of_thieves = db.Column(db.Integer)
     success = db.Column(db.Boolean)
-
     # Pilfer
     pilfer_amount = db.Column(db.Integer)
-
     # Burn crops
     crops_burned = db.Column(db.Integer)
-
     # Sow distrust
     distrust = db.Column(db.Integer)
-
+    # Steal Research
+    research_stolen = db.Column(db.Integer)
+    # Scout military
     peasant = db.Column(db.Integer)
     archer = db.Column(db.Integer)
     soldier = db.Column(db.Integer)
     elite = db.Column(db.Integer)
-    
     fort = db.Column(db.Integer)
 
     def __init__(self, county_id, target_id, world_day, county_day, mission, amount):
@@ -51,6 +49,7 @@ class Infiltration(GameEvent):
         self.crops_burned = 0
         self.pilfer_amount = 0
         self.distrust = 0
+        self.research_stolen = 0
 
     def get_troop_report(self, county, enemy_county, amount_sent):
         if amount_sent == 1:

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import render_template, jsonify, request
 from flask.views import MethodView
 from flask_login import login_required, current_user
@@ -13,11 +15,14 @@ class ChatRoomAPI(MethodView):
     def get(self, template):
         form = MessageForm()
         chat = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id).all()
+        current_user.county.preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
         return render_template(template, form=form, chat=chat, global_chat_on=current_user.global_chat_on)
 
     @login_required
     def post(self):
         form = MessageForm()
+
+        current_user.county.preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
 
         is_global = request.form['isGlobal'] == 'true'
         update_only = request.form['updateOnly'] == 'true'

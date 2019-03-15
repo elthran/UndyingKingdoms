@@ -36,19 +36,24 @@
       <li><a href="{{ url_for('infrastructure') }}">City Planner</a></li>
       <li><a href="{{ url_for('military') }}">War</a></li>
       <li><a href="{{ url_for('infiltration') }}">Thieves Guild</a></li>
-      <li><a href="{{ url_for('magic') }}">Wizard Council</a></li>
+      <li><a href="{{ url_for('casting', target_id=county.id) }}">Wizard Council</a></li>
       <li><a href="{{ url_for('research') }}">Scientist</a></li>
       <li><h1>Diplomacy</h1></li>
-      <li><a href="{{ url_for('diplomacy') }}">Trades</a></li>
+      <li><a href="{{ url_for('trading') }}">Trades</a></li>
       <li><a href="{{ url_for('messages') }}" {% if has_mail %}style="color:blue;font-weight:bold;"{% endif %}>Messages</a></li>
-      <li><a href="{{ url_for('chatroom_api') }}">Town&nbsp;Hall</a></li>
+      <li><a href="{{ url_for('chatroom_api') }}" {% if county.has_new_townhall_message() %}style="color:blue;font-weight:bold;"{% endif %}>Town&nbsp;Hall</a></li>
       <li><a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom&nbsp;Overview</a></li>
+      {% if kingdom.leader != 0 %}
+        <li><br></li>
+        <li><img class="resource_icons" src="/static/images/crown_icon.jpg"><a href="{{ url_for('royal_court') }}">Royal Court</a></li>
+      {% endif %}
+      <li><br></li>
       <li><h1>About the Game</h1></li>
       <li><a href="{{ url_for('achievements') }}">Achievements</a></li>
       <li><a href="{{ url_for('forum', thread_id=0, post_id=0) }}">Forum</a></li>
       <li><a href="{{ url_for('guide') }}">Player&nbsp;Guide</a></li>
       <li><a href="{{ url_for('leaderboard') }}">Leaderboard</a></li>
-      <li><a href="{{ url_for('versions') }}">Read&nbsp;About&nbsp;Updates</a></li>
+      <li><a href="{{ url_for('profile') }}">Profile</a></li>
       {% if user.is_admin %}<li><a href="{{ url_for('admin.home_api') }}">Admin</a></li>{% endif %}
       <li><a href="{{ url_for('logout') }}">Logout</a></li>
       <li><br><br><br></li>

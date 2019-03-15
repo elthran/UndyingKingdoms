@@ -10,7 +10,7 @@ metadata_backgrounds = ['Warlord', 'Engineer', 'Merchant', 'Rogue']
 
 kingdom_names = ["Faenoth", "Aldoroth", "Ecthalion"]
 
-infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust']
+infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust', 'steal research']
 
 tax_options = [(i, i) for i in range(11)]
 
@@ -18,7 +18,7 @@ rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (0.75, "Th
 
 excess_worker_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
 
-all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'quarry', 'fort', 'stables', 'tavern', 'bank', 'lab', 'arcane', 'lair']
+all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'quarry', 'fort', 'stables', 'tavern', 'tower', 'bank', 'lab', 'arcane', 'lair']
 
 all_achievements = {
     'land': Achievement(name="land", category="reach_x_amount_in_one_age", sub_category="land",
