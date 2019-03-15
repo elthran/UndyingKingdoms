@@ -40,7 +40,7 @@
     {% if spell.mana_sustain %}(Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)
     {% elif spell.duration %}(Spell ends in {{ spell.duration }} days)
     {% endif %}<br>
-    Targetting county id: {{ spell.county_id }}<br>
+    Spell is affecting county id: {{ spell.target_id }}<br>
     <a href="{{ url_for('cancel_spell', spell_id=spell.id) }}"><button style="float:left;width:100px;">End</button></a><br><br><br>
     {% else %}
     No active spells

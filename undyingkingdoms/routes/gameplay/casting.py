@@ -28,9 +28,6 @@ def casting(template, target_id):
     active_spells = Casting.query.filter_by(county_id=county.id).filter((Casting.duration > 0) | (Casting.active==True)).all()
     enemy_spells = Casting.query.filter_by(target_id=county.id).filter((Casting.county_id != county.id) & ((Casting.duration > 0) | (Casting.active==True))).all()
     casting_history = Casting.query.filter_by(county_id=county.id).all()
-    print("enemy spell test")
-    print(enemy_spells)
-    print(county.active_enemy_spells)
     sustain_mana_requirement = sum(spell.mana_sustain for spell in active_spells)
     return render_template(template, target=target_county, targets=targets,
                            known_spells=known_spells,
@@ -55,7 +52,7 @@ def cast_spell(spell_id, target_id):
     cast.save()
     if county == target:
         cast.target_relation = 'self'
-    elif target in county.allies:
+    elif target.kingdom in county.kingdom.allies:
         cast.target_relation = 'friendly'
     else:
         cast.target_relation = 'hostile'

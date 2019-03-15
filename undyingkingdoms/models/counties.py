@@ -617,6 +617,9 @@ class County(GameState):
         modifier = 1
         if self.technologies['animal husbandry'].completed:
             modifier += 0.5
+        verdant_growth = Casting.query.filter_by(target_id=self.id, active=1).first()
+        if verdant_growth:
+            modifier += 0.5
         return int(self.buildings['pasture'].total * self.buildings['pasture'].output * modifier)
 
     def get_excess_worker_produced_food(self):
@@ -673,6 +676,10 @@ class County(GameState):
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + \
                    death_rate_modifier.get(self.background, ("", 0))[1]
         death_rate = (uniform(2.0, 2.5) / self.healthiness) * modifier
+
+        plague_wind = Casting.query.filter_by(target_id=self.id).filter(Casting.duration > 0).first()
+        if plague_wind:
+            death_rate *= 1.5
         return int(death_rate * self.population)
 
     def get_birth_rate(self):
@@ -953,13 +960,22 @@ class County(GameState):
         else:
             offence_damage *= 0.25
             defence_damage *= 0.25
-            rewards_modifier -= 0.75
+            rewards_modifier -= 0.65
             if win:
                 notification_title = "You were attacked by {} and quickly retreated before suffering many losses.".format(self.name)
                 message = "The enemy quickly retreated before you."
             else:
                 notification_title = "An army from {} attacked you, but they quickly retreated after seeing your forces.".format(self.name)
                 message = "Your army quickly retreated from battle."
+
+        buffer_time = datetime.utcnow() - timedelta(hours=12)
+        previous_attacks_on_this_county = Expedition.query.filter_by(target_id=enemy.id)\
+            .filter_by(success=True)\
+            .filter(Expedition.time_created > buffer_time)\
+            .count()
+        rewards_modifier -= previous_attacks_on_this_county * 0.15
+        rewards_modifier = max(0.05, rewards_modifier)
+
         casualties = self.remove_casualties_after_attacking(defence_damage, army, expedition.id)
         defence_casualties = enemy.remove_casualties_after_being_attacked(attack_power=offence_damage)
         expedition.duration = self.get_army_duration(win, attack_type)
@@ -1089,8 +1105,7 @@ class County(GameState):
         counter = 0
         for mission in operations_on_target:
             counter += mission.amount_of_thieves
-        reduction = 10 + (self.get_number_of_available_thieves() * 3500 / self.land) ** 0.7 + (
-                5 * counter)
+        reduction = 10 + (self.buildings['tower'].total * self.buildings['tower'].output) + (5 * counter)
         return max(int(100 - reduction), 10)
 
     # Terminology
