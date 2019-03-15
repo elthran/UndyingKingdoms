@@ -385,6 +385,7 @@ class County(GameState):
                                                     expedition.iron_gained)
                 elif expedition.mission == "Raze":
                     notification.content = "They have successfully razed {} enemy acres.".format(expedition.land_razed)
+
         trades = Trade.query.filter_by(county_id=self.id).filter_by(status='Pending').filter(Trade.duration > 0).all()
         for trade in trades:
             trade.duration -= 1
@@ -423,6 +424,7 @@ class County(GameState):
                                             "Magic")
                 notification.save()
                 notification.content = "{} has ended and is no longer affecting your county.".format(spell.name)
+
         self.day += 1
 
     def temporary_bot_tweaks(self):
