@@ -1,28 +1,38 @@
-from flask import render_template, redirect, url_for, send_from_directory, jsonify
+from flask import render_template, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.blueprints.api.views.infrastructure.helpers import max_buildable_by_cost
 from undyingkingdoms.models import World, Transaction
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm, ExcessProductionForm
-from undyingkingdoms.static.metadata.metadata import all_buildings, game_descriptions, excess_worker_choices
+from undyingkingdoms.static.metadata.metadata import all_buildings, game_descriptions
+
+
+def max_buildable_by_cost(county, building):
+    max_size = min(
+        county.gold // building.gold_cost,
+        county.wood // building.wood_cost,
+        (county.stone // building.stone_cost
+            if building.stone_cost
+            else float('inf')),
+        # eventually the 1 will be a land cost.
+        county.get_available_land() // 1
+    )
+    return max_size
 
 
 @app.route('/gameplay/infrastructure/', methods=['GET'])
 @mobile_template('{mobile/}gameplay/infrastructure.html')
 @login_required
 def infrastructure(template):
-    if 'mobile' in template:
-        return send_from_directory('static/dist', 'infrastructure.html')
-
     county = current_user.county
 
     build_form = InfrastructureForm()
     build_form.county_id.data = county.id
 
     excess_worker_form = ExcessProductionForm(goal=county.production_choice)
-    excess_worker_form.goal.choices = excess_worker_choices
+    goal_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
+    excess_worker_form.goal.choices = [(pairing[0], pairing[1]) for pairing in goal_choices]
 
     return render_template(
         template,
@@ -58,13 +68,13 @@ def build_buildings():
         transaction.save()
     return redirect(url_for('infrastructure'))
 
-
 @app.route('/gameplay/infrastructure/allocate/', methods=['POST'])
 @login_required
 def allocate_workers():
     county = current_user.county
     excess_worker_form = ExcessProductionForm(goal=county.production_choice)
-    excess_worker_form.goal.choices = excess_worker_choices
+    goal_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
+    excess_worker_form.goal.choices = [(pairing[0], pairing[1]) for pairing in goal_choices]
 
     if excess_worker_form.validate_on_submit():
         county.production_choice = excess_worker_form.goal.data

@@ -25,7 +25,9 @@
             {% if my_county.id == county.id %}
                 <form method="POST" accept-charset="UTF-8" role="form">
                     {{ form.csrf_token }}
-                    <li style="font-style:italic;">{{ county.name }} led by the infamous {{ county.leader }} with {{ county.land }} acres of land
+                    <li style="font-style:italic;">
+                        {% if kingdom.leader == county.id %}<img class="resource_icons" src="/static/images/crown_icon.jpg">{% endif %}
+                        {{ county.name }} led by the infamous {{ county.leader }} with {{ county.land }} acres of land
                         {% if kingdom.leader == 0 and my_county.can_vote() %}(Vote: {{ form.vote }})
                             <button type="submit">Change Vote</button>
                         {% elif kingdom.leader == 0 %}
@@ -35,6 +37,7 @@
                 </form>
             {% else %}
                 <li>
+                    {% if kingdom.leader == county.id %}<img class="resource_icons" src="/static/images/crown_icon.jpg">{% endif %}
                     <a href="{{ url_for('enemy_overview', kingdom_id=kingdom.id, county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
                     {% if kingdom.leader == 0 %}
                         (Vote: {{ county.display_vote() }})
@@ -43,8 +46,14 @@
             {% endif %}
         {% endfor %}
     {% else %}
+        {% if kingdom in my_county.kingdom.allies %}
+            <p style="color:blue;">You are allied with this kingdom</p>
+        {% elif kingdom in my_county.kingdom.enemies %}
+            <p style="color:red;">You are at war with this kingdom</p>
+        {% endif %}
         {% for county in kingdom.counties %}
             <li>
+                {% if kingdom.leader == county.id %}<img class="resource_icons" src="/static/images/crown_icon.jpg">{% endif %}
                 <a href="{{ url_for('enemy_overview', kingdom_id=kingdom.id, county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
             </li>
         {% endfor %}

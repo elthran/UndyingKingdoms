@@ -53,7 +53,7 @@
           v-model="selectedTaxRate"
           :update="updateGold"
         />
-        <economy-food-row
+        <economy-food-row 
           v-model="selectedRations"
           :update="updateFood"
         />
@@ -61,11 +61,11 @@
         <economy-iron-row />
         <economy-stone-row />
         <economy-mana-row />
-        <economy-happiness-row
+        <economy-happiness-row 
           :update="updateHappines"
         />
-        <economy-nourishment-row
-          :update="updateNourishment"
+        <economy-healthiness-row
+          :update="updateHealthiness"
         />
         <economy-health-row />
       </table>
@@ -82,7 +82,7 @@ import EconomyIronRow from './EconomyIronRow.vue'
 import EconomyStoneRow from './EconomyStoneRow.vue'
 import EconomyManaRow from './EconomyManaRow.vue'
 import EconomyHappinessRow from './EconomyHappinessRow.vue'
-import EconomyNourishmentRow from './EconomyNourishmentRow.vue'
+import EconomyHealthinessRow from './EconomyHealthinessRow.vue'
 import EconomyHealthRow from './EconomyHealthRow.vue'
 
 // The constants are defined at the beginning and use evil Jinja in JS.
@@ -97,7 +97,7 @@ export default {
     'economy-stone-row': EconomyStoneRow,
     'economy-mana-row': EconomyManaRow,
     'economy-happiness-row': EconomyHappinessRow,
-    'economy-nourishment-row': EconomyNourishmentRow,
+    'economy-healthiness-row': EconomyHealthinessRow,
     'economy-health-row': EconomyHealthRow
   },
   data () {
@@ -112,7 +112,7 @@ export default {
       updateGold: false,
       updateHappines: false,
       updateFood: false,
-      updateNourishment: false,
+      updateHealthiness: false,
       errors: Object
     }
   },
@@ -126,7 +126,7 @@ export default {
     selectedRations () {
       this.$sendForm(this.$refs.form, () => {
         this.updateFood = !this.updateFood;
-        this.updateNourishment = !this.updateNourishment;
+        this.updateHealthiness = !this.updateHealthiness;
       })
     }
   },

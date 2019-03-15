@@ -14,7 +14,7 @@ api_blueprint.add_url_rule(
 """
 
 endpoints = ['population', 'gold', 'food', 'wood', 'iron', 'stone', 'mana',
-             'happiness', 'nourishment', 'health', 'update']
+             'happiness', 'healthiness', 'update']
 
 for endpoint in endpoints:
     mod = import_module('.' + endpoint, __name__)

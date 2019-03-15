@@ -13,12 +13,7 @@ module.exports = {
     economy: {
       entry: 'src/economy/main.js',
       template: 'public/index.html',
-      filename: 'economy.html'
-    },
-    insfrastructure: {
-      entry: 'src/infrastructure/main.js',
-      template: 'public/index.html',
-      filename: 'infrastructure.html'
+			      filename: 'economy.html'
     }
   },
   configureWebpack: {

@@ -29,8 +29,8 @@ class UpdateAPI(MethodView):
         """Update the economy page with new data.
 
         taxes affects: gold in 3 places and happiness 2 places.
-        rations affects: food and nourishment.
-            food in 2 places, nourishment in 1.
+        rations affects: food and healthiness.
+            food in 2 places, healthiness in 1.
         """
         county = current_user.county
 
