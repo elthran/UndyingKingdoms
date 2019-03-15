@@ -18,5 +18,5 @@ def accept_alliance(kingdom_id):
         .filter_by(kingdom_id=kingdom_id)\
         .first()
     alliance.status = "In Progress"
-    alliance.duration = 72
+    alliance.duration = 48
     return redirect(url_for('royal_court'))

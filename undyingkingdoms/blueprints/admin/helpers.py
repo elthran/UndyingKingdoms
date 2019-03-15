@@ -19,6 +19,7 @@ def create_bots(n=3):
 
     for i in range(n):
         smallest_kingdom = min(kingdoms, key=lambda x: len(x.counties))
+        smallest_kingdom = Kingdom.query.filter_by(id=3).first()
         bot_name = uuid4()
         user = User("bot_{}".format(bot_name),
                     "bot_{}@gmail.com".format(bot_name),

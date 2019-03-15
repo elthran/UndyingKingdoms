@@ -15,7 +15,14 @@ from .upvotes import Upvote
 from .chatroom import Chatroom
 from .messages import Message
 from .diplomacy import Diplomacy
+from .magic import Magic
+from .casting import Casting
 
+
+# Allows adding relationships that can't be declared in class
+# due to buggy import loop.
 from undyingkingdoms.models.bases import db
 Army.county = db.relationship('County')
 User.county = db.relationship('County', backref='user', uselist=False)
+Casting.caster = db.relationship('County', foreign_keys="[Casting.county_id]")
+

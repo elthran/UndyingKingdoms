@@ -268,12 +268,13 @@ th {
         </tr>
         <tr>
             <td>Mana</td>
-            <td>{{ county.mana }}</td>
+            <td>{{ county.mana }} / {{ county.max_mana }}</td>
             <td>+{{ county.get_mana_change() }} <img class="resource_icons" src="/static/images/mana_icon.jpg"></td>
             <td>-</td>
             <td>-</td>
             <td>-</td>
-            <td>Mana is not yet implemented.</td>
+            <td>Mana is used to cast spells as well as dispel enemy magic. You can raise your maximum mana
+            by researching arcane lore.</td>
         </tr>
         <tr>
             <td>Happiness</td>
