@@ -11,6 +11,7 @@ from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
 from undyingkingdoms.models.technologies import Technology
 from undyingkingdoms.models.trades import Trade
+from undyingkingdoms.models.casting import Casting
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
     happiness_modifier, buildings_built_per_day_modifier
@@ -93,7 +94,7 @@ class County(GameState):
     technologies = db.relationship("Technology",
                                    collection_class=attribute_mapped_collection('name'),
                                    cascade="all, delete, delete-orphan", passive_deletes=True)
-    spells = db.relationship("Spell",
+    magic = db.relationship("Magic",
                              collection_class=attribute_mapped_collection('name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
 
@@ -139,7 +140,7 @@ class County(GameState):
         self.emigration = 0
         self.days_since_event = 0
         # Buildings and Armies extracted from metadata
-        self.spells = deepcopy(generic_spells)
+        self.magic = deepcopy(generic_spells)
         if self.race == 'Dwarf':
             self.buildings = deepcopy(dwarf_buildings)
             self.armies = deepcopy(dwarf_armies)
@@ -151,7 +152,7 @@ class County(GameState):
         elif self.race == 'Elf':
             self.buildings = deepcopy(elf_buildings)
             self.armies = deepcopy(elf_armies)
-            self.spells = deepcopy(elf_spells)
+            self.magic = deepcopy(elf_spells)
             self.technologies = {**deepcopy(generic_technology), **deepcopy(elf_technology)}
         elif self.race == 'Goblin':
             self.buildings = deepcopy(goblin_buildings)
@@ -251,6 +252,7 @@ class County(GameState):
 
     @mana.setter
     def mana(self, value):
+        value = min(value, self.max_mana)
         difference = value - self._mana
         if difference > 0:
             self.lifetime_mana += difference
@@ -306,6 +308,17 @@ class County(GameState):
         self.preferences.research_choice = value
 
     @property
+    def max_mana(self):
+        base = 25
+        if self.technologies['arcane knowledge I'].completed:
+            base += 5
+        if self.technologies['arcane knowledge II'].completed:
+            base += 5
+        if self.technologies['arcane knowledge III'].completed:
+            base += 5
+        return base
+
+    @property
     def seed(self):
         return self.kingdom.world.day
 
@@ -345,11 +358,16 @@ class County(GameState):
         self.update_population()
         self.update_weather()  # Is before random events because they can affect weather
         self.get_random_daily_events()
-
         expeditions = Expedition.query.filter_by(county_id=self.id).filter(Expedition.duration > 0).all()
         for expedition in expeditions:
             expedition.duration -= 1
             if expedition.duration == 0:
+                notification = Notification(self.id,
+                                            "Your army has returned",
+                                            "Error: Report to admin",
+                                            self.kingdom.world.day,
+                                            "Military")
+                notification.save()
                 self.armies['peasant'].traveling -= expedition.peasant
                 self.armies['soldier'].traveling -= expedition.soldier
                 self.armies['elite'].traveling -= expedition.elite
@@ -359,19 +377,14 @@ class County(GameState):
                 self.wood += expedition.wood_gained
                 self.iron += expedition.iron_gained
                 if expedition.mission == "Attack":
-                    notification = Notification(self.id, "Your army has returned",
-                                                "{} new land has been added to your county".format(
-                                                    expedition.land_acquired),
-                                                self.kingdom.world.day, "Military")
+                    notification.content = "{} new land has been added to your county".format(expedition.land_acquired)
                 elif expedition.mission == "Pillage":
-                    notification = Notification(self.id, "Your army has returned",
-                                                "They have brought with them {} gold, {} wood, and {} iron.".format(
+                    notification.content = "They have brought with them {} gold, {} wood, and {} iron.".format(
                                                     expedition.gold_gained,
                                                     expedition.wood_gained,
-                                                    expedition.iron_gained),
-                                                self.kingdom.world.day, "Military")
-                notification.save()
-
+                                                    expedition.iron_gained)
+                elif expedition.mission == "Raze":
+                    notification.content = "They have successfully razed {} enemy acres.".format(expedition.land_razed)
         trades = Trade.query.filter_by(county_id=self.id).filter_by(status='Pending').filter(Trade.duration > 0).all()
         for trade in trades:
             trade.duration -= 1
@@ -386,11 +399,30 @@ class County(GameState):
                                             "Your trade offer to {} has expired and your resources have been return".format(
                                                 target_county.name), self.kingdom.world.day, "Trade")
                 notification.save()
-
         infiltrations = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
         for infiltration in infiltrations:
             infiltration.duration -= 1
+            if infiltration.duration == 0:
+                notification = Notification(self.id,
+                                            "Your thieves have returned",
+                                            "Error: Report to admin",
+                                            self.kingdom.world.day,
+                                            "Thieves")
+                notification.save()
+                notification.content = "Your {} thieves have returned after their mission to {}.".format(infiltration.amount_of_thieves,
+                                                                                                         infiltration.mission)
 
+        spells = Casting.query.filter_by(target_id=self.id).filter(Casting.duration > 0).all()
+        for spell in spells:
+            spell.duration -= 1
+            if spell.duration == 0:
+                notification = Notification(self.id,
+                                            "A spell has ended",
+                                            "Error: Report to admin",
+                                            self.kingdom.world.day,
+                                            "Magic")
+                notification.save()
+                notification.content = "{} has ended and is no longer affecting your county.".format(spell.name)
         self.day += 1
 
     def temporary_bot_tweaks(self):
@@ -585,6 +617,9 @@ class County(GameState):
         modifier = 1
         if self.technologies['animal husbandry'].completed:
             modifier += 0.5
+        verdant_growth = Casting.query.filter_by(target_id=self.id, active=1).first()
+        if verdant_growth:
+            modifier += 0.5
         return int(self.buildings['pasture'].total * self.buildings['pasture'].output * modifier)
 
     def get_excess_worker_produced_food(self):
@@ -641,6 +676,10 @@ class County(GameState):
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + \
                    death_rate_modifier.get(self.background, ("", 0))[1]
         death_rate = (uniform(2.0, 2.5) / self.healthiness) * modifier
+
+        plague_wind = Casting.query.filter_by(target_id=self.id).filter(Casting.duration > 0).first()
+        if plague_wind:
+            death_rate *= 1.5
         return int(death_rate * self.population)
 
     def get_birth_rate(self):
@@ -704,7 +743,10 @@ class County(GameState):
         return self.buildings['quarry'].total * self.buildings['quarry'].output
 
     def get_mana_change(self):
-        return self.buildings['arcane'].total * self.buildings['arcane'].output
+        growth = self.buildings['arcane'].total * self.buildings['arcane'].output
+        active_spells = Casting.query.filter_by(county_id=self.id).filter_by(active=True).all()
+        loss = sum(spell.mana_sustain for spell in active_spells)
+        return growth - loss
 
     def get_research_change(self):
         if self.technologies.get("arcane knowledge") and self.technologies["arcane knowledge"].completed:
@@ -747,8 +789,8 @@ class County(GameState):
         if self.production_choice == 1:
             self.produce_land += self.get_excess_production_value()
             # Every 1000 production towards land gives you one acre
-            if self.produce_land >= 1500:
-                self.produce_land -= 1500
+            while self.produce_land >= self.land * 5:
+                self.produce_land -= self.land * 5
                 self.land += 1
         if self.production_choice == 2:
             self.grain_stores += self.get_excess_production_value()
@@ -918,13 +960,22 @@ class County(GameState):
         else:
             offence_damage *= 0.25
             defence_damage *= 0.25
-            rewards_modifier -= 0.75
+            rewards_modifier -= 0.65
             if win:
                 notification_title = "You were attacked by {} and quickly retreated before suffering many losses.".format(self.name)
                 message = "The enemy quickly retreated before you."
             else:
                 notification_title = "An army from {} attacked you, but they quickly retreated after seeing your forces.".format(self.name)
                 message = "Your army quickly retreated from battle."
+
+        buffer_time = datetime.utcnow() - timedelta(hours=12)
+        previous_attacks_on_this_county = Expedition.query.filter_by(target_id=enemy.id)\
+            .filter_by(success=True)\
+            .filter(Expedition.time_created > buffer_time)\
+            .count()
+        rewards_modifier -= previous_attacks_on_this_county * 0.15
+        rewards_modifier = max(0.05, rewards_modifier)
+
         casualties = self.remove_casualties_after_attacking(defence_damage, army, expedition.id)
         defence_casualties = enemy.remove_casualties_after_being_attacked(attack_power=offence_damage)
         expedition.duration = self.get_army_duration(win, attack_type)
@@ -1054,8 +1105,7 @@ class County(GameState):
         counter = 0
         for mission in operations_on_target:
             counter += mission.amount_of_thieves
-        reduction = 10 + (self.get_number_of_available_thieves() * 3500 / self.land) ** 0.7 + (
-                5 * counter)
+        reduction = 10 + (self.buildings['tower'].total * self.buildings['tower'].output) + (5 * counter)
         return max(int(100 - reduction), 10)
 
     # Terminology
@@ -1096,3 +1146,9 @@ class County(GameState):
 
     def __repr__(self):
         return '<County %r (%r)>' % (self.name, self.id)
+
+
+# Attach any add-ons needed to the County class.
+from .county_addons.casting_addon import casting_addon
+
+casting_addon(County)

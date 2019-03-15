@@ -208,5 +208,9 @@ class Kingdom(GameState):
         self.wars_won_ta += 1
         self.wars_won_lt += 1
 
+        alliance = Diplomacy(self.id, enemy.id, self.world.day, action="Alliance", status="In Progress")
+        alliance.duration = 24
+        alliance.save()
+
 
 

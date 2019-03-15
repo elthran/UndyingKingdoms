@@ -171,7 +171,7 @@ th {
         Your idle citizens will be forced to work, earning your county an additional {{ county.get_excess_production_value(0) }} gold per day.
       </span>
       <span class="goalDescription invisible">
-        Your idle citizens will be forced to reclaim overgrown land surrounding your county. You are currently {{ county.produce_land }} / 1500 square meters towards reclaiming an acre. You will advance {{ county.get_excess_production_value(1) }} square meters each day.
+        Your idle citizens will be forced to reclaim overgrown land surrounding your county. You are currently {{ county.produce_land }} / {{ county.land * 5 }} square meters towards reclaiming an acre. You will advance {{ county.get_excess_production_value(1) }} square meters each day.
       </span>
       <span class="goalDescription invisible">
         Your idle citizens will be forced to forage for food, gaining enough for {{ county.get_excess_production_value(2) }} people each day.
