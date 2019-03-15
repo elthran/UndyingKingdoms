@@ -9,3 +9,4 @@ flask_csrf.exempt(api_blueprint)
 api_blueprint.add_url_rule('/sidebar', view_func=SideBarAPI.as_view('sidebar_api'))
 
 from .views import economy
+from .views import infrastructure

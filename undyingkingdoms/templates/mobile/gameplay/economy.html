@@ -350,7 +350,7 @@ th {
           {% else %}
             <td style="color:red;">
           {% endif %}
-            {{ county.get_happiness_change() }} <img class="resource_icons" src="/static/images/happiness_icon.jpg"></td>
+            {{ county.get_happiness_change() }} <img class="resource_icons" src="/static/images/heart_icon.jpg"></td>
         </tr>
         <tr>
           <td>Modifiers</td>
@@ -361,10 +361,10 @@ th {
           <td>
             <ul>
               <li>
-                Natural: +7 <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+                Natural: +7 <img class="resource_icons" src="/static/images/heart_icon.jpg">
               </li>
               {% if county.production_choice == 3 %}
-                <li>Relax: + {{ county.get_excess_production_value(3) }} <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+                <li>Relax: + {{ county.get_excess_production_value(3) }} <img class="resource_icons" src="/static/images/heart_icon.jpg">
                 </li>
               {% endif %}
             </ul>
@@ -382,10 +382,10 @@ th {
                       Racial Bonus: {{ county.race }}
                     </span>
                   </span>
-                  <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+                  <img class="resource_icons" src="/static/images/heart_icon.jpg">
                 </li>
               {% endif %}
-              <li>Taxes: -{{ county.tax_rate }} <img class="resource_icons" src="/static/images/happiness_icon.jpg"></li>
+              <li>Taxes: -{{ county.tax_rate }} <img class="resource_icons" src="/static/images/heart_icon.jpg"></li>
             </ul>
           </td>
         </tr>
@@ -394,20 +394,20 @@ th {
           <td>Happiness affects emigration rate and how productive your workers are. If they become too unhappy, they may start to question your rule.</td>
         </tr>
         <tr>
-          <th colspan="2">Healthiness</th>
+          <th colspan="2">Nourishment</th>
         </tr>
         <tr>
           <td>Current</td>
-          <td>{{ county.healthiness }}%</td>
+          <td>{{ county.nourishment }}%</td>
         </tr>
         <tr>
           <td>Projected Change</td>
-          {% if county.get_healthiness_change() >= 0 %}
+          {% if county.get_nourishment_change() >= 0 %}
             <td style="color:green;">+
           {% else %}
             <td style="color:red;">
           {% endif %}
-            {{ county.get_healthiness_change() }}</td>
+            {{ county.get_nourishment_change() }}</td>
         </tr>
         <tr>
           <td>Modifier</td>
@@ -424,7 +424,45 @@ th {
         <tr>
           <td>Notes</td>
           <td>The better nourished your people, the healthier they will be.
-          Your healthiness decreases by 1% for every 200 unfed people each day.</td>
+          Your nourishment decreases by 1% for every 200 unfed people each day.</td>
+        </tr>
+        <tr>
+          <th colspan="2">Health</th>
+        </tr>
+        <tr>
+          <td>Current</td>
+          {% if county.health >= 75 %}
+            <td style="color:green;">
+          {% else %}
+            <td style="color:red;">
+          {% endif %}
+            {{ county.health_terminology.title() }}</td>
+        </tr>
+        <tr>
+          <td>Projected Change</td>
+          {% if county.get_health_change() > 0 %}
+            <td style="color:green;">Positive
+          {% elif county.get_health_change() == 0 %}
+            <td>None
+          {% else %}
+            <td style="color:red;">Negative
+          {% endif %}</td>
+        </tr>
+        <tr>
+          <td>Modifier</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>Projected Growth</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>Projected Losses</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>Notes</td>
+          <td>The current health of your people. If they become unhealthy, they will die at much greater rates and become very susceptible to disease and plague.</td>
         </tr>
       </tbody>
     </table>

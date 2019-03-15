@@ -41,25 +41,6 @@ def infiltrate(template, county_id):
         chance_of_success *= modifier
 
         if chance_of_success >= randint(1, 100):
-            # Add increase to war score
-            war = None
-            kingdom = current_user.county.kingdom
-            for each_war in kingdom.wars:
-                if each_war.get_other_kingdom(kingdom) == target.kingdom:  # If this is true, we are at war with them
-                    war = each_war
-                    break
-            if war:
-                if war.kingdom_id == kingdom.id:
-                    war.attacker_current += form.amount.data
-                    if war.attacker_current >= war.attacker_goal:
-                        kingdom.war_won(war)
-                        war.status = "Won"
-                else:
-                    war.defender_current += form.amount.data
-                    if war.defender_current >= war.defender_goal:
-                        target.kingdom.war_won(war)
-                        war.status = "Lost"
-            # End of war code
             report.success = True
             if mission == 'pilfer':
                 gold_stolen = int(min(randint(12 * form.amount.data, 20 * form.amount.data) * 1.25, target.gold))
