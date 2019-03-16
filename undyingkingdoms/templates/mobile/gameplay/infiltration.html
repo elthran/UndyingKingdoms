@@ -50,7 +50,7 @@ h2 {
       <li>Your {{ mission.amount_of_thieves }} thieves burned {{ mission.crops_burned }} crops. (Ready for next mission in {{ mission.duration }} days).</li>
       {% endif %}
       {% if mission.mission == 'sow distrust' %}
-      <li>Your {{ mission.amount_of_thieves }} thieves caused unrest and lowered enemy happiness by {{ mission.distrust }} <img class="resource_icons" src="/static/images/heart_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).</li>
+      <li>Your {{ mission.amount_of_thieves }} thieves caused unrest and lowered enemy happiness by {{ mission.distrust }} <img class="resource_icons" src="/static/images/happiness_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).</li>
       {% endif %}
       {% if mission.mission == 'scout military' %}
       <li>Your {{ mission.amount_of_thieves }} thieves have successfully scouted the enemy's military. (Ready for next mission in {{ mission.duration }} days).</li>

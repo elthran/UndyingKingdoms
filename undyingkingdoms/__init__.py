@@ -60,10 +60,12 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.infiltration
     import undyingkingdoms.routes.gameplay.casting
     import undyingkingdoms.routes.gameplay.research
-    import undyingkingdoms.routes.gameplay.diplomacy
+    import undyingkingdoms.routes.gameplay.trading
     import undyingkingdoms.routes.gameplay.kingdom
     import undyingkingdoms.routes.gameplay.attack
     import undyingkingdoms.routes.gameplay.messages
+
+    import undyingkingdoms.routes.gameplay.royal_court
 
     from undyingkingdoms.routes.gameplay.chatroom import ChatRoomAPI
     app.add_url_rule('/gameplay/chatroom/', view_func=ChatRoomAPI.as_view('chatroom_api'))
@@ -71,12 +73,11 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.upvote
     import undyingkingdoms.routes.gameplay.infiltrate
 
-
     import undyingkingdoms.routes.user.achievements
     import undyingkingdoms.routes.user.forum
+    import undyingkingdoms.routes.user.profile
     import undyingkingdoms.routes.user.guide
     import undyingkingdoms.routes.user.leaderboard
-    import undyingkingdoms.routes.user.versions
     import undyingkingdoms.routes.hooks
 
 

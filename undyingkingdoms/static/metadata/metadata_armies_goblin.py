@@ -15,27 +15,38 @@ goblin_armies['elite'].class_name, goblin_armies['elite'].class_name_plural, gob
 goblin_armies['monster'].class_name, goblin_armies['monster'].class_name_plural, goblin_armies[
     'monster'].description = 'wyvern', 'wyverns', 'Wyverns are devastating to any who cross their path.'
 # Goblins: Lower health and damage, also lower costs
-# Peasants=
-goblin_armies['peasant'].gold -= 2
+# Peasants
+goblin_armies['peasant'].category = "Infantry"
+goblin_armies['peasant'].armour_type = "Unarmoured"
+goblin_armies['peasant'].gold -= 4
 goblin_armies['peasant'].iron -= 1
 goblin_armies['peasant'].upkeep -= 1
 goblin_armies['peasant'].defence -= 1
 # Soldiers
+goblin_armies['soldier'].category = "Infantry"
+goblin_armies['soldier'].armour_type = "Leather"
 goblin_armies['soldier'].defence -= 1
 goblin_armies['soldier'].health -= 1
 goblin_armies['soldier'].gold -= 5
 goblin_armies['soldier'].iron -= 2
 goblin_armies['soldier'].upkeep -= 5
 # Archers
+goblin_armies['archer'].category = "Infantry"
+goblin_armies['archer'].armour_type = "Leather"
 goblin_armies['archer'].total += 5
 goblin_armies['archer'].defence -= 1
 goblin_armies['archer'].gold -= 5
 goblin_armies['archer'].iron -= 2
 goblin_armies['archer'].upkeep -= 5
 # Elites
+goblin_armies['elite'].category = "Cavalry"
+goblin_armies['elite'].armour_type = "Plate"
 goblin_armies['elite'].attack -= 2
 goblin_armies['elite'].defence -= 2
 goblin_armies['elite'].health -= 1
 goblin_armies['elite'].gold -= 10
 goblin_armies['elite'].iron -= 4
 goblin_armies['elite'].upkeep -= 5
+# Monsters
+goblin_armies['monster'].category = "Monster"
+goblin_armies['monster'].armour_type = "Plate"

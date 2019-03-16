@@ -30,7 +30,7 @@ class SideBarAPI(MethodView):
             infiltration=url_for('infiltration'),
             magic=url_for('magic'),
             research=url_for('research'),
-            diplomacy=url_for('diplomacy'),
+            trading=url_for('trading'),
             messages=url_for('messages'),
             chatroomAPI=url_for('chatroom_api'),
             kingdom=url_for('kingdom', kingdom_id=kingdom.id),

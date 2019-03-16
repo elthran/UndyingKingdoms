@@ -81,7 +81,7 @@ a {
         Diplomacy
       </h2>
       <a
-        :href="urlFor.diplomacy"
+        :href="urlFor.trading"
       >
         Trades
       </a>
