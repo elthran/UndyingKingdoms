@@ -10,10 +10,15 @@ module.exports = {
   // assetsDir: '../../static/dist',
 
   pages: {
-    economy: {
-      entry: 'src/economy/main.js',
+//    economy: {
+//      entry: 'src/economy/main.js',
+//      template: 'public/index.html',
+//      filename: 'economy.html'
+//    },
+    infrastructure: {
+      entry: 'src/infrastructure/main.js',
       template: 'public/index.html',
-			      filename: 'economy.html'
+      filename: 'infrastructure.html'
     }
   },
   configureWebpack: {
