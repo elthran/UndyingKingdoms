@@ -11,3 +11,7 @@ def patch_has_chat_message(target):
     def has_chat_message(self):
         return None
     target.has_chat_message = has_chat_message.__get__(target, target.__class__)
+
+
+def to_class_name(name):
+    return ''.join(name.title().split('_'))

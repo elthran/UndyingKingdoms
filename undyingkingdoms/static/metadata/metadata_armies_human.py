@@ -21,7 +21,7 @@ human_armies['peasant'].armour_type = "Unarmoured"
 human_armies['peasant'].trainable_per_day += 25
 human_armies['peasant'].gold -= 3
 human_armies['peasant'].iron -= 1
-human_armies['peasant'].attack -= 1
+human_armies['peasant'].defence -= 1
 # Soldiers
 human_armies['soldier'].category = "Infantry"
 human_armies['soldier'].armour_type = "Leather"
