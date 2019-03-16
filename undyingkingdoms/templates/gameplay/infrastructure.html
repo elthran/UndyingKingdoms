@@ -129,7 +129,7 @@ h2 {
   <h2>Available Land: {{ county.get_available_land() }} / {{ county.land }}</h2>
   <h2>Unemployed Citizens : {{ county.get_available_workers() }} / {{ county.population }}</h2>
   <p class="bottom-spacer-dot-3">You may assign a task to your idle population. </p>
-  <form id="goal-form" action="{{ url_for('allocate_workers') }}" method="POST" accept-charset="UTF-8">
+  <form id="goal-form" action="{{ url_for('api.infrastructure_allocate_api') }}" method="POST" accept-charset="UTF-8">
     {{ excess_worker_form.csrf_token(id="allocate-form-csrf-token") }}
     {{ excess_worker_form.goal }}
   </form>
