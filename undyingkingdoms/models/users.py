@@ -78,17 +78,21 @@ class User(GameState):
     def in_active_session(self, value):
         self._in_active_session = value
         if value:  # Logging in
+            try:  # if the user doesn't have a county yet.
+                day = self.count.day
+            except AttributeError:
+                day = None
             last_session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
             if not last_session:  # Never logged in before
-                session = Session(self.id, self.county.day)
+                session = Session(self.id, day)
                 session.save()
             else:  # Has logged in before
                 if last_session.time_logged_out:  # Last session successfully logged out
-                    session = Session(self.id, self.county.day)  # Simply start a new log in
+                    session = Session(self.id, day)  # Simply start a new log in
                     session.save()
                 else:
                     last_session.time_logged_out = self.time_modified
-                    session = Session(self.id, self.county.day)
+                    session = Session(self.id, day)
                     session.save()
         else:  # Logging out
             session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()

@@ -27,10 +27,13 @@ def session_commit(response):
 def in_active_session():
     """Implement in_active_session for every request."""
 
-    try:
+    if current_user.is_authenticated:
         current_user.time_modified = datetime.utcnow()
         if not current_user.in_active_session:
-            current_user.in_active_session = True
-    except AttributeError:
-        pass
+            try:
+                current_user.in_active_session = True
+            except Exception as ex:
+                app.logger.critical("in_active_session setter is failing", str(ex))
+            finally:
+                return None
     return None
