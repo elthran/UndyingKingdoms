@@ -14,8 +14,9 @@ infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust
 
 tax_options = [(i, i) for i in range(11)]
 
-rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (0.75, "Three-Quarters"), (1, "Normal"),
-                       (1.5, "One-and-a-half"), (2, "Double"), (3, "Triple")]
+rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (0.75, "Three-Quarters"), (1, "Normal"), (1.5, "One-and-a-half"), (2, "Double"), (3, "Triple")]
+
+excess_worker_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
 
 all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'quarry', 'fort', 'stables', 'tavern', 'tower', 'bank', 'lab', 'arcane', 'lair']
 
