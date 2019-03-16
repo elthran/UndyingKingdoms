@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from flask import url_for
+from flask import session
 from flask_login import current_user
 from sqlalchemy.exc import DatabaseError
-from werkzeug.utils import redirect
 
 from undyingkingdoms import app, db
+from undyingkingdoms.models import Session
 
 
 @app.after_request
@@ -30,10 +30,13 @@ def in_active_session():
     if current_user.is_authenticated:
         current_user.time_modified = datetime.utcnow()
         if not current_user.in_active_session:
+            import pdb;pdb.set_trace()
             try:
                 current_user.in_active_session = True
             except Exception as ex:
                 app.logger.critical("in_active_session setter is failing", str(ex))
             finally:
                 return None
+    else:
+        Session.anon_session()
     return None

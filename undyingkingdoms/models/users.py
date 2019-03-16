@@ -1,6 +1,7 @@
 from copy import deepcopy
 from datetime import datetime, timedelta
 
+import flask
 from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
@@ -75,30 +76,33 @@ class User(GameState):
         return self._in_active_session
 
     @in_active_session.setter
-    def in_active_session(self, value):
-        self._in_active_session = value
-        if value:  # Logging in
-            try:  # if the user doesn't have a county yet.
-                day = self.count.day
-            except AttributeError:
-                day = None
-            last_session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
-            if not last_session:  # Never logged in before
-                session = Session(self.id, day)
-                session.save()
-            else:  # Has logged in before
-                if last_session.time_logged_out:  # Last session successfully logged out
-                    session = Session(self.id, day)  # Simply start a new log in
-                    session.save()
-                else:
-                    last_session.time_logged_out = self.time_modified
-                    session = Session(self.id, day)
-                    session.save()
+    def in_active_session(self, is_active):
+        self._in_active_session = is_active
+
+        anon_session = Session.get_anon_session()
+        if anon_session is not None:  # then de-anonymize it.
+            anon_session.user_id = self.id
+            anon_session.cookie_id = None
+            self._in_active_session = True
+            last_session = anon_session
+        else:
+            last_session = Session.get_last_by_time(self.id)
+
+        try:  # if the user doesn't have a county yet.
+            day = self.count.day
+        except AttributeError:
+            day = None
+        if not last_session:  # Never logged in before
+            last_session = Session(self.id, day)
+
+        if is_active:  # Logging in
+            # Has logged in before
+            if last_session.time_logged_out:  # Last session successfully logged out
+                last_session = Session(self.id, day)  # Simply start a new log in
         else:  # Logging out
-            session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()
-            if session:
-                session.time_logged_out = self.time_modified
-                session.set_minutes()
+            last_session.time_logged_out = self.time_modified
+            last_session.set_minutes()
+        last_session.save()
 
     @property
     def password(self):
