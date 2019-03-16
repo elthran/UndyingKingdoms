@@ -66,7 +66,7 @@ a {
         Thieves Guild
       </a>
       <a
-        :href="urlFor.magic"
+        :href="urlFor.casting"
       >
         Wizard Council
       </a>
@@ -127,11 +127,6 @@ a {
         :href="urlFor.leaderboard"
       >
         Leaderboard
-      </a>
-      <a
-        :href="urlFor.versions"
-      >
-        Read&nbsp;About&nbsp;Updates
       </a>
       <a
         v-if="user.isAdmin"

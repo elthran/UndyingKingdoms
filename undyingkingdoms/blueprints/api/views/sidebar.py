@@ -8,6 +8,7 @@ from .helpers import patch_has_mail, patch_has_chat_message
 class SideBarAPI(MethodView):
     @login_required
     def get(self):
+        county = current_user.county
         kingdom=current_user.county.kingdom
 
         patch_has_mail(current_user)
@@ -28,7 +29,7 @@ class SideBarAPI(MethodView):
             infrastructure=url_for('infrastructure'),
             military=url_for('military'),
             infiltration=url_for('infiltration'),
-            magic=url_for('magic'),
+            magic=url_for('casting', target_id=county.id),
             research=url_for('research'),
             trading=url_for('trading'),
             messages=url_for('messages'),
@@ -38,7 +39,6 @@ class SideBarAPI(MethodView):
             forum=url_for('forum', thread_id=0, post_id=0),
             guide=url_for('guide'),
             leaderboard=url_for('leaderboard'),
-            versions=url_for('versions'),
             adminHomeAPI=url_for('admin.home_api'),
             logout=url_for('logout'),
         )
