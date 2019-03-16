@@ -10,12 +10,12 @@ module.exports = {
   // assetsDir: '../../static/dist',
 
   pages: {
-    economy: {
-      entry: 'src/economy/main.js',
-      template: 'public/index.html',
-      filename: 'economy.html'
-    },
-    insfrastructure: {
+//    economy: {
+//      entry: 'src/economy/main.js',
+//      template: 'public/index.html',
+//      filename: 'economy.html'
+//    },
+    infrastructure: {
       entry: 'src/infrastructure/main.js',
       template: 'public/index.html',
       filename: 'infrastructure.html'
