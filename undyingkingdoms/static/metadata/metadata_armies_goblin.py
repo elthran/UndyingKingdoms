@@ -18,7 +18,7 @@ goblin_armies['monster'].class_name, goblin_armies['monster'].class_name_plural,
 # Peasants
 goblin_armies['peasant'].category = "Infantry"
 goblin_armies['peasant'].armour_type = "Unarmoured"
-goblin_armies['peasant'].gold -= 4
+goblin_armies['peasant'].gold -= 3
 goblin_armies['peasant'].iron -= 1
 goblin_armies['peasant'].upkeep -= 1
 goblin_armies['peasant'].defence -= 1
