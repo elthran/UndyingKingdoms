@@ -76,6 +76,16 @@ a {
         Scientist
       </a>
     </div>
+    <div
+      v-if="user.isKing"
+      class="top-spacer-dot-3"
+    >
+      <img
+        class="resource_icons"
+        src="/static/dist/images/crown_icon.jpg"
+      >
+      <a :href="urlFor.royalCourt">Royal Court</a>
+    </div>
     <div class="top-spacer-dot-3 flex-group">
       <h2 class="center width-100-percent">
         Diplomacy
@@ -118,27 +128,16 @@ a {
       >
         Forum
       </a>
-      <a
-        :href="urlFor.guide"
-      >
-        Player&nbsp;Guide
-      </a>
-      <a
-        :href="urlFor.leaderboard"
-      >
-        Leaderboard
-      </a>
+      <a :href="urlFor.guide">Player&nbsp;Guide</a>
+      <a :href="urlFor.leaderboard">Leaderboard</a>
+      <a :href="urlFor.profile">Profile</a>
       <a
         v-if="user.isAdmin"
         :href="urlFor.adminHomeAPI"
-      >
-        Admin
-      </a>
+      >Admin</a>
     </div>
     <div class="top-spacer-dot-3" />
-    <a :href="urlFor.logout">
-      Logout
-    </a>
+    <a :href="urlFor.logout">Logout</a>
   </nav>
 </template>
 

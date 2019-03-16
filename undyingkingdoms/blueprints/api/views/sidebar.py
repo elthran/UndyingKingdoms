@@ -17,7 +17,8 @@ class SideBarAPI(MethodView):
         user = dict(
             isAdmin=current_user.is_admin,
             hasMail=current_user.has_mail(),
-            hasChatMessage=current_user.has_chat_message()
+            hasChatMessage=current_user.has_chat_message(),
+            isKing=kingdom.leader != 0
         )
 
         # the url names on the left here must match the ones
@@ -29,12 +30,13 @@ class SideBarAPI(MethodView):
             infrastructure=url_for('infrastructure'),
             military=url_for('military'),
             infiltration=url_for('infiltration'),
-            magic=url_for('casting', target_id=county.id),
+            casting=url_for('casting', target_id=county.id),
             research=url_for('research'),
             trading=url_for('trading'),
             messages=url_for('messages'),
             chatroomAPI=url_for('chatroom_api'),
             kingdom=url_for('kingdom', kingdom_id=kingdom.id),
+            royalCourt=url_for('royal_court'),
             achievements=url_for('achievements'),
             forum=url_for('forum', thread_id=0, post_id=0),
             guide=url_for('guide'),

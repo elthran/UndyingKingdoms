@@ -37,11 +37,17 @@ nav > a {
 	<a href="{{ url_for('messages') }}" {% if has_mail %}style="color:blue;font-weight:bold;"{% endif %}>Inbox</a>
 	<a href="{{ url_for('chatroom_api') }}">Town&nbsp;Hall</a>
 	<a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom&nbsp;Overview</a>
+	{% if kingdom.leader != 0 %}
+		<br>
+		<img class="resource_icons" src="/static/images/crown_icon.jpg">
+		<a href="{{ url_for('royal_court') }}">Royal Court</a>
+	{% endif %}
 	<br>
 	<a href="{{ url_for('achievements') }}">Achievements</a>
 	<a href="{{ url_for('forum', thread_id=0, post_id=0) }}">Forum</a>
 	<a href="{{ url_for('guide') }}">Player&nbsp;Guide</a>
 	<a href="{{ url_for('leaderboard') }}">Leaderboard</a>
+	<a href="{{ url_for('profile') }}">Profile</a>
 	{% if user.is_admin %}<a href="{{ url_for('admin.home_api') }}">Admin</a>{% endif %}
 	<a href="{{ url_for('logout') }}">Logout</a>
 </nav>
