@@ -36,11 +36,9 @@ a {
 <template>
   <nav class="mobile-sidebar">
     <hr class="width-100-percent">
-    <a
-      :href="urlFor.overview"
-    >
+    <router-link :to="urlFor.overview">
       County&nbsp;Overview
-    </a>
+    </router-link>
     <div class="top-spacer-dot-3 flex-group">
       <h2 class="center width-100-percent">
         Advisors
@@ -50,11 +48,9 @@ a {
       >
         Economist
       </a>
-      <a
-        :href="urlFor.infrastructure"
-      >
-        City Planner
-      </a>
+      <router-link :to="urlFor.infrastructure">
+        City&nbsp;Planner
+      </router-link>
       <a
         :href="urlFor.military"
       >
@@ -153,7 +149,7 @@ export default {
   },
   beforeCreate () {
     // if development
-    // url is 'http://localhost:5000/api/sidebar' - happens automagically.
+    // url is 'http://localhost:5000/api/sidebar' - happens auto-magically.
     this.$getData('/api/sidebar', this.$deployData)
   }
 }
