@@ -132,9 +132,24 @@ export default {
   name: 'OverviewApp',
   data () {
     return {
+      county: {
+        kingdom: {
+          world: Object
+        },
+        weather: {
+          title: ''
+        },
+        happiness_terminology: {
+          title: ''
+        },
+        healthiness_terminology: Object
+      },
+      news: Object,
+      oldNews: Object
     }
   },
-  beforeCreate
+  beforeCreate () {
+  }
 }
 </script>
 

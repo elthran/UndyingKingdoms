@@ -107,7 +107,10 @@ export default {
   name: 'NavBar',
   data () {
     return {
-      urlFor: Object,
+      urlFor: {
+        overview: '',
+        infrastructure: ''
+      },
       user: Object,
       errors: Object
     }
