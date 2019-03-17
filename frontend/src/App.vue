@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="app">
     <prefix-title title="Home" />
     <router-view />
     <nav-bar />

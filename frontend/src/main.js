@@ -1,11 +1,10 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
 // eslint-disable-next-line
-import {customAxios, devLogin} from '@/assets/devHelpers.js'
+import {customAxios, devLogin} from '@/assets/devHelpers.js'  // devLogin runs immediately
 import VueAxios from 'vue-axios'
 import PrefixTitle from '@/components/PrefixTitle.vue'
 import {APIInterfacePlugin} from '@/assets/APIInterfacePlugin.js'
-import {routes} from '@/assets/routes.js'
+import router from '@/assets/router.js'
 
 import App from './App.vue'
 
@@ -13,13 +12,6 @@ import App from './App.vue'
 Vue.use(VueAxios, customAxios)
 // allows this.$getData('/api/sidebar', this.$deployData)
 Vue.use(APIInterfacePlugin)
-Vue.use(VueRouter)
-
-const router = new VueRouter({
-  routes,
-  base: '/m/',
-  mode: 'history'
-})
 
 Vue.component('prefix-title', PrefixTitle)
 
