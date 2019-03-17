@@ -103,6 +103,8 @@ def populate_db():
         county.technologies['arcane knowledge III'].completed = True
         county.mana = 500
         county.happiness = 80
+        county.iron = 200
+        county.buildings['lair'].total = 1
 
         preferences = Preferences(county.id, user.id)
         preferences.save()
