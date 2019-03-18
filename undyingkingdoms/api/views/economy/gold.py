@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 
 from ...vue_safe import vue_safe_metadata_mod, vue_safe_form
 from undyingkingdoms.models.forms.economy import EconomyForm
-from undyingkingdoms.static.metadata.metadata import rations_terminology, income_modifier, tax_options
+from undyingkingdoms.static.metadata.metadata import income_modifier, tax_options
 
 
 class GoldAPI(MethodView):

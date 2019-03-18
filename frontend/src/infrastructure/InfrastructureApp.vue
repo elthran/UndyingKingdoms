@@ -1,8 +1,3 @@
-<style scoped>
-#infrastructure-app {
-  margin: 1em 1em 0.6em;
-}
-</style>
 <template>
   <div id="infrastructure-app">
     <prefix-title title="City Planner" />
@@ -44,3 +39,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+#infrastructure-app {
+  margin: 1em 1em 0.6em;
+}
+</style>

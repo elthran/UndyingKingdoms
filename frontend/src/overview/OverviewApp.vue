@@ -1,32 +1,12 @@
 <template>
   <div id="content">
     <prefix-title title="Overview" />
-    <h1>The {{ county.race }} county of {{ county.name }}, led by {{ county.title }} {{ county.leader }} the {{ county.background }}</h1>
-    <h2>Basics:</h2>
-    <ul>
-      <li
-        v-if="county.kingdom.leader == 0"
-        class="negative"
-      >
-        Kingdom is in civil war
-      </li>
-      <li
-        v-else
-        class="positive"
-      >
-        Kingdom is at peace
-      </li>
-      <li>Land: {{ county.land }} acres</li>
-      <li v-if="county.kingdom.world.day < 0">
-        Calendar Day: 0
-        <span class="negative">(This age will begin in {{ county.kingdom.world.day | abs }} hours)</span>
-      </li>
-      <li v-else>
-        Calendar: Day {{ county.kingdom.world.day }} ({{ county.kingdom.world.season }}) --> This test ends on day 210
-      </li>
-      <li>Weather: {{ county.weather.title() }}</li>
-    </ul>
-    <h2>Treasury:</h2>
+    <county-description />
+    <div class="max-width-1 width-100-percent">
+      <h2>Basics:</h2>
+    </div>
+    <overview-basics />
+    <!-- <h2>Treasury:</h2>
     <ul>
       <li>
         Coffers: {{ county.gold }} <img
@@ -93,7 +73,7 @@
       class="negative"
     />
     <h2>News</h2>
-    <!-- Need to create a news array for display, so I can check it for empty -->
+    Need to create a news array for display, so I can check it for empty
     <ul v-if="news.length">
       <li
         v-for="event in county.display_news() | sort(attribute='day', reverse=True)"
@@ -123,13 +103,20 @@
         </li>
       </ul>
       <p>There is no news in your history.</p>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
+import OverviewBasics from './OverviewBasics.vue'
+import CountyDescription from './CountyDescription.vue'
+
 export default {
   name: 'OverviewApp',
+  components: {
+    'overview-basics': OverviewBasics,
+    'county-description': CountyDescription
+  },
   data () {
     return {
       county: {
@@ -155,8 +142,12 @@ export default {
 
 <style scoped>
 #content {
-  margin: 1.2em 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1em;
 }
+
 h1 {
   padding-bottom: 0.4em;
   text-align: center;

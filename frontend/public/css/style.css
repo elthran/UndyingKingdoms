@@ -107,12 +107,16 @@ td {
     position: absolute;
 }
 
-.max-width-400 {
-    max-width: 400px;
+.max-width-1 {
+  max-width: 19em;
 }
 
-.max-width-500 {
-    max-width: 500px;
+.max-width-2 {
+    max-width: 25em;
+}
+
+.max-width-3 {
+    max-width: 32em;
 }
 
 .top-spacer-1 {
