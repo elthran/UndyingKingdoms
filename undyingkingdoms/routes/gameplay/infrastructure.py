@@ -1,13 +1,12 @@
-from flask import render_template, redirect, url_for, jsonify
+from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
-from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
+from undyingkingdoms.blueprints.api.views.infrastructure.build_buildings import BuildBuildingsAPI
 from undyingkingdoms.blueprints.api.views.infrastructure.helpers import max_buildable_by_cost
-from undyingkingdoms.models import World, Transaction
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm, ExcessProductionForm
 from undyingkingdoms.routes.helpers import mobile_on_vue
-from undyingkingdoms.static.metadata.metadata import all_buildings, game_descriptions, excess_worker_choices
+from undyingkingdoms.static.metadata.metadata import game_descriptions, excess_worker_choices
 
 
 @app.route('/gameplay/infrastructure/', methods=['GET'])
@@ -34,43 +33,6 @@ def infrastructure():
 @app.route('/gameplay/infrastructure/build/', methods=['POST'])
 @login_required
 def build_buildings():
-    county = current_user.county
-    world = World.query.get(county.kingdom.world_id)
-
-    build_form = InfrastructureForm()
-    build_form.county_id.data = county.id
-
-    if build_form.validate_on_submit():
-        transaction = Transaction(county.id, county.day, world.day, "buy")
-        for building in all_buildings:
-            if build_form.data[building] > 0:
-                county.gold -= build_form.data[building] * county.buildings[building].gold_cost
-                county.wood -= build_form.data[building] * county.buildings[building].wood_cost
-                county.stone -= build_form.data[building] * county.buildings[building].stone_cost
-                county.buildings[building].pending += build_form.data[building]
-                transaction.add_purchase(item_name=building,
-                                         item_amount=build_form.data[building],
-                                         gold_per_item=county.buildings[building].gold_cost,
-                                         wood_per_item=county.buildings[building].wood_cost,
-                                         stone_per_item=county.buildings[building].stone_cost)
-        transaction.save()
+    BuildBuildingsAPI().post()
+    # if response.json['status'] == 'success':
     return redirect(url_for('infrastructure'))
-
-
-@app.route('/gameplay/infrastructure/allocate/', methods=['POST'])
-@login_required
-def allocate_workers():
-    county = current_user.county
-    excess_worker_form = ExcessProductionForm(goal=county.production_choice)
-    excess_worker_form.goal.choices = excess_worker_choices
-
-    if excess_worker_form.validate_on_submit():
-        county.production_choice = excess_worker_form.goal.data
-        return jsonify(
-            status="success",
-            message="You allocated workers to ..."
-        )
-    return jsonify(
-        status="fail",
-        message="Your allocation form failed to pass validation."
-    )
