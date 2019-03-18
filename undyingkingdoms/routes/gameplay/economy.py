@@ -5,7 +5,7 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models.forms.economy import EconomyForm
 from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_rate_modifier, income_modifier, \
-    food_consumed_modifier, happiness_modifier
+    food_consumed_modifier, happiness_modifier, tax_options
 
 
 @app.route('/gameplay/economy/', methods=['GET'])
@@ -14,8 +14,8 @@ from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_
 def economy(template):
     form = EconomyForm(tax=current_user.county.tax_rate, rations=current_user.county.rations)
 
-    form.tax.choices = [(i, i) for i in range(11)]
-    form.rations.choices = [(pairing[0], pairing[1]) for pairing in rations_terminology]
+    form.tax.choices = tax_options
+    form.rations.choices = rations_terminology
 
     return render_template(
         template,
@@ -39,11 +39,8 @@ def update_economy():
     county = current_user.county
 
     form = EconomyForm(tax=county.tax_rate, rations=county.rations)
-    form.tax.choices = [(i, i) for i in range(11)]
-    form.rations.choices = [
-        (pairing[0], pairing[1])
-        for pairing in rations_terminology
-    ]
+    form.tax.choices = tax_options
+    form.rations.choices = rations_terminology
 
     if form.validate_on_submit():
         county.tax_rate = form.tax.data
