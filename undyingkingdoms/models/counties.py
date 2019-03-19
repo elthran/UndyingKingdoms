@@ -1068,13 +1068,13 @@ class County(GameState):
         self.user.check_incremental_achievement(name, amount)
 
     def display_news(self):
-        events = Notification.query.filter_by(county_id=self.id, new=True).order_by(Notification.day.desc()).all()
+        events = Notification.query.filter_by(county_id=self.id, new=True).order_by(Notification.time_created.desc()).all()
         for event in events:
             event.new = False
         return events
 
     def display_old_news(self):
-        events = Notification.query.filter_by(county_id=self.id, new=False).order_by(Notification.day.desc()).all()
+        events = Notification.query.filter_by(county_id=self.id, new=False).order_by(Notification.time_created.desc()).all()
         return events
 
     def get_total_number_of_thieves(self):

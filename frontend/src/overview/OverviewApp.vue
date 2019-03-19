@@ -3,39 +3,41 @@
     <prefix-title title="Overview" />
     <county-description />
     <div class="max-width-1 width-100-percent">
-      <h2>Basics:</h2>
-      <overview-basics class="tab-1" />
-      <h2 class="top-spacer-dot-6">
-        Treasury:
+      <h2 class="tab-1">
+        Basics
       </h2>
-      <overview-treasury class="tab-1" />
-      <h2 class="top-spacer-dot-6">
-        Citizens:
+      <overview-basics />
+      <h2 class="top-spacer-dot-6 tab-1">
+        Treasury
       </h2>
-      <overview-citizens class="tab-1" />
+      <overview-treasury />
+      <h2 class="top-spacer-dot-6 tab-1">
+        Citizens
+      </h2>
+      <overview-citizens />
       <br>
       <!-- <p
         v-if="county.day < 1"
         id="serverMessageToPlayers"
         class="negative"
       /> -->
-      <h2>News</h2>
+      <h2 class="tab-1">
+        News
+        <button
+          id="toggleNews"
+          @click="newsVisibility = !newsVisibility"
+        >
+          {{ newsVisibility?'hide':'show' }} old news
+        </button>
+      </h2>
       <overview-news
         v-show="!newsVisibility"
         :news="news"
-        class="tab-1"
       />
       <overview-news
         v-show="newsVisibility"
         :news="oldNews"
-        class="tab-1"
       />
-      <br>
-      <button
-        @click="newsVisibility = !newsVisibility"
-      >
-        Show Old News
-      </button>
     </div>
   </div>
 </template>
@@ -86,9 +88,11 @@ h2 {
   padding-bottom: 0.3em;
 }
 
-button {
-  width: 100%;
-  height: 2.3em;
-  border-radius: 4px;
+#toggleNews {
+  float: right;
+  font-weight: normal;
+  min-width: auto;
+  width: 7em;
+  height: auto;
 }
 </style>
