@@ -2,8 +2,10 @@ from flask import jsonify
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
+from undyingkingdoms.api.vue_safe import vue_safe_news
 
-class CountyDescriptionAPI(MethodView):
+
+class NewsAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
@@ -11,9 +13,6 @@ class CountyDescriptionAPI(MethodView):
         return jsonify(
             status="success",
             message=f"You called on {__name__}",
-            race=county.race,
-            name=county.name,
-            title=county.title,
-            leader=county.leader,
-            background=county.background
+            news=vue_safe_news(county.display_news()),
+            oldNews=vue_safe_news(county.display_old_news())
         )

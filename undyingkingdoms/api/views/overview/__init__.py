@@ -6,6 +6,10 @@ import_endpoints(
     __name__,
     [
         'basics',
-        'county_description'
-    ])
+        'county_description',
+        'treasury',
+        'citizens',
+        'news'
+    ]
+)
 

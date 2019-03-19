@@ -159,6 +159,11 @@ td {
     margin-left: 1em;
 }
 
+.hanging-indent {
+    padding-left: 1em;
+    text-indent: -1em;
+}
+
 .invisible {
     display: none;
 }
