@@ -28,3 +28,22 @@ class Casting(GameEvent):
         self.active = False
         self.mana_sustain = 0
 
+    @staticmethod
+    def get_active_spells(county):
+        return Casting.query.filter_by(county_id=county.id)\
+            .filter((Casting.duration > 0) | (Casting.active==True))\
+            .all()
+
+    @staticmethod
+    def get_enemy_spells(county):
+        return Casting.query.filter_by(target_id=county.id)\
+            .filter((Casting.county_id != county.id)
+                    & ((Casting.duration > 0)
+                    | (Casting.active==True)))\
+            .all()
+
+    @staticmethod
+    def get_sustain_mana_requirement(county):
+        # I suggest making this an SQL query eventually.
+        return sum(spell.mana_sustain
+                   for spell in Casting.get_active_spells(county))

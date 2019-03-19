@@ -24,3 +24,11 @@ class Magic(GameEvent):
         self.mana_sustain = mana_sustain
         self.duration = duration
         self.description = description
+
+    @staticmethod
+    def get_know_spells(county):
+        return Magic.query.filter_by(county_id=county.id, known=True).all()
+
+    @staticmethod
+    def get_unknown_spells(county):
+        return Magic.query.filter_by(county_id=county.id, known=False).all()
