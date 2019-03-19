@@ -144,14 +144,15 @@ th {
         <td>{{ army.currently_training }}</td>
         <td>
           {% if army.name == 'monster' %}
-            {% set building_name = county.buildings['lair'].class_name_plural.title() %}
+            {% set lair = county.building['lair'] %}
+            {% set lair_name = lair.class_name_plural.title() %}
             <span class="invisible" id="monsterMax">{{ slider_size }}</span>
             {% if monsters_buildable(county) <= 0 %}
               <div class="slide-container">
                 <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1" hidden/>
               </div>
               <span class="display" hidden>0</span>
-              <span style="color:red;">Requires more<br>{{ building_name }}</span>
+              <span style="color:red;">Requires more<br>{{ lair_name }}</span>
             {% else %}
               <div class="slide-container">
                 <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" data-monster
@@ -159,8 +160,8 @@ th {
               </div>
               <span class="display">0</span>
               <span>
-                <span class="tooltip">of {{ slider_size }}
-                  <span class="tooltipText">Build more {{ building_name }}</span>
+                <span class="tooltip">of {{ lair.total - army.total - army.training }}
+                  <span class="tooltipText">Build more {{ lair_name }}</span>
                 </span>
               </span>
             {% endif %}
