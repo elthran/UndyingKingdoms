@@ -32,6 +32,10 @@ nav > a {
 .reset {
   margin: auto;
 }
+
+.nav-center {
+  justify-content: center;
+}
 </style>
 {% endblock %}
 
@@ -43,7 +47,7 @@ nav > a {
   <hr class="width-100-percent">
   <a href="{{ url_for('overview') }}">County&nbsp;Overview</a>
   <div class="top-spacer-dot-3 flex-group">
-    <h2 class="center width-100-percent reset">
+    <h2 class="nav-center width-100-percent reset">
       Advisors
     </h2>
     <a href="{{ url_for('economy') }}">Economist</a>
@@ -54,7 +58,7 @@ nav > a {
     <a href="{{ url_for('research') }}">Scientist</a>
   </div>
   <div class="top-spacer-dot-3 flex-group">
-    <h2 class="center width-100-percent reset">
+    <h2 class="nav-center width-100-percent reset">
       Diplomacy
     </h2>
     <a href="{{ url_for('trading') }}">Trades</a>
@@ -68,7 +72,7 @@ nav > a {
     {% endif %}
   </div>
   <div class="top-spacer-dot-3 flex-group">
-    <h2 class="center width-100-percent reset">
+    <h2 class="nav-center width-100-percent reset">
       About the Game
     </h2>
     <a href="{{ url_for('achievements') }}">Achievements</a>
