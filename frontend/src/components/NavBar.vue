@@ -1,7 +1,10 @@
 <template>
   <nav class="mobile-sidebar">
     <hr class="width-100-percent">
-    <router-link :to="urlFor.overview">
+    <router-link
+      :to="urlFor.overview"
+      @click.native="$emit('refocus')"
+    >
       County&nbsp;Overview
     </router-link>
     <div class="top-spacer-dot-3 flex-group">
@@ -13,7 +16,10 @@
       >
         Economist
       </a>
-      <router-link :to="urlFor.infrastructure">
+      <router-link
+        :to="urlFor.infrastructure"
+        @click.native="$emit('refocus')"
+      >
         City&nbsp;Planner
       </router-link>
       <a
@@ -36,16 +42,6 @@
       >
         Scientist
       </a>
-    </div>
-    <div
-      v-if="user.isKing"
-      class="top-spacer-dot-3"
-    >
-      <img
-        class="resource_icons"
-        src="/static/dist/images/crown_icon.jpg"
-      >
-      <a :href="urlFor.royalCourt">Royal Court</a>
     </div>
     <div class="top-spacer-dot-3 flex-group">
       <h2 class="center width-100-percent">
@@ -74,6 +70,16 @@
       >
         Kingdom&nbsp;Overview
       </a>
+      <div
+        v-if="user.isKing"
+        class="top-spacer-dot-3"
+      >
+        <img
+          class="resource_icons"
+          src="/static/dist/images/crown_icon.jpg"
+        >
+        <a :href="urlFor.royalCourt">Royal Court</a>
+      </div>
     </div>
     <div class="top-spacer-dot-3 flex-group">
       <h2 class="center width-100-percent">

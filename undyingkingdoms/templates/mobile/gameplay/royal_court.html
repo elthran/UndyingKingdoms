@@ -1,105 +1,106 @@
 {% extends "mobile/gameplay/layout.html" %}
 
-{% block title %}Infiltrate: {{ super() }}{% endblock %}
+{% block title %}Decrees: {{ super() }}{% endblock %}
 
 {% block style %}
 {{ super() }}
-<style type="text/css">
-#content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: 1em;
-}
-
-#header {
-    max-width: 400px;
-    margin: auto auto 1.3em;
-}
-
-#footer {
-    max-width: 500px;
-    margin: auto;
-}
-
-h2 {
-    margin-bottom: 0.3em;
-}
-
-form {
-    margin-bottom: 1.3em;
-}
-
-select {
-    margin-left: 0.4em;
-    border-radius: 4px;
-    height: 3em;
-    padding-left: 0.8em;
-    padding-right: 0.5em;
-}
-
-button {
-    height: 3em;
-    width: 15em;
-    border-radius: 4px;
-    margin-left: 0.6em;
-}
-
-li {
-    margin-bottom: 0.2em;
-}
-
-.spacer {
-    margin-bottom: 0.3em;
-}
-</style>
 {% endblock %}
 
 {% block content1 %}
+
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 <div id="content">
-  <div id="header">
-    <h1>Target: {{ target.name }} led by {{ target.leader }}</h1>
-    <br>
-    {% if county.get_number_of_available_thieves() == 0 %}
-    <h2>You do not have any available thieves. Either wait for them to return from previous missions or build more
-      guilds.</h2>
-  </div>
-    {% else %}
-  <form method="POST" accept-charset="UTF-8" role="form">
-    {{ form.csrf_token }}
-    <h2>What type of mission would you like to do?</h2>
-    {{ form.mission }}
-    <h2>How many thieves would you like to send?</h2>
-    {{ form.amount }}
-    <button type="submit">Send Thieves</button>
-  </form>
+  {% if county.id == kingdom.leader %}
+  <h1>As the ruler of your kingdom, it is up to you to make decisions regarding your kingdom's actions.</h1>
+  {% else %}
+  <h1>Here is where your ruler will issue their decrees.</h1>
+  {% endif %}<br><br>
 
-  <div id="footer">
-    <p class="spacer">Basic Info (This feature is very new and might be tweaked mid-age. During this period, the numbers will be shown
-      here for visibility):</p>
-    <ul>
-      <li>Gold stolen per thief: 15-25 (+25% bonus for each additional thief), Duration: 14 days</li>
-      <li>Crops burned per thief: 1, Duration: 24 days</li>
-      <li>County happiness lost per thief: 3, Duration: 18 days</li>
-      <li>Scout military: 1 thief (50% accuracy). 2 thieves (70% accuracy). 3+ thieves (90% accuracy), Duration: 6
-        days
-      </li>
-      <li>*Note for accuracy: If enemy has 100 knights, 50% accuracy means thieves would report between 50-150
-        knights.*
-      </li>
-    </ul>
-  </div>
+  <h2>Current Wars:</h2>
+  {% for war in kingdom.wars %}
+    {% set enemy = war.get_other_kingdom(kingdom) %}
+    {% set attacker = war.kingdom %}
+    <p style="color:red">At war with <a href="{{ url_for('kingdom', kingdom_id=enemy.id) }}">{{ enemy.name }}</a></p>
+    {% if attacker.id == kingdom.id %}
+      Our progress: {{ war.attacker_current }} / {{ war.attacker_goal }}<br>
+      Enemy progress: {{ war.defender_current }} / {{ war.defender_goal }}<br>
+    {% else %}
+      Our progress: {{ war.defender_current }} / {{ war.defender_goal }}<br>
+      Enemy progress: {{ war.attacker_current }} / {{ war.attacker_goal }}<br>
+    {% endif %}
+  {% else %}
+  We are not at war with anyone.
+  {% endfor %}
+
+  <h2>Current Allies:</h2>
+  {% for alliance in kingdom.alliances %}
+    {% set ally = alliance.get_other_kingdom(kingdom) %}
+    <p style="color:green">Allied with <a href="{{ url_for('kingdom', kingdom_id=ally.id) }}">{{ ally.name }}</a> for {{ alliance.duration }} more days.</p>
+  {% else %}
+  We are not at allied with anyone.
+  {% endfor %}
+
+  <h2>Pending Alliance Offers:</h2>
+  {% for ally in offers_from_us %}
+      <p style="color:green">Alliance pending with <a href="{{ url_for('kingdom', kingdom_id=ally.id) }}">{{ ally.name }}</a></p>
+      {% if county.id == kingdom.leader %}
+          <form id="cancel_alliance_form" method="POST" accept-charset="UTF-8" action="{{ url_for('cancel_alliance', kingdom_id=ally.id) }}">
+              {{ message_form.csrf_token(id="message-form-csrf-token") }}
+              <button type="submit">Cancel</button>
+          </form>
+      {% endif %}
+  {% else %}
+      <p>We have not offered any alliances</p>
+  {% endfor %}
+  {% for ally in offers_to_us %}
+      <p style="color:green">Alliance pending with <a href="{{ url_for('kingdom', kingdom_id=ally.id) }}">{{ ally.name }}</a></p>
+      {% if county.id == kingdom.leader %}
+          <form id="accept_alliance_form" method="POST" accept-charset="UTF-8" action="{{ url_for('accept_alliance', kingdom_id=ally.id) }}">
+              {{ message_form.csrf_token(id="message-form-csrf-token") }}
+              <button type="submit">Accept</button>
+          </form>
+          <form id="decline_alliance_form" method="POST" accept-charset="UTF-8" action="{{ url_for('decline_alliance', kingdom_id=ally.id) }}">
+              {{ message_form.csrf_token(id="message-form-csrf-token") }}
+              <button type="submit">Decline</button>
+          </form>
+      {% endif %}
+  {% else %}
+      <p>No one has offered us any alliances</p>
+  {% endfor %}
+
+  {% if county.id == kingdom.leader %}
+      <h2>Send a royal decree which will message all counties under your control:</h2>
+      <form id="message_form" method="POST" accept-charset="UTF-8" action="{{ url_for('send_decree') }}">
+          {{ message_form.csrf_token(id="message-form-csrf-token") }}
+          <textarea id="message-content" cols="100" rows="10" name="content" placeholder="Content" maxlength=256></textarea>
+          <div class="spacer"></div><br>
+          <button type="submit">Send Decree</button>
+        </form>
+      <br><br>
+
+      <h2>Declare war on another kingdom:</h2>
+      <form id="relations_form1" method="POST" accept-charset="UTF-8" action="{{ url_for('declare_war') }}">
+          {{ relations_form.csrf_token(id="message-form-csrf-token") }}
+          {{ relations_form.target_id }}
+          <div class="spacer"></div><br>
+          <button type="submit">Declare War</button>
+        </form>
+      <br><br>
+
+      <h2>Offer an alliance to another kingdom:</h2>
+      <form id="relations_form2" method="POST" accept-charset="UTF-8" action="{{ url_for('offer_alliance') }}">
+          {{ relations_form.csrf_token(id="message-form-csrf-token") }}
+          {{ relations_form.target_id }}
+          <div class="spacer"></div><br>
+          <button type="submit">Offer Alliance</button>
+        </form>
+      <br><br>
+
+      <h2>Demand a tribute from all counties under your control:</h2>
+      <button value="create" disabled="disabled">Not Yet Implemented</button>
   {% endif %}
 </div>
 {{ super() }}
-{% endblock %}
-
-{% block script %}
-{{ super() }}
-<script type="text/javascript">
-
-</script>
 {% endblock %}

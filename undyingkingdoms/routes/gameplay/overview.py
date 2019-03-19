@@ -8,6 +8,7 @@ from undyingkingdoms.models import County, Kingdom, Message, Notification
 from undyingkingdoms.models.forms.message import MessageForm
 from undyingkingdoms.models.forms.trade import TradeForm
 from undyingkingdoms.models.trades import Trade
+from undyingkingdoms.routes.helpers import mobile_on_vue
 
 """
 Each of these routes could go in their own file
@@ -29,15 +30,18 @@ than they currently are.
 
 
 @app.route('/gameplay/overview', methods=['GET'])
-@mobile_template('{mobile/}gameplay/overview.html')
+@mobile_on_vue
 @login_required
-def overview(template):
+def overview():
     # If game has been reset allow user to make a new county.
     if not current_user.county:
         return redirect(url_for('initialize'))
     patch_has_mail(current_user)
 
-    return render_template(template, has_mail=current_user.has_mail())
+    return render_template(
+        "gameplay/overview.html",
+        has_mail=current_user.has_mail()
+    )
 
 
 @app.route('/gameplay/enemy_overview/<int:kingdom_id>/<int:county_id>/', methods=['GET'])

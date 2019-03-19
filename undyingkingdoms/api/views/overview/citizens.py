@@ -2,6 +2,7 @@ from flask import jsonify
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
+
 class CitizensAPI(MethodView):
     @login_required
     def get(self):

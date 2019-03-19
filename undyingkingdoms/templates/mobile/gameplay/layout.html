@@ -12,6 +12,8 @@
 	margin: 0 1em 0.5em;
 }
 
+nav > div > span > a,
+nav > div > a,
 nav > a {
 	margin: 0.1em;
 	border: double;
@@ -19,6 +21,16 @@ nav > a {
 	border-color: gray;
 	border-radius: 0.2em;
 	text-decoration: none;
+}
+
+.flex-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.reset {
+  margin: auto;
 }
 </style>
 {% endblock %}
@@ -28,27 +40,45 @@ nav > a {
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 <nav class="mobile-sidebar">
-	<a href="{{ url_for('overview', kingdom_id=0, county_id=0) }}">County&nbsp;Overview</a>
-	<a href="{{ url_for('economy') }}">Economy</a>
-	<a href="{{ url_for('infrastructure') }}">Infrastructure</a>
-	<a href="{{ url_for('military') }}">Military</a>
-	<a href="{{ url_for('infiltration') }}">Infiltration</a>
-	<a href="{{ url_for('casting', target_id=county.id) }}">Wizard Council</a>
-	<a href="{{ url_for('messages') }}" {% if has_mail %}style="color:blue;font-weight:bold;"{% endif %}>Inbox</a>
-	<a href="{{ url_for('chatroom_api') }}">Town&nbsp;Hall</a>
-	<a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom&nbsp;Overview</a>
-	{% if kingdom.leader != 0 %}
-		<br>
-		<img class="resource_icons" src="/static/images/crown_icon.jpg">
-		<a href="{{ url_for('royal_court') }}">Royal Court</a>
-	{% endif %}
-	<br>
-	<a href="{{ url_for('achievements') }}">Achievements</a>
-	<a href="{{ url_for('forum', thread_id=0, post_id=0) }}">Forum</a>
-	<a href="{{ url_for('guide') }}">Player&nbsp;Guide</a>
-	<a href="{{ url_for('leaderboard') }}">Leaderboard</a>
-	<a href="{{ url_for('profile') }}">Profile</a>
-	{% if user.is_admin %}<a href="{{ url_for('admin.home_api') }}">Admin</a>{% endif %}
-	<a href="{{ url_for('logout') }}">Logout</a>
+  <hr class="width-100-percent">
+  <a href="{{ url_for('overview') }}">County&nbsp;Overview</a>
+  <div class="top-spacer-dot-3 flex-group">
+    <h2 class="center width-100-percent reset">
+      Advisors
+    </h2>
+    <a href="{{ url_for('economy') }}">Economist</a>
+    <a href="{{ url_for('infrastructure') }}">City&nbsp;Planner</a>
+    <a href="{{ url_for('military') }}">War</a>
+    <a href="{{ url_for('infiltration') }}">Thieves&nbsp;Guild</a>
+    <a href="{{ url_for('casting', target_id=county.id) }}">Wizard&nbsp;Council</a>
+    <a href="{{ url_for('research') }}">Scientist</a>
+  </div>
+  <div class="top-spacer-dot-3 flex-group">
+    <h2 class="center width-100-percent reset">
+      Diplomacy
+    </h2>
+    <a href="{{ url_for('trading') }}">Trades</a>
+    <a href="{{ url_for('messages') }}" {% if has_mail %}style="color:blue;font-weight:bold;"{% endif %}>Messages</a>
+    <a href="{{ url_for('chatroom_api') }}" {% if county.has_new_townhall_message() %}style="color:blue;font-weight:bold;"{% endif %}>Town&nbsp;Hall</a>
+    <a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom&nbsp;Overview</a>
+    {% if kingdom.leader != 0 %}
+      <span class="top-spacer-dot-3">
+        <img class="resource_icons" src="/static/images/crown_icon.jpg"><a href="{{ url_for('royal_court') }}">Royal&nbsp;Court</a>
+      </span>
+    {% endif %}
+  </div>
+  <div class="top-spacer-dot-3 flex-group">
+    <h2 class="center width-100-percent reset">
+      About the Game
+    </h2>
+    <a href="{{ url_for('achievements') }}">Achievements</a>
+    <a href="{{ url_for('forum', thread_id=0, post_id=0) }}">Forum</a>
+    <a href="{{ url_for('guide') }}">Player&nbsp;Guide</a>
+    <a href="{{ url_for('leaderboard') }}">Leaderboard</a>
+    <a href="{{ url_for('profile') }}">Profile</a>
+    {% if user.is_admin %}<a href="{{ url_for('admin.home_api') }}">Admin</a>{% endif %}
+  </div>
+  <div class="top-spacer-dot-3" />
+  <a href="{{ url_for('logout') }}">Logout</a>
 </nav>
 {% endblock %}

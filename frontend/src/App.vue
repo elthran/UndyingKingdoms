@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <prefix-title title="Home" />
-    <router-view />
-    <nav-bar />
+    <router-view ref="content" />
+    <nav-bar @refocus="focusTop" />
   </div>
 </template>
 
@@ -16,6 +16,16 @@ export default {
   },
   data () {
     return {
+    }
+  },
+  watch: {
+    $route (to, from) {
+      this.$emit('refocus')
+    }
+  },
+  methods: {
+    focusTop () {
+      window.scrollTo(0,0);
     }
   }
 }
