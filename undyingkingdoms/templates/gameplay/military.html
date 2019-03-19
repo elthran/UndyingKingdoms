@@ -144,7 +144,7 @@ th {
         <td>{{ army.currently_training }}</td>
         <td>
           {% if army.name == 'monster' %}
-            {% set lair = county.building['lair'] %}
+            {% set lair = county.buildings['lair'] %}
             {% set lair_name = lair.class_name_plural.title() %}
             <span class="invisible" id="monsterMax">{{ slider_size }}</span>
             {% if monsters_buildable(county) <= 0 %}
