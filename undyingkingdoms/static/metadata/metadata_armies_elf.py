@@ -10,6 +10,8 @@ elf_armies['soldier'].class_name, elf_armies['soldier'].class_name_plural, elf_a
     'soldier'].description = 'ranger', 'rangers', 'Excellent offensive troops.'
 elf_armies['archer'].class_name, elf_armies['archer'].class_name_plural, elf_armies[
     'archer'].description = 'longbowman', 'longbowmen', 'Longbowmen are very effective at defending your county.'
+elf_armies['besieger'].class_name, elf_armies['besieger'].class_name_plural, elf_armies[
+    'besieger'].description = 'Balista', 'Balistae', 'Balistae are incredibly effective at attacking fortified counties.'
 elf_armies['elite'].class_name, elf_armies['elite'].class_name_plural, elf_armies[
     'elite'].description = 'dragonhelm', 'dragonhelms', 'Dragonhelms are elite cavalry and incredibly adept at attacking enemy counties.'
 elf_armies['monster'].class_name, elf_armies['monster'].class_name_plural, elf_armies[
@@ -18,27 +20,18 @@ elf_armies['monster'].class_name, elf_armies['monster'].class_name_plural, elf_a
 # Peasants
 elf_armies['peasant'].category = "Infantry"
 elf_armies['peasant'].armour_type = "Unarmoured"
-elf_armies['peasant'].health += 1
-elf_armies['peasant'].wood += 2
 # Soldiers
 elf_armies['soldier'].category = "Infantry"
 elf_armies['soldier'].armour_type = "Leather"
-elf_armies['soldier'].health += 1
-elf_armies['soldier'].wood += 2
 # Archers
 elf_armies['archer'].category = "Infantry"
 elf_armies['archer'].armour_type = "Leather"
-elf_armies['archer'].health += 1
-elf_armies['archer'].wood += 3
+# Besiegers
+elf_armies['besieger'].category = "Siege"
+elf_armies['besieger'].armour_type = "Plate"
 # Elites
 elf_armies['elite'].category = "Cavalry"
 elf_armies['elite'].armour_type = "Plate"
-elf_armies['elite'].attack += 1
-elf_armies['elite'].defence += 1
-elf_armies['elite'].wood += 4
 # Monsters
 elf_armies['monster'].category = "Monster"
 elf_armies['monster'].armour_type = "Plate"
-elf_armies['elite'].attack += 1
-elf_armies['elite'].defence += 1
-elf_armies['elite'].wood += 4

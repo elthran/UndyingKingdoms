@@ -11,35 +11,29 @@ dwarf_armies['soldier'].class_name, dwarf_armies['soldier'].class_name_plural, d
     'soldier'].description = 'axeman', 'axemen', 'Excellent offensive troops.'
 dwarf_armies['archer'].class_name, dwarf_armies['archer'].class_name_plural, dwarf_armies[
     'archer'].description = 'rifleman', 'riflemen', 'Dwarf riflemen are a powerful defensive force.'
+dwarf_armies['besieger'].class_name, dwarf_armies['besieger'].class_name_plural, dwarf_armies[
+    'besieger'].description = 'cannon', 'cannons', 'Trebuchets are incredibly effective against fortified counties.'
 dwarf_armies['elite'].class_name, dwarf_armies['elite'].class_name_plural, dwarf_armies[
     'elite'].description = 'greybeard', 'greybeards', 'Greybeards are capable of defending, as well as attacking.'
 dwarf_armies['monster'].class_name, dwarf_armies['monster'].class_name_plural, dwarf_armies[
     'monster'].description = 'manticore', 'manticores', 'Manticores are incredibly powerful monsters.'
 
-# Dwarves: Slightly higher health and iron
 # Peasants
 dwarf_armies['peasant'].category = "Infantry"
 dwarf_armies['peasant'].armour_type = "Unarmoured"
-dwarf_armies['peasant'].iron += 1
-dwarf_armies['peasant'].health += 1
 # Soldiers
 dwarf_armies['soldier'].category = "Infantry"
 dwarf_armies['soldier'].armour_type = "Leather"
-dwarf_armies['soldier'].iron += 1
-dwarf_armies['soldier'].health += 1
 # Archers
 dwarf_armies['archer'].category = "Infantry"
 dwarf_armies['archer'].armour_type = "Leather"
-dwarf_armies['archer'].iron += 1
-dwarf_armies['archer'].health += 1
+# Besiegers
+dwarf_armies['besieger'].category = "Siege"
+dwarf_armies['besieger'].armour_type = "Plate"
 # Elites
 dwarf_armies['elite'].category = "Infantry"
 dwarf_armies['elite'].armour_type = "Plate"
-dwarf_armies['elite'].iron += 2
-dwarf_armies['elite'].health += 2
 # Monsters
-dwarf_armies['monster'].category = "Monster"
+dwarf_armies['monster'].category = "Infantry"
 dwarf_armies['monster'].armour_type = "Plate"
-dwarf_armies['monster'].iron += 10
-dwarf_armies['monster'].health += 5
 

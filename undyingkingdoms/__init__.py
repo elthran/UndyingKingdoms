@@ -64,6 +64,7 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.kingdom
     import undyingkingdoms.routes.gameplay.attack
     import undyingkingdoms.routes.gameplay.messages
+    import undyingkingdoms.routes.gameplay.clans
 
     import undyingkingdoms.routes.gameplay.royal_court
 

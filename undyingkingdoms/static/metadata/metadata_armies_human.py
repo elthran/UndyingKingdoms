@@ -10,6 +10,8 @@ human_armies['soldier'].class_name, human_armies['soldier'].class_name_plural, h
     'soldier'].description = 'footman', 'footmen', 'Footmen are strong attackers.'
 human_armies['archer'].class_name, human_armies['archer'].class_name_plural, human_armies[
     'archer'].description = 'musketeer', 'musketeers', 'Crossbowmen are excellent at defending.'
+human_armies['besieger'].class_name, human_armies['besieger'].class_name_plural, human_armies[
+    'besieger'].description = 'trebuchet', 'trebuchets', 'Trebuchets are incredibly effective against fortified counties.'
 human_armies['elite'].class_name, human_armies['elite'].class_name_plural, human_armies[
     'elite'].description = 'knight', 'knights', 'Knights are one of the best attackers.'
 human_armies['monster'].class_name, human_armies['monster'].class_name_plural, human_armies[
@@ -18,25 +20,18 @@ human_armies['monster'].class_name, human_armies['monster'].class_name_plural, h
 # Peasants
 human_armies['peasant'].category = "Infantry"
 human_armies['peasant'].armour_type = "Unarmoured"
-human_armies['peasant'].trainable_per_day += 25
-human_armies['peasant'].gold -= 3
-human_armies['peasant'].iron -= 1
-human_armies['peasant'].defence -= 1
 # Soldiers
 human_armies['soldier'].category = "Infantry"
 human_armies['soldier'].armour_type = "Leather"
-human_armies['soldier'].trainable_per_day += 5
-human_armies['soldier'].iron -= 1
 # Archers
 human_armies['archer'].category = "Infantry"
 human_armies['archer'].armour_type = "Leather"
-human_armies['archer'].trainable_per_day += 5
-human_armies['archer'].iron -= 1
+# Besiegers
+human_armies['besieger'].category = "Siege"
+human_armies['besieger'].armour_type = "Plate"
 # Elites
 human_armies['elite'].category = "Cavalry"
 human_armies['elite'].armour_type = "Plate"
-human_armies['elite'].trainable_per_day += 3
-human_armies['elite'].iron -= 1
 # Monsters
 human_armies['monster'].category = "Monster"
 human_armies['monster'].armour_type = "Plate"

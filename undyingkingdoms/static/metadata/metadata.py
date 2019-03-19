@@ -104,6 +104,7 @@ all_armies = ["peasant", "archer", "soldier", "elite", "monster"]
 game_descriptions = {"attack": "How much power a unit has when attacking another county.",
                      "defence": "How much power a unit has when defending your county.",
                      "health": "Health affects how many of your units die in battle.",
+                     "besieger_attack": "Each siege machine has attack equal to the number of fortifications in the defending county.",
                      "available_workers": "Any citizen not in the military or employed, is available. These workers "
                                           "will add production to your city which can be used to build new buildings. "
                                           "Unused production generates gold.",

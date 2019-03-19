@@ -178,7 +178,7 @@ th {
           {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
         </td>
         <td>{{ army.trainable_per_day }}</td>
-        <td>{{ army.attack }}</td>
+        <td>{% if army.name == 'besieger' %}<div class="tooltip">*<span class="tooltipText">{{ meta_data["besieger_attack"] }}</span>{% else %}{{ army.attack }}{% endif %}</td>
         <td>{{ army.defence }}</td>
         <td>{{ army.health }}</td>
         <td>{{ army.upkeep }}</td>
