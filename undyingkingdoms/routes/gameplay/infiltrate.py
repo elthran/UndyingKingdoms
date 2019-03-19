@@ -9,17 +9,17 @@ from sqlalchemy import desc
 from undyingkingdoms import app
 from undyingkingdoms.models import Infiltration, County, Notification
 from undyingkingdoms.models.forms.infiltrate import InfiltrateForm
+from undyingkingdoms.routes.helpers import not_allies, not_self
 from undyingkingdoms.static.metadata.metadata import infiltration_missions, infiltration_success_modifier, \
     amount_of_thieves_modifier
 
 
 @app.route('/gameplay/infiltrate/<int:county_id>', methods=['GET', 'POST'])
 @mobile_template('{mobile/}gameplay/infiltrate.html')
+@not_self
+@not_allies
 @login_required
 def infiltrate(template, county_id):
-    if county_id == current_user.county.id:
-        return redirect(url_for('overview', kingdom_id=0, county_id=0))
-
     target = County.query.get(county_id)
 
     form = InfiltrateForm()
