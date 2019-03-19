@@ -5,17 +5,17 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import County
 from undyingkingdoms.models.forms.attack import AttackForm
+from undyingkingdoms.routes.helpers import not_self, not_allies
 
 
 @app.route('/gameplay/attack/<int:county_id>/', methods=['GET', 'POST'])
 @mobile_template('{mobile/}gameplay/attack.html')
+@not_self
+@not_allies
 @login_required
 def attack(template, county_id):
-    if county_id == current_user.county.id:
-        return redirect(url_for('overview', kingdom_id=0, county_id=0))
     enemy = County.query.get(county_id)
     form = AttackForm()
-
     peasant = current_user.county.armies['peasant'].available
     soldier = current_user.county.armies['soldier'].available
     elite = current_user.county.armies['elite'].available
