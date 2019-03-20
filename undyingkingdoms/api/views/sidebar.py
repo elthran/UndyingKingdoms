@@ -25,7 +25,7 @@ class SideBarAPI(MethodView):
         # inside the SideBar.vue component.
         # This probably should just be a list?
         urls = dict(
-            overview=url_for('overview', kingdom_id=0, county_id=0),
+            overview=url_for('overview'),
             economy=url_for('economy'),
             infrastructure=url_for('infrastructure'),
             military=url_for('military'),
@@ -41,6 +41,7 @@ class SideBarAPI(MethodView):
             forum=url_for('forum', thread_id=0, post_id=0),
             guide=url_for('guide'),
             leaderboard=url_for('leaderboard'),
+            profile=url_for('profile'),
             adminHomeAPI=url_for('admin.home_api'),
             logout=url_for('logout'),
         )

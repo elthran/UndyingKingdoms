@@ -1,21 +1,18 @@
-from flask import render_template, redirect, url_for, send_from_directory
+from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
-from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.blueprints.api.views.infrastructure.build_buildings import BuildBuildingsAPI
-from undyingkingdoms.blueprints.api.views.infrastructure.helpers import max_buildable_by_cost
+from undyingkingdoms.api.views.infrastructure.build_buildings import BuildBuildingsAPI
+from undyingkingdoms.api.views.infrastructure.helpers import max_buildable_by_cost
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm, ExcessProductionForm
+from undyingkingdoms.routes.helpers import mobile_on_vue
 from undyingkingdoms.static.metadata.metadata import game_descriptions, excess_worker_choices
 
 
 @app.route('/gameplay/infrastructure/', methods=['GET'])
-@mobile_template('{mobile/}gameplay/infrastructure.html')
+@mobile_on_vue
 @login_required
-def infrastructure(template):
-    if 'mobile' in template:
-        return send_from_directory('static/dist', 'infrastructure.html')
-
+def infrastructure():
     county = current_user.county
 
     build_form = InfrastructureForm()
@@ -25,7 +22,7 @@ def infrastructure(template):
     excess_worker_form.goal.choices = excess_worker_choices
 
     return render_template(
-        template,
+        "gameplay/infrastructure.html",
         build_form=build_form,
         excess_worker_form=excess_worker_form,
         meta_data=game_descriptions,

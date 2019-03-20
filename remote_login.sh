@@ -1,1 +1,4 @@
-ssh undyingkingdoms@ssh.pythonanywhere.com
+ssh -t undyingkingdoms@ssh.pythonanywhere.com '
+cd UndyingKingdoms
+bash -l
+'

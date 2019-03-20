@@ -9,7 +9,7 @@ from extensions import flask_db, flask_json, flask_csrf, flask_mobility, flask_m
 from undyingkingdoms.GeoIP import geo_ip
 from undyingkingdoms.blueprints.admin import admin_blueprint
 from undyingkingdoms.blueprints.game_clock import game_clock_blueprint
-from undyingkingdoms.blueprints.api import api_blueprint
+from undyingkingdoms.api import api_blueprint
 from undyingkingdoms import jinja_filters
 
 app = Flask(__name__)

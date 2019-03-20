@@ -69,3 +69,14 @@ def vue_safe_form(form):
                 html=form.csrf_token
             )
     return vs_form
+
+
+def vue_safe_news(news):
+    """Convert a list of news objects in a JSON serializable form."""
+
+    for event in news:
+        yield dict(
+            day=event.day,
+            title=event.title,
+            content=event.content
+        )

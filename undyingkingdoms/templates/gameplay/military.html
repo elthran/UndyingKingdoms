@@ -144,18 +144,26 @@ th {
         <td>{{ army.currently_training }}</td>
         <td>
           {% if army.name == 'monster' %}
+            {% set lair = county.buildings['lair'] %}
+            {% set lair_name = lair.class_name_plural.title() %}
+            <span class="invisible" id="monsterMax">{{ slider_size }}</span>
             {% if monsters_buildable(county) <= 0 %}
               <div class="slide-container">
                 <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1" hidden/>
               </div>
               <span class="display" hidden>0</span>
-              <span style="color:red;">Requires more<br>{{ county.buildings['lair'].class_name_plural.title() }}</span>
+              <span style="color:red;">Requires more<br>{{ lair_name }}</span>
             {% else %}
               <div class="slide-container">
-                <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}"
+                <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" data-monster
                      step="1"/>
               </div>
               <span class="display">0</span>
+              <span>
+                <span class="tooltip">of {{ lair.total - army.total - army.currently_training }}
+                  <span class="tooltipText">Build more {{ lair_name }}</span>
+                </span>
+              </span>
             {% endif %}
           {% else %}
             <div class="slide-container">
@@ -271,6 +279,8 @@ var totalWood = parseInt($("#totalWood").text());
 var totalIron = parseInt($("#totalIron").text());
 var population = parseInt($("#population").text());
 
+var monsterMax = parseInt($("#monsterMax").text());
+
 function updateGold() {
     var sum = 0;
     sliders.each(function (index, element) {
@@ -317,13 +327,16 @@ function resizeRemaining(gold, wood, iron) {
         var goldPrice = buildingGoldCosts[index].innerHTML;
         var woodPrice = buildingWoodCosts[index].innerHTML;
         var ironPrice = buildingIronCosts[index].innerHTML;
+        var isMonster = element.hasAttribute('data-monster');
+        var currentSize = parseInt(element.value);
         var remaining = Math.max(Math.floor(Math.min(
             (totalGold - gold) / goldPrice,
             (totalWood - wood) / woodPrice,
-            (totalIron - iron) / ironPrice
+            (totalIron - iron) / ironPrice,
+            (isMonster) ? monsterMax-currentSize : Infinity
         )), 0);
 
-        var size = parseInt(element.value) + remaining;
+        var size = currentSize + remaining;
         // need to include current element.value + current_max - remaining?
         $(element).prop("max", size);
         $(element).css("width", calcSliderWidth(size));
