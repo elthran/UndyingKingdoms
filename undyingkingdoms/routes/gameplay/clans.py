@@ -3,19 +3,24 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
+from undyingkingdoms.models import Kingdom
+from undyingkingdoms.models.clans import Clan
 from undyingkingdoms.models.forms.create_kingdom import CreateKingdomForm
-from undyingkingdoms.models.forms.economy import EconomyForm
-from undyingkingdoms.static.metadata.metadata import rations_terminology, birth_rate_modifier, income_modifier, \
-    food_consumed_modifier, happiness_modifier
 
 
-@app.route('/gameplay/clans/', methods=['GET'])
+@app.route('/gameplay/clans/', methods=['GET', 'POST'])
 @mobile_template('{mobile/}gameplay/clans.html')
 @login_required
 def clans(template):
+    user = current_user
     form = CreateKingdomForm()
-
-
+    if form.validate_on_submit():
+        user.gems -= 500
+        kingdom = Kingdom(form.name.data)
+        kingdom.save()
+        clan = Clan(kingdom.id, user.id, True)
+        clan.save()
+        return redirect(url_for('clans'))
     return render_template(
         template,
         form=form)

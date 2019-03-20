@@ -21,7 +21,7 @@ Once created, the kingdom is permanent unless you decide to disband it.
     {{ form.csrf_token }}
     {{ render_field(form.name, placeholder="Your Kingdom's Name", autofocus="") }}
     <br>
-    <a href="{{ url_for('clans_create') }}"><button style="float:left;width:100px;">Spend 500 gems to create your own kingdom</button>
+    <button type="submit">Spend 500 gems to create your own kingdom</button>
 </form>
 
 {% endblock %}
