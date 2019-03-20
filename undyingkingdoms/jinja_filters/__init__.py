@@ -1,6 +1,7 @@
 from markupsafe import Markup
 
-from undyingkingdoms.blueprints.api.vue_safe import vue_safe_array
+from undyingkingdoms.api.vue_safe import vue_safe_array
+
 
 def vue_safe(value):
     """Convert all tuples to lists.

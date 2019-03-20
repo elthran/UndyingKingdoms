@@ -1,10 +1,8 @@
-from datetime import datetime, timedelta
 from random import randint
 
 from flask import redirect, url_for, render_template
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
-from sqlalchemy import desc
 
 from undyingkingdoms import app
 from undyingkingdoms.models import Infiltration, County, Notification

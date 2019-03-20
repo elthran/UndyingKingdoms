@@ -44,7 +44,7 @@
 {% endif %}
 <h2>News</h2>
 <ul>
-    {% for event in county.display_news()|sort(attribute='day', reverse=True) %}
+    {% for event in county.display_news() %}
     <li>Day: {{ event.day }} - {{ event.title }}: {{ event.content }}</li>
     {% else %}
     <li>No new events to report.</li>
@@ -55,7 +55,7 @@
 <div id="oldNews" style="display:none;">
     <br>
     <ul>
-        {% for event in county.display_old_news()|sort(attribute='day', reverse=True) %}
+        {% for event in county.display_old_news() %}
         <li>Day: {{ event.day }} - {{ event.title }}: {{ event.content }}</li>
         {% else %}
         <li>There is no news in your history.</li>

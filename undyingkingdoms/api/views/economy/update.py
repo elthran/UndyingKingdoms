@@ -3,7 +3,7 @@ from flask.views import MethodView
 from flask_login import login_required, current_user
 from werkzeug.utils import redirect
 
-from undyingkingdoms.blueprints.api.vue_safe import vue_safe_form
+from ...vue_safe import vue_safe_form
 from undyingkingdoms.models.forms.economy import EconomyForm
 from undyingkingdoms.static.metadata.metadata import rations_terminology, tax_options
 
