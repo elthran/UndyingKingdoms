@@ -6,6 +6,7 @@ import config
 from undyingkingdoms import app as uk_app, flask_db, User
 from undyingkingdoms.models import World, Kingdom, County
 from undyingkingdoms.static.metadata.metadata import kingdom_names
+from utilities.testing_objects import build_testing_objects
 
 
 @pytest.fixture
@@ -23,22 +24,7 @@ def app():
         test_db.drop_all()
         test_db.create_all()
         # Create the game world
-        world = World()
-        world.save()
-
-        # Create all the kingdoms
-        for i in range(len(kingdom_names)):
-            kingdom = Kingdom(kingdom_names[i])
-            kingdom.save()
-
-        # Create Haldon
-        user = User("haldon", "haldon@gmail.com", "brunner")
-        user.is_admin = True
-        user.is_active = True
-        user.save()
-        county = County(1, "Northern Wastes", "Haldon", user.id, 'Dwarf', 'Sir', 'Merchant')
-        county.save()
-        county.vote = county.id
+        build_testing_objects()
         test_db.session.commit()
 
     yield app
