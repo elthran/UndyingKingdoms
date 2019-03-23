@@ -1,0 +1,26 @@
+{% extends "mobile/gameplay/layout.html" %}
+
+{% block title %}Clan: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style>
+</style>
+{% endblock %}
+
+{% block content1 %}
+
+{% set user = current_user %}
+{% set clan = user.clan %}
+{% set county = current_user.county %}
+{% set kingdom = county.kingdom %}
+<div>
+  <h1 style="text-align:center;">Your Clan</h1>
+
+  {% for user in clan.users %}
+  {{ user.username }}
+  {% endfor %}
+
+</div>
+{{ super() }}
+{% endblock %}
