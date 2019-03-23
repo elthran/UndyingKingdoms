@@ -114,11 +114,10 @@ th {
       <tr>
         <th>Name</th>
         <th>Available</th>
-        <th>In Foreign Lands</th>
-        <th>In Training</th>
+        <th>Traveling</th>
+        <th>Training</th>
         <th>Train</th>
         <th id="costCol">Cost</th>
-        <th>Trainable Per Day</th>
         <th>
           <div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div>
         </th>
@@ -128,9 +127,7 @@ th {
         <th>
           <div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div>
         </th>
-        <th>
-          <div class="tooltip">Upkeep<span class="tooltipText">{{ meta_data["upkeep"] }}</span></div>
-        </th>
+        <th>Type</th>
         <th>Description</th>
       </tr>
       {% for army in county.armies.values() %}
@@ -141,7 +138,7 @@ th {
         <td>{{ army.class_name.title() }}</td>
         <td>{{ army.available }}</td>
         <td>{{ army.traveling }}</td>
-        <td>{{ army.currently_training }}</td>
+        <td><div class="tooltip">{{ army.currently_training }}<span class="tooltipText">Max trainable per day: {{ army.trainable_per_day }}</span></td>
         <td>
           {% if army.name == 'monster' %}
             {% set lair = county.buildings['lair'] %}
@@ -185,11 +182,10 @@ th {
           {% endif %}
           {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
         </td>
-        <td>{{ army.trainable_per_day }}</td>
         <td>{% if army.name == 'besieger' %}<div class="tooltip">*<span class="tooltipText">{{ meta_data["besieger_attack"] }}</span>{% else %}{{ army.attack }}{% endif %}</td>
         <td>{{ army.defence }}</td>
-        <td>{{ army.health }}</td>
-        <td>{{ army.upkeep }}</td>
+        <td><div class="tooltip">{{ army.health }}<span class="tooltipText">Armour type: {{ army.armour_type }}</span></td>
+        <td>{{ army.category }}</td>
         <td>{{ army.description }}</td>
       </tr>
       {% endfor %}
@@ -199,16 +195,15 @@ th {
         <td>{{ county.get_unavailable_army_size() }}</td>
         <td>{{ county.get_training_army_size() }}</td>
         <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
         <td>
           <div class="tooltip">{{ county.get_upkeep_costs() }}<span
               class="tooltipText">{{ meta_data["upkeep_daily"] }}</span>
           </div>
         </td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
         <td>-</td>
       </tr>
     </table>

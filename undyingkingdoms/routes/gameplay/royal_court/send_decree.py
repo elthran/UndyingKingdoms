@@ -12,7 +12,7 @@ from undyingkingdoms.models.forms.royal_court import RoyalCourtMessageForm
 def send_decree():
     county = current_user.county
     if county.id != county.kingdom.leader:
-        return redirect(url_for('overview', kingdom_id=0, county_id=0))
+        return redirect(url_for('overview'))
     message_form = RoyalCourtMessageForm()
     if message_form.validate_on_submit():
         for county in County.query.filter_by(kingdom_id=county.kingdom_id).all():

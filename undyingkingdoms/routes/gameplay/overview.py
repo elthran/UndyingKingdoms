@@ -51,7 +51,7 @@ def enemy_overview(template, kingdom_id=0, county_id=0):
     county = current_user.county
     target_county = County.query.get(county_id)
     if county == target_county:
-        return redirect(url_for('overview', kingdom_id=0, county_id=0))
+        return redirect(url_for('overview'))
     target_kingdom = Kingdom.query.get(kingdom_id)
 
     message_form = MessageForm()

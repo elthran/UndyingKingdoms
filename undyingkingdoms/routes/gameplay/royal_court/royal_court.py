@@ -14,7 +14,7 @@ def royal_court(template):
     county = current_user.county
     kingdom = county.kingdom
     if kingdom.leader == 0:
-        return redirect(url_for('overview', kingdom_id=0, county_id=0))
+        return redirect(url_for('overview'))
     
     message_form = RoyalCourtMessageForm()
 

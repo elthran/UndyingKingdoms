@@ -8,7 +8,7 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
-<h2>Target: <a href="{{ url_for('overview', kingdom_id=target.kingdom.id, county_id=target.id) }}">{{ target.name }}</a> led by {{ target.leader }}</h2>
+<h2>Target: <a href="{{ url_for('enemy_overview', kingdom_id=target.kingdom.id, county_id=target.id) }}">{{ target.name }}</a> led by {{ target.leader }}</h2>
 <br><br>
 {% if county.get_number_of_available_thieves() == 0 %}
 <h2>You do not have any available thieves. Either wait for them to return from previous missions or build more guilds.</h2>

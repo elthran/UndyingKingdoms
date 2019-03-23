@@ -18,6 +18,8 @@ from undyingkingdoms.static.metadata.metadata import infiltration_missions, infi
 @not_allies
 @login_required
 def infiltrate(template, county_id):
+    if county_id == current_user.county.id:
+        return redirect(url_for('overview'))
     target = County.query.get(county_id)
 
     form = InfiltrateForm()

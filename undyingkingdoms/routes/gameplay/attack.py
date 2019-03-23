@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
@@ -14,6 +14,8 @@ from undyingkingdoms.routes.helpers import not_self, not_allies
 @not_allies
 @login_required
 def attack(template, county_id):
+    if county_id == current_user.county.id:
+        return redirect(url_for('overview'))
     enemy = County.query.get(county_id)
     form = AttackForm()
     peasant = current_user.county.armies['peasant'].available

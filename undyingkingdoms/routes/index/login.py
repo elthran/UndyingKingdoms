@@ -19,7 +19,7 @@ def login(template):
     form = LoginForm()
     if current_user.is_authenticated:
         return redirect(
-            url_for('overview', kingdom_id=0, county_id=0))
+            url_for('overview'))
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
@@ -33,7 +33,7 @@ def login(template):
                 notification.save()
             login_user(user)
             return redirect(
-                url_for('overview', kingdom_id=0, county_id=0))
+                url_for('overview'))
         else:
             flash("Your email or password was incorrect.")
     return render_template(template, form=form)
@@ -42,7 +42,7 @@ def login(template):
 class LoginAPI(MethodView):
     def get(self):
         if current_user.is_authenticated:
-            return redirect(url_for('overview', kingdom_id=current_user.county.kingdom.id, county_id=current_user.county.id))
+            return redirect(url_for('overview'))
         form = LoginForm()
         return render_template("index/login.html", form=form)
 
@@ -52,11 +52,7 @@ class LoginAPI(MethodView):
             return jsonify(
                 status='success',
                 message='User is already logged in. Redirect to overview page.',
-                redirect=url_for(
-                    'overview',
-                    kingdom_id=current_user.county.kingdom.id,
-                    county_id=current_user.county.id
-                )
+                redirect=url_for('overview')
             ), 200
         elif form.validate_on_submit():
             user = User.query.filter_by(email=form.email.data).first()
@@ -72,11 +68,7 @@ class LoginAPI(MethodView):
                     return jsonify(
                         status='success',
                         message='User has been logged in. Redirect to overview page.',
-                        redirect=url_for(
-                            'overview',
-                            kingdom_id=current_user.county.kingdom.id,
-                            county_id=current_user.county.id
-                        )
+                        redirect=url_for('overview')
                     ), 200
             elif user:
                 return jsonify(

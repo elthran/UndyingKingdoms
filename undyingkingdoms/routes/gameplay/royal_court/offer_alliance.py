@@ -12,7 +12,7 @@ from undyingkingdoms.routes.gameplay.royal_court.helpers import build_relations_
 def offer_alliance():
     county = current_user.county
     if county.id != county.kingdom.leader:
-        return redirect(url_for('overview', kingdom_id=0, county_id=0))
+        return redirect(url_for('overview'))
 
     relations_form = build_relations_form(county.kingdom)
 

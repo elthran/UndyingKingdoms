@@ -17,7 +17,7 @@ from undyingkingdoms.static.metadata.metadata_armies_human import human_armies
 @mobile_template('{mobile/}index/initialize.html')
 def initialize(template):
     if current_user.county is not None:
-        return redirect(url_for('overview', kingdom_id=0, county_id=0))
+        return redirect(url_for('overview'))
     titles = ["<Title>"] + metadata_titles
     players_titles = min(7, len(titles))
     races = ["<Race>"] + metadata_races
@@ -43,7 +43,7 @@ def initialize(template):
         county.vote = county.id
         preferences = Preferences(county.id, county.user.id)
         preferences.save()
-        return redirect(url_for('overview', kingdom_id=0, county_id=0))
+        return redirect(url_for('overview'))
     return render_template(template, form=form,
                            dwarf_armies=dwarf_armies,
                            human_armies=human_armies,

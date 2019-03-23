@@ -36,15 +36,11 @@ from undyingkingdoms.static.metadata.metadata_research_human import human_techno
 
 
 class County(GameState):
-    weather_choices = ["clear skies", "stormy", "sunny", "cloudy", "light rain", "overcast"]
-
     name = db.Column(db.String(128), nullable=False)
     leader = db.Column(db.String(128))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
     day = db.Column(db.Integer)
-    vote = db.Column(db.Integer)
-    last_vote_date = db.Column(db.DateTime)
 
     messages = db.relationship('Message', backref='county')
 
@@ -70,21 +66,17 @@ class County(GameState):
     lifetime_research = db.Column(db.Integer)
     lifetime_mana = db.Column(db.Integer)
 
-    weather = db.Column(db.String(32))
     grain_stores = db.Column(db.Integer)
     notifications = db.relationship('Notification', backref='county')
 
     expeditions = db.relationship('Expedition', backref='county')
     infiltrations = db.relationship('Infiltration', backref='county')
 
-    produce_land = db.Column(db.Integer)  # Progress towards next land
-
     births = db.Column(db.Integer)
     deaths = db.Column(db.Integer)
     immigration = db.Column(db.Integer)
     emigration = db.Column(db.Integer)
 
-    days_since_event = db.Column(db.Integer)
     buildings = db.relationship("Building",
                                 collection_class=attribute_mapped_collection('name'),
                                 cascade="all, delete, delete-orphan", passive_deletes=True)
@@ -109,14 +101,11 @@ class County(GameState):
         self.title = title
         self.background = background
         self.day = 0
-        self.vote = None
-        self.last_vote_date = None
         # Basic resources
         self._population = 500
         self._land = 150
         self._healthiness = 75
         self._happiness = 100
-        self.weather = "Sunny"
         # Resources
         self._gold = 750
         self._wood = 250
@@ -125,7 +114,6 @@ class County(GameState):
         self._research = 0
         self._mana = 0
         self.grain_stores = 500
-        self.produce_land = 0  # Progress towards next land
         # Lifetime accrued resources
         self.lifetime_gold = self._gold
         self.lifetime_wood = self._wood
@@ -138,7 +126,6 @@ class County(GameState):
         self.deaths = 0
         self.immigration = 0
         self.emigration = 0
-        self.days_since_event = 0
         # Buildings and Armies extracted from metadata
         self.magic = deepcopy(generic_spells)
         if self.race == 'Dwarf':
@@ -323,25 +310,19 @@ class County(GameState):
         return self.kingdom.world.day
 
     # Voting
-    def get_votes_for_self(self):
-        """
-        Checks how many counties have voted for you to be king
-        """
-        return County.query.filter_by(vote=self.id, kingdom_id=self.kingdom.id).count()
-
     def can_vote(self):
-        if self.last_vote_date and datetime.utcnow() > (self.last_vote_date - timedelta(hours=24)):
+        if self.preferences.last_vote_date and datetime.utcnow() > (self.preferences.last_vote_date - timedelta(hours=24)):
             return False
         else:
             return True
 
     def cast_vote(self, vote):
-        self.vote = vote
-        self.last_vote_date = datetime.utcnow()
+        self.preferences.vote = vote
+        self.preferences.last_vote_date = datetime.utcnow()
         self.kingdom.count_votes()
 
     def display_vote(self):
-        vote = County.query.get(self.vote)
+        vote = County.query.get(self.preferences.vote)
         return vote.name
 
     # Advance day
@@ -506,11 +487,11 @@ class County(GameState):
         return change + modifier
 
     def update_weather(self):
-        self.weather = choice(self.weather_choices)
+        self.preferences.weather = choice(self.preferences.weather_choices)
 
     def get_random_daily_events(self):
-        self.days_since_event += 1
-        random_chance = randint(0, self.days_since_event)
+        self.preferences.days_since_event += 1
+        random_chance = randint(0, self.preferences.days_since_event)
         if random_chance < 15:
             return
         random_chance = randint(1, 8)
@@ -546,7 +527,7 @@ class County(GameState):
                                         "A massive storm has destroyed {} of your fields.".format(amount),
                                         self.kingdom.world.day)
             self.buildings['field'].total -= amount
-            self.weather = 'thunderstorm'
+            self.preferences.weather = 'thunderstorm'
 
         elif random_chance == 5 and self.buildings['field'].total > 0:
             amount = self.buildings['field'].total * 15
@@ -556,7 +537,7 @@ class County(GameState):
                                             amount),
                                         self.kingdom.world.day)
             self.grain_stores += amount
-            self.weather = 'lovely'
+            self.preferences.weather = 'lovely'
 
         elif random_chance == 6:
             modifier = ((101 - self.healthiness) // 20 + 1) / 100  # Percent of people who will die (1% -> 5%)
@@ -580,7 +561,7 @@ class County(GameState):
         if notification:
             notification.category = "Random Event"
             notification.save()
-            self.days_since_event = 0
+            self.preferences.days_since_event = 0
 
     def get_healthiness_change(self):
         hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
@@ -789,10 +770,10 @@ class County(GameState):
         if self.production_choice == 0:
             self.gold += self.get_excess_production_value()
         if self.production_choice == 1:
-            self.produce_land += self.get_excess_production_value()
+            self.preferences.produce_land += self.get_excess_production_value()
             # Every 1000 production towards land gives you one acre
-            while self.produce_land >= self.land * 5:
-                self.produce_land -= self.land * 5
+            while self.preferences.produce_land >= self.land * 5:
+                self.preferences.produce_land -= self.land * 5
                 self.land += 1
         if self.production_choice == 2:
             self.grain_stores += self.get_excess_production_value()
