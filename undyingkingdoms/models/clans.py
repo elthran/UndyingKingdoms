@@ -3,14 +3,19 @@ from undyingkingdoms.models.bases import GameEvent, db
 
 class Clan(GameEvent):
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     is_owner = db.Column(db.Boolean)
     status = db.Column(db.String(16))
 
     @property
     def users(self):
         # should be a sql + join
-        return (clan.user for clan in self.query.filter_by(kingdom_id=self.kingdom_id).all())
+        return (
+            clan.user for clan in self.query
+            .filter_by(kingdom_id=self.kingdom_id)
+            .filter((Clan.status == "Member") | (Clan.status == "Leader"))
+            .all()
+                )
 
     @property
     def owner(self):

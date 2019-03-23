@@ -1,4 +1,4 @@
-from flask import render_template, url_for
+from flask import url_for
 from flask_login import login_required, current_user
 from werkzeug.utils import redirect
 
@@ -11,11 +11,18 @@ from undyingkingdoms.models import Clan, Notification
 def clan_invite(user_id, clan_id):
     county = current_user.county
     kingdom = county.kingdom
-    user = User.query.get(user_id)
+    invited_user = User.query.get(user_id)
     clan = Clan.query.get(clan_id)
-    invite = Clan(clan.kingdom_id, user.id, status="Pending")
-    invite.save()
-    message = Notification(user.county.id,
+
+    member_history = Clan.query.filter_by(id=clan_id, user_id=user_id)
+    if member_history:
+        print("history", user_id, clan_id)
+        member_history.status = "Pending"
+    else:
+        print("nully")
+        invite = Clan(clan.kingdom_id, user_id, status="Pending")
+        invite.save()
+    message = Notification(invited_user.county.id,
                            "Clan Invite",
                            "You were invited to join a clan",
                            kingdom.world.day,

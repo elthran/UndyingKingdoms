@@ -9,10 +9,6 @@
 
 {% if not clan %}
 
-    {% for invite in invites %}
-    {{ invite }}
-    {% endfor %}
-
     <h1 style="text-align:center;">Create a Kingdom</h1>
 
     <p>
@@ -29,13 +25,27 @@
         <button type="submit">Spend 500 gems to create your own kingdom</button>
     </form>
 
+{% elif invited_clan %}
+
+    You were invited to join a clan. {{ invited_clan }}
+<br>
+<form method="POST" accept-charset="UTF-8" action="{{ url_for('clan_accept') }}">
+            {{ form.csrf_token }}
+            <button type="submit">Join</button>
+        </form>
+<br>
+<form method="POST" accept-charset="UTF-8" action="{{ url_for('clan_decline') }}">
+            {{ form.csrf_token }}
+            <button type="submit">Decline</button>
+        </form>
+
 {% else %}
 
     <h1 style="text-align:center;">Your Clan</h1>
 
     <ul>
-        <li>Kingdom Name: {{ kingdom.name }}</li>
-        <li>Kingdom War Wins: {{ kingdom.wars_won_lt }}</li>
+        <li>Kingdom Name: {{ clan.kingdom.name }}</li>
+        <li>Kingdom War Wins: {{ clan.kingdom.wars_won_lt }}</li>
         <li>Kingdom Coat of Arms: N/A</li>
         <li><br></li>
         <li>Members:<li>
@@ -46,7 +56,7 @@
         </li>
     </ul>
     <br><br>
-    {% if user == clan.owner %} <!-- These will be swapped but I want to test leaving first -->
+    {% if user != clan.owner %} <!-- These will be swapped but I want to test leaving first -->
         Leave Clan:
         <form method="POST" accept-charset="UTF-8" action="{{ url_for('clan_leave') }}">
             {{ form.csrf_token }}

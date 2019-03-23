@@ -7,9 +7,9 @@ from undyingkingdoms import app, db
 from undyingkingdoms.models import Clan
 
 
-@app.route('/clans/clan_leave/', methods=['GET', 'POST'])
+@app.route('/clans/clan_accept/', methods=['GET', 'POST'])
 @login_required
-def clan_leave():
-    relation = Clan.query.filter_by(user_id=current_user.id).first()
-    relation.status = "Quit"
+def clan_accept():
+    invite = Clan.query.filter_by(user_id=current_user.id, status="Pending").first()
+    invite.status = "Member"
     return redirect(url_for('generic_clan'))

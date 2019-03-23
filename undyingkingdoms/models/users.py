@@ -1,5 +1,4 @@
 from copy import deepcopy
-from datetime import datetime, timedelta
 
 from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
@@ -132,11 +131,11 @@ class User(GameState):
             return False
         return session.time_logged_out
 
-    def __repr__(self):
-        return '<User %r (%r)>' % (self.username, self.id)
-
     def get_previous_session(self):
         session = Session.query.filter_by(user_id=self.id).order_by(desc('time_logged_out')).first()
         if session is None:
             return False
         return session.time_created
+
+    def __repr__(self):
+        return '<User %r (%r)>' % (self.username, self.id)
