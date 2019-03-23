@@ -1,9 +1,11 @@
 from undyingkingdoms.models.bases import GameEvent, db
 
+
 class Clan(GameEvent):
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, unique=True)
     is_owner = db.Column(db.Boolean)
+    status = db.Column(db.String(16))
 
     @property
     def users(self):
@@ -26,7 +28,7 @@ class Clan(GameEvent):
                 raise AttributeError(f"This clan already as an owner of {owner}")
         return value
 
-    def __init__(self, kingdom_id, user_id, is_owner=False):
+    def __init__(self, kingdom_id, user_id, is_owner=False, status="Leader"):
         """Create a new clan relationship between user and kingdom tables.
 
         Usage is:
@@ -39,4 +41,5 @@ class Clan(GameEvent):
         self.kingdom_id = kingdom_id
         self.user_id = user_id
         self.is_owner = is_owner
+        self.status = status
 

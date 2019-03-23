@@ -64,9 +64,9 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.kingdom
     import undyingkingdoms.routes.gameplay.attack
     import undyingkingdoms.routes.gameplay.messages
-    import undyingkingdoms.routes.gameplay.clans
-
     import undyingkingdoms.routes.gameplay.royal_court
+
+    import undyingkingdoms.routes.clans.generic_clan
 
     from undyingkingdoms.routes.gameplay.chatroom import ChatRoomAPI
     app.add_url_rule('/gameplay/chatroom/', view_func=ChatRoomAPI.as_view('chatroom_api'))

@@ -55,7 +55,7 @@
       <li><a href="{{ url_for('leaderboard') }}">Leaderboard</a></li>
       <li><a href="{{ url_for('profile') }}">Profile</a></li>
       {% if user.is_admin %}<li><a href="{{ url_for('admin.home_api') }}">Admin</a></li>{% endif %}
-      <li><a href="{{ url_for('clans') }}">Create Kingdom</a></li>
+      <li><a href="{{ url_for('generic_clan') }}">{% if user.clan %}Clan{% else %}Create Kingdom{% endif %}</a></li>
       <li><a href="{{ url_for('logout') }}">Logout</a></li>
       <li><br><br><br></li>
     </ul>
