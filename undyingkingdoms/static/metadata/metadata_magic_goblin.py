@@ -1,6 +1,6 @@
 from undyingkingdoms.models.magic import Magic
 
-elf_spells = {'meteor': Magic(name='meteor',
+goblin_spells = {'meteor': Magic(name='meteor',
                               category='self',
                               targets='hostile',
                               known=True,

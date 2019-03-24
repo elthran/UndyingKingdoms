@@ -27,7 +27,10 @@ from undyingkingdoms.static.metadata.metadata_buildings_elf import elf_buildings
 from undyingkingdoms.static.metadata.metadata_buildings_goblin import goblin_buildings
 from undyingkingdoms.static.metadata.metadata_buildings_human import human_buildings
 from undyingkingdoms.static.metadata.metadata_magic_all import generic_spells
+from undyingkingdoms.static.metadata.metadata_magic_dwarf import dwarf_spells
 from undyingkingdoms.static.metadata.metadata_magic_elf import elf_spells
+from undyingkingdoms.static.metadata.metadata_magic_goblin import goblin_spells
+from undyingkingdoms.static.metadata.metadata_magic_human import human_spells
 from undyingkingdoms.static.metadata.metadata_research_all import generic_technology
 from undyingkingdoms.static.metadata.metadata_research_dwarf import dwarf_technology
 from undyingkingdoms.static.metadata.metadata_research_elf import elf_technology
@@ -87,8 +90,8 @@ class County(GameState):
                                    collection_class=attribute_mapped_collection('name'),
                                    cascade="all, delete, delete-orphan", passive_deletes=True)
     magic = db.relationship("Magic",
-                             collection_class=attribute_mapped_collection('name'),
-                             cascade="all, delete, delete-orphan", passive_deletes=True)
+                            collection_class=attribute_mapped_collection('name'),
+                            cascade="all, delete, delete-orphan", passive_deletes=True)
 
     preferences = db.relationship("Preferences", uselist=False)
 
@@ -127,23 +130,25 @@ class County(GameState):
         self.immigration = 0
         self.emigration = 0
         # Buildings and Armies extracted from metadata
-        self.magic = deepcopy(generic_spells)
         if self.race == 'Dwarf':
             self.buildings = deepcopy(dwarf_buildings)
             self.armies = deepcopy(dwarf_armies)
+            self.magic = deepcopy(**deepcopy(generic_spells), **deepcopy(dwarf_spells))
             self.technologies = {**deepcopy(generic_technology), **deepcopy(dwarf_technology)}
         elif self.race == 'Human':
             self.buildings = deepcopy(human_buildings)
             self.armies = deepcopy(human_armies)
+            self.magic = deepcopy(**deepcopy(generic_spells), **deepcopy(human_spells))
             self.technologies = {**deepcopy(generic_technology), **deepcopy(human_technology)}
         elif self.race == 'Elf':
             self.buildings = deepcopy(elf_buildings)
             self.armies = deepcopy(elf_armies)
-            self.magic = deepcopy(elf_spells)
+            self.magic = deepcopy(**deepcopy(generic_spells), **deepcopy(elf_spells))
             self.technologies = {**deepcopy(generic_technology), **deepcopy(elf_technology)}
         elif self.race == 'Goblin':
             self.buildings = deepcopy(goblin_buildings)
             self.armies = deepcopy(goblin_armies)
+            self.magic = deepcopy(**deepcopy(generic_spells), **deepcopy(goblin_spells))
             self.technologies = {**deepcopy(generic_technology), **deepcopy(goblin_technology)}
         else:
             raise AttributeError('Buildings and Armies were not found in metadata')
