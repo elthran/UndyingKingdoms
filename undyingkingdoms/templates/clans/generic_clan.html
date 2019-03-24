@@ -9,7 +9,7 @@
 
 <p> Note: Clans are early in the test process. You can only be in one clan.
     Your clan can create their own custom kingdom with their own coat of arms and private membership.
-    However.... you can't actually join that kingdom yet. Only design it :'(
+    However.... you can't actually join that kingdom until a new age starts!
 </p><br>
 {% if clan %}
 
@@ -22,8 +22,8 @@
         <li><br></li>
         <li>Members:<li>
         <li><br></li>
-            {% for user in clan.users %}
-                <li style="margin-left:20px;">{{ user.username }}</li>
+            {% for member in clan.members %}
+                <li style="margin-left:20px;">{{ member.username }}</li>
             {% endfor %}
         </li>
     </ul>

@@ -84,7 +84,7 @@ class World(GameState):
         winning_county.user.gems += 1
 
         tables = ['DAU', 'army', 'building', 'casting', 'chatroom', 'notification', 'expedition', 'infiltration',
-                  'message', 'preferences', 'session', 'trade', 'transaction', 'spell', 'technology', 'county']
+                  'magic', 'message', 'preferences', 'session', 'trade', 'transaction', 'technology', 'county']
         helpers.drop_then_rebuild_tables(db, tables)
         self.age += 1
         self.day = -12
