@@ -540,7 +540,7 @@ class County(GameState):
             self.preferences.weather = 'lovely'
 
         elif random_chance == 6:
-            modifier = ((101 - self.healthiness) // 20 + 1) / 100  # Percent of people who will die (1% -> 5%)
+            modifier = ((101 - self.healthiness) // 20 + 3) / 100  # Percent of people who will die (1% -> 5%)
             amount = int(modifier * self.population)
             notification = Notification(self.id,
                                         "Black Death",

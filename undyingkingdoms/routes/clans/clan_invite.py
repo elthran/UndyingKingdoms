@@ -14,7 +14,7 @@ def clan_invite(user_id, clan_id):
     invited_user = User.query.get(user_id)
     clan = Clan.query.get(clan_id)
 
-    member_history = Clan.query.filter_by(id=clan_id, user_id=user_id)
+    member_history = Clan.query.filter_by(id=clan_id, user_id=user_id).first()
     if member_history:
         print("history", user_id, clan_id)
         member_history.status = "Pending"

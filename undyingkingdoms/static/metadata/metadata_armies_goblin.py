@@ -5,7 +5,7 @@ from undyingkingdoms.static.metadata.metadata_armies_all import generic_armies
 goblin_armies = deepcopy(generic_armies)
 # First the strings and descriptions
 goblin_armies['peasant'].class_name, goblin_armies['peasant'].class_name_plural, goblin_armies[
-    'peasant'].description = 'scout', 'scouts', 'Scouts are cheap and expendable.'
+    'peasant'].description = 'slave', 'slaves', 'Slaves are cheap and expendable.'
 goblin_armies['soldier'].class_name, goblin_armies['soldier'].class_name_plural, goblin_armies[
     'soldier'].description = 'berserker', 'berserkers', 'Soldiers are a solid offensive troop.'
 goblin_armies['archer'].class_name, goblin_armies['archer'].class_name_plural, goblin_armies[
@@ -26,6 +26,11 @@ goblin_armies['soldier'].armour_type = "Leather"
 # Archers
 goblin_armies['archer'].category = "Infantry"
 goblin_armies['archer'].armour_type = "Leather"
+goblin_armies['archer'].defence -= 1
+goblin_armies['archer'].total += 5
+goblin_armies['archer'].gold -= 5
+goblin_armies['archer'].wood -= 1
+goblin_armies['archer'].iron -= 1
 # Besiegers
 goblin_armies['besieger'].category = "Siege"
 goblin_armies['besieger'].armour_type = "Plate"

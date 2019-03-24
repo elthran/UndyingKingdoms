@@ -12,9 +12,9 @@ class Army(GameState):
     traveling = db.Column(db.Integer)
     currently_training = db.Column(db.Integer)
     trainable_per_day = db.Column(db.Integer)
-    gold = db.Column(db.Integer)
-    wood = db.Column(db.Integer)
-    iron = db.Column(db.Integer)
+    _gold = db.Column(db.Integer)
+    _wood = db.Column(db.Integer)
+    _iron = db.Column(db.Integer)
     _upkeep = db.Column(db.Integer)
     category = db.Column(db.String(32))
     _attack = db.Column(db.Integer)
@@ -46,6 +46,45 @@ class Army(GameState):
     @property
     def available(self):
         return self.total - self.traveling
+
+    @property
+    def gold(self):
+        bonuses = 0
+        try:
+            bonuses = get_modifiers(self.county, 'unit_gold', self.name)  # County, gold, Unit Name
+        except AttributeError:
+            pass
+        return self._gold + bonuses
+
+    @gold.setter
+    def gold(self, value):
+        self._gold = value
+
+    @property
+    def wood(self):
+        bonuses = 0
+        try:
+            bonuses = get_modifiers(self.county, 'unit_wood', self.name)  # County, wood, Unit Name
+        except AttributeError:
+            pass
+        return self._wood + bonuses
+
+    @wood.setter
+    def wood(self, value):
+        self._wood = value
+
+    @property
+    def iron(self):
+        bonuses = 0
+        try:
+            bonuses = get_modifiers(self.county, 'unit_iron', self.name)  # County, iron, Unit Name
+        except AttributeError:
+            pass
+        return self._iron + bonuses
+
+    @iron.setter
+    def iron(self, value):
+        self._iron = value
 
     @property
     def upkeep(self):

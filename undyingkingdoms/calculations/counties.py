@@ -1,7 +1,5 @@
 from random import uniform
 
-#from undyingkingdoms.models import County
-
 
 def get_attack_power(county_id, army):
     """Returns the attack power of your army"""

@@ -1,3 +1,5 @@
+from random import randint
+
 from flask import render_template, url_for
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
@@ -83,7 +85,16 @@ def cast_spell(spell_id, target_id):
             county.kingdom.world.day,
             "Magic")
         notification.save()
-        pass
+    elif cast.name == 'meteor':
+        kill_count = int(randint(3, 5) * 0.01 * target.population)
+        target.population -= kill_count
+        notification = Notification(
+            target.id,
+            "Enemy magic", "The wizards of {} have cast a meteor on your county, killing {} of your people."
+                .format(county.name, kill_count),
+            county.kingdom.world.day,
+            "Magic")
+        notification.save()
     return redirect(url_for('casting', target_id=target.id))
 
 

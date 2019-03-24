@@ -48,20 +48,55 @@ def get_modifiers(county, mod_type, filter_key):
     # e.g. Modifiers.query.filter_by(race, background, type, type2).all()
     # Then you could run a simple for loop and sum all the values.
     # We should have a master modifier table listing all modifiers.
+
     if mod_type == 'unit_attack':
         if county.technologies.get('cross-breeding') and county.technologies['cross-breeding'].completed:
             if filter_key == 'elite':
-                mod_sum += 2  # later will be mod.value
+                mod_sum += 3
+        if county.technologies.get('dragon-fire') and county.technologies['dragon-fire'].completed:
+            if filter_key == 'elite':
+                mod_sum += 3
+        if county.technologies.get('bloodlust') and county.technologies['bloodlust'].completed:
+            if filter_key == 'soldier':
+                mod_sum += 1
+        if county.technologies.get('ranger training') and county.technologies['ranger training'].completed:
+            if filter_key == 'soldier':
+                mod_sum += 2
+
     if mod_type == 'unit_defence':
         if county.technologies.get('dwarven muskets') and county.technologies['dwarven muskets'].completed:
             if filter_key == 'archer':
                 mod_sum += 1
+        if county.technologies.get('barbed arrows') and county.technologies['barbed arrows'].completed:
+            if filter_key == 'archer':
+                mod_sum += 1
+        if county.technologies.get('throwing axes') and county.technologies['throwing axes'].completed:
+            if filter_key == 'soldier':
+                mod_sum += 2
+
     if mod_type == 'unit_health':
         if county.technologies.get('mithril armour') and county.technologies['mithril armour'].completed:
-            if filter_key != 'monster':
+            if filter_key != 'monster' and filter_key != 'besieger':
                 mod_sum += 1
+
     if mod_type == 'unit_upkeep':
         if county.technologies.get('civic duty') and county.technologies['civic duty'].completed:
             if filter_key == 'peasant':
                 mod_sum -= 5
+
+    if mod_type == 'unit_gold':
+        if county.technologies.get('slavery') and county.technologies['slavery'].completed:
+            if filter_key == 'peasant':
+                mod_sum -= 5
+
+    if mod_type == 'unit_wood':
+        if county.technologies.get('slavery') and county.technologies['slavery'].completed:
+            if filter_key == 'peasant':
+                mod_sum -= -1
+
+    if mod_type == 'unit_iron':
+        if county.technologies.get('slavery') and county.technologies['slavery'].completed:
+            if filter_key == 'peasant':
+                mod_sum = -1
+
     return mod_sum

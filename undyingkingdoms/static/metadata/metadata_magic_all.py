@@ -26,5 +26,11 @@ generic_spells = {'inspire': Magic(name='inspire',
                                           known=True,
                                           mana_cost=35,
                                           mana_sustain=5,
-                                          description='Pastures produce +50% grain while this spell is in effect.')
+                                          description='Pastures produce +50% grain while this spell is in effect.'),
+                  'meteor': Magic(name='meteor',
+                                  category='self',
+                                  targets='hostile',
+                                  known=True,
+                                  mana_cost=15,
+                                  description='A meteor blasts the enemy county, killing a chunk of their populace.')
                   }
