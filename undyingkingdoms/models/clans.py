@@ -1,21 +1,28 @@
 from undyingkingdoms.models.bases import GameEvent, db
 
-
 class Clan(GameEvent):
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     is_owner = db.Column(db.Boolean)
     status = db.Column(db.String(16))
 
+    STATUS_OPTIONS = ['Invited', 'Member', 'Declined', 'Quit']
+
     @property
-    def users(self):
-        # should be a sql + join
-        return (
-            clan.user for clan in self.query
-            .filter_by(kingdom_id=self.kingdom_id)
-            .filter((Clan.status == "Member") | (Clan.status == "Leader"))
-            .all()
-                )
+    def invited(self):
+        return self.get_user_by_status('Invited')
+
+    @property
+    def members(self):
+        return self.get_user_by_status('Member')
+
+    @property
+    def declined(self):
+        return self.get_user_by_status('Declined')
+
+    @property
+    def quit(self):
+        return self.get_user_by_status('Quit')
 
     @property
     def owner(self):
@@ -33,7 +40,13 @@ class Clan(GameEvent):
                 raise AttributeError(f"This clan already as an owner of {owner}")
         return value
 
-    def __init__(self, kingdom_id, user_id, is_owner=False, status="Leader"):
+    @db.validates('status')
+    def validate_status(self, key, value):
+        if value not in Clan.STATUS_OPTIONS:
+            raise AttributeError(f'Status must be one of: {Clan.STATUS_OPTIONS}')
+        return value
+
+    def __init__(self, kingdom_id, user_id, is_owner=False, status="Invited"):
         """Create a new clan relationship between user and kingdom tables.
 
         Usage is:
@@ -46,5 +59,7 @@ class Clan(GameEvent):
         self.kingdom_id = kingdom_id
         self.user_id = user_id
         self.is_owner = is_owner
+        if is_owner:
+            status = "Member"
         self.status = status
 

@@ -10,6 +10,6 @@ from undyingkingdoms.models import Clan
 @app.route('/clans/clan_decline/', methods=['GET', 'POST'])
 @login_required
 def clan_decline():
-    invite = Clan.query.filter_by(user_id=current_user.id, status="Pending").first()
+    invite = Clan.query.filter_by(user_id=current_user.id, status="Invited").first()
     invite.status = "Declined"
     return redirect(url_for('generic_clan'))

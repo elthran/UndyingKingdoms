@@ -17,10 +17,10 @@ def clan_invite(user_id, clan_id):
     member_history = Clan.query.filter_by(id=clan_id, user_id=user_id).first()
     if member_history:
         print("history", user_id, clan_id)
-        member_history.status = "Pending"
+        member_history.status = "Invited"
     else:
         print("nully")
-        invite = Clan(clan.kingdom_id, user_id, status="Pending")
+        invite = Clan(clan.kingdom_id, user_id, status="Invited")
         invite.save()
     message = Notification(invited_user.county.id,
                            "Clan Invite",

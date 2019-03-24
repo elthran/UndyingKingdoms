@@ -20,7 +20,7 @@ def generic_clan(template):
     print("Clan is:", clan)
     form = CreateKingdomForm()
 
-    invite = Clan.query.filter_by(user_id=user.id, status="Pending").first()
+    invite = Clan.query.filter_by(user_id=user.id, status="Invited").first()
     if invite:
         invited_clan = Clan.query.get(invite.id)
         return render_template(template, clan=clan, form=form, invited_clan=invited_clan)
@@ -29,7 +29,7 @@ def generic_clan(template):
 
         kingdom = Kingdom.query.get(clan.kingdom_id)
         all_users = User.query.filter(User.id != user.id).all()
-        already_invited_users = Clan.query.filter_by(kingdom_id=clan.kingdom_id, status="Pending").all()
+        already_invited_users = Clan.query.filter_by(kingdom_id=clan.kingdom_id, status="Invited").all()
         already_invited_user_ids = [user.user_id for user in already_invited_users]
         the_users = [user for user in all_users if user.id not in already_invited_user_ids]
 
@@ -39,7 +39,7 @@ def generic_clan(template):
         # user.gems -= 500
         kingdom = Kingdom(form.name.data)
         kingdom.save()
-        clan = Clan(kingdom.id, user.id, True)
+        clan = Clan(kingdom.id, user.id, is_owner=True)
         clan.save()
         return redirect(url_for('generic_clan'))
 

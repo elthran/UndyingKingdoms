@@ -1,9 +1,7 @@
-from flask import render_template, url_for
+from flask import url_for, redirect
 from flask_login import login_required, current_user
-from flask_mobility.decorators import mobile_template
-from werkzeug.utils import redirect
 
-from undyingkingdoms import app, db
+from undyingkingdoms import app
 from undyingkingdoms.models import Clan
 
 
