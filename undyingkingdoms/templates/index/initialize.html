@@ -197,7 +197,8 @@ button {
     <p class="info bottomSpacer">What discipline does your leader follow?</p>
     {{ render_field(form.background, placeholder="Your leader's class") }}
     {{ leaderClassDivs }}
-    {% if current_user.clan %}{{ render_field(form.clan, placeholder="Join Clan") }}{% endif %}
+    <p class="info bottomSpacer">Would you like to join your clan's kingdom or a random one?</p>
+    {{ render_field(form.clan, placeholder="Join Clan") }}
     <button type="submit">Establish county</button>
   </form>
 </div>

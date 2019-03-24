@@ -27,8 +27,9 @@ def initialize(template):
     form.race.choices = [(i, races[i]) for i in range(len(races))]
     form.background.choices = [(i, backgrounds[i]) for i in range(len(backgrounds))]
     if current_user.clan:
-        form.clan.choices = [(i[0], i[1]) for i in [(0, "Join Random Kingdom"), (1, "Join Clan")]]
-    
+        form.clan.choices = [(i[0], i[1]) for i in [(0, "Random"), (1, "Clan")]]
+    else:
+        form.clan.choices = [(i[0], i[1]) for i in [(0, "Random")]]
     kingdoms = Kingdom.query.filter_by(clan=False).all()  # Select all public kingdoms
     smallest_kingdom = min(kingdoms, key=lambda x: len(x.counties))  # Get the smallest
     kingdom_id = smallest_kingdom.id
