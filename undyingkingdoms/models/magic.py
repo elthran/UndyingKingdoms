@@ -13,9 +13,12 @@ class Magic(GameEvent):
     mana_cost = db.Column(db.Integer)
     mana_sustain = db.Column(db.Integer)  # Mana required to spend each day to sustain the spell
     duration = db.Column(db.Integer)  # How many game days the spell lasts for
+    output = db.Column(db.Integer)  # Sometimes used to weigh the power of the spell.
     description = db.Column(db.String(128))
 
-    def __init__(self, name, class_name=None, category='instant', targets='self', known=False, mana_cost=0, mana_sustain=0, duration=0, description="Unknown"):
+    def __init__(self, name, class_name=None, category='instant', targets='self',
+                 known=False, mana_cost=0, mana_sustain=0, duration=0, output=0,
+                 description="Unknown"):
 
         self.name = name
         self.class_name = class_name
@@ -27,6 +30,7 @@ class Magic(GameEvent):
         self.mana_cost = mana_cost
         self.mana_sustain = mana_sustain
         self.duration = duration
+        self.output = output
         self.description = description
 
     @staticmethod

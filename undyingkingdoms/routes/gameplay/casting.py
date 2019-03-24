@@ -85,12 +85,12 @@ def cast_spell(spell_id, target_id):
             county.kingdom.world.day,
             "Magic")
         notification.save()
-    elif cast.name == 'meteor':
+    elif cast.name == 'population_killer_tier_1':
         kill_count = int(randint(3, 5) * 0.01 * target.population)
         target.population -= kill_count
         notification = Notification(
             target.id,
-            "Enemy magic", "The wizards of {} have cast a meteor on your county, killing {} of your people."
+            "Enemy magic", "The wizards of {} have cast a spell on your county, killing {} of your people."
                 .format(county.name, kill_count),
             county.kingdom.world.day,
             "Magic")

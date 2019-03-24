@@ -39,6 +39,7 @@ def war_condition(id_join):
 class Kingdom(GameState):
     name = db.Column(db.String(128), nullable=False, unique=True)
     world_id = db.Column(db.Integer, db.ForeignKey('world.id'), nullable=False)
+    clan = db.Column(db.Boolean)
     counties = db.relationship('County', backref='kingdom')
     leader = db.Column(db.Integer)  # county.id of leader
     approval_rating = db.Column(db.Integer)  # How well liked the leader is
@@ -140,6 +141,7 @@ class Kingdom(GameState):
 
     def __init__(self, name):
         self.name = name
+        self.clan = False
         self.leader = 0
         self.approval_rating = 60
         self.world_id = 1
@@ -181,18 +183,21 @@ class Kingdom(GameState):
         return County.query.get(county_id).name
 
     def kingdom_button(self, direction, current_id):
+        all_kingdoms = Kingdom.query.all()
+        eligible_kingdoms = [kingdom for kingdom in all_kingdoms if len(kingdom.counties) > 0]
+        eligible_kingdoms = sorted(eligible_kingdoms, key=lambda x: x.id)
+        currently_viewing = Kingdom.query.get(current_id)
+        current_index = eligible_kingdoms.index(currently_viewing)
+        if len(eligible_kingdoms) == 1:
+            return eligible_kingdoms[0].id
         if direction == 'left':
-            current_id -= 1
+            if current_index == 0:
+                return eligible_kingdoms[-1].id
+            return eligible_kingdoms[current_index - 1].id
         elif direction == 'right':
-            current_id += 1
-        if current_id == 0:
-            current_id = len(kingdom_names)
-        elif current_id > len(kingdom_names):
-            current_id = 1
-        chosen_kingdom = Kingdom.query.get(current_id)  # Get the chosen kingdom
-        if len(chosen_kingdom.counties) == 0:  # If it's empty, skip it and go to next kingdom in that direction
-            return self.kingdom_button(direction, current_id)
-        return current_id
+            if current_index == len(eligible_kingdoms) - 1:
+                return eligible_kingdoms[0].id
+            return eligible_kingdoms[current_index + 1].id
 
     def get_land_sum(self):
         return sum(county.land for county in self.counties)

@@ -5,40 +5,13 @@
 {% block content2 %}
 
 {% set user = current_user %}
+{% set clan = user.clan %}
 
-{% if not clan %}
-
-    <h1 style="text-align:center;">Create a Kingdom</h1>
-
-    <p>
-    You can spend 500 gems to create your own kingdom.
-    With your own kingdom you can invite any of your friends to join.
-    Once created, the kingdom is permanent unless you decide to disband it.
-    </p>
-
-    <form method="POST" accept-charset="UTF-8" role="form">
-        <!-- LoginForm -->
-        {{ form.csrf_token }}
-        {{ render_field(form.name, placeholder="Your Kingdom's Name", autofocus="") }}
-        <br>
-        <button type="submit">Spend 500 gems to create your own kingdom</button>
-    </form>
-
-{% elif invited_clan %}
-
-    You were invited to join a clan. {{ invited_clan }}
-<br>
-<form method="POST" accept-charset="UTF-8" action="{{ url_for('clan_accept') }}">
-            {{ form.csrf_token }}
-            <button type="submit">Join</button>
-        </form>
-<br>
-<form method="POST" accept-charset="UTF-8" action="{{ url_for('clan_decline') }}">
-            {{ form.csrf_token }}
-            <button type="submit">Decline</button>
-        </form>
-
-{% else %}
+<p> Note: Clans are early in the test process. You can only be in one clan.
+    Your clan can create their own custom kingdom with their own coat of arms and private membership.
+    However.... you can't actually join that kingdom yet. Only design it :'(
+</p><br>
+{% if clan %}
 
     <h1 style="text-align:center;">Your Clan</h1>
 
@@ -75,6 +48,46 @@
         </form>
         <br>
     {% endfor %}
+    <h2>Already invited:</h2>
+    {% for invited_user in clan.invited %}<br>
+        {{ invited_user.username }}<br>
+    {% endfor %}
+
+{% else %}
+
+    {% if invited_clan %}
+
+    <h1 style="text-align:center;">Other Clans</h1>
+
+            You were invited to join a clan. {{ invited_clan }}
+        <br>
+        <form method="POST" accept-charset="UTF-8" action="{{ url_for('clan_accept') }}">
+                    {{ form.csrf_token }}
+                    <button type="submit">Join</button>
+                </form>
+        <br>
+        <form method="POST" accept-charset="UTF-8" action="{{ url_for('clan_decline') }}">
+                    {{ form.csrf_token }}
+                    <button type="submit">Decline</button>
+                </form>
+
+    {% endif %}
+
+    <h1 style="text-align:center;">Create Your Own Clan Kingdom</h1>
+
+    <p>
+    You can spend 500 gems to create your own kingdom.
+    With your own kingdom you can invite any of your friends to join.
+    Once created, the kingdom is permanent unless you decide to disband it.
+    </p>
+
+    <form method="POST" accept-charset="UTF-8" role="form">
+        <!-- LoginForm -->
+        {{ form.csrf_token }}
+        {{ render_field(form.name, placeholder="Your Kingdom's Name", autofocus="") }}
+        <br>
+        <button type="submit">Spend 500 gems to create your own kingdom</button>
+    </form>
 
 {% endif %}
 

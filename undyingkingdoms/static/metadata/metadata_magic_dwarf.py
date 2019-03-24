@@ -6,4 +6,4 @@ dwarf_spells = {'population_killer_tier_1': Magic(name='population_killer_tier_1
                                                   targets='hostile',
                                                   known=True,
                                                   mana_cost=15,
-                                                  description='A blasts of lightning hits the enemy county, killing a chunk of their populace.')}
+                                                  description='A blasts of lightning hits the enemy county, killing some of their populace.')}

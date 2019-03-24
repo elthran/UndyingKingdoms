@@ -12,5 +12,6 @@ class InitializeForm(FlaskForm):
     title = SelectField('Title', coerce=int, validators=[NoneOf([0], message='Must choose title.')])
     race = SelectField('Race', coerce=int, validators=[NoneOf([0], message='Must choose race.')])
     background = SelectField('Background', coerce=int, validators=[NoneOf([0], message='Must choose background.')])
+    clan = SelectField('Clan', coerce=int)
 
 
