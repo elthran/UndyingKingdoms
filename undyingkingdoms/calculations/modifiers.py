@@ -56,6 +56,9 @@ def get_modifiers(county, mod_type, filter_key):
         if county.technologies.get('dragon-fire') and county.technologies['dragon-fire'].completed:
             if filter_key == 'elite':
                 mod_sum += 3
+        if county.technologies.get('knights templar') and county.technologies['knights templar'].completed:
+            if filter_key == 'elite':
+                mod_sum += 3
         if county.technologies.get('bloodlust') and county.technologies['bloodlust'].completed:
             if filter_key == 'soldier':
                 mod_sum += 1
@@ -82,11 +85,15 @@ def get_modifiers(county, mod_type, filter_key):
     if mod_type == 'unit_upkeep':
         if county.technologies.get('civic duty') and county.technologies['civic duty'].completed:
             if filter_key == 'peasant':
-                mod_sum -= 5
+                mod_sum -= 10
 
     if mod_type == 'unit_gold':
         if county.technologies.get('slavery') and county.technologies['slavery'].completed:
             if filter_key == 'peasant':
+                mod_sum -= 5
+        if county.technologies.get('trading') and county.technologies['trading'].completed:
+            if filter_key == 'peasant' or filter_key == 'soldier' or filter_key == 'archer' \
+                    or filter_key == 'elite' or filter_key == 'monster':
                 mod_sum -= 5
 
     if mod_type == 'unit_wood':
