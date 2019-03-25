@@ -20,19 +20,21 @@ class BuildingsAPI(MethodView):
         )
 
         vue_safe_buildings = {}
-        buildingsChoices = []
+        build_order = []
         total_built = 0
         total_pending = 0
         total_employed = 0
         for index, building in enumerate(county.buildings.values()):
             name = building.name
+            build_order.append(name)
             form_data[name] = 0  # add all fields to form_data
-            buildingsChoices.append([name, building.class_name.title()])
             # import pdb;pdb.set_trace()
             max_size = max_buildable_by_cost(county, building)
             vue_safe_buildings[name] = dict(
+                name=building.class_name.title(),
                 total=building.total,
                 pending=building.pending,
+                amount=0,
                 description=building.description,
                 goldCost=building.gold_cost,
                 woodCost=building.wood_cost,
@@ -52,8 +54,8 @@ class BuildingsAPI(MethodView):
         return jsonify(
             status="success",
             message="You called on the buildings api.",
-            buildingsChoices=buildingsChoices,
             buildings=vue_safe_buildings,
+            buildOrder=build_order,
             totalBuilt=total_built,
             totalPending=total_pending,
             totalEmployed=total_employed,

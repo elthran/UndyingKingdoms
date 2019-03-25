@@ -4,50 +4,51 @@
     :value="totalCosts"
     @input="$emit('input', computeTotalCosts())"
   >
-    <div class="top-spacer-1">
+    <div
+      v-for="(key, index) in buildOrder"
+      :key="index"
+      class="top-spacer-1"
+    >
       <div>
-        Name:
-        <select-generator
-          v-model="current"
-          :options="buildingsChoices"
-          :selected="current"
-          id-name="building"
-        />
+        Name: {{ buildings[key].name }}
       </div>
       <div class="top-spacer-dot-6">
         To Be Built:
         <select-generator
-          v-model="amount"
-          :options="currentBuilding.buildChoices"
+          v-model="buildings[key].amount"
+          :options="buildings[key].buildChoices"
           selected="0"
-          id-name="amount"
-        />
+          :id-name="'amount-' + key"
+          :disabled="buildings[key].buildChoices.length===1"
+          :max="buildings[key].max"
+        /><!-- max is not yet implemented -->
       </div>
       <div class="top-spacer-dot-6">
-        Owned: {{ currentBuilding.total }}
+        Owned: {{ buildings[key].total }}
       </div>
-      <div>Under Construction: {{ currentBuilding.pending }}</div>
+      <div>Under Construction: {{ buildings[key].pending }}</div>
       <div>
-        Cost: {{ currentBuilding.goldCost }}
+        Cost: {{ buildings[key].goldCost }}
         <img
           class="resource_icons"
           src="/static/dist/images/gold_icon.jpg"
         >
-        / {{ currentBuilding.woodCost }}
+        / {{ buildings[key].woodCost }}
         <img
           class="resource_icons"
           src="/static/dist/images/wood_icon.jpg"
         >
-        / {{ currentBuilding.stoneCost }}
+        / {{ buildings[key].stoneCost }}
         <img
           class="resource_icons"
           src="/static/dist/images/stone_icon.jpg"
         >
       </div>
-      <div>Workers Employed: {{ currentBuilding.totalEmployed }} ({{ currentBuilding.workersEmployed }} each)</div>
-      <div>Description: {{ currentBuilding.description }}</div>
+      <div>Workers Employed: {{ buildings[key].totalEmployed }} ({{ buildings[key].workersEmployed }} each)</div>
+      <div>Description: {{ buildings[key].description }}</div>
     </div>
     <button
+      id="submit-button"
       ref="submitButton"
       class="top-spacer-dot-6 width-100-percent"
       @click="submitForm"
@@ -75,15 +76,13 @@ export default {
   },
   data () {
     return {
-      current: "house",
-      amount: 0,
-      buildingsChoices: [
-        ["house", "Cottage"]
-      ],
+      buildOrder: ["house"],
       buildings: {
         "house": {
+          name: "Cottage",
           total: -1,
-          buildChoices: [0]  // can't use -1 here as it is an invalid Array length.
+          buildChoices: [0],  // can't use -1 here as it is an invalid Array length.
+          amount: 0
         }
       },
       totalBuilt: -1,
@@ -93,21 +92,6 @@ export default {
       errors: Object
     }
   },
-  computed: {
-    currentBuilding () {
-      return this.buildings[this.current]
-    }
-  },
-  watch: {
-    current (newVal, oldVal) {
-      this.$nextTick(() => {  // fixes bug where amount defaults to 0
-        this.amount = this.formData[newVal]
-      })
-    },
-    amount (newVal) {
-      this.formData[this.current] = newVal
-    }
-  },
   beforeCreate () {
     this.$getData('/api/infrastructure/buildings', this.$deployData)
   },
@@ -115,12 +99,12 @@ export default {
     submitForm () {
       this.amount = 0
       this.$refs.submitButton.disabled = true
-      this.$sendData(this.formData, () => {
+      this.$sendData(this.buildFormData(), () => {
         this.$getData('/api/infrastructure/buildings', this.$deployData)
       })
       setTimeout(() => {
         this.$refs.submitButton.disabled = false
-      }, 3000)
+      }, 2000)
     },
     computeTotalCosts () {
       var costs = {
@@ -136,8 +120,8 @@ export default {
       this.$nextTick(() => {  // fixes bug where computation is one selection delayed.
         for (var prop in this.buildings) {
           if (this.buildings.hasOwnProperty(prop)) {
-            count = this.formData[prop]
             building = this.buildings[prop]
+            count = building.amount
             costs.goldCost += building.goldCost * count
             costs.woodCost += building.woodCost * count
             costs.stoneCost += building.stoneCost * count
@@ -147,6 +131,22 @@ export default {
         }
       })
       return costs
+    },
+    buildFormData () {
+      for (var prop in this.buildings) {
+        if (this.buildings.hasOwnProperty(prop)) {
+          this.formData[prop] = this.buildings[prop].amount
+          this.buildings[prop].amount = 0
+        }
+      }
+      this.$emit('input', {  // reset all costs to 0.
+        goldCost: 0,
+        woodCost: 0,
+        stoneCost: 0,
+        landCost: 0,
+        workersEmployed: 0
+      })
+      return this.formData
     }
   }
 }
@@ -160,5 +160,15 @@ export default {
 
 .tab {
   margin-left: 1em;
+}
+
+#submit-button {
+  margin-left: auto;
+  margin-right: auto;
+  position: sticky;
+  bottom: 0.2em;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 </style>

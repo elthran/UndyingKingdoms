@@ -4,12 +4,17 @@
     <resource-header
       :current-costs="totalCosts"
     >
-      <idle-population-form />
+      <template v-slot:form>
+        <idle-population-form />
+        <div class="bottom-spacer-dot-6" />
+      </template>
+      <template v-slot:buildings>
+        <building-selector
+          v-model="totalCosts"
+        />
+      </template>
     </resource-header>
-    <div class="bottom-spacer-dot-6" />
-    <building-selector
-      v-model="totalCosts"
-    />
+
     <div class="bottom-spacer-1" />
   </div>
 </template>

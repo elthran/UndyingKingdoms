@@ -1,6 +1,6 @@
 <template>
   <nav class="mobile-sidebar">
-    <hr class="width-100-percent">
+    <hr class="width-95-percent">
     <router-link
       :to="urlFor.overview"
       @click.native="$emit('refocus')"

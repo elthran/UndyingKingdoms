@@ -3,13 +3,15 @@
     :id="idName"
     :name="idName"
     :value="value"
+    :disabled="disabled"
     @input="$emit('input', $event.target.value)"
   >
     <option
-      v-for="option in options"
-      :key="option.id"
+      v-for="(option, index) in options"
+      :key="index"
       :selected="option[0] == selected"
       :value="option[0]"
+      :disabled="index > max"
     >
       {{ option[1] }}
     </option>
@@ -23,13 +25,12 @@ export default {
     options: Array,
     value: [Number, String],
     idName: String,
-    selected: [Number, String]
+    selected: [Number, String],
+    disabled: Boolean,
+    max: Number
   },
   data () {
     return {
-      key () {
-        return [Number, String]
-      }
     }
   }
 }

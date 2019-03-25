@@ -9,7 +9,7 @@ export default {
   name: 'StatusNumber',
   props: {
     'condition': Boolean,
-    'text': String
+    'text': [String, Number]
   }
 }
 </script>

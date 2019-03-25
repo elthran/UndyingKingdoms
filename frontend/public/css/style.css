@@ -151,6 +151,10 @@ td {
     width: 100%;
 }
 
+.width-95-percent {
+    width: 95%;
+}
+
 .border-dotted {
     border: dotted 1px;
 }
@@ -178,4 +182,8 @@ td {
 
 .negative {
     color: red;
+}
+
+.background-white {
+    background: white;
 }
