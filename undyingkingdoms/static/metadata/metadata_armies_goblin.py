@@ -31,6 +31,7 @@ goblin_armies['archer'].total += 5
 goblin_armies['archer'].gold -= 5
 goblin_armies['archer'].wood -= 1
 goblin_armies['archer'].iron -= 1
+goblin_armies['archer'].upkeep -= 5
 # Besiegers
 goblin_armies['besieger'].category = "Siege"
 goblin_armies['besieger'].armour_type = "Plate"

@@ -57,6 +57,25 @@ def cast_spell(spell_id, target_id):
         target_relation = 'friendly'
     else:
         target_relation = 'hostile'
+        # War code (check if war. if awr, add 0.5 mana cost to points)
+        war = None
+        kingdom = current_user.county.kingdom
+        for each_war in kingdom.wars:
+            if each_war.get_other_kingdom(kingdom) == target.kingdom:  # If this is true, we are at war with them
+                war = each_war
+                break
+        if war:
+            if war.kingdom_id == kingdom.id:
+                war.attacker_current += spell.mana_cost // 4
+                if war.attacker_current >= war.attacker_goal:
+                    kingdom.war_won(war)
+                    war.status = "Won"
+            else:
+                war.defender_current += form.amount.data
+                if war.defender_current >= war.defender_goal:
+                    target.kingdom.war_won(war)
+                    war.status = "Lost"
+        # End of war code
 
     if (spell is None
             or target is None
@@ -66,7 +85,8 @@ def cast_spell(spell_id, target_id):
         return redirect(url_for('casting', target_id=target.id))
     county.mana -= spell.mana_cost
 
-    cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day, county.day, spell.class_name, spell.duration)
+    cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
+                   county.day, spell.class_name, spell.duration)
     cast.target_relation = target_relation
     cast.save()
 
