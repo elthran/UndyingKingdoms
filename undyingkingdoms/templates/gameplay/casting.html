@@ -36,7 +36,7 @@
 <h2>Our Active Spells</h2>
 <ul>
     {% for spell in active_spells %}
-    {{ spell.class_name.title() }}
+    {{ spell.name.title() }}
     {% if spell.mana_sustain %}(Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)
     {% elif spell.duration %}(Spell ends in {{ spell.duration }} days)
     {% endif %}<br>
@@ -50,7 +50,7 @@
 <h2>Spells From Other Counties Affecting Us</h2>
 <ul>
     {% for spell in enemy_spells %}
-    {{ spell.class_name.title() }} by
+    {{ spell.name.title() }} by
     <a href="{{ url_for('enemy_overview', kingdom_id=spell.caster.kingdom.id, county_id=spell.caster.id) }}">
         {{ spell.caster.name }}
     </a>
@@ -69,7 +69,7 @@
 <h2>Casting History</h2>
 <ul>
     {% for spell in casting_history|sort(attribute='county_day', reverse=True) %}
-    (Day {{ spell.county_day }}) You cast {{ spell.class_name.title() }} on county id {{ spell.target_id }}<br>
+    (Day {{ spell.county_day }}) You cast {{ spell.name.title() }} on county id {{ spell.target_id }}<br>
     {% else %}
     No active spells
     {% endfor %}

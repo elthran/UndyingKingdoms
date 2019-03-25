@@ -14,12 +14,11 @@ from undyingkingdoms.models.users import User
 from undyingkingdoms.models.kingdoms import Kingdom
 
 
-def create_bots(n=3):
+def create_bots(n=1):
     kingdoms = Kingdom.query.all()
 
     for i in range(n):
         smallest_kingdom = min(kingdoms, key=lambda x: len(x.counties))
-        smallest_kingdom = Kingdom.query.filter_by(id=3).first()
         bot_name = uuid4()
         user = User("bot_{}".format(bot_name),
                     "bot_{}@gmail.com".format(bot_name),
@@ -34,7 +33,7 @@ def create_bots(n=3):
                 choice(bot_leader_prefix),
                 choice(bot_leader_suffix)),
             user.id,
-            choice(["Human", "Elf", "Dwarf"]),
+            choice(["Human", "Elf", "Dwarf", "Goblin"]),
             choice(["Sir", "Lady"]),
             choice(["Engineer", "Warlord", "Rogue", "Merchant"]))
         county.save()

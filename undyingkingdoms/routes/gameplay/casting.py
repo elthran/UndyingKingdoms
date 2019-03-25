@@ -66,7 +66,7 @@ def cast_spell(spell_id, target_id):
         return redirect(url_for('casting', target_id=target.id))
     county.mana -= spell.mana_cost
 
-    cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day, county.day, spell.name, spell.duration)
+    cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day, county.day, spell.class_name, spell.duration)
     cast.target_relation = target_relation
     cast.save()
 
