@@ -108,8 +108,8 @@ class DAU(GameEvent):
         self.archer = county.armies['archer'].total
         self.elite = county.armies['elite'].total
         self.monster = county.armies['monster'].total
-        self.standing_offense = county.get_offensive_strength(scoreboard=True)
-        self.maximum_offense = county.get_offensive_strength()
+        self.standing_offense = county.get_offensive_strength()
+        self.maximum_offense = county.get_offensive_strength(scoreboard=True)
         self.standing_defence = county.get_defensive_strength()
 
         self.house = county.buildings['house'].total

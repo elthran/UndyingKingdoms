@@ -433,21 +433,27 @@ class County(GameState):
             self.buildings['house'].total += 3
             self.buildings['field'].total += 1
             self.buildings['pasture'].total += 1
-        if randint(1, 20) == 20:
+        if randint(1, 12) == 12:
             trading_partner = choice(friendly_counties).id
             trade_notice = Notification(trading_partner,
                                         "You were offered a trade", "{} has offered you a trade. Visit the trading page.".format(self.name),
                                         self.kingdom.world.day, "Trade")
             trade_notice.save()
-            random = randint(1, 3)
-            if random == 1:
+            random = randint(1, 5)
+            if random == 1:  # Send wood for gold
                 trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 40, 0, 0, 0, 60, 0, 0, 0, 0)
                 self.wood -= 40
-            if random == 2:
+            if random == 2:  # Send iron for gold
                 trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 0, 30, 0, 0, 90, 0, 0, 0, 0)
                 self.iron -= 30
-            if random == 3:
+            if random == 3:  # Send gold for iron and wood
                 trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 120, 0, 0, 0, 0, 0, 40, 20, 0, 0)
+                self.gold -= 120
+            if random == 4:  # Send food for wood
+                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 0, 0, 0, 750, 0, 0, 0, 0, 50)
+                self.gold -= 120
+            if random == 5:  # Send food for iron
+                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 0, 0, 0, 750, 0, 40, 20, 0, 0)
                 self.gold -= 120
             trade_offered.save()
 
