@@ -843,7 +843,7 @@ class County(GameState):
             modifier += 0.10
         if army:
             for unit in self.armies.values():
-                if unit.name != 'archer':
+                if unit.name != 'archer' and unit.name != 'besieger':
                     strength += army[unit.name] * unit.attack
         elif county:
             for unit in county.armies.values():

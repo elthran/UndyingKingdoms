@@ -54,7 +54,7 @@ def attack(template, county_id):
     if form.validate_on_submit():
         army = {}
         for unit in current_user.county.armies.values():
-            if unit.name != 'archer':
+            if unit.name != 'archer' and unit.name != 'besieger':
                 if unit.total < form.data[unit.name]:
                     return render_template(template, enemy=enemy, form=form)
                 army[unit.name] = form.data[unit.name]
