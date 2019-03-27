@@ -7,7 +7,7 @@
     <div
       v-for="(key, index) in buildOrder"
       :key="index"
-      class="top-spacer-1"
+      class="top-spacer-1 striped"
     >
       <div>
         Name: {{ buildings[key].name }}
@@ -170,5 +170,11 @@ export default {
   left: 0;
   right: 0;
   z-index: 100;
+}
+
+.striped:nth-child(odd) {
+  background-color: #f2f2f2;
+  padding: 1em;
+  border-radius: 1em;
 }
 </style>
