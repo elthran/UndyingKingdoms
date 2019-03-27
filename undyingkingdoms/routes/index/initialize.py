@@ -14,8 +14,7 @@ from undyingkingdoms.static.metadata.metadata_armies_human import human_armies
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])
-@mobile_template('{mobile/}index/initialize.html')
-def initialize(template):
+def initialize():
     if current_user.county is not None:
         return redirect(url_for('overview'))
     titles = ["<Title>"] + metadata_titles
@@ -49,8 +48,11 @@ def initialize(template):
         preferences = Preferences(county.id, county.user.id)
         preferences.save()
         return redirect(url_for('overview'))
-    return render_template(template, form=form,
-                           dwarf_armies=dwarf_armies,
-                           human_armies=human_armies,
-                           elf_armies=elf_armies,
-                           goblin_armies=goblin_armies)
+    return render_template(
+        "index/initialize.html",
+        form=form,
+        dwarf_armies=dwarf_armies,
+        human_armies=human_armies,
+        elf_armies=elf_armies,
+        goblin_armies=goblin_armies
+    )
