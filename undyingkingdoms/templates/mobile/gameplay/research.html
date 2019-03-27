@@ -5,16 +5,18 @@
 {% block style %}
 {{ super() }}
 <style type="text/css">
-#content {
+.content {
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: 1em;
 }
 
-#header {
+.header {
     max-width: 400px;
     margin: auto auto 1.3em;
+    align-items: flex-start;
+    text-align: left;
 }
 
 #footer {
@@ -25,6 +27,11 @@
 h2 {
     margin-bottom: 0.3em;
 }
+
+select {
+    padding: 0.8em;
+    border-radius: 5px;
+}
 </style>
 {% endblock %}
 
@@ -32,23 +39,83 @@ h2 {
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
-<div id="content">
-  <div id="header">
-    Choose current research:
- </div>
-  <div id="footer">
-    <h2>Previous Research</h2>
-    <ul>
-      None.
-    </ul>
-  </div>
+<div id="research-app" class="content">
+  <h2 class="header">You currently gain v{ researchChange } <img class="resource_icons" src="/static/images/research_icon.jpg"> each day{% if county.research > 0 %} and you have {{ county.research }} bonus research{% endif %}.</h2><br>
+
+  <h2>Current Research:</h2>
+  <p>Note: More technologies become available as you complete all research within a tier.</p>
+  <form id="research-form" class="header" action="{{ url_for('research_api') }}" accept-charset="UTF-8">
+    {{ form.csrf_token }}
+    <p>Name:
+      <select-generator
+        v-model="selectedResearch"
+        :options="{{ form.technology.choices | vuesafe }}"
+        id-name="{{ form.technology.id }}"
+      ></select-generator>
+    </p>
+    <p>Description: v{ description }</p>
+    <p>Progress: v{ progressCurrent } / v{ progressRequired }</p>
+  </form>
+  <br><br>
+  <h2>Known Technologies</h2>
+  <ul>
+    {% for technology in known_technologies %}
+    <li>{{ technology.name.title() }}: {{ technology.description }}</li>
+    {% else %}
+      <li>No technologies have been researched yet.</li>
+    {% endfor %}
+  </ul><br><br><br>
+  <h2>All Technologies (still in testing): When all techs of a tier are researched, the next tier is unlocked</h2>
+  {% for technology in all_technologies %}
+    <li>{{ technology.name.title() }} (Tier {{ technology.tier }}): {{ technology.description }}</li>
+    {% endfor %}
 </div>
 {{ super() }}
 {% endblock %}
 
 {% block script %}
 {{ super() }}
-<script type="text/javascript">
+{{ super() }}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.2/dist/vue.min.js"></script>
+<!-- Imported Vue components must go after vue import -->
+<script src="{{ url_for('static', filename='js/SelectGenerator.js') }}"></script>
+<script src="{{ url_for('static', filename='js/SendForm.js') }}"></script>
+<script>
+// Beautiful Jinja hacked in variables.
+var RESEARCH_CHANGE = {{ research_change }};
+var SELECTED_RESEARCH = {{ current_tech.id }};
+var DESCRIPTION = "{{ current_tech.description }}";
+var PROGRESS_CURRENT = {{ current_tech.current }};
+var PROGRESS_REQUIRED = {{ current_tech.required }};
+// But please keep them separate.
 
+Vue.options.delimiters = ['v{', '}'];
+
+var app = new Vue({
+  el: '#research-app',
+  data () {
+    return {
+      researchChange: RESEARCH_CHANGE,
+      selectedResearch: SELECTED_RESEARCH,
+      description: DESCRIPTION,
+      progressCurrent: PROGRESS_CURRENT,
+      progressRequired: PROGRESS_REQUIRED
+    }
+  },
+  methods: {
+    updatePage (data) {
+      this.researchChange = data.researchChange;
+      this.description = data.description;
+      this.progressCurrent = data.progressCurrent;
+      this.progressRequired = data.progressRequired;
+    }
+  },
+  watch: {
+    selectedResearch () {
+      sendForm($('#research-form'), this.updatePage)
+    }
+  }
+})
 </script>
 {% endblock %}

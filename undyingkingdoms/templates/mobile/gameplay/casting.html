@@ -34,14 +34,73 @@ h2 {
 {% set kingdom = county.kingdom %}
 <div id="content">
   <div id="header">
-    Choose spell to cast:
+    <br>Current Mana <img class="resource_icons" src="/static/images/mana_icon.jpg">: {{ county.mana }} / {{ county.max_mana }}
+    <br><br>Daily Mana Required: {{ sustain_mana_requirement }} <img class="resource_icons" src="/static/images/mana_icon.jpg">
   </div>
-  <div id="footer">
-    <h2>Active Spells</h2>
-    <ul>
-      None.
-    </ul>
-  </div>
+  <h2>Choose Spell to Cast on {{ target.name }}</h2>
+    {% for spell in known_spells %}
+      {{ spell.class_name.title() }}
+  <br><p>Cost: {{ spell.mana_cost }} <img class="resource_icons" src="/static/images/mana_icon.jpg"></p>
+      {% if spell.mana_sustain %} <p>+ {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per turn{% endif %}
+      </p>
+      <br>Type: {{ spell.category.title() }} {% if spell.category == 'timed' %} ({{ spell.duration }} days){% endif %}
+      <br>Targets: {{ spell.targets.title() }}
+      <br>Description: {{ spell.description }}<br>
+      <a href="{{ url_for('cast_spell', spell_id=spell.id, target_id=target.id) }}">
+          <!-- Lay out all the cases where the spell is not castable -->
+      {% if (spell.mana_cost > county.mana) or
+      (spell.targets == 'self' and target != county) or
+      (spell.targets == 'friendly' and target.kingdom in county.kingdom.enemies) or
+      (spell.targets == 'hostile' and target.kingdom in county.kingdom.allies) or
+      (spell.targets == 'hostile' and target == county) %}
+        <button style="float:left;width:100px;" disabled>Cast</button></a>
+      {% else %}
+        <button style="float:left;width:100px;">Cast</button></a>
+      {% endif %}
+      <br><br><br>
+    {% endfor %}
+  <br>
+  <h2>Our Active Spells</h2>
+  <ul>
+    {% for spell in active_spells %}
+      {{ spell.name.title() }}
+      {% if spell.mana_sustain %}(Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)
+      {% elif spell.duration %}(Spell ends in {{ spell.duration }} days)
+      {% endif %}<br>
+      Spell is affecting county id: {{ spell.target_id }}<br>
+      <a href="{{ url_for('cancel_spell', spell_id=spell.id) }}"><button style="float:left;width:100px;">End</button></a><br><br><br>
+    {% else %}
+      No active spells
+    {% endfor %}
+  </ul>
+  <br><br><br>
+  <h2>Spells From Other Counties Affecting Us</h2>
+  <ul>
+    {% for spell in enemy_spells %}
+      {{ spell.name.title() }} by
+      <a href="{{ url_for('enemy_overview', kingdom_id=spell.caster.kingdom.id, county_id=spell.caster.id) }}">
+          {{ spell.caster.name }}
+      </a>
+      {% if spell.mana_sustain %}(Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)
+      {% elif spell.duration %}(Spell ends in {{ spell.duration }} days)
+      {% endif %}<br>
+      From county id: {{ spell.county_id }}<br>
+      Attempt to dispel for 10 <img class="resource_icons" src="/static/images/mana_icon.jpg">
+      <a href="{{ url_for('dispel_spell', spell_id=spell.id) }}">
+          <button style="float:left;width:100px;" {% if county.mana < 10 %}disabled{% endif %}>Attempt to Dispel</button></a>
+    {% else %}
+      No active spells
+    {% endfor %}
+  </ul>
+  <br><br>
+  <h2>Casting History</h2>
+  <ul>
+    {% for spell in casting_history|sort(attribute='county_day', reverse=True) %}
+      (Day {{ spell.county_day }}) You cast {{ spell.name.title() }} on county id {{ spell.target_id }}<br>
+    {% else %}
+      No active spells
+    {% endfor %}
+  </ul>
 </div>
 {{ super() }}
 {% endblock %}
