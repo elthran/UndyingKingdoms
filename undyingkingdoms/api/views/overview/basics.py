@@ -7,6 +7,7 @@ class BasicsAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
+        preferences = county.preferences
         kingdom = county.kingdom
         world = kingdom.world
 
@@ -15,7 +16,7 @@ class BasicsAPI(MethodView):
             message=f"You called on {__name__}",
             leaderless=kingdom.leader == 0,
             day=world.day,
-            weather=county.weather.title(),
+            weather=preferences.weather.title(),
             land=county.land,
             season=world.season
         )
