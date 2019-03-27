@@ -6,7 +6,7 @@ from undyingkingdoms.api.views.infrastructure.build_buildings import BuildBuildi
 from undyingkingdoms.api.views.infrastructure.helpers import max_buildable_by_cost
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm, ExcessProductionForm
 from undyingkingdoms.routes.helpers import mobile_on_vue
-from undyingkingdoms.static.metadata.metadata import game_descriptions, excess_worker_choices
+from undyingkingdoms.static.metadata.metadata import game_descriptions, excess_worker_choices, land_to_clear_modifier
 
 
 @app.route('/gameplay/infrastructure/', methods=['GET'])
@@ -26,7 +26,8 @@ def infrastructure():
         build_form=build_form,
         excess_worker_form=excess_worker_form,
         meta_data=game_descriptions,
-        max_buildable_by_cost=max_buildable_by_cost
+        max_buildable_by_cost=max_buildable_by_cost,
+        land_to_clear=county.land * land_to_clear_modifier
     )
 
 
