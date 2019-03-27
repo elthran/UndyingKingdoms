@@ -11,7 +11,7 @@
 <ul>
 {% for message in county.messages|sort(attribute='time_created', reverse=True) %}
     <br>
-    <h2>We have received a message from {{ message.get_author() }}</h2>
+    <h2>We have received a message from <a href="{{ message.get_reply_url() }}">{{ message.get_author() }}</a></h2>
     {% if message.get_age_of_message() == 0 %}
     <h3>{{ message.title }} (Sent today)</h3>
     {% else %}

@@ -40,7 +40,7 @@ h1 {
   <div id="maxWidthContainer">
     <div class="spacer"></div>
     {% for message in county.messages|sort(attribute='time_created', reverse=True) %}
-    <h2>{{ message.get_author() }} sent you a message:</h2>
+    <h2><a href="{{ message.get_reply_url() }}">{{ message.get_author() }}</a> sent you a message:</h2>
     {% if message.get_age_of_message() == 0 %}
     <h3 class="tab">{{ message.title }} (Sent today)</h3>
     {% else %}
