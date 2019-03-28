@@ -105,7 +105,7 @@ def cast_spell(spell_id, target_id):
             county.kingdom.world.day,
             "Magic")
         notification.save()
-    elif cast.name == 'population_killer_tier_1':
+    elif cast.name == 'rune lightning' or cast.name == 'arcane fire' or cast.name == 'green fire' or cast.name == 'incantation of fire':
         kill_count = int(randint(3, 5) * 0.01 * target.population)
         target.population -= kill_count
         notification = Notification(
