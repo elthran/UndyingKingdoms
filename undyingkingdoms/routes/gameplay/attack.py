@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for
+from flask import render_template
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
@@ -6,6 +6,7 @@ from undyingkingdoms import app
 from undyingkingdoms.models import County
 from undyingkingdoms.models.forms.attack import AttackForm
 from undyingkingdoms.routes.helpers import not_self, not_allies
+from undyingkingdoms.static.metadata.metadata import attack_types
 
 
 @app.route('/gameplay/attack/<int:county_id>/', methods=['GET', 'POST'])
@@ -14,51 +15,30 @@ from undyingkingdoms.routes.helpers import not_self, not_allies
 @not_allies
 @login_required
 def attack(template, county_id):
-    if county_id == current_user.county.id:
-        return redirect(url_for('overview'))
+    county = current_user.county
     enemy = County.query.get(county_id)
-    form = AttackForm()
-    peasant = current_user.county.armies['peasant'].available
-    soldier = current_user.county.armies['soldier'].available
-    elite = current_user.county.armies['elite'].available
-    monster = current_user.county.armies['monster'].available
 
-    if peasant == 0:
-        form.peasant.choices = [(0, 0)]
-    elif peasant < 10:
-        form.peasant.choices = [(i, i) for i in range(peasant + 1)]
-    else:
-        form.peasant.choices = [(peasant * i // 10, peasant * i // 10) for i in range(0, 11)]
-    if soldier == 0:
-        form.soldier.choices = [(0, 0)]
-    elif soldier < 10:
-        form.soldier.choices = [(i, i) for i in range(soldier + 1)]
-    else:
-        form.soldier.choices = [(soldier * i // 10, soldier * i // 10) for i in range(0, 11)]
-    if elite == 0:
-        form.elite.choices = [(0, 0)]
-    elif elite < 10:
-        form.elite.choices = [(i, i) for i in range(0, elite + 1)]
-    else:
-        form.elite.choices = [(elite * i // 10, elite * i // 10) for i in range(0, 11)]
-    if monster == 0:
-        form.monster.choices = [(0, 0)]
-    elif monster < 10:
-        form.monster.choices = [(i, i) for i in range(0, monster + 1)]
-    else:
-        form.monster.choices = [(monster * i // 10, monster * i // 10) for i in range(0, 11)]
+    form = AttackForm(county)
 
-    attack_types = [(0, "Attack"), (1, "Pillage"), (2, "Raze")]
-    form.attack_type.choices = [(pairing[0], pairing[1]) for pairing in attack_types]
+
+    unit_types = (
+        _type
+        for _type in county.armies
+        if _type not in ('archer', 'besieger')
+    )
+
+    for key in unit_types:
+        field = getattr(form, key)
+        troops = county.armies[key].available
+        if troops < 10:
+            field.choices = [(i, i) for i in range(troops + 1)]
+        else:
+            field.choices = [(troops * i // 10, troops * i // 10) for i in range(0, 11)]
+
+    form.attack_type.choices = [(_type, _type) for _type in attack_types]
 
     if form.validate_on_submit():
-        army = {}
-        for unit in current_user.county.armies.values():
-            if unit.name != 'archer' and unit.name != 'besieger':
-                if unit.total < form.data[unit.name]:
-                    return render_template(template, enemy=enemy, form=form)
-                army[unit.name] = form.data[unit.name]
-        results = current_user.county.battle_results(army, enemy, attack_types[form.data["attack_type"]][1])
+        results = county.battle_results(form.army, enemy, form.attack_type.data)
 
         # Would like to move to a attack_results route of some kind.
         # Ugly hack to return '{mobile/}gameplay/attack_results.html'

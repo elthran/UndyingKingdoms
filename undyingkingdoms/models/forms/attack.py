@@ -8,20 +8,38 @@ class AttackForm(FlaskForm):
     elite = SelectField('elite', coerce=int)
     monster = SelectField('monster', coerce=int)
     
-    attack_type = SelectField('attack_type', coerce=int)
+    attack_type = SelectField('attack_type', coerce=str)
+
+    def __init__(self, county=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.county = county
+        self.army = None
 
     def validate(self):
         if not FlaskForm.validate(self):
             return False
-        if self.insufficient_troops():
+        if self.insufficient_strength():
             return False
         return True
 
-    def insufficient_troops(self):
-        troops_being_sent = self.peasant.data + self.soldier.data + self.elite.data + self.monster.data
-        if troops_being_sent < 15:
-            self.peasant.errors.append("Must send at least 25 troops.")
-            self.soldier.errors.append("Must send at least 25 troops.")
-            self.elite.errors.append("Must send at least 25 troops.")
-            self.monster.errors.append("Must send at least 25 troops.")
+    def insufficient_strength(self):
+        """Calculates army strength.
+
+        Adds army object to form.
+        """
+        army = {}
+        units = (
+            unit
+            for unit in self.county.armies.values()
+            if unit.name not in ['archer', 'besieger']
+        )
+        for unit in units:
+            if self.data[unit.name] > unit.total:
+                return True
+            army[unit.name] = self.data[unit.name]
+        strength = self.county.get_offensive_strength(army=army)
+        if strength < 150:
+            self.peasant.errors.append(f"Must send troops worth at least 150 strength (sent troops worth {strength} strength).")
             return True
+        self.army = army
+        return False

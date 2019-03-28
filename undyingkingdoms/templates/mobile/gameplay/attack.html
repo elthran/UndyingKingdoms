@@ -68,23 +68,21 @@ select {
       <ul>
       {% for army in county.armies.values() %}
         {% if army.name != 'archer' %}
-          <li class="spacer">{{ army.class_name.capitalize() }}: {{ form[army.name] }} (Available: {{ army.available }} / {{ army.total }})
+          <li class="spacer">{{ army.class_name.capitalize() }}: {{ form[army.name] }} (Available: {{ army.available }} / {{ army.total }}) (Attack Power: {{ army.attack }} per troop)
             <p class="tab">(Attack Power: {{ army.attack }} per troop)</p>
           </li>
         {% endif %}
       {% endfor %}
       </ul>
+      <p>Choose to make a traditional attack to conquer land, a razing expedition to destroy enemy land, or to pillage and steal gold, wood, and iron.</p>
+      <p>{{ form.attack_type }}</p>
+      <br>
     </div>
     <div id="footer">
-      <p>Current Army has <span id="calculatedAttack">0</span> attack power.</p>
-      <p>It would be expected to return in roughly <span id="attackDuration">0</span> days.</p>
-      <br>
-      <button type="submit">Attack</button>
+      <p>Current Army has <span id="calculatedAttack">0</span> attack power (currently doesn't display any bonuses from technology or races).</p>
+      Duration: Raze 8 days, Pillage 12 days, Attack 18 days
       <br><br>
-      <p>Note: You will typically lose around 20% of any soldiers sent. However, if your army is
-        much weaker,
-        then your troops will take heavy casualties. Conversely, if you greatly overpower them you will lose very
-        few troops.</p>
+      <button type="submit">Attack</button>
     </div>
   </form>
 </div>
