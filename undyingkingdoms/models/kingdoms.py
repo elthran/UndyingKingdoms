@@ -177,6 +177,8 @@ class Kingdom(GameState):
                                                       sub_category=county.race.lower()).first()
             if achievement:  # This should be unneeded and SHOULD be throwing errors. But while it's in beta we can leave it in
                 achievement.current_tier += 1
+            notification = Notification(county.id, "Leader", "You have been crowned ruler of this kingdom!", self.world.day)
+            notification.save()
 
     @staticmethod
     def get_leader_name(county_id):
