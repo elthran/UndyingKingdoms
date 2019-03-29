@@ -6,7 +6,7 @@ from undyingkingdoms.models.bases import GameEvent, db
 class Infiltration(GameEvent):
 
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
-    target_id = db.Column(db.Integer)
+    target_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
     world_day = db.Column(db.Integer)
     county_day = db.Column(db.Integer)
     duration = db.Column(db.Integer)  # How many game days until your thieves return

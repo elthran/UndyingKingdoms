@@ -32,3 +32,5 @@ Casting.caster = db.relationship('County', foreign_keys="[Casting.county_id]")
 from .addons.clan_addon import clan_addon
 clan_addon(User, Clan, Kingdom)
 
+Infiltration.target = db.relationship('County', foreign_keys="[Infiltration.target_id]")
+

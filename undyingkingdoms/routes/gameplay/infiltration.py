@@ -11,5 +11,11 @@ from undyingkingdoms.models import Infiltration
 @mobile_template("{mobile/}gameplay/infiltration.html")
 @login_required
 def infiltration(template):
-    missions = Infiltration.query.filter_by(county_id=current_user.county.id).order_by(desc('time_created')).all()
-    return render_template(template, missions=missions)
+    county = current_user.county
+    missions_query = Infiltration.query.filter(Infiltration.county_id==county.id, Infiltration.duration>0)
+    last_mission = missions_query.order_by(desc('time_created')).first()
+    missions = missions_query.filter(Infiltration.id!=last_mission.id).order_by('duration').all()
+    return render_template(
+        template,
+        missions=[last_mission] + missions
+    )

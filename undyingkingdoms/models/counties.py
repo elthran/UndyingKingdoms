@@ -73,7 +73,7 @@ class County(GameState):
     notifications = db.relationship('Notification', backref='county')
 
     expeditions = db.relationship('Expedition', backref='county')
-    infiltrations = db.relationship('Infiltration', backref='county')
+    infiltrations = db.relationship('Infiltration', backref='county', foreign_keys='[Infiltration.county_id]')
 
     births = db.Column(db.Integer)
     deaths = db.Column(db.Integer)

@@ -25,6 +25,10 @@
 h2 {
     margin-bottom: 0.3em;
 }
+
+ul.mission li:first-of-type {
+    font-weight: bold;
+}
 </style>
 {% endblock %}
 
@@ -39,28 +43,31 @@ h2 {
   </div>
   <div id="footer">
     <h2>Active Missions</h2>
-    <ul>
-      {% for mission in missions|sort(attribute='duration') %}
-      {% if mission.duration > 0 %}
-      {% if mission.success %}
-      {% if mission.mission == 'pilfer' %}
-      <li>Your {{ mission.amount_of_thieves }} thieves were able to steal {{ mission.pilfer_amount }} <img class="resource_icons" src="/static/images/gold_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).</li>
-      {% endif %}
-      {% if mission.mission == 'burn crops' %}
-      <li>Your {{ mission.amount_of_thieves }} thieves burned {{ mission.crops_burned }} crops. (Ready for next mission in {{ mission.duration }} days).</li>
-      {% endif %}
-      {% if mission.mission == 'sow distrust' %}
-      <li>Your {{ mission.amount_of_thieves }} thieves caused unrest and lowered enemy happiness by {{ mission.distrust }} <img class="resource_icons" src="/static/images/happiness_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).</li>
-      {% endif %}
-      {% if mission.mission == 'scout military' %}
-      <li>Your {{ mission.amount_of_thieves }} thieves have successfully scouted the enemy's military. (Ready for next mission in {{ mission.duration }} days).</li>
-      {% endif %}
+    <ul class="mission">
+      {% for mission in missions %}
+        {% set target = mission.target %}
+        <li>
+          <a href="{{ url_for('enemy_overview', county_id=target.id) }}">{{ target.name }}</a>
+          {% if mission.success %}
+            {% if mission.mission == 'pilfer' %}
+              Your {{ mission.amount_of_thieves }} thieves were able to steal {{ mission.pilfer_amount }} <img class="resource_icons" src="/static/images/gold_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).
+            {% elif mission.mission == 'burn crops' %}
+              Your {{ mission.amount_of_thieves }} thieves burned {{ mission.crops_burned }} crops. (Ready for next mission in {{ mission.duration }} days).
+            {% elif mission.mission == 'sow distrust' %}
+              Your {{ mission.amount_of_thieves }} thieves caused unrest and lowered enemy happiness by {{ mission.distrust }} <img class="resource_icons" src="/static/images/happiness_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).
+            {% elif mission.mission == 'scout military' %}
+              Your {{ mission.amount_of_thieves }} thieves have successfully scouted the enemy's military. (Ready for next mission in {{ mission.duration }} days).
+            {% elif mission.mission == 'steal research' %}
+              Your {{ mission.amount_of_thieves }} thieves have successfully stolen {{ mission.research_stolen }} research. (Ready for next mission in {{ mission.duration }} days).
+            {% else %}
+              You need to write some code to handle missions of type "{{ mission.mission }}".
+            {% endif %}
+          {% else %}
+            The {{ mission.amount_of_thieves }} thieves you sent were caught. You will have trained new thieves to replace them in {{ mission.duration }} days.
+          {% endif %}
+        </li>
       {% else %}
-      <li>The {{ mission.amount_of_thieves }} thieves you sent were caught. You will have trained new thieves to replace them in {{ mission.duration }} days.</li>
-      {% endif %}
-      {% endif %}
-      {% else %}
-      <li>All of your thieves are currently patrolling your county.</li>
+        <li>All of your thieves are currently patrolling your county.</li>
       {% endfor %}
     </ul>
   </div>

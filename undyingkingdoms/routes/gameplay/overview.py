@@ -8,7 +8,7 @@ from undyingkingdoms.models import County, Kingdom, Message, Notification
 from undyingkingdoms.models.forms.message import MessageForm
 from undyingkingdoms.models.forms.trade import TradeForm
 from undyingkingdoms.models.trades import Trade
-from undyingkingdoms.routes.helpers import mobile_on_vue
+from undyingkingdoms.routes.helpers import mobile_on_vue, not_self
 
 """
 Each of these routes could go in their own file
@@ -44,15 +44,14 @@ def overview():
     )
 
 
-@app.route('/gameplay/enemy_overview/<int:kingdom_id>/<int:county_id>/', methods=['GET'])
+@app.route('/gameplay/enemy_overview/<int:county_id>/', methods=['GET'])
+@not_self
 @mobile_template('{mobile/}gameplay/enemy_overview.html')
 @login_required
-def enemy_overview(template, kingdom_id=0, county_id=0):
+def enemy_overview(template, county_id=0):
     county = current_user.county
     target_county = County.query.get(county_id)
-    if county == target_county:
-        return redirect(url_for('overview'))
-    target_kingdom = Kingdom.query.get(kingdom_id)
+    target_kingdom = target_county.kingdom
 
     message_form = MessageForm()
     trade_form = TradeForm()

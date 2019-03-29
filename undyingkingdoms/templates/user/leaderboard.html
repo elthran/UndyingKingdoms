@@ -26,7 +26,7 @@
 <h2>(County) Most Land:</h2>
 <ul>
 {% for county in counties|sort(attribute='land', reverse=True) %}
-    <li {% if county == current_user.county %}style="font-weight:bold;"{% endif %}><a href="{{ url_for('enemy_overview', kingdom_id=county.kingdom_id, county_id=county.id) }}">
+    <li {% if county == current_user.county %}style="font-weight:bold;"{% endif %}><a href="{{ url_for('enemy_overview', county_id=county.id) }}">
         {{ county.leader }} of {{ county.name }}
         </a>: {{ county.land }}
     </li>
@@ -37,7 +37,7 @@
 <h2>(User) Most Gems:</h2>
 <ul>
 {% for user in users|sort(attribute='gems', reverse=True) %}
-    <li {% if user == current_user %}style="font-weight:bold;"{% endif %}><a href="{{ url_for('enemy_overview', kingdom_id=user.county.kingdom_id, county_id=user.county.id) }}">
+    <li {% if user == current_user %}style="font-weight:bold;"{% endif %}><a href="{{ url_for('enemy_overview', county_id=user.county.id) }}">
         {{ user.county.leader }} of {{ user.county.name }}
         </a>: {{ user.gems }}
     </li>
@@ -47,7 +47,7 @@
 <h2>(User) Most Achievement Points:</h2>
 <ul>
 {% for user in users|sort(attribute='achievement_points', reverse=True) %}
-    <li {% if user == current_user %}style="font-weight:bold;"{% endif %}><a href="{{ url_for('enemy_overview', kingdom_id=user.county.kingdom_id, county_id=user.county.id) }}">
+    <li {% if user == current_user %}style="font-weight:bold;"{% endif %}><a href="{{ url_for('enemy_overview', county_id=user.county.id) }}">
         {{ user.county.leader }} of {{ user.county.name }}
         </a>: {{ user.achievement_points }}
     </li>

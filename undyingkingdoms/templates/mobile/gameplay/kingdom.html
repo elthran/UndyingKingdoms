@@ -91,7 +91,7 @@ li {
             </li>
           {% else %}
             <li>
-              <a href="{{ url_for('enemy_overview', kingdom_id=kingdom.id, county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
+              <a href="{{ url_for('enemy_overview', county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
               {% if kingdom.leader == 0 %}
                 (Vote: {{ county.display_vote() }})
               {% endif %}
@@ -101,7 +101,7 @@ li {
       {% else %}
         {% for county in kingdom.counties %}
           <li>
-            <a href="{{ url_for('enemy_overview', kingdom_id=kingdom.id, county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
+            <a href="{{ url_for('enemy_overview', county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
           </li>
         {% endfor %}
       {% endif %}

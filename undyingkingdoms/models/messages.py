@@ -30,7 +30,7 @@ class Message(GameState):
 
     def get_reply_url(self):
         county = County.query.get(self.author_county_id)
-        return url_for('enemy_overview', kingdom_id=county.kingdom_id, county_id=county.id)
+        return url_for('enemy_overview', county_id=county.id)
 
     def get_age_of_message(self):
         current_day = World.query.get(1).day
