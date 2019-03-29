@@ -22,7 +22,7 @@ def infiltration(template):
         last_mission_id = last_mission.id
     other_missions = missions_query.filter(Infiltration.id!=last_mission_id).order_by('duration').all()
     if other_missions:
-        missions.append(other_missions)
+        missions += other_missions
     return render_template(
         template,
         missions=missions
