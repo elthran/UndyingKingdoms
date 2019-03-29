@@ -416,7 +416,7 @@ class County(GameState):
     def temporary_bot_tweaks(self):
         from undyingkingdoms.models.users import User
 
-        friendly_counties = County.query.join(User).filter(County.kingdom_id==1, ~User.is_bot).all()
+        friendly_counties = County.query.join(User).filter(County.kingdom_id==self.kingdom_id, ~User.is_bot).all()
         friendly_counties_ids = [county.id for county in friendly_counties]
         if randint(1, 10) == 10 and self.day > 10:
             self.land += randint(-5, 15)
