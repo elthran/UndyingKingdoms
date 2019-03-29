@@ -25,10 +25,7 @@ class HomeAPI(MethodView):
                 return "execute and return an example function as json"
             else:
                 return None
-        return render_template(
-            template,
-            is_production=current_app.config['ENV'] == 'production'
-        )
+        return render_template(template)
 
     @login_required
     @admin_required

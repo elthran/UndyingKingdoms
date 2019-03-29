@@ -10,6 +10,11 @@
     {% block style %}{% endblock %}
 </head>
 <body>
+{% if not is_production %}
+<div style="height:2em;background:red;width:100%;text-align:center;line-height:2em;font-weight:bold;">
+    LOCAL VERSION OF SITE
+</div>
+{% endif %}
 {% macro render_field(field, placeholder=None) %}
 <div>
     {% set css_class = 'form-control ' + kwargs.pop('class', '') %}
