@@ -414,8 +414,10 @@ class County(GameState):
         self.day += 1
 
     def temporary_bot_tweaks(self):
-        friendly_counties = County.query.filter_by(kingdom_id=self.kingdom_id).all()
-        friendly_counties = [county for county in friendly_counties if not county.user.is_bot]
+        from undyingkingdoms.models.users import User
+
+        friendly_counties = County.query.join(User).filter(County.kingdom_id==1, ~User.is_bot).all()
+        friendly_counties_ids = [county.id for county in friendly_counties]
         if randint(1, 10) == 10 and self.day > 10:
             self.land += randint(-5, 15)
         if randint(1, 10) == 10:
@@ -427,14 +429,13 @@ class County(GameState):
         self.wood += randint(1, 3)
         self.iron += 1
         if randint(1, 24) == 24 and self.kingdom.leader == 0:
-            self.vote = choice(friendly_counties).id
-            self.kingdom.count_votes()
+            self.cast_vote(choice(friendly_counties_ids))
         if randint(1, 10) == 10 and self.get_available_land() >= 5:
             self.buildings['house'].total += 3
             self.buildings['field'].total += 1
             self.buildings['pasture'].total += 1
         if randint(1, 12) == 12:
-            trading_partner = choice(friendly_counties).id
+            trading_partner = choice(friendly_counties_ids)
             trade_notice = Notification(trading_partner,
                                         "You were offered a trade", "{} has offered you a trade. Visit the trading page.".format(self.name),
                                         self.kingdom.world.day, "Trade")

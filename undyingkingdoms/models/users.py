@@ -40,7 +40,7 @@ class User(GameState):
     is_admin = db.Column(db.Boolean)  # Current user is a game creator with unlimited power
     is_bot = db.Column(db.Boolean)  # Current user is a game creator with unlimited power
 
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password, is_bot=False):
         # Basic data
         self.username = username
         self.email = email
@@ -67,7 +67,7 @@ class User(GameState):
         
         # Administrative
         self.is_admin = False
-        self.is_bot = False
+        self.is_bot = is_bot
 
     @property
     def in_active_session(self):
