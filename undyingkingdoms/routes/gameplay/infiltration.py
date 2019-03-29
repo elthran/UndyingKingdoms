@@ -14,7 +14,8 @@ def infiltration(template):
     county = current_user.county
     missions_query = Infiltration.query.filter(Infiltration.county_id==county.id, Infiltration.duration>0)
     last_mission = missions_query.order_by(desc('time_created')).first()
-    missions = missions_query.filter(Infiltration.id!=last_mission.id).order_by('duration').all()
+    last_mission_id = last_mission.id if last_mission else -1  # no id ever
+    missions = missions_query.filter(Infiltration.id!=last_mission_id).order_by('duration').all()
     return render_template(
         template,
         missions=[last_mission] + missions
