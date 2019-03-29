@@ -22,7 +22,8 @@ excess_worker_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather F
 
 all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'quarry', 'fort', 'stables', 'tavern', 'tower', 'bank', 'lab', 'arcane', 'lair']
 
-land_to_clear_modifier = 5
+# Don't use modifier in name unless it is racial or class modifier dictionary.
+land_to_clear_ratio = 5
 
 all_achievements = {
     'land': Achievement(name="land", category="reach_x_amount_in_one_age", sub_category="land",

@@ -6,6 +6,7 @@ from undyingkingdoms.static.metadata import metadata, metadata_armies_all, metad
 
 def build_race_table():
     """Generate a spreadsheet of all race and background data."""
+
     modifiers = [mod for mod in dir(metadata) if "modifier" in mod]
     mod_dfs = {' '.join(mod.split('_')).title(): pd.DataFrame(getattr(metadata, mod)) for mod in modifiers}
 
@@ -52,7 +53,7 @@ def build_race_table():
         except IndexError:
             pass
 
-    df.to_excel('undyingkingdoms/static/metadata/modifiers.xlsx', sheet_name='Modifiers')
+    df.to_csv('undyingkingdoms/static/dist/modifiers.csv')
 
 
 def build_modifier_table():
@@ -82,4 +83,4 @@ def build_modifier_table():
                 df.loc[i, col] = getattr(v, army_args[j])
             i += 1
 
-    df.to_excel('undyingkingdoms/static/metadata/armies.xlsx', sheet_name='Armies')
+    df.to_csv('undyingkingdoms/static/dist/armies.csv')

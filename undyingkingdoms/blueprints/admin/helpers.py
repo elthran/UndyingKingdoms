@@ -73,3 +73,16 @@ def build_comparison_files():
             message=f"Player guide update failed due to: {ex}"
         )
 
+def run_advance_day():
+    try:
+        world = World.query.first()
+        world.advance_day()
+        return jsonify(
+            status='success',
+            message='You successfully advanced the game world one day.'
+        )
+    except Exception as ex:
+        return jsonify(
+            status='fail',
+            message=f'Advance day failed due to: {ex}'
+        )
