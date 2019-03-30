@@ -26,6 +26,8 @@
     border:solid 1px;
     min-height: 300px;
     min-width: 600px;
+    max-height: 750px;
+    overflow-y: auto;
 }
 </style>
 {% endblock %}
@@ -66,6 +68,38 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4/lodash.min.js"></script>
 <script>
+// Declare some globals
+var chatDiv = document.getElementById("chat-div");
+var pad = 10;
+var scrolled = false;
+
+// Scroll window to bottom if user hasn't scrolled around.
+function updateScroll() {
+    if (!scrolled) {
+        chatDiv.scrollTop = chatDiv.scrollHeight-chatDiv.clientHeight;
+    }
+}
+
+// Disabled auto-scrolling if user has scrolled content.
+// Re-enable it if they scroll to the bottom.
+$("#chat-div").on('scroll', function() {
+    if (chatDiv.scrollTop >= chatDiv.scrollHeight-chatDiv.clientHeight) {
+        scrolled = false;
+    } else {
+        scrolled = true;
+    }
+});
+
+function refocus(selector) {
+    // the next line is required to work around a bug in WebKit (Chrome / Safari)
+    if (!scrolled) {
+        var yOffset = $(selector).offset().top + $(selector).height() + pad;
+        $('html, body').animate({
+            scrollTop: yOffset - window.innerHeight
+        });
+    }
+}
+
 function formatDate(date) {
     var hours = ("0" + date.getHours()).slice(-2);
     var minutes = ("0" + date.getMinutes()).slice(-2);
@@ -97,6 +131,7 @@ function sendMessage() {
             $("#chatlist").append(
                 build_element(resp.data[0], resp.data[1], resp.data[2])
             );
+            updateScroll();
         }
     });
 }
@@ -124,6 +159,8 @@ function updateChat() {
                     build_element(value[0], value[1], value[2])
                 );
             });
+            updateScroll();
+            refocus("#send");
         }
     });
 }
@@ -147,10 +184,12 @@ $(window).on("blur", function () {
 });
 
 // Pull chat date once page loads
-$(document).ready(updateChat());
+$(document).ready(() => {
+    updateChat()
+});
 
 // Reload chat if toggle button is clicked
-$('.switch').on("click", 
+$('.switch').on("click",
     _.debounce(() => {
         updateChat();
     }, 500, {
