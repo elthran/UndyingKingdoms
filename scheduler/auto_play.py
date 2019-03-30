@@ -34,10 +34,10 @@ def login(session, base):
 
 def cast_ligtening(r):
     LIGHTENING = 10
-    ELTHRAN = 1
+    TARGET = 3
     r = r.session.get(
-        base + F"/gameplay/cast_spell/{LIGHTENING}/{ELTHRAN}",
-        headers={"Referer": base + F"/gameplay/casting/{ELTHRAN}"}
+        base + F"/gameplay/cast_spell/{LIGHTENING}/{TARGET}",
+        headers={"Referer": base + F"/gameplay/casting/{TARGET}"}
     )
     return r
 
