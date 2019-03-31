@@ -2,7 +2,7 @@
   <div id="content">
     <prefix-title title="Overview" />
     <county-description />
-    <div class="max-width-1 width-100-percent">
+    <div class="max-width-1 width-100-percent inner-content ">
       <h2 class="tab-1">
         Basics
       </h2>
@@ -21,7 +21,10 @@
         id="serverMessageToPlayers"
         class="negative"
       /> -->
-      <h2 class="tab-1">
+      <h2
+        id="news"
+        class="tab-1 max-width-1"
+      >
         News
         <button
           id="toggleNews"
@@ -72,27 +75,63 @@ export default {
 </script>
 
 <style scoped>
-#content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 1em 1em 0;
-}
-
-h1 {
-  padding-bottom: 0.4em;
-  text-align: center;
-}
-
-h2 {
-  padding-bottom: 0.3em;
-}
-
 #toggleNews {
   float: right;
   font-weight: normal;
   min-width: auto;
   width: 7em;
   height: auto;
+}
+
+@media (max-width: 640px) {
+  #content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 1em 1em 0;
+  }
+
+  h1 {
+    padding-bottom: 0.4em;
+    text-align: center;
+  }
+
+  h2 {
+    padding-bottom: 0.3em;
+  }
+}
+
+@media (min-width: 640px) {
+  #content {
+    margin: 1em 1em 0;
+    flex-grow: 2;
+  }
+
+  h1 {
+    padding-bottom: 0.8em;
+    text-align: center;
+  }
+
+  .inner-content {
+    max-width: initial;
+  }
+
+  h2 {
+    padding-left: 1em;
+    margin-bottom: 0.3em;
+  }
+
+  ul {
+    margin-bottom: 1em;
+  }
+
+  #toggleNews {
+    margin-top: 0.6em;
+    height: 1.6em;
+  }
+
+  #news {
+    height: 2.3em;
+  }
 }
 </style>

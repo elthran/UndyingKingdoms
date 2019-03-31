@@ -18,7 +18,7 @@
       <span class="negative">(This age will begin in {{ Math.abs(day) }} hours)</span>
     </li>
     <li v-else>
-      Calendar: Day {{ day }} ({{ season }}) --> This test ends on day 210
+      Calendar: Day {{ day }} ({{ season }}) --> This test ends on day {{ end }}
     </li>
     <li>Weather: {{ weather }}</li>
   </ul>
@@ -33,7 +33,8 @@ export default {
       day: -1,
       weather: 'weatherType',
       land: -1,
-      season: 'seasonType'
+      season: 'seasonType',
+      end: -1
     }
   },
   beforeCreate () {
