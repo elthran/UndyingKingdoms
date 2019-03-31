@@ -18,5 +18,6 @@ class BasicsAPI(MethodView):
             day=world.day,
             weather=preferences.weather.title(),
             land=county.land,
-            season=world.season
+            season=world.season,
+            end=210  # set round end.
         )

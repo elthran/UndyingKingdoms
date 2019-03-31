@@ -1,5 +1,5 @@
 <template>
-  <nav class="mobile-sidebar">
+  <nav id="mobile-sidebar">
     <hr class="width-95-percent">
     <router-link
       :to="urlFor.overview"
@@ -72,7 +72,7 @@
       </a>
       <div
         v-if="user.isKing"
-        class="top-spacer-dot-3"
+        class="top-spacer-dot-3 center"
       >
         <img
           class="resource_icons"
@@ -131,35 +131,80 @@ export default {
 
 <style scoped>
 /* The main sidebar which is always visible when logged in */
-.mobile-sidebar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 1.5em;
-  margin: 0 0 0.5em;
+/* Converts to bottom navigation on small screens */
+@media (max-width: 640px) {
+  #mobile-sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.5em;
+    margin: 0 0 0.5em;
+  }
+
+  a {
+    margin: 0.1em;
+    padding: 0.1em;
+    border: solid;
+    border-width: 0.05em;
+    border-color: gray;
+    border-radius: 0.2em;
+    text-decoration: none;
+  }
+
+  .bold {
+    font-weight: bold;
+  }
+
+  .spacer {
+    margin-bottom: 1em;
+  }
+
+  .flex-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }
 
-a {
-  margin: 0.1em;
-  padding: 0.1em;
-  border: solid;
-  border-width: 0.05em;
-  border-color: gray;
-  border-radius: 0.2em;
-  text-decoration: none;
-}
+/* Make nav bar into a sidebar on larger screens */
+@media (min-width: 640px) {
+  #mobile-sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-.bold {
-  font-weight: bold;
-}
+    margin: 0.5em 1em 0.5em 0.5em;
+    padding: 0.6em;
+    font-size: 1.25em;
+    line-height: 1.7em;
+    border: solid;
+    border-radius: 5px;
+  }
 
-.spacer {
-  margin-bottom: 1em;
-}
+  .bold {
+      font-weight: bold;
+  }
 
-.flex-group {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  .text-center {
+      text-align: center;
+  }
+
+  .spacer {
+      margin-bottom: 1em;
+  }
+
+  hr {
+    display: none;
+  }
+
+  .flex-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  a {
+    text-align: center;
+  }
 }
 </style>

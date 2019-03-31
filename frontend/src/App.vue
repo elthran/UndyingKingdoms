@@ -1,20 +1,3 @@
-<style>
-@media(max-width: 640px) {
-  #app {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-@media(min-width: 640px) {
-  #app {
-    display: flex;
-    flex-direction: row-reverse;
-  }
-}
-
-</style>
-
 <template>
   <div id="app">
     <prefix-title title="Home" />
@@ -47,3 +30,20 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+@media(max-width: 640px) {
+  #app {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media(min-width: 640px) {
+  #app {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
+}
+</style>
