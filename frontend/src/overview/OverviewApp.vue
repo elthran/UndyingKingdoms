@@ -21,7 +21,10 @@
         id="serverMessageToPlayers"
         class="negative"
       /> -->
-      <h2 id="news" class="tab-1 max-width-1">
+      <h2
+        id="news"
+        class="tab-1 max-width-1"
+      >
         News
         <button
           id="toggleNews"
