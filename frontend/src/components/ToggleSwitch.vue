@@ -1,3 +1,35 @@
+<template>
+  <label class="switch">
+    <input
+      id="toggle-switch"
+      type="checkbox"
+      :checked="checked"
+      @input="$emit('input', $event.target.checked)"
+    >
+    <div class="slider round">
+      <span class="on">{{ onLabel }}</span>
+      <span class="off">{{ offLabel }}</span>
+    </div>
+  </label>
+</template>
+
+<script>
+export default {
+  name: 'ToggleSwitch',
+  props: {
+    checked: Boolean(),
+    onLabel: String,
+    offLabel: String
+  },
+  data () {
+    return {
+
+    }
+  }
+}
+</script>
+
+<style scoped>
 .switch {
   position: relative;
   display: inline-block;
@@ -76,4 +108,6 @@ input:checked + .slider .off
 }
 
 .slider.round:before {
-  border-radius: 50%;}
+  border-radius: 50%;
+}
+</style>

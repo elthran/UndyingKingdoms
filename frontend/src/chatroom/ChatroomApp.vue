@@ -1,23 +1,14 @@
 <template>
   <div id="chatroom">
-    <!-- <prefix-title title="Town Hall" />
+    <prefix-title title="Town Hall" />
     <div id="header">
       <h1>Discussion</h1>
-      <label class="switch">
-        <input
-          id="toggle-switch"
-          type="checkbox"
-          {%
-          if
-          global_chat_on
-          %}checked{%endif
-          %}
-        >
-        <div class="slider round">
-          <span class="on">global</span>
-          <span class="off">kingdom</span>
-        </div>
-      </label>
+      <toggle-swtich
+        v-model="globalChatOn"
+        on-label="global"
+        off-label="kingdom"
+        :checked="globalChatOn"
+      />
     </div>
     <div id="chat-div">
       <ul
@@ -35,7 +26,7 @@
       <input
         id="content"
         autofocus=""
-        class="form-control "
+        class="form-control"
         name="content"
         placeholder="Public to your kingdom"
         required
@@ -49,18 +40,32 @@
       >
         Send Herald
       </button>
-    </form> -->
+    </form>
   </div>
 </template>
 
 <script>
+import ToggleSwitch from '@/components/ToggleSwitch.vue'
+
 export default {
   name: 'ChatroomApp',
   components: {
+    'toggle-swtich': ToggleSwitch
   },
   data () {
     return {
+      form: Object,
+      globalChatOn: Boolean,
+      chat: Array
     }
+  },
+  watch: {
+    globalChatOn () {
+      this.$getData('/api/chatroom/chatroom', this.$deployData)
+    }
+  },
+  beforeCreate () {
+    this.$getData('/api/chatroom/chatroom', this.$deployData)
   }
 }
 

@@ -10,14 +10,16 @@ from undyingkingdoms.models.forms.message import MessageForm
 
 class ChatroomAPI(MethodView):
     @login_required
-    def get(self, template):
+    def get(self):
         form = MessageForm()
         chat = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id).all()
         current_user.county.preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
         return jsonify(
+            status="success",
+            message=f"You called on {__name__}",
             form=form,
             chat=chat,
-            global_chat_on=current_user.global_chat_on
+            globalChatOn=current_user.global_chat_on
         )
 
     @login_required
