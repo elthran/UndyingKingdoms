@@ -428,7 +428,7 @@ class County(GameState):
         self.gold += randint(1, 6)
         self.wood += randint(1, 3)
         self.iron += 1
-        if randint(1, 24) == 24 and self.kingdom.leader == 0:
+        if randint(1, 24) == 24 and self.kingdom.leader == 0 and friendly_counties_ids:
             self.cast_vote(choice(friendly_counties_ids))
         if randint(1, 10) == 10 and self.get_available_land() >= 5:
             self.buildings['house'].total += 3
@@ -670,7 +670,7 @@ class County(GameState):
     def get_death_rate(self):
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + \
                    death_rate_modifier.get(self.background, ("", 0))[1]
-        death_rate = (uniform(2.0, 2.5) / self.healthiness) * modifier
+        death_rate = (uniform(4.8, 5.2) / self.healthiness) * modifier
 
         plague_wind = Casting.query.filter_by(target_id=self.id).filter(Casting.duration > 0).first()
         if plague_wind:
@@ -680,20 +680,23 @@ class County(GameState):
     def get_birth_rate(self):
         modifier = 1 + birth_rate_modifier.get(self.race, ("", 0))[1] + \
                    birth_rate_modifier.get(self.background, ("", 0))[1]
-        birth_rate = self.buildings['house'].total * self.buildings['house'].output * modifier
-        return int(birth_rate * uniform(0.9995, 1.0005))
+        modifier += (self.buildings['house'].total / self.land) * self.buildings['house'].output
+        raw_rate = self.happiness / 100 * uniform(0.048, 0.052)  # 5% times your happiness rating
+        return int(self.population * raw_rate * modifier)
 
     @staticmethod
     def get_immigration_rate():
         return randint(25, 35)
 
     def get_emigration_rate(self):
-        return randint(100, 110 + self.kingdom.world.age) - self.happiness
+        return int((self.preferences.tax_rate * 3) + self.kingdom.world.age + (0.005 * self.population))
 
     @cached_random
     def get_population_change(self, prediction=False):
         growth = self.get_birth_rate() + self.get_immigration_rate()
         decay = self.get_death_rate() + self.get_emigration_rate()
+        if growth < decay:  # Can't decay more than 3% of population an hour
+            return int(max(growth - decay, -0.03 * self.population))
         return growth - decay
 
     def update_population(self):
@@ -741,7 +744,20 @@ class County(GameState):
         growth = self.buildings['arcane'].total * self.buildings['arcane'].output
         active_spells = Casting.query.filter_by(county_id=self.id).filter_by(active=True).all()
         loss = sum(spell.mana_sustain for spell in active_spells)
-        return growth - loss
+        difference = growth - loss
+        print(active_spells, difference, self.mana)
+        if difference < 0 and self.mana + difference < 0:
+            print("here...")
+            active_spells[0].active = False
+            notice = Notification(self.id,
+                                  "Spell Ended",
+                                  "You did not have enough mana and {} ended.".format(active_spells[0].name),
+                                  self.kingdom.world.day,
+                                  "Spell End")
+            notice.save()
+            return self.get_mana_change()
+        print("ending")
+        return difference
 
     def get_research_change(self):
         if self.technologies.get("arcane knowledge") and self.technologies["arcane knowledge"].completed:

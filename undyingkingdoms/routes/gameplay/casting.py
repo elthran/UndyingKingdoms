@@ -71,18 +71,22 @@ def cast_spell(spell_id, target_id):
                     kingdom.war_won(war)
                     war.status = "Won"
             else:
-                war.defender_current += form.amount.data
+                war.defender_current += spell.mana_cost // 4
                 if war.defender_current >= war.defender_goal:
                     target.kingdom.war_won(war)
                     war.status = "Lost"
         # End of war code
-
+    print("at spell",target_relation, spell.targets)
+    eligible_targets = [spell.targets]
+    if eligible_targets[0] == 'friendly':
+        eligible_targets.append('self')
     if (spell is None
             or target is None
             or spell.mana_cost > county.mana
-            or target_relation != spell.targets
+            or (target_relation not in eligible_targets)
             or not spell.known):
         return redirect(url_for('casting', target_id=target.id))
+    print("at spell")
     county.mana -= spell.mana_cost
 
     cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
