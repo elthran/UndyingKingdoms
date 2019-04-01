@@ -34,7 +34,7 @@ class SideBarAPI(MethodView):
             research=url_for('research'),
             trading=url_for('trading'),
             messages=url_for('messages'),
-            chatroomAPI=url_for('chatroom_api'),
+            chatroom=url_for('chatroom'),
             kingdom=url_for('kingdom', kingdom_id=kingdom.id),
             royalCourt=url_for('royal_court'),
             achievements=url_for('achievements'),
