@@ -68,13 +68,9 @@ th {
         <tr>
             <td>Population</td>
             <td>{{ county.population }}</td>
-            {% set population_projection = county.get_population_change(prediction=True) %}
-            {% if population_projection >= 0 %}
-            <td style="color:green;">+
-                {% else %}
-            <td style="color:red;">
-                {% endif %}
-                {{ population_projection }} <img class="resource_icons" src="/static/images/population_icon.jpg">
+            <td>
+                <status-number :number="populationChange" />
+                <img class="resource_icons" src="/static/images/population_icon.jpg">
             </td>
             <td>
                 <ul>
@@ -101,7 +97,7 @@ th {
             <td>
                 <ul>
                     <li>Deaths: {{ county.get_death_rate() }}</li>
-                    <li>Emigration: {{ county.get_emigration_rate() }}</li>
+                    <li>Emigration: v{ emigrationRate }</li>
                 </ul>
             </td>
             <td>Raise happiness to lower the amount of emigrants leaving your county.</td>
@@ -278,7 +274,7 @@ th {
         </tr>
         <tr>
             <td>Happiness</td>
-            <td>{{ county.happiness }}%</td>
+            <td>v{ happiness }%</td>
             <td>
                 <status-number :number="happinessChange"></status-number>
                 <img class="resource_icons" src="/static/images/happiness_icon.jpg">
@@ -346,11 +342,14 @@ th {
 var TAX = {{ county.tax_rate }};
 var GOLD_CHANGE = {{ county.get_gold_change() }};
 var TAX_INCOME = {{ county.get_tax_income() }};
+var HAPPINESS = {{ county.happiness }};
 var HAPPINESS_CHANGE = {{ county.get_happiness_change() }};
 var GRAIN_STORAGE_CHANGE = {{ county.grain_storage_change() }};
 var RATIONS = {{ county.rations }};
 var FOOD_EATEN = {{ county.get_food_to_be_eaten() }};
 var HEALTHINESS_CHANGE = {{ county.get_healthiness_change() }};
+var EMIGRATION_RATE = {{ county.get_emigration_rate() }};
+var POPULATION_CHANGE = {{ county.get_population_change(prediction=True) }};
 // end of Jinja code. Please keep it inside here.
 
 function sendForm (form, callback) {
@@ -407,20 +406,26 @@ var app = new Vue({
     goldChange: GOLD_CHANGE,
     taxIncome: TAX_INCOME,
     selectedTaxRate: TAX,
+    happiness: HAPPINESS,
     happinessChange: HAPPINESS_CHANGE,
     grainStorageChange: GRAIN_STORAGE_CHANGE,
     selectedRations: RATIONS,
     foodEaten: FOOD_EATEN,
-    healthinessChange: HEALTHINESS_CHANGE
+    healthinessChange: HEALTHINESS_CHANGE,
+    emigrationRate: EMIGRATION_RATE,
+    populationChange: POPULATION_CHANGE
   },
   methods: {
     updatePage: function (data) {
       this.goldChange = data.goldChange;
       this.taxIncome = data.taxIncome;
+      this.happiness = data.happiness;
       this.happinessChange = data.happinessChange;
       this.grainStorageChange = data.grainStorageChange;
       this.foodEaten = data.foodEaten;
       this.healthinessChange = data.healthinessChange;
+      this.emigrationRate = data.emigrationRate;
+      this.populationChange = data.populationChange;
     }
   },
   watch: {

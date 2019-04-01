@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, jsonify, request, send_from_directory, current_app
+from flask import render_template, redirect, url_for, jsonify, request
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
@@ -56,13 +56,16 @@ def update_economy():
             birth_rate_modifier=birth_rate_modifier,
             income_modifier=income_modifier,
             food_consumed_modifier=food_consumed_modifier,
+            happiness=county.happiness,
             happiness_modifier=happiness_modifier,
             goldChange=county.get_gold_change(),
             taxIncome=county.get_tax_income(),
             happinessChange=county.get_happiness_change(),
             grainStorageChange=county.grain_storage_change(),
             foodEaten=county.get_food_to_be_eaten(),
-            healthinessChange=county.get_healthiness_change()
+            healthinessChange=county.get_healthiness_change(),
+            emigrationRate=county.get_emigration_rate(),
+            populationChange=county.get_population_change()
         )
     return jsonify(
         status="fail",
