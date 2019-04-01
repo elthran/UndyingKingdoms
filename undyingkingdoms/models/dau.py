@@ -28,6 +28,7 @@ class DAU(GameEvent):
     stone = db.Column(db.Integer)
     research = db.Column(db.Integer)
     mana = db.Column(db.Integer)
+    grain = db.Column(db.Integer)
     lifetime_gold = db.Column(db.Integer)
     lifetime_wood = db.Column(db.Integer)
     lifetime_iron = db.Column(db.Integer)
@@ -46,9 +47,8 @@ class DAU(GameEvent):
     archer = db.Column(db.Integer)
     elite = db.Column(db.Integer)
     monster = db.Column(db.Integer)
-    standing_offense = db.Column(db.Integer)
     maximum_offense = db.Column(db.Integer)
-    standing_defence = db.Column(db.Integer)
+    maximum_defence = db.Column(db.Integer)
     # Building Data
     house = db.Column(db.Integer)
     field = db.Column(db.Integer)
@@ -88,6 +88,7 @@ class DAU(GameEvent):
         self.stone = county.stone
         self.research = county.research
         self.mana = county.mana
+        self.grain = county.grain_stores
         self.lifetime_gold = county.lifetime_gold
         self.lifetime_wood = county.lifetime_wood
         self.lifetime_iron = county.lifetime_iron
@@ -108,9 +109,8 @@ class DAU(GameEvent):
         self.archer = county.armies['archer'].total
         self.elite = county.armies['elite'].total
         self.monster = county.armies['monster'].total
-        self.standing_offense = county.get_offensive_strength()
         self.maximum_offense = county.get_offensive_strength(scoreboard=True)
-        self.standing_defence = county.get_defensive_strength()
+        self.maximum_defence = county.get_defensive_strength()
 
         self.house = county.buildings['house'].total
         self.field = county.buildings['field'].total

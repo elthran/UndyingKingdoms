@@ -34,9 +34,9 @@ class User(GameState):
     global_chat_on = db.Column(db.Boolean, default=False)
 
     # Flask
-    is_authenticated = db.Column(db.Boolean)  # User has logged in
-    is_active = db.Column(db.Boolean)  # Account has been activated via email and not been locked
-    is_anonymous = db.Column(db.Boolean)  # current_user is set to is_anonymous when not yet logged in.
+    is_authenticated = db.Column(db.Boolean)  # User has logged in through flask. (Flask)
+    is_active = db.Column(db.Boolean)  # Account has been activated via email and not been locked. (Flask)
+    is_anonymous = db.Column(db.Boolean)  # Current_user is set to is_anonymous when not yet logged in. (Flask)
     is_admin = db.Column(db.Boolean)  # Current user is a game creator with unlimited power
     is_bot = db.Column(db.Boolean)  # Current user is a game creator with unlimited power
 

@@ -100,7 +100,8 @@ th {
                     <li>Emigration: v{ emigrationRate }</li>
                 </ul>
             </td>
-            <td>Raise happiness to lower the amount of emigrants leaving your county.</td>
+            <td>Your population naturally has a birth rate of around 5%.
+                Happiness, tax rate, and health will affect population growth.</td>
         </tr>
         <tr>
             <td>Gold</td>
@@ -152,9 +153,9 @@ th {
                 </ul>
             </td>
             <!-- These conditions must not occur together or it will break the table. -->
-            <td v-if="selectedTaxRate < 7" class="green">Your current tax rate has a positive effect on happiness</td>
-            <td v-if="selectedTaxRate == 7">Your current tax rate has no effect on happiness</td>
-            <td v-if="selectedTaxRate > 7" class="red">Your current tax rate has a negative effect on happiness</td>
+            <td v-if="selectedTaxRate < 7" class="green">Your current tax rate has a positive effect on happiness.</td>
+            <td v-if="selectedTaxRate == 7">Your current tax rate has no effect on happiness.</td>
+            <td v-if="selectedTaxRate > 7" class="red">Your current tax rate has a negative effect on happiness.</td>
         </tr>
         <tr>
             <td>Food</td>
@@ -307,8 +308,7 @@ th {
                     </li>
                 </ul>
             </td>
-            <td>Happiness affects emigration rate and how productive your workers are. If they become too unhappy,
-                they may start to question your rule.
+            <td>Happiness affects your birth rate. If they become too unhappy, they may start to question your rule.
             </td>
         </tr>
         <tr>
@@ -321,7 +321,7 @@ th {
             <td>-</td>
             <td>-</td>
             <td>-</td>
-            <td>How healthy your people are. As they become more unhealthy, they die and get sick much more easily.
+            <td>Healthiness affects your death rate. As they become more unhealthy, they die and get sick much more easily.
                 Your healthiness decreases by 1% for every 200 unfed people each day.
             </td>
         </tr>
