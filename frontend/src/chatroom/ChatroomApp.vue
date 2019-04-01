@@ -1,101 +1,41 @@
-{% extends "mobile/gameplay/layout.html" %}
-
-{% block title %}Town Hall: {{ super() }}{% endblock %}
-
-{% block style %}
-{{ super() }}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/toggleSwitch.css') }}">
-<style type="text/css">
-#body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 1.2em 1em;
-}
-
-#header {
-    display: flex;
-    justify-content: space-between;
-}
-
-h1 {
-    margin-bottom: 0;
-}
-
-#chat-div {
-    width: 100%;
-    max-width: 500px;
-    max-height: 480px;
-    overflow-y: auto;
-}
-
-#chatlist {
-    border: solid 1px;
-    border-radius: 4px;
-    padding: 0.4em;
-    min-height: 14em;
-    width: 100%;
-}
-
-form {
-    width: 100%;
-    max-width: 500px;
-}
-
-input {
-    padding: 1em;
-    width: 100%;
-    border-radius: 0.5em;
-    margin-bottom: 0.4em;
-}
-
-button {
-    width: 100%;
-    height: 3em;
-    border-radius: 0.5em;
-}
-
-.tab {
-    margin-left: 1em;
-}
-</style>
-{% endblock %}
-
-{% block content1 %}
-{% set user = current_user %}
-{% set county = current_user.county %}
-{% set kingdom = county.kingdom %}
-<div id="body">
-  <div id="header">
-    <h1>Discussion</h1>
-    <label class="switch">
-      <input id="toggle-switch" type="checkbox" {% if global_chat_on %}checked{%endif %}>
-      <div class="slider round">
-        <span class="on">global</span>
-        <span class="off">kingdom</span>
-      </div>
-    </label>
+<template>
+  <div id="chatroom">
+    <prefix-title title="Town Hall" />
+    <div id="header">
+      <h1>Discussion</h1>
+      <label class="switch">
+        <input id="toggle-switch" type="checkbox" {% if global_chat_on %}checked{%endif %}>
+        <div class="slider round">
+          <span class="on">global</span>
+          <span class="off">kingdom</span>
+        </div>
+      </label>
+    </div>
+    <div id=chat-div>
+      <ul id="chatlist" class="dont-break-out">
+      </ul>
+    </div>
+    <br>
+    <form method="POST" accept-charset="UTF-8" role="form">
+      {{ form.csrf_token }}
+      <input autofocus="" class="form-control " id="content" name="content" placeholder="Public to your kingdom" required type="text" value="">
+      <br><br>
+      <button id="send" type="submit">Send Herald</button>
+    </form>
   </div>
-  <div id="chat-div">
-    <ul id="chatlist" class="dont-break-out">
-    </ul>
-  </div>
-  <br>
-  <form method="POST" accept-charset="UTF-8" role="form">
-    {{ form.csrf_token }}
-    <input autofocus="" class="form-control " id="content" name="content" placeholder="Public to your kingdom" required type="text" value="">
-    <br><br>
-    <button id="send" type="submit">Send Herald</button>
-  </form>
-</div>
-{{ super() }}
-{% endblock %}
+</template>
 
-{% block script %}
-{{ super() }}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lodash@4/lodash.min.js"></script>
-<script type="text/javascript">
+<script>
+export default {
+  name: 'ChatroomApp',
+  components: {
+  },
+  data () {
+    return {
+    }
+  }
+}
+
 // Declare some globals
 var chatDiv = document.getElementById("chat-div");
 var pad = 10;
@@ -226,4 +166,86 @@ $('.switch').on("click",
     })
 );
 </script>
-{% endblock %}
+
+<style scoped>
+@media (max-width: 640px) {
+  #chatroom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1.2em 1em;
+  }
+
+  #header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  h1 {
+    margin-bottom: 0;
+  }
+
+  #chat-div {
+    width: 100%;
+    max-width: 500px;
+    max-height: 480px;
+    overflow-y: auto;
+  }
+
+  #chatlist {
+    border: solid 1px;
+    border-radius: 4px;
+    padding: 0.4em;
+    min-height: 14em;
+    width: 100%;
+  }
+
+  form {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  input {
+    padding: 1em;
+    width: 100%;
+    border-radius: 0.5em;
+    margin-bottom: 0.4em;
+  }
+
+  button {
+    width: 100%;
+    height: 3em;
+    border-radius: 0.5em;
+  }
+
+  .tab {
+    margin-left: 1em;
+  }
+}
+
+@media (min-width: 640px) {
+  #layout-content {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  #chatroom {
+    max-width: 40em;
+  }
+
+  #header {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  #chat-div {
+    border:solid 1px;
+    min-height: 300px;
+    min-width: 600px;
+    max-height: 750px;
+    overflow-y: auto;
+  }
+}
+</style>
