@@ -670,7 +670,7 @@ class County(GameState):
     def get_death_rate(self):
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + \
                    death_rate_modifier.get(self.background, ("", 0))[1]
-        death_rate = (uniform(4.8, 5.2) / self.healthiness) * modifier
+        death_rate = (2 / self.healthiness) * modifier
 
         plague_wind = Casting.query.filter_by(target_id=self.id).filter(Casting.duration > 0).first()
         if plague_wind:
@@ -681,8 +681,8 @@ class County(GameState):
         modifier = 1 + birth_rate_modifier.get(self.race, ("", 0))[1] + \
                    birth_rate_modifier.get(self.background, ("", 0))[1]
         modifier += (self.buildings['house'].total / self.land) * self.buildings['house'].output
-        raw_rate = self.happiness / 100 * uniform(0.048, 0.052)  # 5% times your happiness rating
-        return int(self.population * raw_rate * modifier)
+        raw_rate = (self.happiness / 100) * (self.land / 5)  # 5% times your happiness rating
+        return int(raw_rate * modifier)
 
     @staticmethod
     def get_immigration_rate():
