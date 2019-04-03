@@ -113,8 +113,9 @@ class User(GameState):
         return check_password_hash(self.password_hash, password)
 
     def generate_verification_hash(self):
-        email_hash = hashlib.md5(self.username.encode())
-        return email_hash.hexdigest()
+        email_hash = hashlib.md5(self.password_hash.encode())
+        # if hash is too long it isn't selectable
+        return email_hash.hexdigest()[:-2]
 
     def verify_verification_hash(self, hash):
         if hash == self.generate_verification_hash():

@@ -1,5 +1,5 @@
 from flask import url_for, redirect, render_template
-from flask_login import current_user
+from flask_login import current_user, login_required
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
@@ -14,8 +14,9 @@ from undyingkingdoms.static.metadata.metadata_armies_human import human_armies
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])
+@login_required
 def initialize():
-    if current_user.is_authenticated and not current_user.is_verified:
+    if not current_user.is_verified:
         return redirect(url_for('activate'))
     if current_user.county is not None:
         return redirect(url_for('overview'))
