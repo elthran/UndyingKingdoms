@@ -11,61 +11,92 @@
       />
     </div>
     <div id="chat-div">
-      <ul
-        id="chatlist"
-        class="dont-break-out"
-      />
+      <chat-list :messages="messages" />
     </div>
     <br>
-    <form
-      method="POST"
-      accept-charset="UTF-8"
-      role="form"
+    <csrf-token :value="csrfToken" />
+    <input
+      id="content"
+      autofocus=""
+      class="form-control"
+      name="content"
+      placeholder="Public to your kingdom"
+      required
+      type="text"
+      :value="message"
     >
-      {{ form.csrf_token }}
-      <input
-        id="content"
-        autofocus=""
-        class="form-control"
-        name="content"
-        placeholder="Public to your kingdom"
-        required
-        type="text"
-        value=""
-      >
-      <br><br>
-      <button
-        id="send"
-        type="submit"
-      >
-        Send Herald
-      </button>
-    </form>
+    <br><br>
+    <button
+      id="send"
+      type="submit"
+      @click="sendMessage()"
+    >
+      Send Herald
+    </button>
   </div>
 </template>
 
 <script>
 import ToggleSwitch from '@/components/ToggleSwitch.vue'
+import CSRFToken from '@/components/CSRFToken.vue'
+import ChatList from './ChatList.vue'
 
 export default {
   name: 'ChatroomApp',
   components: {
-    'toggle-swtich': ToggleSwitch
+    'toggle-swtich': ToggleSwitch,
+    'csrf-token': CSRFToken,
+    'chat-list': ChatList
   },
   data () {
     return {
-      form: Object,
+      csrfToken: String,
       globalChatOn: Boolean,
-      chat: Array
+      messages: [Array],
+      message: ''
     }
   },
   watch: {
     globalChatOn () {
-      this.$getData('/api/chatroom/chatroom', this.$deployData)
+      // Reload chat if toggle button is clicked
+      this.debouncedUpdateChat()
     }
   },
   beforeCreate () {
     this.$getData('/api/chatroom/chatroom', this.$deployData)
+  },
+  async created () {
+    const { default: _ } = await import(/* webpackChunkName: "lodash" */ 'lodash')
+    this.debouncedUpdateChat = _.debounce(this.updateChat, 500, {leading: false, trailing: true})
+  },
+  methods: {
+    updateChat () {
+      this.$getData('/api/chatroom/chatroom', this.$deployData)
+    },
+    async sendMessage () {
+      const { default: $ } = await import(/* webpackChunkName: "jquery" */ 'jquery')
+      $.ajaxSetup({
+          headers: {"X-CSRF-TOKEN": $("#csrf_token").val()}
+      });
+
+      $.post("/gameplay/chatroom/", {
+          content: this.message,
+          update_only: false,
+          is_global: this.globalChatOn
+      }, (resp, status) => {
+          if (status === "success") {
+              this.content = ''
+              this.messages.append(
+                {
+                  time: resp.data[0],
+                  leader: resp.data[1],
+                  content: resp.data[2]
+                }
+              )
+              //updateScroll();
+          }
+      });
+    }
   }
 }
 
@@ -99,42 +130,6 @@ export default {
 //             scrollTop: yOffset - window.innerHeight
 //         });
 //     }
-// }
-
-// function formatDate(date) {
-//     var hours = ("0" + date.getHours()).slice(-2);
-//     var minutes = ("0" + date.getMinutes()).slice(-2);
-//     var seconds = ("0" + date.getSeconds()).slice(-2);
-
-//     return hours + ":" + minutes + ":" + seconds;
-// }
-
-// function build_element(time, leader, content) {
-//     // <li> 13:27:26  Haldon: Test message</li>
-//     var date = new Date(time + "Z");
-//     return $("<li></li>").text(
-//         "(" + formatDate(date) + ") " + leader + ": " + content
-//     );
-// }
-
-// function sendMessage() {
-//     $.ajaxSetup({
-//         headers: {"X-CSRF-TOKEN": $("#csrf_token").val()}
-//     });
-
-//     $.post("/gameplay/chatroom/", {
-//         content: $("#content").val(),
-//         updateOnly: false,
-//         isGlobal: $("#toggle-switch").prop("checked")
-//     }, function (resp, status) {
-//         if (status === "success") {
-//             $("#content").val("");
-//             $("#chatlist").append(
-//                 build_element(resp.data[0], resp.data[1], resp.data[2])
-//             );
-//             updateScroll();
-//         }
-//     });
 // }
 
 // $("form").submit(function (e) {
@@ -188,16 +183,6 @@ export default {
 // $(document).ready(() => {
 //     updateChat()
 // });
-
-// // Reload chat if toggle button is clicked
-// $('.switch').on("click",
-//     _.debounce(() => {
-//         updateChat();
-//     }, 500, {
-//         'leading': false,
-//         'trailing': true
-//     })
-// );
 </script>
 
 <style scoped>
@@ -223,14 +208,6 @@ export default {
     max-width: 500px;
     max-height: 480px;
     overflow-y: auto;
-  }
-
-  #chatlist {
-    border: solid 1px;
-    border-radius: 4px;
-    padding: 0.4em;
-    min-height: 14em;
-    width: 100%;
   }
 
   form {

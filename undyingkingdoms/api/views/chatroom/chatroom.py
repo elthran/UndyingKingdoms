@@ -4,6 +4,7 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
+from undyingkingdoms.api.vue_safe import vue_safe_form
 from undyingkingdoms.models import Chatroom
 from undyingkingdoms.models.forms.message import MessageForm
 
@@ -11,14 +12,16 @@ from undyingkingdoms.models.forms.message import MessageForm
 class ChatroomAPI(MethodView):
     @login_required
     def get(self):
+        county = current_user.county
+
         form = MessageForm()
-        chat = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id).all()
-        current_user.county.preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
+        messages = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id).all()
+        county.preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
         return jsonify(
             status="success",
             message=f"You called on {__name__}",
-            form=form,
-            chat=chat,
+            csrfToken=form.csrf_token.current_token,
+            messages=messages,
             globalChatOn=current_user.global_chat_on
         )
 
@@ -28,6 +31,7 @@ class ChatroomAPI(MethodView):
 
         current_user.county.preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
 
+        import pdb;pdb.set_trace()
         is_global = request.form['isGlobal'] == 'true'
         update_only = request.form['updateOnly'] == 'true'
         current_user.global_chat_on = is_global
