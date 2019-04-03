@@ -1,3 +1,4 @@
+import hashlib
 from copy import deepcopy
 
 from sqlalchemy import desc
@@ -37,6 +38,7 @@ class User(GameState):
     is_authenticated = db.Column(db.Boolean)  # User has logged in through flask. (Flask)
     is_active = db.Column(db.Boolean)  # Account has been activated via email and not been locked. (Flask)
     is_anonymous = db.Column(db.Boolean)  # Current_user is set to is_anonymous when not yet logged in. (Flask)
+    is_verified = db.Column(db.Boolean)
     is_admin = db.Column(db.Boolean)  # Current user is a game creator with unlimited power
     is_bot = db.Column(db.Boolean)  # Current user is a game creator with unlimited power
 
@@ -64,6 +66,7 @@ class User(GameState):
         self.is_authenticated = True
         self.is_active = True
         self.is_anonymous = False
+        self.is_verified = False  # Custom: for email validation
         
         # Administrative
         self.is_admin = False
@@ -108,6 +111,15 @@ class User(GameState):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def generate_verification_hash(self):
+        email_hash = hashlib.md5(self.username.encode())
+        return email_hash.hexdigest()
+
+    def verify_verification_hash(self, hash):
+        if hash == self.generate_verification_hash():
+            return True
+        return False
 
     def get_id(self):
         return self.id

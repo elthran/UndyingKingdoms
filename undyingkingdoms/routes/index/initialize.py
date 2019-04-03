@@ -15,6 +15,8 @@ from undyingkingdoms.static.metadata.metadata_armies_human import human_armies
 
 @app.route('/initialize/', methods=['GET', 'POST'])
 def initialize():
+    if current_user.is_authenticated and not current_user.is_verified:
+        return redirect(url_for('activate'))
     if current_user.county is not None:
         return redirect(url_for('overview'))
     titles = ["<Title>"] + metadata_titles

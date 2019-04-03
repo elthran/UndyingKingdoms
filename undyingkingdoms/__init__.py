@@ -50,6 +50,7 @@ def import_routes():
     import undyingkingdoms.routes.index.register
     import undyingkingdoms.routes.index.logout
     import undyingkingdoms.routes.index.initialize
+    import undyingkingdoms.routes.index.activate
 
     import undyingkingdoms.routes.gameplay.overview
     import undyingkingdoms.routes.gameplay.economy
