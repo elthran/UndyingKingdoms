@@ -14,7 +14,7 @@
       <chat-list :messages="messages" />
     </div>
     <br>
-    <csrf-token :value="csrfToken" />
+    <csrf-token :value="CSRFToken" />
     <input
       id="content"
       autofocus=""
@@ -50,10 +50,11 @@ export default {
   },
   data () {
     return {
-      csrfToken: String,
+      CSRFToken: String,
       globalChatOn: Boolean,
       messages: [Array],
-      message: ''
+      message: '',
+      action: '/api/chatroom/update'
     }
   },
   watch: {
@@ -63,7 +64,7 @@ export default {
     }
   },
   beforeCreate () {
-    this.$getData('/api/chatroom/chatroom', this.$deployData)
+    this.$getData('/api/chatroom/update', this.$deployData)
   },
   async created () {
     const { default: _ } = await import(/* webpackChunkName: "lodash" */ 'lodash')
@@ -71,31 +72,22 @@ export default {
   },
   methods: {
     updateChat () {
-      this.$getData('/api/chatroom/chatroom', this.$deployData)
+      this.$sendData(this.$data, this.$deployData)
     },
     async sendMessage () {
-      const { default: $ } = await import(/* webpackChunkName: "jquery" */ 'jquery')
-      $.ajaxSetup({
-          headers: {"X-CSRF-TOKEN": $("#csrf_token").val()}
-      });
-
-      $.post("/gameplay/chatroom/", {
-          content: this.message,
-          update_only: false,
-          is_global: this.globalChatOn
-      }, (resp, status) => {
-          if (status === "success") {
-              this.content = ''
-              this.messages.append(
-                {
-                  time: resp.data[0],
-                  leader: resp.data[1],
-                  content: resp.data[2]
-                }
-              )
-              //updateScroll();
-          }
-      });
+      this.$data.updateOnly = false
+      this.$sendData(this.$data, (resp, status) => {
+          this.message = ''
+          this.messages.append(
+            {
+              time: resp.data[0],
+              leader: resp.data[1],
+              content: resp.data[2]
+            }
+          )
+            //updateScroll();
+        }
+      )
     }
   }
 }

@@ -5,7 +5,7 @@ import_endpoints(
     api_blueprint,
     __name__,
     [
-        'chatroom'
+        'update'
     ]
 )
 

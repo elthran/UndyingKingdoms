@@ -9,29 +9,33 @@ from undyingkingdoms.models import Chatroom
 from undyingkingdoms.models.forms.message import MessageForm
 
 
-class ChatroomAPI(MethodView):
+class UpdateAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
 
         form = MessageForm()
-        messages = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id).all()
+        if current_user.global_chat_on:
+            messages = Chatroom.query.filter_by(is_global=current_user.global_chat_on).all()
+        else:
+            messages = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id).all()
         county.preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
         return jsonify(
             status="success",
             message=f"You called on {__name__}",
-            csrfToken=form.csrf_token.current_token,
+            CSRFToken=form.csrf_token.current_token,
             messages=messages,
             globalChatOn=current_user.global_chat_on
         )
 
     @login_required
     def post(self):
+        county = current_user.county
         form = MessageForm()
 
-        current_user.county.preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
+        county.preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
 
-        import pdb;pdb.set_trace()
+
         is_global = request.form['isGlobal'] == 'true'
         update_only = request.form['updateOnly'] == 'true'
         current_user.global_chat_on = is_global
@@ -40,7 +44,7 @@ class ChatroomAPI(MethodView):
             if is_global:
                 chat = Chatroom.query.filter_by(is_global=True).all()
             else:
-                chat = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id, is_global=False).all()
+                chat = Chatroom.query.filter_by(kingdom_id=county.kingdom_id, is_global=False).all()
             return jsonify(
                 status='success',
                 message='Here is the latest data.',
