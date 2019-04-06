@@ -68,7 +68,7 @@ export default {
       newsVisibility: false
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/overview/news')
   }
 }

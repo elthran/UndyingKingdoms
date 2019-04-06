@@ -39,7 +39,7 @@ export default {
       healthTerminology: ""
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/economy/health')
   }
 }

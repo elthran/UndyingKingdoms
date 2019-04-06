@@ -23,7 +23,7 @@ export default {
       manaIncome: -1,
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/economy/mana')
   }
 }

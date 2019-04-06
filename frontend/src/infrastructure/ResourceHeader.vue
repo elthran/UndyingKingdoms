@@ -95,7 +95,7 @@ export default {
       buildSlots: -1
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/infrastructure/resources')
   }
 }

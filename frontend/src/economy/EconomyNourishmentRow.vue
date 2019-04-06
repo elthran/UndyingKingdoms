@@ -37,7 +37,7 @@ export default {
       this.$hydrate('/api/economy/nourishment')
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/economy/nourishment')
   }
 }

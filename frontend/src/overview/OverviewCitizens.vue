@@ -38,7 +38,7 @@ export default {
       grain_stores: -1
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/overview/citizens')
   }
 }

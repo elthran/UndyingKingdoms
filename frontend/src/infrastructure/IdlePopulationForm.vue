@@ -74,7 +74,7 @@ export default {
       }
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/infrastructure/idle_population')
   }
 }

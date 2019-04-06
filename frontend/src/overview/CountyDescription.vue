@@ -14,7 +14,7 @@ export default {
       background: 'someBackground'
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/overview/county_description')
   }
 }

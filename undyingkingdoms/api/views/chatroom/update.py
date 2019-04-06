@@ -43,11 +43,9 @@ class UpdateAPI(MethodView):
             message = Chatroom(county.kingdom_id, county.id, form.content.data, is_global=is_global)
             message.save()
             return jsonify(
-                status='success',
                 debugMessage='Here is your message.',
                 chatMessage=message.json_ready(),
-            )
+            ), 200
         return jsonify(
-            status='success',
             debugMessage='You failed form validation but still updated chat type.'
         )

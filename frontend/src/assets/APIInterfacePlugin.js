@@ -60,7 +60,7 @@ APIInterface.install = function (Vue, options) {
     })
   }
 
-  Vue.prototype.$sendData = function (data, callback) {
+  Vue.prototype.$sendData = async function (data) {
     console.log("running $sendData")
     var formData = new FormData();
     for ( var prop in data ) {
@@ -71,29 +71,16 @@ APIInterface.install = function (Vue, options) {
     if (!formData.has('csrf_token')) {
       formData.set('csrf_token', formData.get('CSRFToken') || formData.get('csrfToken'))
     }
-    this.axios({
+    return this.axios({
       url: formData.get('action'),
       method: 'POST',
       headers: {'X-CSRF-TOKEN': formData.get('csrf_token')},
       data: formData,
       dataType: 'json'  // type of datareturned, not type sent
     })
-    .then((response) => {
-      if (response.data.status === 'success') {
-        console.log("$sendData response:", response)
-        delete response.data.status
-        delete response.data.message
-        callback(this, response.data)
-      } else if (!(response.data.hasOwnProperty('status'))) {
-        console.log('You need to add as "success" attribute to the api "' + url + '" return jsonify.')
-        console.log('You should probably add a "message" attribute as well for debugging purposes.')
-      } else {
-        console.log("$sendData failed:", response)
-      }
-    })
-    .catch((error) => {
-      console.log("$sendData errors are:", error)
-    })
+    // .catch((error) => {
+    //   console.log("$sendData errors are:", error)
+    // })
   }
 }
 

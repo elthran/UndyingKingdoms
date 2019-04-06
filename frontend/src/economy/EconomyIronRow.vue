@@ -24,7 +24,7 @@ export default {
       mines: ""
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/economy/iron')
   }
 }

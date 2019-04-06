@@ -112,7 +112,7 @@ export default {
       this.$hydrate('/api/economy/gold')
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/economy/gold')
   }
 }

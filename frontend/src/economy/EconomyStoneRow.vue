@@ -24,7 +24,7 @@ export default {
       descriptiveName: ""
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/economy/stone')
   }
 }

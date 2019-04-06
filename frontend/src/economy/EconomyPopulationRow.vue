@@ -64,7 +64,7 @@ export default {
       errors: Object
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/economy/population')
   }
 }

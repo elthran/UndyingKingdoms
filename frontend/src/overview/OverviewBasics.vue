@@ -37,7 +37,7 @@ export default {
       end: -1
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/overview/basics')
   }
 }

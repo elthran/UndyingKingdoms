@@ -63,9 +63,17 @@ export default {
     filteredMessages () {
       return this.messages.filter((m) => this.globalChatOn ? m.room === 'global' : m.room === 'kingdom')
     },
+    lastMessageId () {
+      return this.messages.slice(-1).id
+    },
   },
-  async beforeMount () {
-    await this.$hydrate('/api/chatroom/update')
+  mount () {
+    this.$hydrate('/api/chatroom/update')
+    .then(() => {
+      this.toggleWatcher = this.$watch('globalChatOn', function () {
+        this.updateChat()
+      })
+    })
   },
   methods: {
     updateChat () {
@@ -73,8 +81,10 @@ export default {
       this.$sendData({
         csrf_token: this.CSRFToken,
         global_chat_on: this.globalChatOn,
-        action: '/api/chatroom/update'
-      }, function (self, data) {
+        action: '/api/chatroom/update',
+        last_message_id: this.lastMessageId,
+      })
+      .then(() => {
         self.$hydrate('/api/chatroom/update')
       })
     },

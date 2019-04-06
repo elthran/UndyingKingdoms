@@ -81,7 +81,7 @@ export default {
       this.$hydrate('/api/economy/happiness')
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/economy/happiness')
   }
 }

@@ -130,7 +130,7 @@ export default {
       })
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/economy/update')
   }
 }

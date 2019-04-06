@@ -45,7 +45,7 @@ export default {
       mana: -1
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/overview/treasury')
   }
 }

@@ -92,7 +92,7 @@ export default {
       errors: Object
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/infrastructure/buildings')
   },
   methods: {

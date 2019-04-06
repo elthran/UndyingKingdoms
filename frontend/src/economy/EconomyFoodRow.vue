@@ -102,7 +102,7 @@ export default {
       this.$hydrate('/api/economy/food')
     }
   },
-  beforeCreate () {
+  mounted () {
     this.$hydrate('/api/economy/food')
   }
 }
