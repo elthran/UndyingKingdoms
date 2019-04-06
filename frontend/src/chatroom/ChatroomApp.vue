@@ -82,11 +82,13 @@ export default {
         csrf_token: this.CSRFToken,
         global_chat_on: this.globalChatOn,
         action: '/api/chatroom/update',
-        last_message_id: this.lastMessageId,
-      })
-      .then(() => {
-        this.$hydrate('/api/chatroom/update')
-      })
+      }).catch((error) => { console.log(error) })
+
+      // maybe getting these at the same time will work?
+      this.$getData('/api/chatroom/update?last_message_id==' + this.lastMessageId)
+      .then((data) => {
+        this.messages.concat(data.messages)
+      }).catch((error) => { console.log(error) })
     },
     sendMessage () {
       var content = this.message
@@ -99,8 +101,6 @@ export default {
         last_message_id: this.lastMessageId,
       })
       .then((data) => {
-        console.log("sendMessage:", data)
-        this.messages.push(data.chatMessage)
             //updateScroll();
       })
     }

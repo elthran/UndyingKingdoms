@@ -1,7 +1,17 @@
 var APIInterface = {}
 
 APIInterface.install = function (Vue, options) {
-  Vue.prototype.$hydrate = function (url, callback) {
+  Vue.prototype.$getData = function (url) {
+    return this.axios.get(url)
+    .then((response) => {
+      return new Promise(response.data)
+    })
+    .catch((error) => {
+      console.log(error, error.response)
+    })
+  }
+
+  Vue.prototype.$hydrate = function (url) {
     // console.log('hydrating')
     return this.axios.get(url)
     .then((response) => {
@@ -81,7 +91,7 @@ APIInterface.install = function (Vue, options) {
       dataType: 'json'  // type of datareturned, not type sent
     })
     .then((response) => {
-      return response.data
+      return new Promise(response.data)
     })
     .catch((error) => {
       console.log("$sendData errors are:", error)

@@ -18,8 +18,10 @@ class UpdateAPI(MethodView):
 
         form = MessageForm()
 
+        last_message_id = request.args.get('last_message_id', 0)
+        # import pdb;pdb.set_trace()
         # return all messages, filter in frontend
-        messages = Chatroom.query.filter(Chatroom.is_global, Chatroom.kingdom_id==county.kingdom_id).all()
+        messages = Chatroom.query.filter(Chatroom.is_global, Chatroom.kingdom_id==county.kingdom_id, Chatroom.id > last_message_id).all()
         preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
         return jsonify(
             debugMessage=f"You called on {__name__}",
@@ -43,9 +45,13 @@ class UpdateAPI(MethodView):
             message = Chatroom(county.kingdom_id, county.id, form.content.data, is_global=is_global)
             message.save()
             return jsonify(
-                debugMessage='Here is your message.',
-                chatMessage=message.json_ready(),
-            ), 200
-        return jsonify(
-            debugMessage='You failed form validation but still updated chat type.'
-        )
+                debugMessage='Your message was saved.',
+            ), 201
+        elif form.data.content == '':
+            return jsonify(
+                debugMessage='Update chat room selection',
+            ), 303
+        else:
+            return jsonify(
+                debugMessage='Failed from validation.'
+            ), 400
