@@ -78,11 +78,11 @@ export default {
   },
   watch: {
     update () {
-      this.$getData('/api/economy/happiness', this.$deployData)
+      this.$hydrate('/api/economy/happiness')
     }
   },
   beforeCreate () {
-    this.$getData('/api/economy/happiness', this.$deployData)
+    this.$hydrate('/api/economy/happiness')
   }
 }
 </script>

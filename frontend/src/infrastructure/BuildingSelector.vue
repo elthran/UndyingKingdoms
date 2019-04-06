@@ -93,14 +93,14 @@ export default {
     }
   },
   beforeCreate () {
-    this.$getData('/api/infrastructure/buildings', this.$deployData)
+    this.$hydrate('/api/infrastructure/buildings')
   },
   methods: {
     submitForm () {
       this.amount = 0
       this.$refs.submitButton.disabled = true
       this.$sendData(this.buildFormData(), () => {
-        this.$getData('/api/infrastructure/buildings', this.$deployData)
+        this.$hydrate('/api/infrastructure/buildings')
       })
       setTimeout(() => {
         this.$refs.submitButton.disabled = false

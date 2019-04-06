@@ -40,7 +40,7 @@ export default {
     }
   },
   beforeCreate () {
-    this.$getData('/api/economy/health', this.$deployData)
+    this.$hydrate('/api/economy/health')
   }
 }
 </script>

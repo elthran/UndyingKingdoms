@@ -25,7 +25,7 @@ export default {
     }
   },
   beforeCreate () {
-    this.$getData('/api/economy/iron', this.$deployData)
+    this.$hydrate('/api/economy/iron')
   }
 }
 </script>

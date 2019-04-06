@@ -96,7 +96,7 @@ export default {
     }
   },
   beforeCreate () {
-    this.$getData('/api/infrastructure/resources', this.$deployData)
+    this.$hydrate('/api/infrastructure/resources')
   }
 }
 </script>

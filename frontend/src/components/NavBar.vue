@@ -120,13 +120,12 @@ export default {
         chatroom: ''
       },
       user: Object,
-      errors: Object
     }
   },
-  beforeCreate () {
+  mounted () {
     // if development
     // url is 'http://localhost:5000/api/sidebar' - happens auto-magically.
-    this.$getData('/api/sidebar', this.$deployData)
+    this.$hydrate('/api/sidebar')
   }
 }
 </script>

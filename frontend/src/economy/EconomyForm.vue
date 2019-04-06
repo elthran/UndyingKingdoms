@@ -131,7 +131,7 @@ export default {
     }
   },
   beforeCreate () {
-    this.$getData('/api/economy/update', this.$deployData)
+    this.$hydrate('/api/economy/update')
   }
 }
 </script>

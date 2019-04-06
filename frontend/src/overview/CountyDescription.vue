@@ -15,7 +15,7 @@ export default {
     }
   },
   beforeCreate () {
-    this.$getData('/api/overview/county_description', this.$deployData)
+    this.$hydrate('/api/overview/county_description')
   }
 }
 </script>

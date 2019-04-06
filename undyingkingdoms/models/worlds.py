@@ -2,14 +2,12 @@ import os
 from datetime import datetime
 
 from pandas import DataFrame
-from sqlalchemy import desc
 
 from undyingkingdoms.models import helpers
 from undyingkingdoms.models.users import User
 from undyingkingdoms.models.dau import DAU
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.kingdoms import Kingdom
-from undyingkingdoms.models.chatroom import Chatroom
 from undyingkingdoms.models.bases import GameState
 
 from extensions import flask_db as db
@@ -125,19 +123,6 @@ class World(GameState):
             filename = "{}/{}_table.csv".format(current_path, name)
             df = DataFrame(table)
             df.to_csv(filename, header=headers)
-
-    def get_most_recent_townhall_time(self, kingdom_id):
-        most_recent_global_chat = Chatroom.query.filter_by(is_global=True).order_by(desc('time_created')).first()
-        if not most_recent_global_chat:
-            most_recent_global_time = self.time_created
-        else:
-            most_recent_global_time = most_recent_global_chat.time_created
-        most_recent_kingdom_chat = Chatroom.query.filter_by(is_global=False).filter_by(kingdom_id=kingdom_id).order_by(desc('time_created')).first()
-        if not most_recent_kingdom_chat:
-            most_recent_kingdom_time = self.time_created
-        else:
-            most_recent_kingdom_time = most_recent_kingdom_chat.time_created
-        return max(most_recent_kingdom_time, most_recent_global_time)
 
     def __repr__(self):
         return '<World %r (%r)>' % ('id:', self.id)

@@ -69,7 +69,7 @@ export default {
     }
   },
   beforeCreate () {
-    this.$getData('/api/overview/news', this.$deployData)
+    this.$hydrate('/api/overview/news')
   }
 }
 </script>

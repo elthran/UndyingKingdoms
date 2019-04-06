@@ -1,4 +1,5 @@
 from datetime import datetime
+from distutils.util import strtobool
 
 from flask import jsonify, request
 from flask.views import MethodView
@@ -13,53 +14,40 @@ class UpdateAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
+        preferences = current_user.preferences
 
         form = MessageForm()
-        if current_user.global_chat_on:
-            messages = Chatroom.query.filter_by(is_global=current_user.global_chat_on).all()
-        else:
-            messages = Chatroom.query.filter_by(kingdom_id=current_user.county.kingdom_id).all()
-        county.preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
+
+        # return all messages, filter in frontend
+        messages = Chatroom.query.filter(Chatroom.is_global, Chatroom.kingdom_id==county.kingdom_id).all()
+        preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
         return jsonify(
-            status="success",
-            message=f"You called on {__name__}",
+            debugMessage=f"You called on {__name__}",
             CSRFToken=form.csrf_token.current_token,
-            messages=messages,
-            globalChatOn=current_user.global_chat_on
-        )
+            messages=[m.json_ready() for m in messages],
+            globalChatOn=preferences.global_chat_on,
+        ), 200
 
     @login_required
     def post(self):
         county = current_user.county
+        preferences = current_user.preferences
         form = MessageForm()
 
-        county.preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
+        preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
 
+        is_global = strtobool(request.form['global_chat_on'])
+        preferences.global_chat_on = is_global
 
-        is_global = request.form['isGlobal'] == 'true'
-        update_only = request.form['updateOnly'] == 'true'
-        current_user.global_chat_on = is_global
-
-        if update_only:
-            if is_global:
-                chat = Chatroom.query.filter_by(is_global=True).all()
-            else:
-                chat = Chatroom.query.filter_by(kingdom_id=county.kingdom_id, is_global=False).all()
-            return jsonify(
-                status='success',
-                message='Here is the latest data.',
-                data=(message.json_ready() for message in chat),
-                csrf=form.csrf_token.current_token,
-            )
-        elif form.validate_on_submit():
-            message = Chatroom(current_user.county.kingdom_id, current_user.county.id, form.content.data, is_global=is_global)
+        if form.validate_on_submit():
+            message = Chatroom(county.kingdom_id, county.id, form.content.data, is_global=is_global)
             message.save()
             return jsonify(
                 status='success',
                 message='Here is your message.',
-                data=message.json_ready(),
+                chatMessage=message.json_ready(),
             )
         return jsonify(
-            status='fail',
-            message='Did not pass form validation.'
+            status='success',
+            message='You failed form validation but still updated chat type.'
         )

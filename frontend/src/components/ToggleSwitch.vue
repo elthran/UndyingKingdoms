@@ -3,7 +3,7 @@
     <input
       id="toggle-switch"
       type="checkbox"
-      :checked="checked"
+      :checked="value"
       @input="$emit('input', $event.target.checked)"
     >
     <div class="slider round">
@@ -17,7 +17,10 @@
 export default {
   name: 'ToggleSwitch',
   props: {
-    checked: Boolean(),
+    value: {
+      type: Boolean,
+      required: true,
+    },
     onLabel: String,
     offLabel: String
   },

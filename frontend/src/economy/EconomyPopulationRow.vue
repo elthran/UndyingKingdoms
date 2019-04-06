@@ -65,7 +65,7 @@ export default {
     }
   },
   beforeCreate () {
-    this.$getData('/api/economy/population', this.$deployData)
+    this.$hydrate('/api/economy/population')
   }
 }
 </script>

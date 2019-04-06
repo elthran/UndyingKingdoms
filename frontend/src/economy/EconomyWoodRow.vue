@@ -25,7 +25,7 @@ export default {
     }
   },
   beforeCreate () {
-    this.$getData('/api/economy/wood', this.$deployData)
+    this.$hydrate('/api/economy/wood')
   }
 }
 </script>

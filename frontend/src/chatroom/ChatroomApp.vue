@@ -7,29 +7,29 @@
         v-model="globalChatOn"
         on-label="global"
         off-label="kingdom"
-        :checked="globalChatOn"
       />
     </div>
     <div id="chat-div">
-      <chat-list :messages="messages" />
+      <chat-list :messages="filteredMessages" />
     </div>
     <br>
     <csrf-token :value="CSRFToken" />
     <input
       id="content"
-      autofocus=""
+      v-model="message"
       class="form-control"
       name="content"
       placeholder="Public to your kingdom"
       required
+      autofocus
       type="text"
-      :value="message"
+      @keyup.enter="sendMessage"
     >
     <br><br>
     <button
       id="send"
       type="submit"
-      @click="sendMessage()"
+      @click="sendMessage"
     >
       Send Herald
     </button>
@@ -50,44 +50,47 @@ export default {
   },
   data () {
     return {
-      CSRFToken: String,
-      globalChatOn: Boolean,
-      messages: [Array],
+      CSRFToken: '',
+      globalChatOn: null,
+      messages: null,
       message: '',
-      action: '/api/chatroom/update'
+      leader: null,
+      timestamp: null,
+      toggleWatcher: null
     }
   },
-  watch: {
-    globalChatOn () {
-      // Reload chat if toggle button is clicked
-      this.debouncedUpdateChat()
-    }
+  computed: {
+    filteredMessages () {
+      return this.messages.filter((m) => this.globalChatOn ? m.room === 'global' : m.room === 'kingdom')
+    },
   },
-  beforeCreate () {
-    this.$getData('/api/chatroom/update', this.$deployData)
-  },
-  async created () {
-    const { default: _ } = await import(/* webpackChunkName: "lodash" */ 'lodash')
-    this.debouncedUpdateChat = _.debounce(this.updateChat, 500, {leading: false, trailing: true})
+  mounted () {
+    this.$hydrate('/api/chatroom/update')
   },
   methods: {
     updateChat () {
-      this.$sendData(this.$data, this.$deployData)
+      console.log('updating chat')
+      this.$sendData({
+        csrf_token: this.CSRFToken,
+        global_chat_on: this.globalChatOn,
+        action: '/api/chatroom/update'
+      }, function (self, data) {
+        self.$hydrate('/api/chatroom/update')
+      })
     },
-    async sendMessage () {
-      this.$data.updateOnly = false
-      this.$sendData(this.$data, (resp, status) => {
-          this.message = ''
-          this.messages.append(
-            {
-              time: resp.data[0],
-              leader: resp.data[1],
-              content: resp.data[2]
-            }
-          )
+    sendMessage () {
+      var content = this.message
+      this.message = ''
+      this.$sendData({
+        csrf_token: this.CSRFToken,
+        global_chat_on: this.globalChatOn,
+        content: content,
+        action: '/api/chatroom/update'
+      }, function (self, data) {
+        console.log("sendMessage:", data, data.data)
+        self.messages.push(data.chatMessage)
             //updateScroll();
-        }
-      )
+      })
     }
   }
 }

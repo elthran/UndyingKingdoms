@@ -47,8 +47,7 @@ class SideBarAPI(MethodView):
         )
 
         return jsonify(
-            status="success",
-            message="You called on the sidebar api.",
+            debugMessage="You called on the sidebar api.",
             user=user,
             urlFor=urls
-        )
+        ), 200

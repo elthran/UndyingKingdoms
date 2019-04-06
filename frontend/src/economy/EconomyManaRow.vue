@@ -24,7 +24,7 @@ export default {
     }
   },
   beforeCreate () {
-    this.$getData('/api/economy/mana', this.$deployData)
+    this.$hydrate('/api/economy/mana')
   }
 }
 </script>

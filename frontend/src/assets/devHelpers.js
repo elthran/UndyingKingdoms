@@ -14,14 +14,13 @@ async function login () {
   var loginUrl = 'http://localhost:5000/login/'
   var csrfToken;
 
-  $.ajax({
-    async: false,
+  await $.ajax({
     type: "GET",
     url: loginUrl,
     xhrFields: {
       withCredentials: true
     },
-    success: (response, status) => {
+    success: async (response, status) => {
       // console.log('GET login successful');
       // console.log(response);
       csrfToken = $('#csrf_token', response);
@@ -29,14 +28,13 @@ async function login () {
       if (csrfToken.val() === undefined) {
         // console.log("You are already logged in!")
       } else {
-        $.ajax({
-          async: false,
+        await $.ajax({
           type: "POST",
-          url: loginUrl, 
+          url: loginUrl,
           data: $.param({
             email: "haldon@gmail.com",
             password: "brunner"
-          }), 
+          }),
           xhrFields: {
             withCredentials: true
           },

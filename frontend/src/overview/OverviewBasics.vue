@@ -38,7 +38,7 @@ export default {
     }
   },
   beforeCreate () {
-    this.$getData('/api/overview/basics', this.$deployData)
+    this.$hydrate('/api/overview/basics')
   }
 }
 </script>

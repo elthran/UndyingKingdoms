@@ -43,6 +43,7 @@ nav > a {
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
+{% set preferences = user.preferences %}
 <nav class="mobile-sidebar">
   <hr class="width-100-percent">
   <a href="{{ url_for('overview') }}">County&nbsp;Overview</a>
@@ -63,7 +64,7 @@ nav > a {
     </h2>
     <a href="{{ url_for('trading') }}">Trades</a>
     <a href="{{ url_for('messages') }}" {% if has_mail %}style="color:blue;font-weight:bold;"{% endif %}>Messages</a>
-    <a href="{{ url_for('chatroom') }}" {% if county.has_new_townhall_message() %}style="color:blue;font-weight:bold;"{% endif %}>Town&nbsp;Hall</a>
+    <a href="{{ url_for('chatroom') }}" {% if preferences.has_new_townhall_message() %}style="color:blue;font-weight:bold;"{% endif %}>Town&nbsp;Hall</a>
     <a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom&nbsp;Overview</a>
     {% if kingdom.leader != 0 %}
       <span class="top-spacer-dot-3">

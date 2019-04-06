@@ -46,7 +46,7 @@ export default {
     }
   },
   beforeCreate () {
-    this.$getData('/api/overview/treasury', this.$deployData)
+    this.$hydrate('/api/overview/treasury')
   }
 }
 </script>
