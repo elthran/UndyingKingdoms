@@ -17,9 +17,9 @@ class AllocateAPI(MethodView):
             county.production_choice = excess_worker_form.goal.data
             return jsonify(
                 status="success",
-                message=f"You allocated workers to {excess_worker_form.goal.choices[county.production_choice]}"
+                debugMessage=f"You allocated workers to {excess_worker_form.goal.choices[county.production_choice]}"
             )
         return jsonify(
             status="fail",
-            message="Your allocation form failed to pass validation."
+            debugMessage="Your allocation form failed to pass validation."
         )

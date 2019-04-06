@@ -13,7 +13,7 @@ class PopulationAPI(MethodView):
 
         return jsonify(
             status='success',
-            message='You called on the population api.',
+            debugMessage='You called on the population api.',
             population=county.population,
             population_projection=county.get_population_change(prediction=True),
             race=county.race,

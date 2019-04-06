@@ -34,9 +34,9 @@ class BuildBuildingsAPI(MethodView):
             transaction.save()
             return jsonify(
                 status="success",
-                message="You built some buildings."
+                debugMessage="You built some buildings."
             )
         return jsonify(
             status="fail",
-            message="Your build buildings form did not pass validation."
+            debugMessage="Your build buildings form did not pass validation."
         )

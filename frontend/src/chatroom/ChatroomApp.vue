@@ -51,8 +51,8 @@ export default {
   data () {
     return {
       CSRFToken: '',
-      globalChatOn: null,
-      messages: null,
+      globalChatOn: true,
+      messages: [],
       message: '',
       leader: null,
       timestamp: null,
@@ -64,8 +64,8 @@ export default {
       return this.messages.filter((m) => this.globalChatOn ? m.room === 'global' : m.room === 'kingdom')
     },
   },
-  mounted () {
-    this.$hydrate('/api/chatroom/update')
+  async beforeMount () {
+    await this.$hydrate('/api/chatroom/update')
   },
   methods: {
     updateChat () {

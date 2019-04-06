@@ -13,7 +13,7 @@ class HappinessAPI(MethodView):
 
         return jsonify(
             status='success',
-            message='You called the happiness api.',
+            debugMessage='You called the happiness api.',
             happiness=county.happiness,
             happinessChange=county.get_happiness_change(),
             areRelaxing=county.production_choice == 3,

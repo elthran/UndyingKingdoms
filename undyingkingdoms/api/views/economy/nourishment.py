@@ -9,7 +9,7 @@ class NourishmentAPI(MethodView):
 
         return jsonify(
             status='success',
-            message='You called the nourishment api.',
+            debugMessage='You called the nourishment api.',
             nourishment=county.nourishment,
             nourishmentChange=county.get_nourishment_change(),
         )

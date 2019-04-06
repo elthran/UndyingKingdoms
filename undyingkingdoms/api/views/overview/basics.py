@@ -13,7 +13,7 @@ class BasicsAPI(MethodView):
 
         return jsonify(
             status="success",
-            message=f"You called on {__name__}",
+            debugMessage=f"You called on {__name__}",
             leaderless=kingdom.leader == 0,
             day=world.day,
             weather=preferences.weather.title(),

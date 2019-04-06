@@ -10,7 +10,7 @@ class StoneAPI(MethodView):
 
         return jsonify(
             status='success',
-            message='You called the stone api.',
+            debugMessage='You called the stone api.',
             stoneAmount=county.stone,
             stoneIncome=county.get_stone_income(),
             descriptiveName=county.buildings['quarry'].class_name_plural.title(),

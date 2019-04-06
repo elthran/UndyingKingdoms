@@ -1,31 +1,33 @@
 var APIInterface = {}
 
 APIInterface.install = function (Vue, options) {
-  Vue.prototype.$hydrate = async function (url, callback) {
+  Vue.prototype.$hydrate = function (url, callback) {
     return this.axios.get(url)
     .then((response) => {
       if (!(response.data.hasOwnProperty('debugMessage'))) {
         console.log('You need to add as "debugMessage" attribute to the api "' + url + '" return jsonify.')
       }
       delete response.data.debugMessage
-      return this.$deployData(this, response.data)
+      return this.$deployData(response.data)
     })
     .catch((error) => {
       console.log(error, error.response)
     })
   }
 
-  Vue.prototype.$deployData = async function (self, articles) {
-    const { default: _ } = await import(/* webpackChunkName: "lodash" */ 'lodash')
-    _.forEach(articles, function (article, key) {
-      if (self.hasOwnProperty(key)) {
-        self[key] = article
-      } else {
-        console.log('You need to add "' + key + '" to this vue component.')
-        console.log('Its value is: ', article)
+  Vue.prototype.$deployData = function (data) {
+    // console.log("Deploying data")
+    // console.log(this, data)
+    for ( var prop in data ) {
+      // console.log(prop, data[prop])
+      if (data.hasOwnProperty(prop)) {
+        this.$data[prop] = data[prop]
       }
-    })
-    return _
+      if (!(this.$data.hasOwnProperty(prop))) {
+        console.log('You need to add "' + prop + '" to this vue component.')
+        console.log('Its value is: ', data[prop])
+      }
+    }
   }
 
   Vue.prototype.$sendForm = async function (form, callback) {

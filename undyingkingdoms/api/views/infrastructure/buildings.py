@@ -53,7 +53,7 @@ class BuildingsAPI(MethodView):
 
         return jsonify(
             status="success",
-            message="You called on the buildings api.",
+            debugMessage="You called on the buildings api.",
             buildings=vue_safe_buildings,
             buildOrder=build_order,
             totalBuilt=total_built,

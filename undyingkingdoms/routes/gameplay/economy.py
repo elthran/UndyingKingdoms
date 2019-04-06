@@ -52,7 +52,7 @@ def update_economy():
 
         return jsonify(
             status="success",
-            message="You have updated your economy data.",
+            debugMessage="You have updated your economy data.",
             birth_rate_modifier=birth_rate_modifier,
             income_modifier=income_modifier,
             food_consumed_modifier=food_consumed_modifier,
@@ -66,5 +66,5 @@ def update_economy():
         )
     return jsonify(
         status="fail",
-        message="You economy data did not pass form validation."
+        debugMessage="You economy data did not pass form validation."
     )

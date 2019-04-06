@@ -12,7 +12,7 @@ class NewsAPI(MethodView):
 
         return jsonify(
             status="success",
-            message=f"You called on {__name__}",
+            debugMessage=f"You called on {__name__}",
             news=vue_safe_news(county.display_news()),
             oldNews=vue_safe_news(county.display_old_news())
         )

@@ -10,7 +10,7 @@ class ResourcesAPI(MethodView):
 
         return jsonify(
             status="success",
-            message="You called on the resources api.",
+            debugMessage="You called on the resources api.",
             availableLand=county.get_available_land(),
             availableCitizens=county.get_available_workers(),
             land=county.land,

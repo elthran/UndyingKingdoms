@@ -18,7 +18,7 @@ class FoodAPI(MethodView):
 
         return jsonify(
             status='success',
-            message='You called the food api.',
+            debugMessage='You called the food api.',
             grain_stores=county.grain_stores,
             grainStorageChange=county.grain_storage_change(),
             foodEaten=county.get_food_to_be_eaten(),

@@ -10,7 +10,7 @@ class ManaAPI(MethodView):
 
         return jsonify(
             status='success',
-            message='You called the mana api.',
+            debugMessage='You called the mana api.',
             manaAmount=county.mana,
             manaIncome=county.get_mana_change(),
         )

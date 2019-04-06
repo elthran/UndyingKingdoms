@@ -18,7 +18,7 @@ class GoldAPI(MethodView):
 
         return jsonify(
             status='success',
-            message='You called on the gold api.',
+            debugMessage='You called on the gold api.',
             tax=county.tax_rate,
             gold=county.gold,
             rations=county.rations,

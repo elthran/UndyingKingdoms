@@ -44,10 +44,10 @@ class UpdateAPI(MethodView):
             message.save()
             return jsonify(
                 status='success',
-                message='Here is your message.',
+                debugMessage='Here is your message.',
                 chatMessage=message.json_ready(),
             )
         return jsonify(
             status='success',
-            message='You failed form validation but still updated chat type.'
+            debugMessage='You failed form validation but still updated chat type.'
         )
