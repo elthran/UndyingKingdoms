@@ -67,7 +67,7 @@ export default {
       return this.messages.slice(-1).id
     },
   },
-  mount () {
+  mounted () {
     this.$hydrate('/api/chatroom/update')
     .then(() => {
       this.toggleWatcher = this.$watch('globalChatOn', function () {
@@ -85,7 +85,7 @@ export default {
         last_message_id: this.lastMessageId,
       })
       .then(() => {
-        self.$hydrate('/api/chatroom/update')
+        this.$hydrate('/api/chatroom/update')
       })
     },
     sendMessage () {
@@ -95,10 +95,12 @@ export default {
         csrf_token: this.CSRFToken,
         global_chat_on: this.globalChatOn,
         content: content,
-        action: '/api/chatroom/update'
-      }, function (self, data) {
-        console.log("sendMessage:", data, data.data)
-        self.messages.push(data.chatMessage)
+        action: '/api/chatroom/update',
+        last_message_id: this.lastMessageId,
+      })
+      .then((data) => {
+        console.log("sendMessage:", data)
+        this.messages.push(data.chatMessage)
             //updateScroll();
       })
     }

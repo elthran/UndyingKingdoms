@@ -2,6 +2,7 @@ var APIInterface = {}
 
 APIInterface.install = function (Vue, options) {
   Vue.prototype.$hydrate = function (url, callback) {
+    // console.log('hydrating')
     return this.axios.get(url)
     .then((response) => {
       if (!(response.data.hasOwnProperty('debugMessage'))) {
@@ -15,9 +16,9 @@ APIInterface.install = function (Vue, options) {
     })
   }
 
-  Vue.prototype.$deployData = function (data) {
+  Vue.prototype.$deployData = async function (data) {
     // console.log("Deploying data")
-    // console.log(this, data)
+    // console.log(data)
     for ( var prop in data ) {
       // console.log(prop, data[prop])
       if (data.hasOwnProperty(prop)) {
@@ -28,6 +29,7 @@ APIInterface.install = function (Vue, options) {
         console.log('Its value is: ', data[prop])
       }
     }
+    return data
   }
 
   Vue.prototype.$sendForm = async function (form, callback) {
@@ -78,9 +80,12 @@ APIInterface.install = function (Vue, options) {
       data: formData,
       dataType: 'json'  // type of datareturned, not type sent
     })
-    // .catch((error) => {
-    //   console.log("$sendData errors are:", error)
-    // })
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log("$sendData errors are:", error)
+    })
   }
 }
 
