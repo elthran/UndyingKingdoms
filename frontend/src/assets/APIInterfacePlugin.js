@@ -4,10 +4,11 @@ APIInterface.install = function (Vue, options) {
   Vue.prototype.$getData = function (url) {
     return this.axios.get(url)
     .then((response) => {
-      return new Promise(response.data)
+      return response.data
     })
     .catch((error) => {
-      console.log(error, error.response)
+      // console.log("$getData errors are:", error, error.response)
+      return Promise.reject(error)
     })
   }
 
@@ -22,11 +23,12 @@ APIInterface.install = function (Vue, options) {
       return this.$deployData(response.data)
     })
     .catch((error) => {
-      console.log(error, error.response)
+      console.log("$hydrate errors are:", error, error.response)
+      return Promise.reject(error)
     })
   }
 
-  Vue.prototype.$deployData = async function (data) {
+  Vue.prototype.$deployData = function (data) {
     // console.log("Deploying data")
     // console.log(data)
     for ( var prop in data ) {
@@ -69,11 +71,12 @@ APIInterface.install = function (Vue, options) {
     })
     .catch((error) => {
       console.log("$sendForm errors are:", error)
+      return Promise.reject(error)
     })
   }
 
   Vue.prototype.$sendData = async function (data) {
-    console.log("running $sendData")
+    // console.log("running $sendData")
     var formData = new FormData();
     for ( var prop in data ) {
       if (data.hasOwnProperty(prop)) {
@@ -91,10 +94,11 @@ APIInterface.install = function (Vue, options) {
       dataType: 'json'  // type of datareturned, not type sent
     })
     .then((response) => {
-      return new Promise(response.data)
+      return response.data
     })
     .catch((error) => {
-      console.log("$sendData errors are:", error)
+      // console.log("$sendData errors are:", error, error.response)
+      return Promise.reject(error)
     })
   }
 }

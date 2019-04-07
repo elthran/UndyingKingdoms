@@ -64,7 +64,7 @@ export default {
       return this.messages.filter((m) => this.globalChatOn ? m.room === 'global' : m.room === 'kingdom')
     },
     lastMessageId () {
-      return this.messages.slice(-1).id
+      return this.messages.slice(-1)[0].id
     },
   },
   mounted () {
@@ -77,18 +77,22 @@ export default {
   },
   methods: {
     updateChat () {
-      console.log('updating chat')
+      // console.log('updating chat')
       this.$sendData({
         csrf_token: this.CSRFToken,
         global_chat_on: this.globalChatOn,
         action: '/api/chatroom/update',
-      }).catch((error) => { console.log(error) })
-
-      // maybe getting these at the same time will work?
-      this.$getData('/api/chatroom/update?last_message_id==' + this.lastMessageId)
-      .then((data) => {
-        this.messages.concat(data.messages)
-      }).catch((error) => { console.log(error) })
+      })
+      .catch((error) => {
+        if (error.response.status === 303) {
+          return 0
+        } else {
+          console.log("updateChat errors:", error, error.response)
+          return Promise.reject(error)
+        }
+      })
+      // always run this, in parallel
+      this.getNewMessages()
     },
     sendMessage () {
       var content = this.message
@@ -101,8 +105,19 @@ export default {
         last_message_id: this.lastMessageId,
       })
       .then((data) => {
+        // console.log("Send message response:", data)
+        return this.getNewMessages()
             //updateScroll();
       })
+    },
+    getNewMessages () {
+      // console.log("getNewMessages")
+      return this.$getData('/api/chatroom/update?last_message_id=' + this.lastMessageId)
+      .then((data) => {
+        // console.log("new messages:", data)
+        this.messages = this.messages.concat(data.messages)
+      })
+      .catch((error) => { console.log(error); Promise.reject(error) })
     }
   }
 }

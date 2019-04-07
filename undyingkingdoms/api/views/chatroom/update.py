@@ -5,7 +5,6 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
-from undyingkingdoms.api.vue_safe import vue_safe_form
 from undyingkingdoms.models import Chatroom
 from undyingkingdoms.models.forms.message import MessageForm
 
@@ -21,7 +20,7 @@ class UpdateAPI(MethodView):
         last_message_id = request.args.get('last_message_id', 0)
         # import pdb;pdb.set_trace()
         # return all messages, filter in frontend
-        messages = Chatroom.query.filter(Chatroom.is_global, Chatroom.kingdom_id==county.kingdom_id, Chatroom.id > last_message_id).all()
+        messages = Chatroom.query.filter(Chatroom.kingdom_id==county.kingdom_id, Chatroom.id > last_message_id).all()
         preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
         return jsonify(
             debugMessage=f"You called on {__name__}",
@@ -47,7 +46,7 @@ class UpdateAPI(MethodView):
             return jsonify(
                 debugMessage='Your message was saved.',
             ), 201
-        elif form.data.content == '':
+        elif form.content.data == '':
             return jsonify(
                 debugMessage='Update chat room selection',
             ), 303
