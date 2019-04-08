@@ -349,7 +349,7 @@ var RATIONS = {{ county.rations }};
 var FOOD_EATEN = {{ county.get_food_to_be_eaten() }};
 var HEALTHINESS_CHANGE = {{ county.get_healthiness_change() }};
 var EMIGRATION_RATE = {{ county.get_emigration_rate() }};
-var POPULATION_CHANGE = {{ county.get_population_change(prediction=True) }};
+var POPULATION_CHANGE = {{ county.get_population_change() }};
 // end of Jinja code. Please keep it inside here.
 
 function sendForm (form, callback) {

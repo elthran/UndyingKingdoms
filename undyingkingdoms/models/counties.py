@@ -75,11 +75,6 @@ class County(GameState):
     expeditions = db.relationship('Expedition', backref='county')
     infiltrations = db.relationship('Infiltration', backref='county', foreign_keys='[Infiltration.county_id]')
 
-    births = db.Column(db.Integer)
-    deaths = db.Column(db.Integer)
-    immigration = db.Column(db.Integer)
-    emigration = db.Column(db.Integer)
-
     buildings = db.relationship("Building",
                                 collection_class=attribute_mapped_collection('name'),
                                 cascade="all, delete, delete-orphan", passive_deletes=True)
@@ -124,11 +119,6 @@ class County(GameState):
         self.lifetime_stone = self._stone
         self.lifetime_research = self._research
         self.lifetime_mana = self._mana
-        # Predictions from advisors
-        self.births = 0
-        self.deaths = 0
-        self.immigration = 0
-        self.emigration = 0
         # Buildings and Armies extracted from metadata
         if self.race == 'Dwarf':
             self.buildings = deepcopy(dwarf_buildings)
@@ -687,15 +677,15 @@ class County(GameState):
         raw_rate = (self.happiness / 100) * (self.land / 5)  # 5% times your happiness rating
         return int(raw_rate * modifier)
 
-    @staticmethod
-    def get_immigration_rate():
-        return randint(25, 35)
+    def get_immigration_rate(self):
+        random_hash = (self.kingdom.world.day ** 2) % 10
+        return 25 + random_hash
 
     def get_emigration_rate(self):
         return int((self.preferences.tax_rate * 3) + self.kingdom.world.age + (0.005 * self.population))
 
     @cached_random
-    def get_population_change(self, prediction=False):
+    def get_population_change(self):
         growth = self.get_birth_rate() + self.get_immigration_rate()
         decay = self.get_death_rate() + self.get_emigration_rate()
         if growth < decay:  # Can't decay more than 3% of population an hour
@@ -703,11 +693,11 @@ class County(GameState):
         return growth - decay
 
     def update_population(self):
-        self.deaths = self.get_death_rate()
-        self.emigration = self.get_emigration_rate()
-        self.births = self.get_birth_rate()
-        self.immigration = self.get_immigration_rate()
-        self.population += (self.births + self.immigration) - (self.deaths + self.emigration)
+        deaths = self.get_death_rate()
+        emigration = self.get_emigration_rate()
+        births = self.get_birth_rate()
+        immigration = self.get_immigration_rate()
+        self.population += (births + immigration) - (deaths + emigration)
 
     # Resources
     def get_tax_income(self):
