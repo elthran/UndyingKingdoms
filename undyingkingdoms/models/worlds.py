@@ -74,6 +74,8 @@ class World(GameState):
         counties = County.query.all()
         for kingdom in kingdoms:
             kingdom.leader = 0
+            kingdom.wars_total_ta = 0
+            kingdom.wars_won_ta = 0
             kingdom.save()
         winning_kingdoms = [sorted(kingdoms, key=lambda x: x.wars_won_ta, reverse=True)[0],
                             sorted(kingdoms, key=lambda x: x.total_land_of_top_three_counties, reverse=True)[0]]

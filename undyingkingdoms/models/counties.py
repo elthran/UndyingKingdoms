@@ -14,7 +14,7 @@ from undyingkingdoms.models.trades import Trade
 from undyingkingdoms.models.casting import Casting
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
-    happiness_modifier, buildings_built_per_day_modifier
+    happiness_modifier, buildings_built_per_day_modifier, spell_chance_modifier
 
 from copy import deepcopy
 
@@ -612,7 +612,7 @@ class County(GameState):
         modifier = 1
         if self.technologies['animal husbandry'].completed:
             modifier += 0.5
-        verdant_growth = Casting.query.filter_by(target_id=self.id, active=1).first()
+        verdant_growth = Casting.query.filter_by(target_id=self.id, active=1, name="verdant growth").first()
         if verdant_growth:
             modifier += 0.5
         return int(self.buildings['pasture'].total * self.buildings['pasture'].output * modifier)
@@ -681,6 +681,9 @@ class County(GameState):
         modifier = 1 + birth_rate_modifier.get(self.race, ("", 0))[1] + \
                    birth_rate_modifier.get(self.background, ("", 0))[1]
         modifier += (self.buildings['house'].total / self.land) * self.buildings['house'].output
+        ambrosia = Casting.query.filter_by(target_id=self.id, name="ambrosia", active=1).first()
+        if ambrosia:
+            modifier += 0.5
         raw_rate = (self.happiness / 100) * (self.land / 5)  # 5% times your happiness rating
         return int(raw_rate * modifier)
 
@@ -745,7 +748,6 @@ class County(GameState):
         active_spells = Casting.query.filter_by(county_id=self.id).filter_by(active=True).all()
         loss = sum(spell.mana_sustain for spell in active_spells)
         difference = growth - loss
-        print(active_spells, difference, self.mana)
         if difference < 0 and self.mana + difference < 0:
             print("here...")
             active_spells[0].active = False
@@ -756,7 +758,6 @@ class County(GameState):
                                   "Spell End")
             notice.save()
             return self.get_mana_change()
-        print("ending")
         return difference
 
     def get_research_change(self):
@@ -858,6 +859,12 @@ class County(GameState):
                    + offensive_power_modifier.get(self.background, ("", 0))[1]
         if self.technologies['steel'].completed:
             modifier += 0.10
+        bloodlust = Casting.query.filter_by(target_id=self.id, name="bloodlust").filter(Casting.duration > 0).first()
+        if bloodlust:
+            modifier += 0.15
+        discipline = Casting.query.filter_by(target_id=self.id, name="discipline").filter(Casting.duration > 0).first()
+        if discipline:
+            modifier += 0.05
         if army:
             for unit in self.armies.values():
                 if unit.name != 'archer' and unit.name != 'besieger':
@@ -1118,6 +1125,12 @@ class County(GameState):
             counter += mission.amount_of_thieves
         reduction = 10 + (self.buildings['tower'].total * self.buildings['tower'].output) + (5 * counter)
         return max(int(100 - reduction), 10)
+
+    def chance_to_cast_spell(self):
+        modifier = 0 + spell_chance_modifier.get(self.race, ("", 0))[1] \
+                   + spell_chance_modifier.get(self.background, ("", 0))[1]
+        return 65 + modifier
+
 
     # Terminology
     @property

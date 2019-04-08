@@ -66,17 +66,17 @@ def cast_spell(spell_id, target_id):
                 break
         if war:
             if war.kingdom_id == kingdom.id:
-                war.attacker_current += spell.mana_cost // 4
+                war.attacker_current += spell.mana_cost // 2
                 if war.attacker_current >= war.attacker_goal:
                     kingdom.war_won(war)
                     war.status = "Won"
             else:
-                war.defender_current += spell.mana_cost // 4
+                war.defender_current += spell.mana_cost // 2
                 if war.defender_current >= war.defender_goal:
                     target.kingdom.war_won(war)
                     war.status = "Lost"
         # End of war code
-    print("at spell",target_relation, spell.targets)
+
     eligible_targets = [spell.targets]
     if eligible_targets[0] == 'friendly':
         eligible_targets.append('self')
@@ -86,13 +86,19 @@ def cast_spell(spell_id, target_id):
             or (target_relation not in eligible_targets)
             or not spell.known):
         return redirect(url_for('casting', target_id=target.id))
-    print("at spell")
+
     county.mana -= spell.mana_cost
 
     cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
                    county.day, spell.class_name, spell.duration)
     cast.target_relation = target_relation
     cast.save()
+
+    if county.chance_to_cast_spell() < randint(1, 100):
+        cast.success = False
+        cast.duration = 0
+        cast.active = False
+        return redirect(url_for('casting', target_id=target.id))
 
     if spell.mana_sustain > 0:
         cast.active = True
@@ -102,6 +108,10 @@ def cast_spell(spell_id, target_id):
         county.happiness += 5
     elif cast.name == 'summon golem':
         pass
+    elif cast.name == 'secrets of alchemy':
+        max_iron = min(county.iron, 10)
+        county.iron -= max_iron
+        county.gold += max_iron * 10
     elif cast.name == 'plague winds':
         notification = Notification(
             target.id,

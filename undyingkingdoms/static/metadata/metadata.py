@@ -6,7 +6,7 @@ from undyingkingdoms.models.achievements import Achievement
 metadata_races = ['Human', 'Elf', 'Dwarf', 'Goblin']
 metadata_titles = ['Sir', 'Dame', 'Lord', 'Lady', 'Baron', 'Baroness', 'Duke', 'Duchess', 'Prince', 'Princess']
 
-metadata_backgrounds = ['Warlord', 'Engineer', 'Merchant', 'Rogue']
+metadata_backgrounds = ['Warlord', 'Engineer', 'Merchant', 'Rogue', 'Wizard']
 
 kingdom_names = ["Faenoth", "Aldoroth", "Ecthalion"]
 
@@ -89,7 +89,7 @@ all_achievements = {
 }
 
 # Racial/Class Modifiers (A modifier of 0 means +0%. A modifier of 1 would mean +100%)
-    # Percents
+# Percents
 birth_rate_modifier = {'Elf': ("Elders", -0.15), 'Goblin': ("Expendable", 0.15)}
 death_rate_modifier = {}
 income_modifier = {'Merchant': ("Silver Tongue", 0.15)}
@@ -98,10 +98,11 @@ infiltration_success_modifier = {'Rogue': ("Master of Disguise", 0.15), 'Goblin'
 production_per_worker_modifier = {'Dwarf': ("Dwarven Steel", 0.15), 'Engineer': ("Artisan", 0.20)}
 defense_per_citizen_modifier = {'Elf': ("Citizen Militia", 1.00)}
 food_consumed_modifier = {'Dwarf': ("Ravenous", 0.15)}
-    # Amounts
+# Amounts
 happiness_modifier = {'Goblin': ("Infighting", -1)}
 buildings_built_per_day_modifier = {'Engineer': ("Craftsman", 1)}
 amount_of_thieves_modifier = {'Rogue': ("Army of Shadows", 2)}
+spell_chance_modifier = {'Wizard': ("Loremaster", 10), 'Elf': ("Affinity", 5)}
 
 
 all_armies = ["peasant", "archer", "soldier", "elite", "monster"]

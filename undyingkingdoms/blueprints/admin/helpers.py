@@ -35,7 +35,7 @@ def create_bots(n=1):
             user.id,
             choice(["Human", "Elf", "Dwarf", "Goblin"]),
             choice(["Sir", "Lady"]),
-            choice(["Engineer", "Warlord", "Rogue", "Merchant"]))
+            choice(["Engineer", "Warlord", "Rogue", "Merchant", "Wizard"]))
         county.save()
         county.vote = county.id
         preferences = Preferences(county.id, county.user.id)

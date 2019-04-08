@@ -8,6 +8,7 @@ class Casting(GameEvent):
     spell_id = db.Column(db.Integer)
     world_day = db.Column(db.Integer)
     county_day = db.Column(db.Integer)
+    success = db.Column(db.Boolean)
     name = db.Column(db.String(64))
     duration = db.Column(db.Integer)  # How many game days until the spell ends
 
@@ -24,6 +25,7 @@ class Casting(GameEvent):
         self.county_day = county_day
         self.name = name
         self.duration = duration
+        self.success = True
 
         self.active = False
         self.mana_sustain = 0

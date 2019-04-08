@@ -11,6 +11,8 @@
 <br>Current Mana <img class="resource_icons" src="/static/images/mana_icon.jpg">: {{ county.mana }} / {{ county.max_mana }}
 <br><br>Daily Mana Required: {{ sustain_mana_requirement }} <img class="resource_icons" src="/static/images/mana_icon.jpg">
 
+<p>Chance to successfully cast a spell: {{ county.chance_to_cast_spell() }}%</p>
+
 <h2>Choose Spell to Cast on {{ target.name }}</h2>
 {% for spell in known_spells %}
     {{ spell.class_name.title() }}
@@ -69,9 +71,12 @@
 <h2>Casting History</h2>
 <ul>
     {% for spell in casting_history|sort(attribute='county_day', reverse=True) %}
-    (Day {{ spell.county_day }}) You cast {{ spell.name.title() }} on county id {{ spell.target_id }}<br>
+        {% if spell.success == 0 %}<li style="color:red;">(Day {{ spell.county_day }} - Failed)
+        {% else %}<li>(Day {{ spell.county_day }}){% endif %}
+        You cast {{ spell.name.title() }} on county id {{ spell.target_id }}
+        </li>
     {% else %}
-    No active spells
+        No active spells
     {% endfor %}
 </ul>
 {% endblock %}
