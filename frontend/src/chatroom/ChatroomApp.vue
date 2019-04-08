@@ -1,5 +1,8 @@
 <template>
-  <div id="chatroom">
+  <div
+    id="chatroom"
+    :style="{ maxHeight: correctedHeight }"
+  >
     <prefix-title title="Town Hall" />
     <div id="header">
       <h1>Discussion</h1>
@@ -9,7 +12,10 @@
         off-label="kingdom"
       />
     </div>
-    <div id="chat-div">
+    <div
+      id="chat-div"
+      ref="chatDiv"
+    >
       <chat-list :messages="filteredMessages" />
     </div>
     <br>
@@ -56,7 +62,14 @@ export default {
       message: '',
       leader: null,
       timestamp: null,
-      toggleWatcher: null
+      toggleWatcher: null,
+      windowHeight: window.innerHeight,
+      pad: 10,
+      scrolled: false,
+      clock: {
+        handle: null,
+        run: this.runClock
+      },
     }
   },
   computed: {
@@ -64,18 +77,68 @@ export default {
       return this.messages.filter((m) => this.globalChatOn ? m.room === 'global' : m.room === 'kingdom')
     },
     lastMessageId () {
-      return this.messages.slice(-1)[0].id
+      var id = this.messages.slice(-1)[0].id
+      return id === undefined ? 0 : id
     },
+    correctedHeight () {
+      return (this.windowHeight - 30) + 'px'
+    },
+    chatDiv () {
+      return this.$refs.chatDiv
+    }
   },
   mounted () {
     this.$hydrate('/api/chatroom/update')
     .then(() => {
-      this.toggleWatcher = this.$watch('globalChatOn', function () {
-        this.updateChat()
-      })
+      this.scrollToMax()
+      this.toggleWatcher = this.$watch('globalChatOn', this.updateChat)
+    })
+
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize)
+      this.chatDiv.addEventListener('scroll', this.onScroll)
+      // Active update function when the window gains focus.
+      window.addEventListener("focus", this.startClock)
+      // Stop update function when the window loses focus.
+      window.addEventListener("blur", this.stopClock)
     })
   },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.onResize)
+    this.chatDiv.removeEventListener('scroll', this.onScroll)
+    window.removeEventListener("focus", this.startClock)
+    window.removeEventListener("blur", this.stopClock)
+    this.stopClock()
+  },
   methods: {
+    startClock () {
+      this.clock.handle = this.clock.run()
+    },
+    stopClock () {
+      clearInterval(this.clock.handle)
+    },
+    runClock () {
+      console.log("running clock")
+      this.getNewMessages()  // run immediately on focus, then every x seconds.
+      return setInterval(this.getNewMessages, 5000);
+    },
+    // refocus(selector) {
+    //   if (!scrolled) {
+    //     var yOffset = $(selector).offset().top + $(selector).height() + pad;
+    //     $('html, body').animate({
+    //         scrollTop: yOffset - window.innerHeight
+    //     })
+    //   }
+    // },
+    // Scroll window to bottom if user hasn't scrolled around.
+    // not sure if nextick should be here or in caller.
+    scrollToMax() {
+      this.$nextTick(() => {
+        if (!this.scrolled) {
+          this.chatDiv.scrollTop = this.chatDiv.scrollHeight-this.chatDiv.clientHeight;
+        }
+      })
+    },
     updateChat () {
       // console.log('updating chat')
       this.$sendData({
@@ -107,7 +170,6 @@ export default {
       .then((data) => {
         // console.log("Send message response:", data)
         return this.getNewMessages()
-            //updateScroll();
       })
     },
     getNewMessages () {
@@ -116,95 +178,25 @@ export default {
       .then((data) => {
         // console.log("new messages:", data)
         this.messages = this.messages.concat(data.messages)
+        this.scrollToMax();
+        // refocus("#send");
       })
       .catch((error) => { console.log(error); Promise.reject(error) })
-    }
-  }
+    },
+    onResize () {
+      this.windowHeight = window.innerHeight
+    },
+    // Disabled auto-scrolling if user has scrolled content.
+    // Re-enable it if they scroll to the bottom.
+    onScroll () {
+      if (this.chatDiv.scrollTop >= this.chatDiv.scrollHeight - this.chatDiv.clientHeight) {
+          this.scrolled = false;
+      } else {
+          this.scrolled = true;
+      }
+    },
+  },
 }
-
-// // Declare some globals
-// var chatDiv = document.getElementById("chat-div");
-// var pad = 10;
-// var scrolled = false;
-
-// // Scroll window to bottom if user hasn't scrolled around.
-// function updateScroll() {
-//     if (!scrolled) {
-//         chatDiv.scrollTop = chatDiv.scrollHeight-chatDiv.clientHeight;
-//     }
-// }
-
-// // Disabled auto-scrolling if user has scrolled content.
-// // Re-enable it if they scroll to the bottom.
-// $("#chat-div").on('scroll', function() {
-//     if (chatDiv.scrollTop >= chatDiv.scrollHeight-chatDiv.clientHeight) {
-//         scrolled = false;
-//     } else {
-//         scrolled = true;
-//     }
-// });
-
-// function refocus(selector) {
-//     // the next line is required to work around a bug in WebKit (Chrome / Safari)
-//     if (!scrolled) {
-//         var yOffset = $(selector).offset().top + $(selector).height() + pad;
-//         $('html, body').animate({
-//             scrollTop: yOffset - window.innerHeight
-//         });
-//     }
-// }
-
-// $("form").submit(function (e) {
-//     e.preventDefault();
-//     sendMessage();
-// });
-
-// function updateChat() {
-//     $.ajaxSetup({
-//         headers: {"X-CSRF-TOKEN": $("#csrf_token").val()}
-//     });
-
-//     $.post("/gameplay/chatroom/", {
-//         message: "",
-//         updateOnly: true,
-//         isGlobal: $("#toggle-switch").prop("checked")
-//     }, function (resp, status) {
-//         if (status === "success") {
-//             $("#csrf_token").val(resp.csrf);
-//             $("#chatlist").empty();
-//             $.each(resp.data, function (ignore, value) {
-//                 $("#chatlist").append(
-//                     build_element(value[0], value[1], value[2])
-//                 );
-//             });
-//             updateScroll();
-//             refocus("#send");
-//         }
-//     });
-// }
-
-// var clock = {
-//     handle: null,
-//     run: function () {
-//         updateChat();  // run immediately on focus, then every x seconds.
-//         return setInterval(updateChat, 5000);
-//     }
-// };
-
-// // Active update function when the window gains focus.
-// $(window).on("focus", function () {
-//     clock.handle = clock.run();
-// });
-
-// // Stop update function when the window loses focus.
-// $(window).on("blur", function () {
-//     clearInterval(clock.handle);
-// });
-
-// // Pull chat date once page loads
-// $(document).ready(() => {
-//     updateChat()
-// });
 </script>
 
 <style scoped>
@@ -219,6 +211,9 @@ export default {
   #header {
     display: flex;
     justify-content: space-between;
+    width: 100%;
+    /*max-width: 320px;*/
+    margin-bottom: 1em;
   }
 
   h1 {
@@ -228,20 +223,16 @@ export default {
   #chat-div {
     width: 100%;
     max-width: 500px;
-    max-height: 480px;
+    /*max-height: 15em;*/
     overflow-y: auto;
   }
 
-  form {
-    width: 100%;
-    max-width: 500px;
-  }
-
-  input {
+  #content {
     padding: 1em;
     width: 100%;
     border-radius: 0.5em;
     margin-bottom: 0.4em;
+    margin: 1em;
   }
 
   button {

@@ -16,10 +16,10 @@ APIInterface.install = function (Vue, options) {
     // console.log('hydrating')
     return this.axios.get(url)
     .then((response) => {
-      if (!(response.data.hasOwnProperty('debugMessage'))) {
-        console.log('You need to add as "debugMessage" attribute to the api "' + url + '" return jsonify.')
-      }
-      delete response.data.debugMessage
+      // if (!(response.data.hasOwnProperty('debugMessage'))) {
+      //   console.log('You need to add as "debugMessage" attribute to the api "' + url + '" return jsonify.')
+      // }
+      // delete response.data.debugMessage
       return this.$deployData(response.data)
     })
     .catch((error) => {
