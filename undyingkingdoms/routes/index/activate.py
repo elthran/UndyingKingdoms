@@ -1,6 +1,6 @@
 from flask import url_for, redirect, render_template
 from flask_login import current_user
-# from sendgrid import SendGridAPIClient
+from sendgrid import SendGridAPIClient
 
 import private_config
 from undyingkingdoms import app
