@@ -4,85 +4,84 @@
 
 {% block content2 %}
 
-{% set user = current_user %}
-{% set my_county = current_user.county %}
-{% set left_button = kingdom.kingdom_button('left', kingdom.id) %}
-{% set right_button = kingdom.kingdom_button('right', kingdom.id) %}
-
 {% if kingdom.counties|length == 0 %}
-<div style="width:100%;text-align:center;">
-    <a href="{{ url_for('kingdom', kingdom_id=left_button) }}">
-        <button style="float:left;width:100px;">West</button>
-    </a>
-    <h1 style="display:inline-block;margin:0 auto;width:100px;">{{ kingdom.name }}</h1>
-    <a href="{{ url_for('kingdom', kingdom_id=right_button) }}">
-        <button style="float:right;width:100px;">East</button>
-    </a>
-</div>
-<br><br><br>
-This is a custom kingdom and has no current active players.
+
+    <div style="width:100%;text-align:center;">
+        <a href="{{ url_for('kingdom', kingdom_id=1) }}">
+            <button style="float:left;width:100px;">West</button>
+        </a>
+        <h1 style="display:inline-block;margin:0 auto;width:100px;">{{ kingdom.name }}</h1>
+        <a href="{{ url_for('kingdom', kingdom_id=2) }}">
+            <button style="float:right;width:100px;">East</button>
+        </a>
+    </div>
+    <br><br><br>
+    This is a custom kingdom and has no current active players.
+
 {% else %}
 
+    {% set user = current_user %}
+    {% set my_county = current_user.county %}
+    {% set left_button = kingdom.kingdom_button('left', kingdom.id) %}
+    {% set right_button = kingdom.kingdom_button('right', kingdom.id) %}
 
-
-
-<div style="width:100%;text-align:center;">
-    <a href="{{ url_for('kingdom', kingdom_id=left_button) }}">
-        <button style="float:left;width:100px;">West</button>
-    </a>
-    <h1 style="display:inline-block;margin:0 auto;width:100px;">{{ kingdom.name }}</h1>
-    <a href="{{ url_for('kingdom', kingdom_id=right_button) }}">
-        <button style="float:right;width:100px;">East</button>
-    </a>
-</div>
-<br><br><br>
-<ul style="line-height:30px;">
-    {% if kingdom == my_county.kingdom %}
-        {% for county in kingdom.counties %}
-            {% if my_county.id == county.id %}
-                <form method="POST" accept-charset="UTF-8" role="form">
-                    {{ form.csrf_token }}
-                    <li style="font-style:italic;">
+    <div style="width:100%;text-align:center;">
+        <a href="{{ url_for('kingdom', kingdom_id=left_button) }}">
+            <button style="float:left;width:100px;">West</button>
+        </a>
+        <h1 style="display:inline-block;margin:0 auto;width:100px;">{{ kingdom.name }}</h1>
+        <a href="{{ url_for('kingdom', kingdom_id=right_button) }}">
+            <button style="float:right;width:100px;">East</button>
+        </a>
+    </div>
+    <br><br><br>
+    <ul style="line-height:30px;">
+        {% if kingdom == my_county.kingdom %}
+            {% for county in kingdom.counties %}
+                {% if my_county.id == county.id %}
+                    <form method="POST" accept-charset="UTF-8" role="form">
+                        {{ form.csrf_token }}
+                        <li style="font-style:italic;">
+                            {% if kingdom.leader == county.id %}<img class="resource_icons" src="/static/images/crown_icon.jpg">{% endif %}
+                            {{ county.name }} led by the infamous {{ county.leader }} with {{ county.land }} acres of land
+                            {% if kingdom.leader == 0 and my_county.can_vote() %}(Vote: {{ form.vote }})
+                                <button type="submit">Change Vote</button>
+                            {% elif kingdom.leader == 0 %}
+                                (Vote: {{ county.display_vote() }} - You must wait to change your vote)
+                            {% endif %}
+                        </li>
+                    </form>
+                {% else %}
+                    <li>
                         {% if kingdom.leader == county.id %}<img class="resource_icons" src="/static/images/crown_icon.jpg">{% endif %}
-                        {{ county.name }} led by the infamous {{ county.leader }} with {{ county.land }} acres of land
-                        {% if kingdom.leader == 0 and my_county.can_vote() %}(Vote: {{ form.vote }})
-                            <button type="submit">Change Vote</button>
-                        {% elif kingdom.leader == 0 %}
-                            (Vote: {{ county.display_vote() }} - You must wait to change your vote)
+                        <a href="{{ url_for('enemy_overview', county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
+                        {% if kingdom.leader == 0 %}
+                            (Vote: {{ county.display_vote() }})
                         {% endif %}
                     </li>
-                </form>
-            {% else %}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% if kingdom in my_county.kingdom.allies %}
+                <p style="color:blue;">You are allied with this kingdom</p>
+            {% elif kingdom in my_county.kingdom.enemies %}
+                <p style="color:red;">You are at war with this kingdom</p>
+            {% endif %}
+            {% for county in kingdom.counties %}
                 <li>
                     {% if kingdom.leader == county.id %}<img class="resource_icons" src="/static/images/crown_icon.jpg">{% endif %}
                     <a href="{{ url_for('enemy_overview', county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
-                    {% if kingdom.leader == 0 %}
-                        (Vote: {{ county.display_vote() }})
-                    {% endif %}
                 </li>
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        {% if kingdom in my_county.kingdom.allies %}
-            <p style="color:blue;">You are allied with this kingdom</p>
-        {% elif kingdom in my_county.kingdom.enemies %}
-            <p style="color:red;">You are at war with this kingdom</p>
+            {% endfor %}
         {% endif %}
-        {% for county in kingdom.counties %}
-            <li>
-                {% if kingdom.leader == county.id %}<img class="resource_icons" src="/static/images/crown_icon.jpg">{% endif %}
-                <a href="{{ url_for('enemy_overview', county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
-            </li>
-        {% endfor %}
+    </ul>
+    <br><br><br>
+    {% if kingdom.leader %}
+    {{ kingdom.get_leader_name(kingdom.leader) }} rules this land!
+    {% else %}
+    {{ kingdom.get_most_popular_county().name }} is winning with {{ kingdom.get_most_popular_county().preferences.get_votes_for_self() }} vote(s).
+    The first county with {{ kingdom.get_votes_needed() }} votes will be crowned ruler.
     {% endif %}
-</ul>
-<br><br><br>
-{% if kingdom.leader %}
-{{ kingdom.get_leader_name(kingdom.leader) }} rules this land!
-{% else %}
-{{ kingdom.get_most_popular_county().name }} is winning with {{ kingdom.get_most_popular_county().preferences.get_votes_for_self() }} vote(s).
-The first county with {{ kingdom.get_votes_needed() }} votes will be crowned ruler.
-{% endif %}
 
 {% endif %}
 
