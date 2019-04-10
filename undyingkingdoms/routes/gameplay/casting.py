@@ -51,6 +51,15 @@ def cast_spell(spell_id, target_id):
     target = County.query.get(target_id)
     spell = Magic.query.get(spell_id)
 
+    cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
+                   county.day, spell.class_name, spell.duration)
+    if county.chance_to_cast_spell() < randint(1, 100):
+        cast.success = False
+        cast.duration = 0
+        cast.active = False
+        return redirect(url_for('casting', target_id=target.id))
+    cast.save()
+
     if county == target:
         target_relation = 'self'
     elif target.kingdom in county.kingdom.allies:
@@ -89,16 +98,7 @@ def cast_spell(spell_id, target_id):
 
     county.mana -= spell.mana_cost
 
-    cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
-                   county.day, spell.class_name, spell.duration)
     cast.target_relation = target_relation
-    cast.save()
-
-    if county.chance_to_cast_spell() < randint(1, 100):
-        cast.success = False
-        cast.duration = 0
-        cast.active = False
-        return redirect(url_for('casting', target_id=target.id))
 
     if spell.mana_sustain > 0:
         cast.active = True
