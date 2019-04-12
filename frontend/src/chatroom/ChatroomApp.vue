@@ -1,7 +1,8 @@
 <style scoped>
 #chat-div {
   width: 100%;
-  overflow-y: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
   /* This is all I need to make words break properly ... */
   overflow-wrap: break-word;
 }

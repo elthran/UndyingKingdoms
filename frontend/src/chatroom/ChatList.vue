@@ -5,9 +5,10 @@
       :key="message.id"
     >
       <tool-tip
-        :tip="'(' + formatDate(message.time) + ')'"
-        align="right"
-        style="border-bottom: none;color: black;width: 100%;"
+        :tip="formatDate(message.time)"
+        :bounder="self"
+        align="mouse"
+        style="border-bottom:none; color:black; width:100%;"
       >
         {{ message.leader }}: {{ message.content }}
       </tool-tip>
@@ -28,8 +29,11 @@ export default {
   },
   data () {
     return {
-
+      self: null
     }
+  },
+  mounted () {
+    this.self = this.$el
   },
   methods: {
     formatDate(time) {
