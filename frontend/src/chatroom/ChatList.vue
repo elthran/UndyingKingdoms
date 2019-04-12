@@ -1,22 +1,30 @@
 <template>
-  <ul
-    id="chatlist"
-    class="dont-break-out"
-  >
+  <ul id="chatlist">
     <li
       v-for="message in messages"
       :key="message.id"
     >
-      ({{ formatDate(message.time) }}) {{ message.leader }}: {{ message.content }}
+      <tool-tip
+        :tip="'(' + formatDate(message.time) + ')'"
+        align="right"
+        style="border-bottom: none;color: black;width: 100%;"
+      >
+        {{ message.leader }}: {{ message.content }}
+      </tool-tip>
     </li>
   </ul>
 </template>
 
 <script>
+import ToolTip from '@/components/ToolTip.vue'
+
 export default {
   name: 'ChatList',
+  components: {
+    'tool-tip': ToolTip,
+  },
   props: {
-    messages: [Array]
+    messages: null
   },
   data () {
     return {
@@ -36,14 +44,12 @@ export default {
 }
 </script>
 
-<style>
-@media (max-width: 640px) {
-  #chatlist {
-    border: solid 1px;
-    border-radius: 4px;
-    padding: 0.4em;
-    min-height: 14em;
-    width: 100%;
-  }
+<style scoped>
+#chatlist {
+  border: solid 1px;
+  border-radius: 4px;
+  padding: 0.4em;
+  min-height: 14em;
+  width: 100%;
 }
 </style>

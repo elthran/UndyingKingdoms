@@ -1,3 +1,81 @@
+<style scoped>
+#chat-div {
+  width: 100%;
+  overflow-y: scroll;
+  /* This is all I need to make words break properly ... */
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 640px) {
+  #chatroom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1.2em 1em;
+  }
+
+  #header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    /*max-width: 320px;*/
+    margin-bottom: 1em;
+  }
+
+  h1 {
+    margin-bottom: 0;
+  }
+
+  #chat-div {
+    width: 100%;
+    max-width: 500px;
+    /*max-height: 15em;*/
+  }
+
+  #content {
+    padding: 1em;
+    width: 100%;
+    border-radius: 0.5em;
+    margin-bottom: 0.4em;
+    margin: 1em;
+  }
+
+  button {
+    width: 100%;
+    height: 3em;
+    border-radius: 0.5em;
+  }
+
+  .tab {
+    margin-left: 1em;
+  }
+}
+
+@media (min-width: 640px) {
+  #layout-content {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  #chatroom {
+    max-width: 40em;
+  }
+
+  #header {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  #chat-div {
+    min-height: 300px;
+    min-width: 600px;
+    max-height: 750px;
+  }
+}
+</style>
+
 <template>
   <div
     id="chatroom"
@@ -20,7 +98,7 @@
     </div>
     <br>
     <csrf-token :value="CSRFToken" />
-    <input
+    <textarea
       id="content"
       v-model="message"
       class="form-control"
@@ -28,9 +106,8 @@
       placeholder="Public to your kingdom"
       required
       autofocus
-      type="text"
       @keyup.enter="sendMessage"
-    >
+    />
     <br><br>
     <button
       id="send"
@@ -52,7 +129,7 @@ export default {
   components: {
     'toggle-swtich': ToggleSwitch,
     'csrf-token': CSRFToken,
-    'chat-list': ChatList
+    'chat-list': ChatList,
   },
   data () {
     return {
@@ -66,10 +143,7 @@ export default {
       windowHeight: window.innerHeight,
       pad: 10,
       scrolled: false,
-      clock: {
-        handle: null,
-        run: this.runClock
-      },
+      clockHandle: null,
     }
   },
   computed: {
@@ -77,8 +151,8 @@ export default {
       return this.messages.filter((m) => this.globalChatOn ? m.room === 'global' : m.room === 'kingdom')
     },
     lastMessageId () {
-      var id = this.messages.slice(-1)[0].id
-      return id === undefined ? 0 : id
+      // crashes on first run
+      return this.messages.slice(-1)[0].id
     },
     correctedHeight () {
       return (this.windowHeight - 30) + 'px'
@@ -112,15 +186,19 @@ export default {
   },
   methods: {
     startClock () {
-      this.clock.handle = this.clock.run()
+      this.clockHandle = this.runClock()
     },
     stopClock () {
-      clearInterval(this.clock.handle)
+      clearInterval(this.clockHandle)
     },
     runClock () {
-      console.log("running clock")
-      this.getNewMessages()  // run immediately on focus, then every x seconds.
-      return setInterval(this.getNewMessages, 5000);
+      // change the run method on second run
+      // basically ignore the first run of this method.
+      // This is to accomodate my poor coding style.
+      this.runClock = () => {
+        this.getNewMessages()  // run immediately on focus, then every x seconds.
+        return setInterval(this.getNewMessages, 5000);
+      }
     },
     // refocus(selector) {
     //   if (!scrolled) {
@@ -180,6 +258,7 @@ export default {
         this.messages = this.messages.concat(data.messages)
         this.scrollToMax();
         // refocus("#send");
+        return data
       })
       .catch((error) => { console.log(error); Promise.reject(error) })
     },
@@ -198,77 +277,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-@media (max-width: 640px) {
-  #chatroom {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 1.2em 1em;
-  }
-
-  #header {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    /*max-width: 320px;*/
-    margin-bottom: 1em;
-  }
-
-  h1 {
-    margin-bottom: 0;
-  }
-
-  #chat-div {
-    width: 100%;
-    max-width: 500px;
-    /*max-height: 15em;*/
-    overflow-y: auto;
-  }
-
-  #content {
-    padding: 1em;
-    width: 100%;
-    border-radius: 0.5em;
-    margin-bottom: 0.4em;
-    margin: 1em;
-  }
-
-  button {
-    width: 100%;
-    height: 3em;
-    border-radius: 0.5em;
-  }
-
-  .tab {
-    margin-left: 1em;
-  }
-}
-
-@media (min-width: 640px) {
-  #layout-content {
-    display: flex;
-    justify-content: space-around;
-  }
-
-  #chatroom {
-    max-width: 40em;
-  }
-
-  #header {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 1em;
-    margin-bottom: 1em;
-  }
-
-  #chat-div {
-    border:solid 1px;
-    min-height: 300px;
-    min-width: 600px;
-    max-height: 750px;
-    overflow-y: auto;
-  }
-}
-</style>

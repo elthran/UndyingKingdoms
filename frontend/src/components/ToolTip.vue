@@ -1,3 +1,33 @@
+<template>
+  <div class="tooltip">
+    <slot>{{ content }}</slot>
+    <span
+      class="tooltip-text"
+      :class="'tooltip-' + align + ' ' + 'arrow-box-for-' + align"
+    >
+      {{ tip }}
+    </span>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ToolTip',
+  props: {
+    content: String,
+    tip: String,
+    align: {
+      type: String,
+      default: 'bottom',
+      validator: function (value) {
+        // The value must match one of these strings
+        return ['top', 'left', 'right', 'bottom'].indexOf(value) !== -1
+      }
+    }
+  }
+}
+</script>
+
 <style scoped>
 .tooltip {
   position: relative;
@@ -15,7 +45,9 @@
 .tooltip .tooltip-text {
   visibility: hidden;
   position: absolute;
-  min-width: 12em;
+  /*min-width: 12em;*/
+  padding-left: 0.3em !important;
+  padding-right: 0.3em !important;
   background-color: #555;
   color: #fff;
   text-align: center;
@@ -109,33 +141,3 @@
   margin-left: -8px;
 }
 </style>
-
-<template>
-  <div class="tooltip">
-    {{ content }}
-    <span
-      class="tooltip-text"
-      :class="'tooltip-' + align + ' ' + 'arrow-box-for-' + align"
-    >
-      {{ tip }}
-    </span>
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'ToolTip',
-  props: {
-    content: String,
-    tip: String,
-    align: {
-      type: String,
-      default: 'bottom',
-      validator: function (value) {
-        // The value must match one of these strings
-        return ['top', 'left', 'right', 'bottom'].indexOf(value) !== -1
-      }
-    }
-  }
-}
-</script>
