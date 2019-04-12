@@ -53,17 +53,17 @@ class Infiltration(GameEvent):
 
     def get_troop_report(self, county, enemy_county, amount_sent):
         if amount_sent == 1:
-            inaccuracy = 0.5
+            inaccuracy = 1.0
         elif amount_sent == 2:
-            inaccuracy = 0.3
+            inaccuracy = 0.75
         elif amount_sent >= 3:
-            inaccuracy = 0.1
+            inaccuracy = 0.5
 
-        peasant_inaccuracy = int(max(enemy_county.armies['peasant'].total * inaccuracy, 2)) // 2
-        archer_inaccuracy = int(max(enemy_county.armies['archer'].total * inaccuracy, 2)) // 2
-        soldier_inaccuracy = int(max(enemy_county.armies['soldier'].total * inaccuracy, 2)) // 2
-        elite_inaccuracy = int(max(enemy_county.armies['elite'].total * inaccuracy, 2)) // 2
-        fort_inaccuracy = int(max(enemy_county.buildings['fort'].total * inaccuracy, 2)) // 2
+        peasant_inaccuracy = int(max(enemy_county.armies['peasant'].total * inaccuracy, 2))
+        archer_inaccuracy = int(max(enemy_county.armies['archer'].total * inaccuracy, 2))
+        soldier_inaccuracy = int(max(enemy_county.armies['soldier'].total * inaccuracy, 2))
+        elite_inaccuracy = int(max(enemy_county.armies['elite'].total * inaccuracy, 2))
+        fort_inaccuracy = int(max(enemy_county.buildings['fort'].total * inaccuracy, 2))
 
         self.peasant = max(enemy_county.armies['peasant'].total + randint(-peasant_inaccuracy, peasant_inaccuracy), 0)
         self.archer = max(enemy_county.armies['archer'].total + randint(-archer_inaccuracy, archer_inaccuracy), 0)
