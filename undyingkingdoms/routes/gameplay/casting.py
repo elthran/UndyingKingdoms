@@ -53,12 +53,12 @@ def cast_spell(spell_id, target_id):
 
     cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
                    county.day, spell.class_name, spell.duration)
+    cast.save()
     if county.chance_to_cast_spell() < randint(1, 100):
         cast.success = False
         cast.duration = 0
         cast.active = False
         return redirect(url_for('casting', target_id=target.id))
-    cast.save()
 
     if county == target:
         target_relation = 'self'
