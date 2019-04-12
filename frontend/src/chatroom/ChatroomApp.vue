@@ -43,7 +43,7 @@
 
   button {
     width: 100%;
-    height: 3em;
+    min-height: 3em;
     border-radius: 0.5em;
   }
 
@@ -107,7 +107,9 @@
       placeholder="Public to your kingdom"
       required
       autofocus
-      @keyup.enter="sendMessage"
+      @keyup.enter.exact="sendMessage"
+      @keydown.ctrl.enter.exact="addNewline"
+      @keydown.ctrl.shift.enter.exact="addNewline"
     />
     <br><br>
     <button
@@ -275,6 +277,9 @@ export default {
           this.scrolled = true;
       }
     },
+    addNewline () {
+      this.message += '\n'
+    }
   },
 }
 </script>
