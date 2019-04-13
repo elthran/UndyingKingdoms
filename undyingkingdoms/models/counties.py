@@ -14,7 +14,7 @@ from undyingkingdoms.models.trades import Trade
 from undyingkingdoms.models.casting import Casting
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
-    happiness_modifier, buildings_built_per_day_modifier
+    happiness_modifier, buildings_built_per_day_modifier, spell_chance_modifier
 
 from copy import deepcopy
 
@@ -75,11 +75,6 @@ class County(GameState):
     expeditions = db.relationship('Expedition', backref='county')
     infiltrations = db.relationship('Infiltration', backref='county', foreign_keys='[Infiltration.county_id]')
 
-    births = db.Column(db.Integer)
-    deaths = db.Column(db.Integer)
-    immigration = db.Column(db.Integer)
-    emigration = db.Column(db.Integer)
-
     buildings = db.relationship("Building",
                                 collection_class=attribute_mapped_collection('name'),
                                 cascade="all, delete, delete-orphan", passive_deletes=True)
@@ -124,11 +119,6 @@ class County(GameState):
         self.lifetime_stone = self._stone
         self.lifetime_research = self._research
         self.lifetime_mana = self._mana
-        # Predictions from advisors
-        self.births = 0
-        self.deaths = 0
-        self.immigration = 0
-        self.emigration = 0
         # Buildings and Armies extracted from metadata
         if self.race == 'Dwarf':
             self.buildings = deepcopy(dwarf_buildings)
@@ -428,7 +418,7 @@ class County(GameState):
         self.gold += randint(1, 6)
         self.wood += randint(1, 3)
         self.iron += 1
-        if randint(1, 24) == 24 and self.kingdom.leader == 0:
+        if randint(1, 24) == 24 and self.kingdom.leader == 0 and friendly_counties_ids:
             self.cast_vote(choice(friendly_counties_ids))
         if randint(1, 10) == 10 and self.get_available_land() >= 5:
             self.buildings['house'].total += 3
@@ -612,7 +602,7 @@ class County(GameState):
         modifier = 1
         if self.technologies['animal husbandry'].completed:
             modifier += 0.5
-        verdant_growth = Casting.query.filter_by(target_id=self.id, active=1).first()
+        verdant_growth = Casting.query.filter_by(target_id=self.id, active=1, name="verdant growth").first()
         if verdant_growth:
             modifier += 0.5
         return int(self.buildings['pasture'].total * self.buildings['pasture'].output * modifier)
@@ -670,7 +660,7 @@ class County(GameState):
     def get_death_rate(self):
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + \
                    death_rate_modifier.get(self.background, ("", 0))[1]
-        death_rate = (uniform(2.0, 2.5) / self.healthiness) * modifier
+        death_rate = (2 / self.healthiness) * modifier
 
         plague_wind = Casting.query.filter_by(target_id=self.id).filter(Casting.duration > 0).first()
         if plague_wind:
@@ -680,28 +670,34 @@ class County(GameState):
     def get_birth_rate(self):
         modifier = 1 + birth_rate_modifier.get(self.race, ("", 0))[1] + \
                    birth_rate_modifier.get(self.background, ("", 0))[1]
-        birth_rate = self.buildings['house'].total * self.buildings['house'].output * modifier
-        return int(birth_rate * uniform(0.9995, 1.0005))
+        modifier += (self.buildings['house'].total / self.land) * self.buildings['house'].output
+        ambrosia = Casting.query.filter_by(target_id=self.id, name="ambrosia", active=1).first()
+        if ambrosia:
+            modifier += 0.5
+        raw_rate = (self.happiness / 100) * (self.land / 5)  # 5% times your happiness rating
+        return int(raw_rate * modifier)
 
-    @staticmethod
-    def get_immigration_rate():
-        return randint(25, 35)
+    def get_immigration_rate(self):
+        random_hash = (self.kingdom.world.day ** 2) % 10
+        return 25 + random_hash
 
     def get_emigration_rate(self):
-        return randint(100, 110 + self.kingdom.world.age) - self.happiness
+        return int((self.preferences.tax_rate * 3) + self.kingdom.world.age + (0.005 * self.population))
 
     @cached_random
-    def get_population_change(self, prediction=False):
+    def get_population_change(self):
         growth = self.get_birth_rate() + self.get_immigration_rate()
         decay = self.get_death_rate() + self.get_emigration_rate()
+        if growth < decay:  # Can't decay more than 3% of population an hour
+            return int(max(growth - decay, -0.03 * self.population))
         return growth - decay
 
     def update_population(self):
-        self.deaths = self.get_death_rate()
-        self.emigration = self.get_emigration_rate()
-        self.births = self.get_birth_rate()
-        self.immigration = self.get_immigration_rate()
-        self.population += (self.births + self.immigration) - (self.deaths + self.emigration)
+        deaths = self.get_death_rate()
+        emigration = self.get_emigration_rate()
+        births = self.get_birth_rate()
+        immigration = self.get_immigration_rate()
+        self.population += (births + immigration) - (deaths + emigration)
 
     # Resources
     def get_tax_income(self):
@@ -741,7 +737,18 @@ class County(GameState):
         growth = self.buildings['arcane'].total * self.buildings['arcane'].output
         active_spells = Casting.query.filter_by(county_id=self.id).filter_by(active=True).all()
         loss = sum(spell.mana_sustain for spell in active_spells)
-        return growth - loss
+        difference = growth - loss
+        if difference < 0 and self.mana + difference < 0:
+            print("here...")
+            active_spells[0].active = False
+            notice = Notification(self.id,
+                                  "Spell Ended",
+                                  "You did not have enough mana and {} ended.".format(active_spells[0].name),
+                                  self.kingdom.world.day,
+                                  "Spell End")
+            notice.save()
+            return self.get_mana_change()
+        return difference
 
     def get_research_change(self):
         if self.technologies.get("arcane knowledge") and self.technologies["arcane knowledge"].completed:
@@ -842,6 +849,12 @@ class County(GameState):
                    + offensive_power_modifier.get(self.background, ("", 0))[1]
         if self.technologies['steel'].completed:
             modifier += 0.10
+        bloodlust = Casting.query.filter_by(target_id=self.id, name="bloodlust").filter(Casting.duration > 0).first()
+        if bloodlust:
+            modifier += 0.15
+        discipline = Casting.query.filter_by(target_id=self.id, name="discipline").filter(Casting.duration > 0).first()
+        if discipline:
+            modifier += 0.05
         if army:
             for unit in self.armies.values():
                 if unit.name != 'archer' and unit.name != 'besieger':
@@ -1102,6 +1115,12 @@ class County(GameState):
             counter += mission.amount_of_thieves
         reduction = 10 + (self.buildings['tower'].total * self.buildings['tower'].output) + (5 * counter)
         return max(int(100 - reduction), 10)
+
+    def chance_to_cast_spell(self):
+        modifier = 0 + spell_chance_modifier.get(self.race, ("", 0))[1] \
+                   + spell_chance_modifier.get(self.background, ("", 0))[1]
+        return 65 + modifier
+
 
     # Terminology
     @property

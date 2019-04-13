@@ -18,8 +18,9 @@ def build_testing_objects():
     user = User("elthran", JACOB_TEMPORARY_EMAIL, JACOB_TEMPORARY_ACCOUNT_PASSWORD)
     user.is_admin = True
     user.is_active = True
+    user.is_verified = True
     user.save()
-    county = County(1, "Ulthuan", "Elthran", user.id, 'Goblin', 'Sir', 'Merchant')
+    county = County(1, "Ulthuan", "Elthran", user.id, 'Dwarf', 'Sir', 'Merchant')
     county.save()
     county.vote = county.id
     county.kingdom_id = 1

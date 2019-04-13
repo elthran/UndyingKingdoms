@@ -102,6 +102,7 @@ button {
   <ul>
     <li>--- Elders: -15% Population growth</li>
     <li>--- Citizen Militia: Each non-military citizen adds double their normal defensive value</li>
+    <li>--- Affinity: +5% chance to successfully cast any spell</li>
   </ul>
   <br>
   <h2>Military:</h2>
@@ -149,6 +150,12 @@ button {
   <ul>
     <li>--- Relentless: +10% offensive military strength</li>
     <li>--- Warmonger: No happiness penalty for recruiting soldiers</li>
+  </ul>
+</div>
+<div id="wizardDiv" style="display:none;">
+  <h1>Wizard:</h1>
+  <ul>
+    <li>--- Loremaster: +10% chance to cast any spell</li>
   </ul>
 </div>
 <div id="rogueDiv" style="display:none;">
@@ -231,10 +238,12 @@ document.getElementById("background").onchange = function () {
     var chosenTitle = document.getElementById("background");
     var merchantDiv = document.getElementById("merchantDiv");
     var warlordDiv = document.getElementById("warlordDiv");
+    var wizardDiv = document.getElementById("wizardDiv");
     var rogueDiv = document.getElementById("rogueDiv");
     var engineerDiv = document.getElementById("engineerDiv");
     merchantDiv.style.display = "none";
     warlordDiv.style.display = "none";
+    wizardDiv.style.display = "none";
     rogueDiv.style.display = "none";
     engineerDiv.style.display = "none";
     if (chosenTitle.value === "3") {
@@ -245,6 +254,8 @@ document.getElementById("background").onchange = function () {
         rogueDiv.style.display = "block";
     } else if (chosenTitle.value === "2") {
         engineerDiv.style.display = "block";
+    } else if (chosenTitle.value === "5") {
+        wizardDiv.style.display = "block";
     }
 };
 </script>

@@ -59,7 +59,7 @@ def get_modifiers(county, mod_type, filter_key):
         if county.technologies.get('knights templar') and county.technologies['knights templar'].completed:
             if filter_key == 'elite':
                 mod_sum += 3
-        if county.technologies.get('bloodlust') and county.technologies['bloodlust'].completed:
+        if county.technologies.get('deathwish') and county.technologies['deathwish'].completed:
             if filter_key == 'soldier':
                 mod_sum += 1
         if county.technologies.get('ranger training') and county.technologies['ranger training'].completed:

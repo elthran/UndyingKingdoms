@@ -30,6 +30,7 @@ python-dateutil>=2.7.5
 python-Levenshtein==0.12.0
 pytz==2018.7
 scandir==1.9.0
+sendgrid==6.0.2
 six==1.12.0
 SQLAlchemy==1.2.15
 #undyingkingdoms==0.0.0

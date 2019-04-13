@@ -160,7 +160,7 @@ class Kingdom(GameState):
         for alliance in alliances:
             alliance.duration -= 1
             if alliance.duration == 0:
-                alliance.action = "Completed"
+                alliance.status = "Completed"
 
     def get_votes_needed(self):
         return max(len(self.counties) // 3, 3)

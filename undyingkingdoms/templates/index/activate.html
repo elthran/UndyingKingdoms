@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block title %}Login: {{ super() }}{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+#content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 3em;
+    margin-bottom: 3em;
+}
+
+#header {
+    width: 500px;
+    margin: auto;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+}
+
+#footer {
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+br {
+    margin-bottom: 1em;
+}
+
+button {
+    padding: 0.3em;
+    margin-top: 0.3em;
+}
+
+.form-control {
+    width: 18em;
+    height: 2.4em;
+    padding-left: 1em;
+    margin-bottom: 0.3em;
+}
+
+.center {
+    text-align: center;
+}
+
+</style>
+{% endblock %}
+
+{% block content1 %}
+<div id="content">
+  <div id="header">
+   To activate your account, please type in the verification code which was email to you:
+   <form method="POST" accept-charset="UTF-8" role="form">
+    <!-- EmailVerificationForm -->
+    {{ form.csrf_token }}
+    {{ render_field(form.code, placeholder="Verification Code", autofocus="") }}
+    <br>
+    <button type="submit">Verify</button>
+  </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+{{ super () }}
+<script type="text/javascript">
+</script>
+{% endblock %}

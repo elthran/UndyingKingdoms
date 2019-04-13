@@ -18,8 +18,9 @@ from undyingkingdoms.models.forms.login import LoginForm
 def login(template):
     form = LoginForm()
     if current_user.is_authenticated:
-        return redirect(
-            url_for('overview'))
+        if not current_user.is_verified:
+            return redirect(url_for('activate'))
+        return redirect(url_for('overview'))
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):

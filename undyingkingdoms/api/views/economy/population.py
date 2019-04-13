@@ -15,7 +15,7 @@ class PopulationAPI(MethodView):
             status='success',
             debugMessage='You called on the population api.',
             population=county.population,
-            population_projection=county.get_population_change(prediction=True),
+            population_projection=county.get_population_change(),
             race=county.race,
             background=county.background,
             birth_rate=county.get_birth_rate(),

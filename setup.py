@@ -30,7 +30,8 @@ setup(
         'requests',
         'flask-script',
         'Flask-Mobility',
-        'flask-cors'
+        'flask-cors',
+        'sendgrid'
     ],
 )
 

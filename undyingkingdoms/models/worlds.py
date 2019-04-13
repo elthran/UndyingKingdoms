@@ -72,6 +72,8 @@ class World(GameState):
         counties = County.query.all()
         for kingdom in kingdoms:
             kingdom.leader = 0
+            kingdom.wars_total_ta = 0
+            kingdom.wars_won_ta = 0
             kingdom.save()
         winning_kingdoms = [sorted(kingdoms, key=lambda x: x.wars_won_ta, reverse=True)[0],
                             sorted(kingdoms, key=lambda x: x.total_land_of_top_three_counties, reverse=True)[0]]
@@ -81,8 +83,9 @@ class World(GameState):
                 county.user.gems += 1
         winning_county.user.gems += 1
 
-        tables = ['DAU', 'army', 'building', 'casting', 'chatroom', 'notification', 'expedition', 'infiltration',
-                  'magic', 'message', 'preferences', 'session', 'trade', 'transaction', 'technology', 'county']
+        tables = ['DAU', 'army', 'building', 'casting', 'chatroom', 'diplomacy', 'notification', 'expedition',
+                  'infiltration', 'magic', 'message', 'preferences', 'session', 'trade', 'transaction', 'technology',
+                  'county']
         helpers.drop_then_rebuild_tables(db, tables)
         self.age += 1
         self.day = -12
