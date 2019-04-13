@@ -16,12 +16,13 @@
       >
         Economist
       </a>
-      <router-link
+      <!-- <router-link
         :to="urlFor.infrastructure"
         @click.native="$emit('refocus')"
       >
         City&nbsp;Planner
-      </router-link>
+      </router-link> -->
+      <a :href="urlFor.infrastructure">City&nbsp;Planner</a>
       <a
         :href="urlFor.military"
       >

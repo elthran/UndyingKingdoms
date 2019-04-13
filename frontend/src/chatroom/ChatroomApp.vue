@@ -76,7 +76,11 @@ export default {
     },
     lastMessageId () {
       // crashes on first run
-      return this.messages.slice(-1)[0].id
+      try {
+        return this.messages.slice(-1)[0].id
+      } catch {
+        return 0
+      }
     },
     correctedHeight () {
       return (this.windowHeight - 30)

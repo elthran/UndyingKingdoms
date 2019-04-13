@@ -20,7 +20,7 @@ class UpdateAPI(MethodView):
         last_message_id = request.args.get('last_message_id', 0)
         # import pdb;pdb.set_trace()
         # return all messages, filter in frontend
-        messages = Chatroom.query.filter(Chatroom.kingdom_id==county.kingdom_id, Chatroom.id > last_message_id).all()
+        messages = Chatroom.query.filter((Chatroom.is_global) | (Chatroom.kingdom_id==county.kingdom_id), Chatroom.id > last_message_id).all()
         preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
         return jsonify(
             debugMessage=f"You called on {__name__}",
