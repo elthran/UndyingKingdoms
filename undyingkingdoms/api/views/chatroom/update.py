@@ -5,6 +5,7 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
+from undyingkingdoms.api.vue_safe import vue_safe_message
 from undyingkingdoms.models import Chatroom
 from undyingkingdoms.models.forms.message import MessageForm
 
@@ -25,7 +26,7 @@ class UpdateAPI(MethodView):
         return jsonify(
             debugMessage=f"You called on {__name__}",
             CSRFToken=form.csrf_token.current_token,
-            messages=[m.json_ready() for m in messages],
+            messages=[vue_safe_message(m) for m in messages],
             globalChatOn=preferences.global_chat_on,
         ), 200
 

@@ -38,6 +38,7 @@ def build_testing_objects():
     user = User("haldon", MARLEN_TEMPORARY_EMAIL, MARLEN_TEMPORARY_ACCOUNT_PASSWORD)
     user.is_admin = True
     user.is_active = True
+    user.is_verified = True
     user.save()
     county = County(1, "Northern Wastes", "Haldon", user.id, 'Dwarf', 'Sir', 'Merchant')
     county.save()

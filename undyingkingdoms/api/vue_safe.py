@@ -1,3 +1,6 @@
+from flask import url_for
+
+
 def vue_safe_nbsp(s):
     """Returns a string with all spaces non-breaking.
 
@@ -80,3 +83,15 @@ def vue_safe_news(news):
             title=event.title,
             content=event.content
         )
+
+
+def vue_safe_message(message):
+    # return "({time}) {leader}: {content}".format(time=self.get_pretty_timestamp(), leader=self.get_county_leader_name(), content=self.content)
+    return dict(
+        time=message.time_created,
+        leader=message.get_county_leader_name(),
+        content=message.content,
+        room="global" if message.is_global else "kingdom",
+        id=message.id,
+        leaderUrl=url_for('enemy_overview', county_id=message.county_id)
+    )

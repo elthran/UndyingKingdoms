@@ -3,8 +3,7 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.api.views.helpers import patch_has_mail
-from undyingkingdoms.models import County, Kingdom, Message, Notification
+from undyingkingdoms.models import County, Message, Notification
 from undyingkingdoms.models.forms.message import MessageForm
 from undyingkingdoms.models.forms.trade import TradeForm
 from undyingkingdoms.models.trades import Trade

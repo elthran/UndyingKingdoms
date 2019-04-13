@@ -1,28 +1,27 @@
 <template>
-  <ul id="chatlist">
-    <li
+  <div id="chatlist">
+    <tool-tip
       v-for="message in messages"
       :key="message.id"
+      :tip="formatDate(message.time)"
+      :bounder="self"
+      align="mouse"
+      style="border-bottom:none; color:black; width:100%;"
     >
-      <tool-tip
-        :tip="formatDate(message.time)"
-        :bounder="self"
-        align="mouse"
-        style="border-bottom:none; color:black; width:100%;"
-      >
-        {{ message.leader }}: {{ message.content }}
-      </tool-tip>
-    </li>
-  </ul>
+      <vue-markdown>[{{ message.leader }}]({{ message.leaderUrl }}): {{ message.content }}</vue-markdown>
+    </tool-tip>
+  </div>
 </template>
 
 <script>
 import ToolTip from '@/components/ToolTip.vue'
+import VueMarkdown from 'vue-markdown'
 
 export default {
   name: 'ChatList',
   components: {
-    'tool-tip': ToolTip,
+    ToolTip,
+    VueMarkdown,
   },
   props: {
     messages: null

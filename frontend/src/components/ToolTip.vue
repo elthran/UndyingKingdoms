@@ -149,7 +149,7 @@ export default {
         return ['top', 'left', 'right', 'bottom', 'mouse'].indexOf(value) !== -1
       }
     },
-    bounder: HTMLUListElement,
+    bounder: HTMLDivElement,
   },
   data () {
     return {

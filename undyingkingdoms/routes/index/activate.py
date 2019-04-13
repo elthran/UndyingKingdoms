@@ -65,10 +65,10 @@ def activate():
         sg = SendGridAPIClient(api_key=private_config.SENDGRID_API_KEY)
         # noinspection PyUnresolvedReferences
         response = sg.send(data)
-        print(user.email)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
+        # print(user.email)
+        # print(response.status_code)
+        # print(response.body)
+        # print(response.headers)
     except Exception as e:
         print(e, data)
 
