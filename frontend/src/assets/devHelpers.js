@@ -27,6 +27,7 @@ async function login () {
       // console.log(csrfToken.val());
       if (csrfToken.val() === undefined) {
         // console.log("You are already logged in!")
+        return "You are already logged in."
       } else {
         await $.ajax({
           type: "POST",
@@ -42,6 +43,7 @@ async function login () {
           success: (response, status) => {
             // console.log("POST login successful")
             // console.log(response);
+            return "POST login successful."
           },
           error: (error) => {
             console.log('POST login failed');

@@ -1,86 +1,7 @@
-<style scoped>
-#chat-div {
-  width: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  /* This is all I need to make words break properly ... */
-  overflow-wrap: break-word;
-}
-
-@media (max-width: 640px) {
-  #chatroom {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 1.2em 1em;
-  }
-
-  #header {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    /*max-width: 320px;*/
-    margin-bottom: 1em;
-  }
-
-  h1 {
-    margin-bottom: 0;
-  }
-
-  #chat-div {
-    width: 100%;
-    max-width: 500px;
-    /*max-height: 15em;*/
-  }
-
-  #content {
-    padding: 1em;
-    width: 100%;
-    border-radius: 0.5em;
-    margin-bottom: 0.4em;
-    margin: 1em;
-  }
-
-  button {
-    width: 100%;
-    min-height: 3em;
-    border-radius: 0.5em;
-  }
-
-  .tab {
-    margin-left: 1em;
-  }
-}
-
-@media (min-width: 640px) {
-  #layout-content {
-    display: flex;
-    justify-content: space-around;
-  }
-
-  #chatroom {
-    max-width: 40em;
-  }
-
-  #header {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 1em;
-    margin-bottom: 1em;
-  }
-
-  #chat-div {
-    min-height: 300px;
-    min-width: 600px;
-    max-height: 750px;
-  }
-}
-</style>
-
 <template>
   <div
     id="chatroom"
-    :style="{ maxHeight: correctedHeight }"
+    :style="{ maxHeight: correctedHeight + 'px' }"
   >
     <prefix-title title="Town Hall" />
     <div id="header">
@@ -100,7 +21,7 @@
     <br>
     <csrf-token :value="CSRFToken" />
     <textarea
-      id="content"
+      id="input"
       v-model="message"
       class="form-control"
       name="content"
@@ -158,7 +79,7 @@ export default {
       return this.messages.slice(-1)[0].id
     },
     correctedHeight () {
-      return (this.windowHeight - 30) + 'px'
+      return (this.windowHeight - 30)
     },
     chatDiv () {
       return this.$refs.chatDiv
@@ -283,3 +204,79 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+#chat-div {
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* This is all I need to make words break properly ... */
+  overflow-wrap: break-word;
+}
+
+#header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1em;
+  width: 100%
+}
+
+#chatroom {
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  min-height: 3em;
+}
+
+#input {
+  padding: 1em;
+  width: 100%;
+  border-radius: 0.5em;
+  margin: 1em 0;
+}
+
+@media (max-width: 640px) {
+  #chatroom {
+    align-items: center;
+    margin: 1.2em 1em;
+  }
+
+  h1 {
+    margin-bottom: 0;
+  }
+
+  #chat-div {
+    width: 100%;
+    max-width: 500px;
+    /*max-height: 15em;*/
+  }
+
+  button {
+    width: 100%;
+  }
+
+  .tab {
+    margin-left: 1em;
+  }
+}
+
+@media (min-width: 640px) {
+  #chatroom {
+    align-items: flex-start;
+    max-width: 40em;
+    margin-top: 1em;
+  }
+
+  #chat-div {
+    min-height: 300px;
+    min-width: 600px;
+    /*max-height: 750px;*/
+  }
+
+  button {
+    min-width: 10em;
+  }
+}
+</style>
