@@ -13,7 +13,7 @@ class WoodAPI(MethodView):
 
         return jsonify(
             status='success',
-            message='You called the wood api.',
+            debugMessage='You called the wood api.',
             wood=county.wood,
             woodIncome=county.get_wood_income(),
             mills=county.buildings['mill'].class_name_plural.title(),

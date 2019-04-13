@@ -45,8 +45,8 @@ export default {
       mana: -1
     }
   },
-  beforeCreate () {
-    this.$getData('/api/overview/treasury', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/overview/treasury')
   }
 }
 </script>

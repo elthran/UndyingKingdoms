@@ -10,7 +10,7 @@ class TreasuryAPI(MethodView):
 
         return jsonify(
             status="success",
-            message=f"You called on {__name__}",
+            debugMessage=f"You called on {__name__}",
             gold=county.gold,
             wood=county.wood,
             iron=county.iron,

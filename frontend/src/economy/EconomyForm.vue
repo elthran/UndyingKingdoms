@@ -130,8 +130,8 @@ export default {
       })
     }
   },
-  beforeCreate () {
-    this.$getData('/api/economy/update', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/economy/update')
   }
 }
 </script>

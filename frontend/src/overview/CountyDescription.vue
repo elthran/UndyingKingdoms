@@ -14,8 +14,8 @@ export default {
       background: 'someBackground'
     }
   },
-  beforeCreate () {
-    this.$getData('/api/overview/county_description', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/overview/county_description')
   }
 }
 </script>

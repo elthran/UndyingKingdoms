@@ -37,8 +37,8 @@ export default {
       end: -1
     }
   },
-  beforeCreate () {
-    this.$getData('/api/overview/basics', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/overview/basics')
   }
 }
 </script>

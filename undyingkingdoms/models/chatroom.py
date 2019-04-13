@@ -4,8 +4,8 @@ from undyingkingdoms.models import County
 
 class Chatroom(GameState):
 
-    kingdom_id = db.Column(db.Integer)
-    county_id = db.Column(db.Integer)
+    kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
+    county_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
     content = db.Column(db.String(512))
     is_global = db.Column(db.Boolean, default=False)
 
@@ -25,4 +25,10 @@ class Chatroom(GameState):
 
     def json_ready(self):
         # return "({time}) {leader}: {content}".format(time=self.get_pretty_timestamp(), leader=self.get_county_leader_name(), content=self.content)
-        return self.time_created, self.get_county_leader_name(), self.content
+        return dict(
+            time=self.time_created,
+            leader=self.get_county_leader_name(),
+            content=self.content,
+            room="global" if self.is_global else "kingdom",
+            id=self.id,
+        )

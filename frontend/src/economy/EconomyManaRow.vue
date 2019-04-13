@@ -23,8 +23,8 @@ export default {
       manaIncome: -1,
     }
   },
-  beforeCreate () {
-    this.$getData('/api/economy/mana', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/economy/mana')
   }
 }
 </script>

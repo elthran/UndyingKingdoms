@@ -9,7 +9,7 @@ class HealthAPI(MethodView):
 
         return jsonify(
             status='success',
-            message='You called the health api.',
+            debugMessage='You called the health api.',
             health=county.health,
             healthChange=county.get_health_change(),
             healthTerminology=county.health_terminology.title(),

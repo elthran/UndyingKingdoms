@@ -109,11 +109,11 @@ export default {
   },
   watch: {
     update () {
-      this.$getData('/api/economy/gold', this.$deployData)
+      this.$hydrate('/api/economy/gold')
     }
   },
-  beforeCreate () {
-    this.$getData('/api/economy/gold', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/economy/gold')
   }
 }
 </script>

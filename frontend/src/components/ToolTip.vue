@@ -1,21 +1,23 @@
 <style scoped>
-.tooltip {
+.tooltip-wrapper {
   position: relative;
   display: inline-block;
   border-bottom: 1px dotted #ccc;
-  cursor: help;
+  cursor: pointer;
   color: #006080;
 }
 
-.tooltip:hover .tooltip-text {
+.tooltip-wrapper:hover .tooltip {
   visibility: visible;
   opacity: 1;
 }
 
-.tooltip .tooltip-text {
+.tooltip-wrapper .tooltip {
   visibility: hidden;
   position: absolute;
-  min-width: 12em;
+  /*min-width: 12em;*/
+  padding-left: 0.3em !important;
+  padding-right: 0.3em !important;
   background-color: #555;
   color: #fff;
   text-align: center;
@@ -108,13 +110,24 @@
   border-width: 8px;
   margin-left: -8px;
 }
+
+.tooltip-mouse {
+  /* later modified by js code. */
+  top: -5px;
+  left: 0;
+}
+
+.arrow-box-for-mouse:after {
+  /* leaving blank on purpose */
+}
 </style>
 
 <template>
-  <div class="tooltip">
-    {{ content }}
+  <div class="tooltip-wrapper">
+    <slot>{{ content }}</slot>
     <span
-      class="tooltip-text"
+      ref="tooltip"
+      class="tooltip"
       :class="'tooltip-' + align + ' ' + 'arrow-box-for-' + align"
     >
       {{ tip }}
@@ -133,8 +146,38 @@ export default {
       default: 'bottom',
       validator: function (value) {
         // The value must match one of these strings
-        return ['top', 'left', 'right', 'bottom'].indexOf(value) !== -1
+        return ['top', 'left', 'right', 'bottom', 'mouse'].indexOf(value) !== -1
       }
+    },
+    bounder: HTMLUListElement,
+  },
+  data () {
+    return {
+    }
+  },
+  mounted () {
+    if (this.align === 'mouse') {
+      this.$el.addEventListener('mousemove', this.showTooltip)
+    }
+  },
+  beforeDestroy () {
+    this.$el.removeEventListener('mousemove', this.showTooltip)
+  },
+  methods: {
+    showTooltip(e) {
+      var tooltip = this.$refs.tooltip
+      var bounderRect = this.bounder.getBoundingClientRect()
+      var absBounderRight = bounderRect.x + bounderRect.width
+
+      tooltip.style.left =
+          (e.pageX + tooltip.clientWidth + 20 < absBounderRight)
+              ? (e.pageX - bounderRect.x + 10 + "px")
+              : (e.pageX - bounderRect.x - tooltip.clientWidth - 20 + "px");
+
+      var absBounderBottom = bounderRect.y + bounderRect.height
+      tooltip.style.top = (e.pageY + tooltip.clientHeight + 10 < absBounderBottom)
+          ? (5 + "px")
+          : (this.$el.clientHeight - tooltip.clientHeight + "px");
     }
   }
 }

@@ -58,12 +58,13 @@
       >
         Messages
       </a>
-      <a
-        :href="urlFor.chatroomAPI"
+      <router-link
+        :to="urlFor.chatroom"
         :class="{ bold: user.hasChatMessage }"
+        @click.native="$emit('refocus')"
       >
         Town&nbsp;Hall
-      </a>
+      </router-link>
       <a
         class="mobile-link"
         :href="urlFor.kingdom"
@@ -115,16 +116,16 @@ export default {
     return {
       urlFor: {
         overview: '',
-        infrastructure: ''
+        infrastructure: '',
+        chatroom: ''
       },
       user: Object,
-      errors: Object
     }
   },
-  beforeCreate () {
+  mounted () {
     // if development
     // url is 'http://localhost:5000/api/sidebar' - happens auto-magically.
-    this.$getData('/api/sidebar', this.$deployData)
+    this.$hydrate('/api/sidebar')
   }
 }
 </script>

@@ -10,7 +10,7 @@ class IronAPI(MethodView):
 
         return jsonify(
             status='success',
-            message='You called the iron api.',
+            debugMessage='You called the iron api.',
             iron=county.iron,
             ironIncome=county.get_iron_income(),
             mines=county.buildings['mine'].class_name_plural.title(),

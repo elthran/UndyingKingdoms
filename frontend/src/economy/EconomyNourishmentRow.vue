@@ -34,11 +34,11 @@ export default {
   },
   watch: {
     update () {
-      this.$getData('/api/economy/nourishment', this.$deployData)
+      this.$hydrate('/api/economy/nourishment')
     }
   },
-  beforeCreate () {
-    this.$getData('/api/economy/nourishment', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/economy/nourishment')
   }
 }
 </script>

@@ -10,7 +10,7 @@ class CountyDescriptionAPI(MethodView):
 
         return jsonify(
             status="success",
-            message=f"You called on {__name__}",
+            debugMessage=f"You called on {__name__}",
             race=county.race,
             name=county.name,
             title=county.title,

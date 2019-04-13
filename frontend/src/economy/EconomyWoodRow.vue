@@ -24,8 +24,8 @@ export default {
       mills: "",
     }
   },
-  beforeCreate () {
-    this.$getData('/api/economy/wood', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/economy/wood')
   }
 }
 </script>

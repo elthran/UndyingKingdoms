@@ -1153,11 +1153,6 @@ class County(GameState):
                                   1: "Normal", 1.5: "One-and-a-half", 2: "Double", 3: "Triple"}
         return terminology_dictionary[self.rations]
 
-    def has_new_townhall_message(self):
-        if (self.preferences.last_checked_townhall + timedelta(seconds=2)) < self.kingdom.world.get_most_recent_townhall_time(self.kingdom_id):
-            return True
-        return False
-
     def __repr__(self):
         return '<County %r (%r)>' % (self.name, self.id)
 

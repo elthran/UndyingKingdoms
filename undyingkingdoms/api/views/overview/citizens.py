@@ -10,7 +10,7 @@ class CitizensAPI(MethodView):
 
         return jsonify(
             status="success",
-            message=f"You called on {__name__}",
+            debugMessage=f"You called on {__name__}",
             population=county.population,
             happiness_term=county.happiness_terminology.title(),
             healthiness_term=county.healthiness_terminology.title(),

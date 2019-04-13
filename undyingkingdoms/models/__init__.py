@@ -18,6 +18,7 @@ from .diplomacy import Diplomacy
 from .magic import Magic
 from .casting import Casting
 from .clans import Clan
+from .preferences import Preferences
 
 
 # Allows adding relationships that can't be declared in class
@@ -26,6 +27,9 @@ from undyingkingdoms.models.bases import db
 Army.county = db.relationship('County')
 User.county = db.relationship('County', backref='user', uselist=False)
 Casting.caster = db.relationship('County', foreign_keys="[Casting.county_id]")
+User.preferences = db.relationship("Preferences", uselist=False)
+Preferences.county = db.relationship("County")
+Preferences.user = db.relationship("User")
 
 
 # Attach any addons with multiple participants.

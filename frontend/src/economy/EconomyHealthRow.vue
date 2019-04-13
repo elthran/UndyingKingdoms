@@ -39,8 +39,8 @@ export default {
       healthTerminology: ""
     }
   },
-  beforeCreate () {
-    this.$getData('/api/economy/health', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/economy/health')
   }
 }
 </script>

@@ -68,8 +68,8 @@ export default {
       newsVisibility: false
     }
   },
-  beforeCreate () {
-    this.$getData('/api/overview/news', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/overview/news')
   }
 }
 </script>

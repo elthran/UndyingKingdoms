@@ -24,8 +24,8 @@ export default {
       descriptiveName: ""
     }
   },
-  beforeCreate () {
-    this.$getData('/api/economy/stone', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/economy/stone')
   }
 }
 </script>

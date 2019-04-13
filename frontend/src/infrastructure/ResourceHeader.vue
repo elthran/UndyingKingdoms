@@ -95,8 +95,8 @@ export default {
       buildSlots: -1
     }
   },
-  beforeCreate () {
-    this.$getData('/api/infrastructure/resources', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/infrastructure/resources')
   }
 }
 </script>

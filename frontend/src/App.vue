@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <prefix-title title="Home" />
+    <prefix-title title="Debug" />
     <router-view ref="content" />
     <nav-bar @refocus="focusTop" />
   </div>

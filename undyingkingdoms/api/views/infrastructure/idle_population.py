@@ -17,7 +17,7 @@ class IdlePopulationAPI(MethodView):
 
         return jsonify(
             status="success",
-            message="You called on the idle workers api.",
+            debugMessage="You called on the idle workers api.",
             allocateWorkersUrl=url_for('api.infrastructure_allocate_api'),
             form=vue_safe_form(excess_worker_form),
             overworking=county.get_excess_production_value(0),

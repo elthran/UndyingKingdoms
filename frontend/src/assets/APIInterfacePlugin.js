@@ -1,35 +1,47 @@
 var APIInterface = {}
 
 APIInterface.install = function (Vue, options) {
-  Vue.prototype.$getData = function (url, callback) {
-    this.axios.get(url)
+  Vue.prototype.$getData = function (url) {
+    return this.axios.get(url)
     .then((response) => {
-      if (response.data.status === 'success') {
-        delete response.data.status
-        delete response.data.message
-        callback(this, response.data)
-      } else if (!(response.data.hasOwnProperty('status'))) {
-        console.log('You need to add as "status" attribute to the api "' + url + '" return jsonify.')
-        console.log('You should probably add a "message" attribute as well for debugging purposes.')
-      } else {
-        this.errors = response
-      }
+      return response.data
     })
     .catch((error) => {
-      this.errors = error.response
+      // console.log("$getData errors are:", error, error.response)
+      return Promise.reject(error)
     })
   }
 
-  Vue.prototype.$deployData = async function (self, articles) {
-    const { default: _ } = await import(/* webpackChunkName: "lodash" */ 'lodash')
-    _.forEach(articles, function (article, key) {
-      if (self.hasOwnProperty(key)) {
-        self[key] = article
-      } else {
-        console.log('You need to add "' + key + '" to this vue component.')
-        console.log('Its value is: ', article)
-      }
+  Vue.prototype.$hydrate = function (url) {
+    // console.log('hydrating')
+    return this.axios.get(url)
+    .then((response) => {
+      // if (!(response.data.hasOwnProperty('debugMessage'))) {
+      //   console.log('You need to add as "debugMessage" attribute to the api "' + url + '" return jsonify.')
+      // }
+      // delete response.data.debugMessage
+      return this.$deployData(response.data)
     })
+    .catch((error) => {
+      console.log("$hydrate errors are:", error, error.response)
+      return Promise.reject(error)
+    })
+  }
+
+  Vue.prototype.$deployData = function (data) {
+    // console.log("Deploying data")
+    // console.log(data)
+    for ( var prop in data ) {
+      // console.log(prop, data[prop])
+      if (data.hasOwnProperty(prop)) {
+        this.$data[prop] = data[prop]
+      }
+      if (!(this.$data.hasOwnProperty(prop))) {
+        console.log('You need to add "' + prop + '" to this vue component.')
+        console.log('Its value is: ', data[prop])
+      }
+    }
+    return data
   }
 
   Vue.prototype.$sendForm = async function (form, callback) {
@@ -54,42 +66,39 @@ APIInterface.install = function (Vue, options) {
         console.log('You need to add as "success" attribute to the api "' + url + '" return jsonify.')
         console.log('You should probably add a "message" attribute as well for debugging purposes.')
       } else {
-        console.log(response)
+        console.log("$sendForm failed", response)
       }
     })
     .catch((error) => {
-      console.log(error.response)
+      console.log("$sendForm errors are:", error)
+      return Promise.reject(error)
     })
   }
 
-  Vue.prototype.$sendData = function (data, callback) {
+  Vue.prototype.$sendData = async function (data) {
+    // console.log("running $sendData")
     var formData = new FormData();
     for ( var prop in data ) {
       if (data.hasOwnProperty(prop)) {
         formData.append(prop, data[prop]);
       }
     }
-    this.axios({
-      url: formData.get('_action'),
+    if (!formData.has('csrf_token')) {
+      formData.set('csrf_token', formData.get('CSRFToken') || formData.get('csrfToken'))
+    }
+    return this.axios({
+      url: formData.get('action'),
       method: 'POST',
       headers: {'X-CSRF-TOKEN': formData.get('csrf_token')},
       data: formData,
       dataType: 'json'  // type of datareturned, not type sent
     })
     .then((response) => {
-      if (response.data.status === 'success') {
-        delete response.data.status
-        delete response.data.message
-        callback(this, response.data)
-      } else if (!(response.data.hasOwnProperty('status'))) {
-        console.log('You need to add as "success" attribute to the api "' + url + '" return jsonify.')
-        console.log('You should probably add a "message" attribute as well for debugging purposes.')
-      } else {
-        console.log(response)
-      }
+      return response.data
     })
     .catch((error) => {
-      console.log(error.response)
+      // console.log("$sendData errors are:", error, error.response)
+      return Promise.reject(error)
     })
   }
 }

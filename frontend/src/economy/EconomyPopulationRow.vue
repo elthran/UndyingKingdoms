@@ -64,8 +64,8 @@ export default {
       errors: Object
     }
   },
-  beforeCreate () {
-    this.$getData('/api/economy/population', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/economy/population')
   }
 }
 </script>

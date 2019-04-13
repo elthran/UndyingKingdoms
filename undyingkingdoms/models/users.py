@@ -32,7 +32,6 @@ class User(GameState):
                                    collection_class=attribute_mapped_collection('name'),
                                    cascade="all, delete, delete-orphan", passive_deletes=True)
     achievement_points = db.Column(db.Integer)
-    global_chat_on = db.Column(db.Boolean, default=False)
 
     # Flask
     is_authenticated = db.Column(db.Boolean)  # User has logged in through flask. (Flask)

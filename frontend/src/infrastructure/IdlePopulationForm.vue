@@ -69,13 +69,13 @@ export default {
     goal (newVal, oldVal) {
       if (oldVal != -1) {  // ignore watcher until after loading initial data.
         this.$sendForm(this.$refs.form, () => {
-          this.$getData('/api/infrastructure/idle_population', this.$deployData)
+          this.$hydrate('/api/infrastructure/idle_population')
         })
       }
     }
   },
-  beforeCreate () {
-    this.$getData('/api/infrastructure/idle_population', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/infrastructure/idle_population')
   }
 }
 </script>

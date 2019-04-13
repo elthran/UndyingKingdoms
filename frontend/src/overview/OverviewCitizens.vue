@@ -38,8 +38,8 @@ export default {
       grain_stores: -1
     }
   },
-  beforeCreate () {
-    this.$getData('/api/overview/citizens', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/overview/citizens')
   }
 }
 </script>

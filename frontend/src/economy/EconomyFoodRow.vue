@@ -99,11 +99,11 @@ export default {
   },
   watch: {
     update () {
-      this.$getData('/api/economy/food', this.$deployData)
+      this.$hydrate('/api/economy/food')
     }
   },
-  beforeCreate () {
-    this.$getData('/api/economy/food', this.$deployData)
+  mounted () {
+    this.$hydrate('/api/economy/food')
   }
 }
 </script>

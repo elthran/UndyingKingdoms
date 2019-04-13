@@ -48,7 +48,7 @@ def research_api():
 
         return jsonify(
             status='success',
-            message='You have updated your current research choice.',
+            debugMessage='You have updated your current research choice.',
             researchChange=county.get_research_change(),
             description=tech.description,
             progressCurrent=tech.current,
@@ -56,5 +56,5 @@ def research_api():
         )
     return jsonify(
         status='fail',
-        message='Your research form did not pass validation.'
+        debugMessage='Your research form did not pass validation.'
     )
