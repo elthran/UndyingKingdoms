@@ -1,4 +1,4 @@
-from flask import render_template, url_for, redirect, jsonify
+from flask import render_template, url_for, redirect, jsonify, request
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
@@ -36,12 +36,7 @@ def overview():
     # If game has been reset allow user to make a new county.
     if not current_user.county:
         return redirect(url_for('initialize'))
-    patch_has_mail(current_user)
-
-    return render_template(
-        "gameplay/overview.html",
-        has_mail=current_user.has_mail()
-    )
+    return redirect(url_for('mobile', path=request.path[1:]))
 
 
 @app.route('/gameplay/enemy_overview/<int:county_id>/', methods=['GET'])
