@@ -20,7 +20,6 @@ def attack(template, county_id):
 
     form = AttackForm(county)
 
-
     unit_types = (
         _type
         for _type in county.armies

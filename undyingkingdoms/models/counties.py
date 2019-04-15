@@ -958,7 +958,6 @@ class County(GameState):
         elif difference_in_power < 50:
             offence_damage *= 0.50
             defence_damage *= 0.50
-            rewards_modifier -= 0.25
             if win:
                 notification_title = "You were attacked by {} and lost a resounding defeat.".format(self.name)
                 message = "You won a resounding victory."
@@ -968,7 +967,6 @@ class County(GameState):
         else:
             offence_damage *= 0.25
             defence_damage *= 0.25
-            rewards_modifier -= 0.65
             if win:
                 notification_title = "You were attacked by {} and quickly retreated before suffering many losses.".format(self.name)
                 message = "The enemy quickly retreated before you."
@@ -1010,22 +1008,35 @@ class County(GameState):
                                             self.kingdom.world.day)
                 message += " You razed {} acres, but lost {} troops in the battle.".format(land_razed, casualties)
             elif expedition.mission == "Pillage":
-                war_score = 15
-                gold_gained = int(enemy.gold * 0.20 * rewards_modifier)
-                wood_gained = int(enemy.wood * 0.20 * rewards_modifier)
-                iron_gained = int(enemy.iron * 0.20 * rewards_modifier)
-                expedition.gold_gained = gold_gained
-                expedition.wood_gained = wood_gained
-                expedition.iron_gained = iron_gained
-                enemy.gold -= gold_gained
-                enemy.wood -= wood_gained
-                enemy.iron -= iron_gained
+                war_score = int(min(max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1) * rewards_modifier, enemy.land * 0.2))
+                enemy_resources = {'gold': (enemy.gold, 1),
+                                   'wood': (enemy.wood, 1.5),
+                                   'iron': (enemy.iron, 3)}
+                enemy_total_value = enemy_resources['gold'][0] + enemy_resources['wood'][0] + enemy_resources['iron'][0]
+                attackers_gain_value = min(enemy_total_value * 0.2 * rewards_modifier, 500)  # You can gain a maximum of 500 value from a pillage
+                gains = {'gold': 0, 'wood': 0, 'iron': 0}
+                while attackers_gain_value > 0:
+                    enemy_resources = {key: value for key, value in enemy_resources.items() if value[0] > 0}
+                    element = choice(list(enemy_resources))
+                    attackers_gain_value -= enemy_resources[element][1]
+                    gains[element] += 1
+                expedition.gold_gained = gains['gold']
+                expedition.wood_gained = gains['wood']
+                expedition.iron_gained = gains['iron']
+                self.gold += gains['gold']
+                self.wood += gains['wood']
+                self.iron += gains['iron']
+                enemy.gold -= gains['gold']
+                enemy.wood -= gains['wood']
+                enemy.iron -= gains['iron']
                 notification = Notification(enemy.id, notification_title,
-                                            "The enemy army stole {} gold, {} wood, and {} iron after the battle.".format(gold_gained, wood_gained, iron_gained),
+                                            "The enemy army stole {} gold, {} wood, and {} iron after the battle.".format(gains['gold'],
+                                                                                                                          gains['wood'],
+                                                                                                                          gains['iron']),
                                             self.kingdom.world.day)
-                message += " You gained {} gold, {} wood, and {} iron, but lost {} troops in the battle.".format(gold_gained,
-                                                                                                                 wood_gained,
-                                                                                                                 iron_gained,
+                message += " You gained {} gold, {} wood, and {} iron, but lost {} troops in the battle.".format(gains['gold'],
+                                                                                                                 gains['wood'],
+                                                                                                                 gains['iron'],
                                                                                                                  casualties)
             # Add war clause since it was a successful attack
             if war:

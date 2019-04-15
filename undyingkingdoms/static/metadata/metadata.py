@@ -8,7 +8,7 @@ metadata_titles = ['Sir', 'Dame', 'Lord', 'Lady', 'Baron', 'Baroness', 'Duke', '
 
 metadata_backgrounds = ['Warlord', 'Engineer', 'Merchant', 'Rogue', 'Wizard']
 
-kingdom_names = ["Faenoth", "Aldoroth", "Ecthalion"]
+kingdom_names = ["Faenoth", "Ecthalion"]
 
 infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust', 'steal research']
 
