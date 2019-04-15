@@ -20,7 +20,7 @@ def build_testing_objects():
     user.is_active = True
     user.is_verified = True
     user.save()
-    county = County(1, "Ulthuan", "Elthran", user.id, 'Dwarf', 'Sir', 'Merchant')
+    county = County(1, "Ulthuan", "Elthran", user.id, 'Dwarf', 'Sir', 'Rogue')
     county.save()
     county.vote = county.id
     county.kingdom_id = 1
@@ -59,46 +59,45 @@ def build_testing_objects():
     kingdom = Kingdom.query.get(2)
     kingdom.leader = county.id
     # Create AI1 (He is weak and easier to attack for testing)
-    # user = User("ai1", "1@gmail.com", "star", is_bot=True)
-    # user.save()
-    # county = County(1, "Robotica1", "Mr. Roboto1", user.id, 'Dwarf', 'Lady', 'Engineer')
-    # county.save()
-    # county.vote = county.id
-    # county.armies['peasant'].amount = 0
-    # county.armies['archer'].amount = 0
-    # preferences = Preferences(county.id, user.id)
-    # preferences.save()
-    # # Create AI2 (He is weak and easier to attack for testing)
-    # user = User("ai2", "2@gmail.com", "star", is_bot=True)
-    # user.save()
-    # county = County(2, "Robotica2", "Mr. Roboto2", user.id, 'Elf', 'Lady', 'Engineer')
-    # county.save()
-    # county.vote = county.id
-    # county.armies['peasant'].amount = 0
-    # county.armies['archer'].amount = 0
-    # preferences = Preferences(county.id, user.id)
-    # preferences.save()
-    # # Create AI3 (He is weak and easier to attack for testing)
-    # user = User("ai3", "3@gmail.com", "star", is_bot=True)
-    # user.save()
-    # county = County(2, "Robotica3", "Mr. Roboto3", user.id, 'Human', 'Lady', 'Engineer')
-    # county.save()
-    # county.vote = county.id
-    # county.kingdom_id = 3
-    # county.armies['peasant'].amount = 0
-    # county.armies['archer'].amount = 0
-    # preferences = Preferences(county.id, user.id)
-    # preferences.save()
-    # # Create Forum shell
-    # forum = Forum()
-    # forum.save()
-    # thread = Thread(forum.id, "General", 1)
-    # thread.save()
-    # thread = Thread(forum.id, "Feedback & Suggestions", 1)
-    # thread.save()
-    # thread = Thread(forum.id, "Bug Reports", 1)
-    # thread.save()
-    # thread = Thread(forum.id, "Weekly Art Competition", 1)
-    # thread.save()
-    # thread = Thread(forum.id, "Monthly Feature Vote", 1)
-    # thread.save()
+    user = User("ai1", "1@gmail.com", "star", is_bot=True)
+    user.save()
+    county = County(1, "Robotica1", "Mr. Roboto1", user.id, 'Dwarf', 'Lady', 'Engineer')
+    county.save()
+    county.vote = county.id
+    county.armies['peasant'].amount = 0
+    county.armies['archer'].amount = 0
+    preferences = Preferences(county.id, user.id)
+    preferences.save()
+    # Create AI2 (He is weak and easier to attack for testing)
+    user = User("ai2", "2@gmail.com", "star", is_bot=True)
+    user.save()
+    county = County(2, "Robotica2", "Mr. Roboto2", user.id, 'Elf', 'Lady', 'Engineer')
+    county.save()
+    county.vote = county.id
+    county.armies['peasant'].amount = 0
+    county.armies['archer'].amount = 0
+    preferences = Preferences(county.id, user.id)
+    preferences.save()
+    # Create AI3 (He is weak and easier to attack for testing)
+    user = User("ai3", "3@gmail.com", "star", is_bot=True)
+    user.save()
+    county = County(2, "Robotica3", "Mr. Roboto3", user.id, 'Human', 'Lady', 'Engineer')
+    county.save()
+    county.vote = county.id
+    county.armies['peasant'].amount = 0
+    county.armies['archer'].amount = 0
+    preferences = Preferences(county.id, user.id)
+    preferences.save()
+    # Create Forum shell
+    forum = Forum()
+    forum.save()
+    thread = Thread(forum.id, "General", 1)
+    thread.save()
+    thread = Thread(forum.id, "Feedback & Suggestions", 1)
+    thread.save()
+    thread = Thread(forum.id, "Bug Reports", 1)
+    thread.save()
+    thread = Thread(forum.id, "Weekly Art Competition", 1)
+    thread.save()
+    thread = Thread(forum.id, "Monthly Feature Vote", 1)
+    thread.save()

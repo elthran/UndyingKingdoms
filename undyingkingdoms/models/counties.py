@@ -14,7 +14,7 @@ from undyingkingdoms.models.trades import Trade
 from undyingkingdoms.models.casting import Casting
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
-    happiness_modifier, buildings_built_per_day_modifier, spell_chance_modifier
+    happiness_modifier, buildings_built_per_day_modifier, spell_chance_modifier, infiltration_success_modifier
 
 from copy import deepcopy
 
@@ -36,6 +36,7 @@ from undyingkingdoms.static.metadata.metadata_research_dwarf import dwarf_techno
 from undyingkingdoms.static.metadata.metadata_research_elf import elf_technology
 from undyingkingdoms.static.metadata.metadata_research_goblin import goblin_technology
 from undyingkingdoms.static.metadata.metadata_research_human import human_technology
+from undyingkingdoms.static.metadata.metadata_research_rogue import rogue_technology
 
 
 class County(GameState):
@@ -142,6 +143,8 @@ class County(GameState):
             self.technologies = {**deepcopy(generic_technology), **deepcopy(goblin_technology)}
         else:
             raise AttributeError('Buildings and Armies were not found in metadata')
+        if self.background == "Rogue":
+            self.technologies = {**self.technologies, **deepcopy(rogue_technology)}
         for building in self.buildings:
             self.buildings[building].update_description()
 
@@ -1117,15 +1120,27 @@ class County(GameState):
         expeditions = Expedition.query.filter_by(county_id=self.id).all()
         return [expedition for expedition in expeditions if expedition.duration > 0]
 
-    def get_chance_to_be_successfully_infiltrated(self):
+    def get_bonus_chance_to_catch_thieves(self):
         buffer_time = datetime.utcnow() - timedelta(hours=12)
         operations_on_target = Infiltration.query.filter_by(target_id=self.id).filter_by(success=True).filter(
             Infiltration.time_created > buffer_time).all()
         counter = 0
         for mission in operations_on_target:
             counter += mission.amount_of_thieves
-        reduction = 10 + (self.buildings['tower'].total * self.buildings['tower'].output) + (5 * counter)
-        return max(int(100 - reduction), 10)
+        chance = (self.buildings['tower'].total * self.buildings['tower'].output) + (5 * counter)
+        return chance
+
+    def get_chance_to_successfully_infiltrate(self):
+        chance = 65
+        if self.technologies.get("espionage i") and self.technologies["espionage i"].completed:
+            chance += 5
+        if self.technologies.get("espionage ii") and self.technologies["espionage ii"].completed:
+            chance += 10
+        if self.technologies.get("espionage iii") and self.technologies["espionage iii"].completed:
+            chance += 10
+        chance += infiltration_success_modifier.get(self.race, ("", 0))[1] \
+                 + infiltration_success_modifier.get(self.background, ("", 0))[1]
+        return min(chance, 100)
 
     def chance_to_cast_spell(self):
         modifier = 0 + spell_chance_modifier.get(self.race, ("", 0))[1] \

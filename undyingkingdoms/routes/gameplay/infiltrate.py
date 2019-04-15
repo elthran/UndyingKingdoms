@@ -35,10 +35,9 @@ def infiltrate(template, county_id):
                               current_user.county.day, mission, form.amount.data)
         report.save()
 
-        chance_of_success = target.get_chance_to_be_successfully_infiltrated() + form.amount.data
-        modifier = 1 + infiltration_success_modifier.get(current_user.county.race, ("", 0))[1] \
-                   + infiltration_success_modifier.get(current_user.county.background, ("", 0))[1]
-        chance_of_success *= modifier
+        chance_of_success = current_user.county.get_chance_to_successfully_infiltrate() \
+                            + form.amount.data \
+                            - target.get_bonus_chance_to_catch_thieves()
 
         if chance_of_success >= randint(1, 100):
             # Add increase to war score
@@ -66,7 +65,7 @@ def infiltrate(template, county_id):
                 target.gold -= gold_stolen
                 current_user.county.gold += gold_stolen
                 report.pilfer_amount = gold_stolen
-                report.duration = randint(11, 13)
+                report.duration = randint(8, 10)
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
                                             "They stole {} gold from our coffers.".format(gold_stolen),
@@ -75,7 +74,7 @@ def infiltrate(template, county_id):
                 crops_burned = min(target.buildings['field'].total, form.amount.data)
                 target.buildings['field'].total -= crops_burned
                 report.crops_burned = crops_burned
-                report.duration = randint(17, 18)
+                report.duration = randint(14, 16)
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
                                             "They burned {} of our crops.".format(crops_burned),
@@ -84,14 +83,14 @@ def infiltrate(template, county_id):
                 happiness_lost = min(target.happiness, form.amount.data * 3)
                 target.happiness -= happiness_lost
                 report.distrust = happiness_lost
-                report.duration = randint(15, 17)
+                report.duration = randint(12, 14)
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
                                             "They have caused some unrest in our kingdom.",
                                             current_user.county.kingdom.world.day)
             elif mission == 'scout military':
                 report.get_troop_report(current_user.county, target, form.amount.data)
-                report.duration = 4
+                report.duration = 3
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
                                             "They have found out some secrets regarding our military.",
@@ -102,7 +101,7 @@ def infiltrate(template, county_id):
                 current_technology.current -= research_stolen
                 current_user.county.research += research_stolen
                 report.research_stolen = research_stolen
-                report.duration = randint(9, 11)
+                report.duration = randint(6, 8)
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
                                             "They have stolen {} of our research.",
@@ -111,7 +110,7 @@ def infiltrate(template, county_id):
             notification = Notification(target.id, "You caught enemy thieves from {}".format(current_user.county.name),
                                         "You caught them before they could accomplish their task",
                                         current_user.county.kingdom.world.day)
-            report.duration = randint(20, 26)
+            report.duration = randint(16, 18)
             report.success = False
         notification.category = "Infiltration"
         notification.save()
