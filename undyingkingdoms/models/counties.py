@@ -299,13 +299,13 @@ class County(GameState):
 
     @property
     def max_mana(self):
-        base = 25
+        base = 40
         if self.technologies['arcane knowledge I'].completed:
-            base += 5
+            base += 20
         if self.technologies['arcane knowledge II'].completed:
-            base += 5
+            base += 20
         if self.technologies['arcane knowledge III'].completed:
-            base += 5
+            base += 20
         return base
 
     @property
@@ -742,14 +742,11 @@ class County(GameState):
         return self.buildings['quarry'].total * self.buildings['quarry'].output
 
     def get_mana_change(self):
-        growth = self.buildings['arcane'].total * self.buildings['arcane'].output
-        if self.background == "Alchemist":
-            growth *= 2
+        growth = 2
         active_spells = Casting.query.filter_by(county_id=self.id).filter_by(active=True).all()
         loss = sum(spell.mana_sustain for spell in active_spells)
         difference = growth - loss
         if difference < 0 and self.mana + difference < 0:
-            print("here...")
             active_spells[0].active = False
             notice = Notification(self.id,
                                   "Spell Ended",

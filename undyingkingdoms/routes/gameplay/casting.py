@@ -1,3 +1,4 @@
+from math import floor
 from random import randint
 
 from flask import render_template, url_for
@@ -105,13 +106,14 @@ def cast_spell(spell_id, target_id):
         cast.mana_sustain = spell.mana_sustain
 
     if cast.name == 'inspire':
-        county.happiness += 5
+        amount = 5 * (county.buildings['arcane'].total * county.buildings['arcane'].output) / 100
+        county.happiness += floor(amount)
     elif cast.name == 'summon golem':
         pass
     elif cast.name == 'secrets of alchemy':
         max_iron = min(county.iron, 10)
         county.iron -= max_iron
-        county.gold += max_iron * 10
+        county.gold += floor(max_iron * (county.buildings['arcane'].total * county.buildings['arcane'].output) / 10)
     elif cast.name == 'plague winds':
         notification = Notification(
             target.id,
@@ -120,7 +122,7 @@ def cast_spell(spell_id, target_id):
             "Magic")
         notification.save()
     elif cast.name == 'rune lightning' or cast.name == 'arcane fire' or cast.name == 'green fire' or cast.name == 'incantation of fire':
-        kill_count = int(randint(3, 5) * 0.01 * target.population)
+        kill_count = floor(int(randint(3, 5) * 0.01 * target.population) * (county.buildings['arcane'].total * county.buildings['arcane'].output) / 100)
         target.population -= kill_count
         notification = Notification(
             target.id,

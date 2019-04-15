@@ -34,15 +34,15 @@ generic_technology = {'agriculture': Technology(name='agriculture',
                                                        required=500,
                                                        tier=1,
                                                        max_level=3,
-                                                       description='Each level raises your maximum mana by 5.'),
+                                                       description='Each level raises your maximum mana by 20.'),
                       'arcane knowledge II': Technology(name='arcane knowledge II',
                                                         required=500,
                                                         tier=2,
                                                         max_level=3,
-                                                        description='Each level raises your maximum mana by 5.'),
+                                                        description='Each level raises your maximum mana by 20.'),
                       'arcane knowledge III': Technology(name='arcane knowledge III',
                                                          required=500,
                                                          tier=3,
                                                          max_level=3,
-                                                         description='Each level raises your maximum mana by 5.')
+                                                         description='Each level raises your maximum mana by 20.')
                       }
