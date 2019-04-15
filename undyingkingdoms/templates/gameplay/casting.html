@@ -9,9 +9,12 @@
 {% set kingdom = county.kingdom %}
 
 <br>Current Mana <img class="resource_icons" src="/static/images/mana_icon.jpg">: {{ county.mana }} / {{ county.max_mana }}
-<br><br>Daily Mana Required: {{ sustain_mana_requirement }} <img class="resource_icons" src="/static/images/mana_icon.jpg">
-
+<br>Expected mana growth:
+{% if county.get_mana_change() < 0 %}{% else %}+{% endif %}{{ county.get_mana_change() }}
+<img class="resource_icons" src="/static/images/mana_icon.jpg">
+<br><br>
 <p>Chance to successfully cast a spell: {{ county.chance_to_cast_spell() }}%</p>
+<p>Chance to successfully disrupt enemy spells against your county: {{ county.chance_to_disrupt_spell() }}%</p>
 
 <h2>Choose Spell to Cast on {{ target.name }}</h2>
 {% for spell in known_spells %}

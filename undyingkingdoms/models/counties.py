@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from random import choice, uniform, randint
+from random import choice, randint
 
 from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
@@ -14,7 +14,7 @@ from undyingkingdoms.models.trades import Trade
 from undyingkingdoms.models.casting import Casting
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
-    happiness_modifier, buildings_built_per_day_modifier, spell_chance_modifier, infiltration_success_modifier
+    happiness_modifier, spell_chance_modifier, infiltration_success_modifier
 
 from copy import deepcopy
 
@@ -147,6 +147,11 @@ class County(GameState):
             self.technologies = {**self.technologies, **deepcopy(rogue_technology)}
         for building in self.buildings:
             self.buildings[building].update_description()
+
+        if self.background == "Alchemist":
+            self.buildings["lab"].output *= 2
+            self.buildings["lab"].description = "Each {} generates {} research points per day.".format(self.buildings["lab"].class_name,
+                                                                                                       self.buildings["lab"].output)
 
     @property
     def population(self):
@@ -738,6 +743,8 @@ class County(GameState):
 
     def get_mana_change(self):
         growth = self.buildings['arcane'].total * self.buildings['arcane'].output
+        if self.background == "Alchemist":
+            growth *= 2
         active_spells = Casting.query.filter_by(county_id=self.id).filter_by(active=True).all()
         loss = sum(spell.mana_sustain for spell in active_spells)
         difference = growth - loss
@@ -803,8 +810,7 @@ class County(GameState):
             pass  # Already handled in self.get_happiness_change()
 
     def get_number_of_buildings_produced_per_day(self):
-        amount = 3 + buildings_built_per_day_modifier.get(self.race, ("", 0))[1] \
-                                + buildings_built_per_day_modifier.get(self.background, ("", 0))[1]
+        amount = 3
         if self.technologies.get("engineering") and self.technologies["engineering"].completed:
             amount += 1
         return amount
@@ -1141,6 +1147,15 @@ class County(GameState):
         chance += infiltration_success_modifier.get(self.race, ("", 0))[1] \
                  + infiltration_success_modifier.get(self.background, ("", 0))[1]
         return min(chance, 100)
+
+    def chance_to_disrupt_spell(self):
+        chance = 0
+        magical_barrier = Casting.query.filter_by(target_id=self.id, active=1, name="shroud of magic").first()
+        if magical_barrier:
+            chance += 60
+        if self.race == "Dwarf":
+            chance += 20
+        return max(chance, 0)
 
     def chance_to_cast_spell(self):
         modifier = 0 + spell_chance_modifier.get(self.race, ("", 0))[1] \

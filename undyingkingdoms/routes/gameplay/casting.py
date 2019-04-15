@@ -54,7 +54,9 @@ def cast_spell(spell_id, target_id):
     cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
                    county.day, spell.class_name, spell.duration)
     cast.save()
-    if county.chance_to_cast_spell() < randint(1, 100):
+    county.mana -= spell.mana_cost
+
+    if county.chance_to_cast_spell() < randint(1, 100) or target.chance_to_disrupt_spell() > randint(1, 100):  # Spell failed to cast
         cast.success = False
         cast.duration = 0
         cast.active = False
@@ -95,8 +97,6 @@ def cast_spell(spell_id, target_id):
             or (target_relation not in eligible_targets)
             or not spell.known):
         return redirect(url_for('casting', target_id=target.id))
-
-    county.mana -= spell.mana_cost
 
     cast.target_relation = target_relation
 

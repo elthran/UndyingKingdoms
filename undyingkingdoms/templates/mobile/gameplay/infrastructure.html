@@ -129,7 +129,7 @@ th {
   <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
   Land Required: <span class="landCost">0</span>&nbsp;/&nbsp;{{ county.get_available_land() }}
   <br><br>
-  Each day, up to {% if county.background == "Engineer" %}5{% else %}3{% endif %} buildings in your queue will be built.
+  Each day, up to 3 buildings in your queue will be built.
   <br>
 </div>
 {% endset %}

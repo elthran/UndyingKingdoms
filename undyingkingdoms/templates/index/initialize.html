@@ -67,6 +67,7 @@ button {
   <ul>
     <li>--- Engineering: +15% Production</li>
     <li>--- Unending Appetite: Dwarves consume 15% more food each day</li>
+    <li>--- Magical Immunity: +20% resistance against enemy spells</li>
   </ul>
   <br>
   <h2>Military:</h2>
@@ -165,11 +166,10 @@ button {
     <li>--- Army of Shadows: Can send up to 2 additional thieves per mission</li>
   </ul>
 </div>
-<div id="engineerDiv" style="display:none;">
-  <h1>Engineer:</h1>
+<div id="alchemistDiv" style="display:none;">
+  <h1>Alchemist:</h1>
   <ul>
-    <li>--- Craftsman: Can build an additional building per day</li>
-    <li>--- Artisan: Idle workers generate an additional 20% production towards goals</li>
+    <li>--- Chemist: Laboratories grant double the research points</li>
   </ul>
 </div>
 {% endset %}
@@ -240,12 +240,12 @@ document.getElementById("background").onchange = function () {
     var warlordDiv = document.getElementById("warlordDiv");
     var wizardDiv = document.getElementById("wizardDiv");
     var rogueDiv = document.getElementById("rogueDiv");
-    var engineerDiv = document.getElementById("engineerDiv");
+    var alchemistDiv = document.getElementById("alchemistDiv");
     merchantDiv.style.display = "none";
     warlordDiv.style.display = "none";
     wizardDiv.style.display = "none";
     rogueDiv.style.display = "none";
-    engineerDiv.style.display = "none";
+    alchemistDiv.style.display = "none";
     if (chosenTitle.value === "3") {
         merchantDiv.style.display = "block";
     } else if (chosenTitle.value === "1") {
@@ -253,7 +253,7 @@ document.getElementById("background").onchange = function () {
     } else if (chosenTitle.value === "4") {
         rogueDiv.style.display = "block";
     } else if (chosenTitle.value === "2") {
-        engineerDiv.style.display = "block";
+        alchemistDiv.style.display = "block";
     } else if (chosenTitle.value === "5") {
         wizardDiv.style.display = "block";
     }

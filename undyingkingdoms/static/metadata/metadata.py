@@ -6,7 +6,7 @@ from undyingkingdoms.models.achievements import Achievement
 metadata_races = ['Human', 'Elf', 'Dwarf', 'Goblin']
 metadata_titles = ['Sir', 'Dame', 'Lord', 'Lady', 'Baron', 'Baroness', 'Duke', 'Duchess', 'Prince', 'Princess']
 
-metadata_backgrounds = ['Warlord', 'Engineer', 'Merchant', 'Rogue', 'Wizard']
+metadata_backgrounds = ['Warlord', 'Alchemist', 'Merchant', 'Rogue', 'Wizard']
 
 kingdom_names = ["Faenoth", "Ecthalion"]
 
@@ -95,12 +95,11 @@ death_rate_modifier = {}
 income_modifier = {'Merchant': ("Silver Tongue", 0.15)}
 offensive_power_modifier = {'Warlord': ("Relentless", 0.10)}
 infiltration_success_modifier = {'Rogue': ("Master of Disguise", 10), 'Goblin': ("Sneaky", 10)}
-production_per_worker_modifier = {'Dwarf': ("Dwarven Steel", 0.15), 'Engineer': ("Artisan", 0.20)}
+production_per_worker_modifier = {'Dwarf': ("Dwarven Steel", 0.15)}
 defense_per_citizen_modifier = {'Elf': ("Citizen Militia", 1.00)}
 food_consumed_modifier = {'Dwarf': ("Ravenous", 0.15)}
 # Amounts
 happiness_modifier = {'Goblin': ("Infighting", -1)}
-buildings_built_per_day_modifier = {'Engineer': ("Craftsman", 1)}
 amount_of_thieves_modifier = {'Rogue': ("Army of Shadows", 2)}
 spell_chance_modifier = {'Wizard': ("Loremaster", 10), 'Elf': ("Affinity", 5)}
 
