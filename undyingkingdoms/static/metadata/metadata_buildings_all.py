@@ -142,3 +142,4 @@ generic_buildings = {'house': Building(name='house',
                                       output=1,
                                       description="Each {} allows you to capture and train {} monster.")
                      }
+12,82,96

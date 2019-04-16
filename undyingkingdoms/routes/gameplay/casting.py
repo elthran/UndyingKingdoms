@@ -52,8 +52,21 @@ def cast_spell(spell_id, target_id):
     target = County.query.get(target_id)
     spell = Magic.query.get(spell_id)
 
+    eligible_targets = [spell.targets]
+
+    if eligible_targets[0] == 'friendly':
+        eligible_targets.append('self')
+
+    if county == target:
+        target_relation = 'self'
+    elif target.kingdom in county.kingdom.allies:
+        target_relation = 'friendly'
+    else:
+        target_relation = 'hostile'
+
     cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
                    county.day, spell.class_name, spell.duration)
+    cast.target_relation = target_relation
     cast.save()
     county.mana -= spell.mana_cost
 
@@ -63,13 +76,7 @@ def cast_spell(spell_id, target_id):
         cast.active = False
         return redirect(url_for('casting', target_id=target.id))
 
-    if county == target:
-        target_relation = 'self'
-    elif target.kingdom in county.kingdom.allies:
-        target_relation = 'friendly'
-    else:
-        target_relation = 'hostile'
-        # War code (check if war. if awr, add 0.5 mana cost to points)
+    if target_relation == 'hostile':  # Check if war points should be awarded
         war = None
         kingdom = current_user.county.kingdom
         for each_war in kingdom.wars:
@@ -87,19 +94,13 @@ def cast_spell(spell_id, target_id):
                 if war.defender_current >= war.defender_goal:
                     target.kingdom.war_won(war)
                     war.status = "Lost"
-        # End of war code
 
-    eligible_targets = [spell.targets]
-    if eligible_targets[0] == 'friendly':
-        eligible_targets.append('self')
     if (spell is None
             or target is None
             or spell.mana_cost > county.mana
             or (target_relation not in eligible_targets)
             or not spell.known):
         return redirect(url_for('casting', target_id=target.id))
-
-    cast.target_relation = target_relation
 
     if spell.mana_sustain > 0:
         cast.active = True
