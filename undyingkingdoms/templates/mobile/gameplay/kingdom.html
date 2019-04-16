@@ -116,7 +116,7 @@ li {
   {% if kingdom.leader %}
   {{ kingdom.get_leader_name(kingdom.leader) }} rules this land!
   {% else %}
-  {{ kingdom.get_most_popular_county().name }} is winning with {{ kingdom.get_most_popular_county().get_votes_for_self() }} vote(s).
+  {{ kingdom.get_most_popular_county().name }} is winning with {{ kingdom.get_most_popular_county().preferences.get_votes_for_self() }} vote(s).
   The first county with {{ kingdom.get_votes_needed() }} votes will be crowned ruler.
   {% endif %}
 </div>
