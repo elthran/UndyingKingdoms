@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from sqlalchemy import desc
 
-from undyingkingdoms.models import Chatroom
+from undyingkingdoms.models import Chatroom, Message
 from undyingkingdoms.models.bases import GameState, db
 
 
@@ -26,15 +26,21 @@ class Preferences(GameState):
 
     weather_choices = ["clear skies", "stormy", "sunny", "cloudy", "light rain", "overcast"]
 
+    def all_messages_query(self):
+        return Chatroom.query.filter((Chatroom.is_global) | (Chatroom.kingdom_id == self.county.kingdom_id))
+
+    def has_mail(self):
+        return Message.query.filter_by(county_id=self.county_id, unread=True).first() is not None
+
     def has_new_townhall_message(self):
-        if self.last_chat_time and ((self.last_checked_townhall + timedelta(seconds=2)) < self.last_chat_time):
+        last_chat_time = self.last_chat_time
+        if last_chat_time and ((self.last_checked_townhall + timedelta(seconds=2)) < last_chat_time):
             return True
         return False
 
     @property
     def last_chat_time(self):
-        county = self.county
-        most_recent_message = Chatroom.query.filter_by(kingdom_id=county.kingdom_id).order_by(desc('time_created')).first()
+        most_recent_message = self.all_messages_query().order_by(desc('time_created')).first()
         if most_recent_message is not None:
             self.global_chat_on = most_recent_message.is_global
             return most_recent_message.time_created
