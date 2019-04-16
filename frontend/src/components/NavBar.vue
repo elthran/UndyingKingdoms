@@ -63,8 +63,7 @@
       <router-link
         :to="urlFor.chatroom"
         :class="{ bold: user.hasChatMessage }"
-        @click.native="user.hasChatMessage = false"
-        @click.native="$emit('refocus')"
+        @click.native="$emit('refocus');user.hasChatMessage = false"
       >
         Town&nbsp;Hall
       </router-link>

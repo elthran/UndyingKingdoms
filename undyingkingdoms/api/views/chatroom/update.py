@@ -13,7 +13,6 @@ from undyingkingdoms.models.forms.message import MessageForm
 class UpdateAPI(MethodView):
     @login_required
     def get(self):
-        county = current_user.county
         preferences = current_user.preferences
 
         form = MessageForm()

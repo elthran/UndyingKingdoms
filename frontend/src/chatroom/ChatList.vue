@@ -9,6 +9,7 @@
       style="border-bottom:none; color:black; width:100%;"
     >
       <vue-markdown>[{{ message.leader }}]({{ message.leaderUrl }}): {{ message.content }}</vue-markdown>
+      <br v-if="newSpeaker">
     </tool-tip>
   </div>
 </template>
