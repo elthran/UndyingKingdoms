@@ -2,20 +2,54 @@
 
 {% block title %}Kingdom: {{ super() }}{% endblock %}
 
+{% block style %}
+{{ super() }}
+<style>
+#sidebar {
+    max-width: 191px;
+}
+
+#layout-content {
+    /* 195px is the size of the sidebar */
+    width: calc(100% - 195px - 1em);
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.title {
+    display: inline-block;
+    margin:0 auto;
+    min-width: 100px;
+    overflow-wrap: break-word;
+    text-align: center;
+    line-height: 1.5em;
+    max-width: calc(100% - 16em);
+}
+
+.nav-button {
+    width: 8em;
+}
+</style>
+{% endblock %}
+
 {% block content2 %}
 
 {% if kingdom.counties|length == 0 %}
 
-    <div style="width:100%;text-align:center;">
+    <div class="header">
         <a href="{{ url_for('kingdom', kingdom_id=1) }}">
-            <button style="float:left;width:100px;">West</button>
+            <button class="nav-button">West</button>
         </a>
-        <h1 style="display:inline-block;margin:0 auto;width:100px;">{{ kingdom.name }}</h1>
+        <h1 class="title">{{ kingdom.name }}</h1>
         <a href="{{ url_for('kingdom', kingdom_id=2) }}">
-            <button style="float:right;width:100px;">East</button>
+            <button class="nav-button">East</button>
         </a>
     </div>
-    <br><br><br>
+    <br><br>
     This is a custom kingdom and has no current active players.
 
 {% else %}
@@ -25,16 +59,16 @@
     {% set left_button = kingdom.kingdom_button('left', kingdom.id) %}
     {% set right_button = kingdom.kingdom_button('right', kingdom.id) %}
 
-    <div style="width:100%;text-align:center;">
+    <div class="header">
         <a href="{{ url_for('kingdom', kingdom_id=left_button) }}">
-            <button style="float:left;width:100px;">West</button>
+            <button class="nav-button">West</button>
         </a>
-        <h1 style="display:inline-block;margin:0 auto;width:100px;">{{ kingdom.name }}</h1>
+        <h1 class="title">{{ kingdom.name }}</h1>
         <a href="{{ url_for('kingdom', kingdom_id=right_button) }}">
-            <button style="float:right;width:100px;">East</button>
+            <button class="nav-button">East</button>
         </a>
     </div>
-    <br><br><br>
+    <br><br>
     <ul style="line-height:30px;">
         {% if kingdom == my_county.kingdom %}
             {% for county in kingdom.counties %}
