@@ -56,12 +56,14 @@
       <a
         :href="urlFor.messages"
         :class="{ bold: user.hasMail }"
+        @click.native="user.hasMail = false"
       >
         Messages
       </a>
       <router-link
         :to="urlFor.chatroom"
         :class="{ bold: user.hasChatMessage }"
+        @click.native="user.hasChatMessage = false"
         @click.native="$emit('refocus')"
       >
         Town&nbsp;Hall

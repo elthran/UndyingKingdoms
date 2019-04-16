@@ -2,22 +2,18 @@ from flask import jsonify, url_for
 from flask.views import MethodView
 from flask_login import current_user, login_required
 
-from .helpers import patch_has_mail, patch_has_chat_message
-
 
 class SideBarAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
-        kingdom=current_user.county.kingdom
-
-        patch_has_mail(current_user)
-        patch_has_chat_message(current_user)
+        kingdom = current_user.county.kingdom
+        preferences = current_user.preferences
 
         user = dict(
             isAdmin=current_user.is_admin,
-            hasMail=current_user.has_mail(),
-            hasChatMessage=current_user.has_chat_message(),
+            hasMail=preferences.has_mail(),
+            hasChatMessage=preferences.has_new_townhall_message(),
             isKing=kingdom.leader != 0
         )
 

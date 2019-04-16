@@ -63,7 +63,7 @@ nav > a {
       Diplomacy
     </h2>
     <a href="{{ url_for('trading') }}">Trades</a>
-    <a href="{{ url_for('messages') }}" {% if has_mail %}style="color:blue;font-weight:bold;"{% endif %}>Messages</a>
+    <a href="{{ url_for('messages') }}" {% if preferences.has_mail() %}style="color:blue;font-weight:bold;"{% endif %}>Messages</a>
     <a href="{{ url_for('chatroom') }}" {% if preferences.has_new_townhall_message() %}style="color:blue;font-weight:bold;"{% endif %}>Town&nbsp;Hall</a>
     <a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">Kingdom&nbsp;Overview</a>
     {% if kingdom.leader != 0 %}
