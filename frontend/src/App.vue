@@ -4,6 +4,7 @@
     <!-- magic spacer divs for chatroom, hopefully they don't break anything :P -->
     <div />
     <div />
+    <div />
     <router-view ref="content" />
     <nav-bar @refocus="focusTop" />
   </div>
