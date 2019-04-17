@@ -31,7 +31,7 @@
 
 <script>
 import ToolTip from '@/components/ToolTip.vue'
-import VueMarkdown from 'vue-markdown'
+const VueMarkdown = import(/* webpackChunkName: "vue-markdown" */ 'vue-markdown')
 
 export default {
   name: 'ChatList',
@@ -54,17 +54,26 @@ export default {
       var group = []
       var groups = []
       this.messages.forEach(
-        function (currentValue) {
+        function (currentValue, index) {
           if (speaker !== currentValue.leader) {
             speaker = currentValue.leader
-            group.push(currentValue)
-            groups.push(group)
-            group = []
+            // only the first time of each set
+            if (group.length === 0) {
+              group.push(currentValue)
+            } else {
+              groups.push(group)
+              group = []
+              group.push(currentValue)
+            }
           } else {
             group.push(currentValue)
           }
         }
       )
+      if (group.length > 0) {
+        groups.push(group)
+        group = []
+      }
       return groups
     }
   },
