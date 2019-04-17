@@ -1,6 +1,9 @@
 <template>
   <div id="app">
     <prefix-title title="Debug" />
+    <!-- magic spacer divs for chatroom, hopefully they don't break anything :P -->
+    <div />
+    <div />
     <router-view ref="content" />
     <nav-bar @refocus="focusTop" />
   </div>
@@ -43,7 +46,7 @@ export default {
   #app {
     display: flex;
     flex-direction: row-reverse;
-    justify-content: flex-end;
+    justify-content: space-between;
   }
 }
 </style>
