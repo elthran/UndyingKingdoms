@@ -63,6 +63,9 @@ input {
 {% endblock %}
 
 {% block content2 %}
+
+{% if tab == 'basic' %}
+
   <h1 style="text-align:center;">Profile</h1>
   <h2>Username: {{ user.username }}</h2>
   <h2>Email: {{ user.email }}</h2>
@@ -71,5 +74,25 @@ input {
   <h2>Gems: {{ user.gems }} (will be used to unlock Kingdom aesthetic bonuses and avatars)</h2>
   <h2>Last Login: {{ user.get_previous_session() }}</h2>
   <h2>Account Created: {{ user.time_created }}</h2>
+
+  <a href="{{ url_for('profile', tab='security') }}">Security</a>
+
+{% elif tab == 'security' %}
+
+  <h1 style="text-align:center;">Security</h1>
+
+  <form method="POST" accept-charset="UTF-8" action="{{ url_for('profile', tab='security') }}">
+    {{ form.csrf_token }}
+    {{ render_field(form.old_password, placeholder="Old password", autofocus="") }}
+    {{ render_field(form.new_password, placeholder="New password") }}
+    {{ render_field(form.retype_new_password, placeholder="Retype new password") }}
+    <button type="submit">Update Password</button>
+  </form>
+
+  <a href="{{ url_for('profile', tab='basic') }}">Basic Settings</a>
+
+
+{% endif %}
+
 {% endblock %}
 

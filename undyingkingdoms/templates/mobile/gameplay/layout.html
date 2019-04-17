@@ -80,7 +80,7 @@ nav > a {
     <a href="{{ url_for('forum', thread_id=0, post_id=0) }}">Forum</a>
     <a href="{{ url_for('guide') }}">Player&nbsp;Guide</a>
     <a href="{{ url_for('leaderboard') }}">Leaderboard</a>
-    <a href="{{ url_for('profile') }}">Profile</a>
+    <a href="{{ url_for('profile', tab='basic') }}">Profile</a>
     {% if user.is_admin %}<a href="{{ url_for('admin.home_api') }}">Admin</a>{% endif %}
   </div>
   <div class="top-spacer-dot-3" />

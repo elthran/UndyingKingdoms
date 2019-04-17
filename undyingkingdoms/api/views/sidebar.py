@@ -37,7 +37,7 @@ class SideBarAPI(MethodView):
             forum=url_for('forum', thread_id=0, post_id=0),
             guide=url_for('guide'),
             leaderboard=url_for('leaderboard'),
-            profile=url_for('profile'),
+            profile=url_for('profile', tab='basic'),
             adminHomeAPI=url_for('admin.home_api'),
             logout=url_for('logout'),
         )
