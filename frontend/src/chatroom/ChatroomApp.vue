@@ -128,14 +128,6 @@ export default {
         return setInterval(this.getNewMessages, 5000);
       }
     },
-    // refocus(selector) {
-    //   if (!scrolled) {
-    //     var yOffset = $(selector).offset().top + $(selector).height() + pad;
-    //     $('html, body').animate({
-    //         scrollTop: yOffset - window.innerHeight
-    //     })
-    //   }
-    // },
     // Scroll window to bottom if user hasn't scrolled around.
     // not sure if nextick should be here or in caller.
     scrollToMax() {
