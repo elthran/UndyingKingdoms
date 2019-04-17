@@ -31,7 +31,8 @@
 
 <script>
 import ToolTip from '@/components/ToolTip.vue'
-const VueMarkdown = import(/* webpackChunkName: "vue-markdown" */ 'vue-markdown')
+const VueMarkdown = () => import(/* webpackChunkName: "vue-markdown" */ 'vue-markdown')
+// import VueMarkdown from 'vue-markdown'
 
 export default {
   name: 'ChatList',
