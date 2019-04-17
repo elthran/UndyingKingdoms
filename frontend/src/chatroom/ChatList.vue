@@ -1,16 +1,31 @@
 <template>
   <div id="chatlist">
-    <tool-tip
-      v-for="message in messages"
-      :key="message.id"
-      :tip="formatDate(message.time)"
-      :bounder="self"
-      align="mouse"
-      style="border-bottom:none; color:black; width:100%;"
+    <div
+      v-for="(group, index) in groups"
+      :key="index"
+      class="grouping"
     >
-      <vue-markdown>[{{ message.leader }}]({{ message.leaderUrl }}): {{ message.content }}</vue-markdown>
-      <br v-if="newSpeaker">
-    </tool-tip>
+      <tool-tip
+        v-for="(message, mindex) in group"
+        :key="message.id"
+        :tip="message.leader + ' - ' + formatDate(message.time)"
+        :bounder="self"
+        align="mouse"
+        class="message"
+      >
+        <a
+          v-if="mindex === 0"
+          :href="message.leaderUrl"
+          class="badge"
+        >
+          {{ message.leader }}
+        </a>
+        <vue-markdown
+          class="inline"
+          :source="message.content"
+        />
+      </tool-tip>
+    </div>
   </div>
 </template>
 
@@ -29,14 +44,38 @@ export default {
   },
   data () {
     return {
-      self: null
+      self: null,
     }
+  },
+  computed: {
+    // There's probably a better way.(tm)
+    groups () {
+      var speaker = null
+      var group = []
+      var groups = []
+      this.messages.forEach(
+        function (currentValue) {
+          if (speaker !== currentValue.leader) {
+            speaker = currentValue.leader
+            group.push(currentValue)
+            groups.push(group)
+            group = []
+          } else {
+            group.push(currentValue)
+          }
+        }
+      )
+      return groups
+    }
+  },
+  created () {
+    this.newSpeaker = false;
   },
   mounted () {
     this.self = this.$el
   },
   methods: {
-    formatDate(time) {
+    formatDate (time) {
       var date = new Date(time + "Z");
       var hours = ("0" + date.getHours()).slice(-2);
       var minutes = ("0" + date.getMinutes()).slice(-2);
@@ -55,5 +94,31 @@ export default {
   padding: 0.4em;
   min-height: 14em;
   width: 100%;
+}
+
+#chatlist :first-child {
+  margin-top: 0 !important;
+}
+
+.message {
+  width: 100%;
+  color: black;
+  border-bottom: none;
+}
+
+.grouping {
+  margin-top: 0.4em;
+  border: 1px solid #ccc;
+  box-shadow: outset 0 1px 3px #ddd;
+  padding: 0.6em;
+  border-radius: 5px;
+}
+
+.badge {
+  margin-right: 0.3em;
+}
+
+.inline, .inline :first-child {
+  display: inline;
 }
 </style>

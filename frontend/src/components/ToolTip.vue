@@ -115,6 +115,7 @@
   /* later modified by js code. */
   top: -5px;
   left: 0;
+  border-bottom: none;
 }
 
 .arrow-box-for-mouse:after {
@@ -169,13 +170,13 @@ export default {
       var bounderRect = this.bounder.getBoundingClientRect()
       var absBounderRight = bounderRect.x + bounderRect.width
 
+      var offset = 30
       tooltip.style.left =
-          (e.pageX + tooltip.clientWidth + 20 < absBounderRight)
-              ? (e.pageX - bounderRect.x + 10 + "px")
-              : (e.pageX - bounderRect.x - tooltip.clientWidth - 20 + "px");
+          (e.pageX + tooltip.scrollWidth < bounderRect.right - (10 + offset))
+              ? (e.pageX - bounderRect.x + 5 + "px")
+              : (e.pageX - (bounderRect.x + tooltip.offsetWidth + offset) + "px");
 
-      var absBounderBottom = bounderRect.y + bounderRect.height
-      tooltip.style.top = (e.pageY + tooltip.clientHeight + 10 < absBounderBottom)
+      tooltip.style.top = (e.pageY + tooltip.clientHeight + 10 < bounderRect.bottom)
           ? (5 + "px")
           : (this.$el.clientHeight - tooltip.clientHeight + "px");
     }
