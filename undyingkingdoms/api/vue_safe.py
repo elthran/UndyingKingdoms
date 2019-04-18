@@ -95,3 +95,25 @@ def vue_safe_message(message):
         id=message.id,
         leaderUrl=url_for('enemy_overview', county_id=message.county_id)
     )
+
+
+def vue_safe_post(post):
+    try:
+        return dict(
+            timeCreated=post.time_created,
+            author=post.get_author(),
+        )
+    except AttributeError:
+        return None
+
+
+def vue_safe_thread(thread):
+    post = thread.get_most_recent_post()
+    return dict(
+        id=thread.id,
+        title=thread.title,
+        author=thread.get_author(),
+        mostRecentPost=vue_safe_post(post),
+        postCount=thread.get_post_count(),
+        url=url_for('forum', thread_id=thread.id, post_id=0)
+    )

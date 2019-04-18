@@ -15,6 +15,7 @@ frontend/node_modules
 /undyingkingdoms/templates/dist
 /System Volume Information/
 package-lock.json
+dump.sql
 
 # Log files
 npm-debug.log*
