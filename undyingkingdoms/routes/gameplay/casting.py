@@ -10,6 +10,7 @@ from undyingkingdoms import app
 from undyingkingdoms.models import County, Notification
 from undyingkingdoms.models.magic import Magic
 from undyingkingdoms.models.magic import Casting
+from undyingkingdoms.models.magic.targeting import validate_targeting
 
 
 @app.route('/gameplay/casting/<target_id>', methods=['GET', 'POST'])
@@ -52,18 +53,14 @@ def cast_spell(spell_id, target_id):
     target = County.query.get(target_id)
     spell = Magic.query.get(spell_id)
 
+    invalid_target, target_relation = validate_targeting(county, spell, target)
 
-    eligible_targets = [spell.targets]
-
-    if eligible_targets[0] == 'friendly':
-        eligible_targets.append('self')
-
-    if county == target:
-        target_relation = 'self'
-    elif target.kingdom in county.kingdom.allies:
-        target_relation = 'friendly'
-    else:
-        target_relation = 'hostile'
+    if (spell is None
+            or target is None
+            or spell.mana_cost > county.mana
+            or invalid_target
+            or not spell.known):
+        return redirect(url_for('casting', target_id=target.id))
 
     cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
                    county.day, spell.class_name, spell.duration)
@@ -98,13 +95,6 @@ def cast_spell(spell_id, target_id):
                 if war.defender_current >= war.defender_goal:
                     target.kingdom.war_won(war)
                     war.status = "Lost"
-
-    if (spell is None
-            or target is None
-            or spell.mana_cost > county.mana
-            or (target_relation not in eligible_targets)
-            or not spell.known):
-        return redirect(url_for('casting', target_id=target.id))
 
     if spell.mana_sustain > 0:
         cast.active = True
