@@ -2,7 +2,7 @@ from flask import render_template, flash
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
-from undyingkingdoms import app
+from undyingkingdoms import app, User
 from undyingkingdoms.models.forms.profile import ProfileSecurityForm, ProfileEmailForm
 
 
@@ -23,12 +23,16 @@ def profile(template, tab):
             flash("Your old password was incorrect")
 
     elif email_form.validate_on_submit():
-        if user.check_password(email_form.password.data):
-            user.email = email_form.email.data
-            user.is_verified = False
-            flash("You have updated your email address")
+        existing_user = User.query.filter_by(email=email_form.email.data).first()
+        if existing_user:
+            flash("That email is already taken")
         else:
-            flash("Your password was incorrect")
+            if user.check_password(email_form.password.data):
+                user.email = email_form.email.data
+                user.is_verified = False
+                flash("You have updated your email address")
+            else:
+                flash("Your password was incorrect")
 
     return render_template(template,
                            user=current_user,
