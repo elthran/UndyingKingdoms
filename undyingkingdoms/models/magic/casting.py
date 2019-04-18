@@ -1,5 +1,6 @@
-from undyingkingdoms.models.bases import GameEvent, db
+from random import randint
 
+from undyingkingdoms.models.bases import GameEvent, db
 
 class Casting(GameEvent):
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'))
@@ -15,12 +16,14 @@ class Casting(GameEvent):
     active = db.Column(db.Boolean)  # If the spell is currently in play
     mana_sustain = db.Column(db.Integer)
 
-    def __init__(self, county_id, target_id, spell_id, world_day, county_day, name, duration=0):
+    # consider passing in spell and country objects
+    # as this will make execute more efficient.
+    def __init__(self, county_id, target_id, spell_id, world_day, county_day, name, duration=0, target_relation="Unknown"):
 
         self.county_id = county_id
         self.target_id = target_id
         self.spell_id = spell_id
-        self.target_relation = "Unknown"
+        self.target_relation = target_relation
         self.world_day = world_day
         self.county_day = county_day
         self.name = name
@@ -29,6 +32,20 @@ class Casting(GameEvent):
 
         self.active = False
         self.mana_sustain = 0
+
+    def execute(self, spell, county, target):
+        """Attempt to cast the spell."""
+        if county.chance_to_cast_spell() < randint(1, 100) or (target.chance_to_disrupt_spell() > randint(1, 100) and self.target_relation == 'hostile'):  # Spell failed to cast
+            self.success = False
+            self.duration = 0
+            self.active = False
+            return False  # casting failure
+
+        if spell.category == 'aura':
+            self.active = True
+            self.mana_sustain = spell.mana_sustain
+        county.mana -= spell.mana_cost
+        return True  # casting successful
 
     @staticmethod
     def get_active_spells(county):

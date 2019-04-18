@@ -63,18 +63,10 @@ def cast_spell(spell_id, target_id):
         return redirect(url_for('casting', target_id=target.id))
 
     cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
-                   county.day, spell.class_name, spell.duration)
-    if spell.category == 'aura':
-        cast.active = True
-        cast.mana_sustain = spell.mana_sustain
-    cast.target_relation = target_relation
+                   county.day, spell.class_name, duration=spell.duration, target_relation=target_relation)
     cast.save()
-    county.mana -= spell.mana_cost
-
-    if county.chance_to_cast_spell() < randint(1, 100) or (target.chance_to_disrupt_spell() > randint(1, 100) and target_relation == 'hostile'):  # Spell failed to cast
-        cast.success = False
-        cast.duration = 0
-        cast.active = False
+    cast_successful = cast.activate(spell, county, target)
+    if not cast_successful:
         return redirect(url_for('casting', target_id=target.id))
 
     if target_relation == 'hostile':  # Check if war points should be awarded
