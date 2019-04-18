@@ -1,8 +1,6 @@
 from importlib import import_module
 
-
-def to_class_name(name):
-    return ''.join(name.title().split('_'))
+from utilities.helpers import to_class_name
 
 
 def import_endpoints(blueprint, mod_name, endpoints):

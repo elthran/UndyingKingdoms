@@ -10,7 +10,6 @@ from undyingkingdoms import app
 from undyingkingdoms.models import County, Notification
 from undyingkingdoms.models.magic import Magic
 from undyingkingdoms.models.magic import Casting
-from undyingkingdoms.models.magic.targeting import validate_targeting
 
 
 @app.route('/gameplay/casting/<target_id>', methods=['GET', 'POST'])
@@ -53,12 +52,12 @@ def cast_spell(spell_id, target_id):
     target = County.query.get(target_id)
     spell = Magic.query.get(spell_id)
 
-    invalid_target, target_relation = validate_targeting(county, spell, target)
+    valid_target, target_relation = spell.validate_targeting(county, target)
 
     if (spell is None
             or target is None
             or spell.mana_cost > county.mana
-            or invalid_target
+            or not valid_target
             or not spell.known):
         return redirect(url_for('casting', target_id=target.id))
 
@@ -69,16 +68,7 @@ def cast_spell(spell_id, target_id):
     if not cast_successful:
         return redirect(url_for('casting', target_id=target.id))
 
-    if spell.mana_sustain > 0:
-        cast.active = True
-        cast.mana_sustain = spell.mana_sustain
-
-    if cast.name == 'inspire':
-        amount = 5 * (county.buildings['arcane'].total * county.buildings['arcane'].output) / 100
-        county.happiness += floor(amount)
-    elif cast.name == 'summon golem':
-        pass
-    elif cast.name == 'secrets of alchemy':
+    if cast.name == 'secrets of alchemy':
         max_iron = min(county.iron, 10)
         county.iron -= max_iron
         county.gold += floor(max_iron * 10 * (1 + county.buildings['arcane'].total * county.buildings['arcane'].output / 100))

@@ -32,6 +32,20 @@ class Magic(GameEvent):
         self.output = output
         self.description = description
 
+    def validate_targeting(self, county, target):
+        eligible_targets = [self.targets]
+        if eligible_targets[0] == 'friendly':
+            eligible_targets.append('self')
+        if county == target:
+            target_relation = 'self'
+        elif target.kingdom in county.kingdom.allies:
+            target_relation = 'friendly'
+        else:
+            target_relation = 'hostile'
+
+        valid_target = (target_relation in eligible_targets)
+        return valid_target, target_relation
+
     @staticmethod
     def get_know_spells(county):
         return Magic.query.filter_by(county_id=county.id, known=True).all()

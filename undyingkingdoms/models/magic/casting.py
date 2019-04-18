@@ -1,6 +1,8 @@
 from random import randint
 
 from undyingkingdoms.models.bases import GameEvent, db
+from .effects import Effect
+
 
 class Casting(GameEvent):
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'))
@@ -37,7 +39,7 @@ class Casting(GameEvent):
         """Attempt to cast the spell."""
 
         # spell should still cost event if not successful?
-        county.mana -= spell.mana_cost
+        effect = Effect(spell, self, county, target)
 
         # check if spell fails
         if county.chance_to_cast_spell() < randint(1, 100) or (target.chance_to_disrupt_spell() > randint(1, 100) and self.target_relation == 'hostile'):  # Spell failed to cast
@@ -46,11 +48,9 @@ class Casting(GameEvent):
             self.active = False
             return False  # casting failure
 
-        self.handle_war(county, spell, target)
+        effect.execute()
 
-        if spell.category == 'aura':
-            self.active = True
-            self.mana_sustain = spell.mana_sustain
+        self.handle_war(county, spell, target)
         return True  # casting successful
 
     def handle_war(self, county, spell, target):
