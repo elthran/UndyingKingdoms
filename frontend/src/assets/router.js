@@ -7,6 +7,7 @@ import '@/assets/chunks.js'
 import OverviewApp from '@/overview/OverviewApp.vue'
 import InfrastructureApp from '@/infrastructure/InfrastructureApp.vue'
 const ChatroomApp = () => import(/* webpackChunkName: "ChatroomApp" */ '@/chatroom/ChatroomApp.vue')
+import ForumApp from '@/forum/ForumApp.vue'
 
 Vue.use(VueRouter)
 
@@ -26,7 +27,12 @@ export default new VueRouter({
       path: '/gameplay/chatroom',
       name: 'ChatroomApp',
       component: ChatroomApp
-    }
+    },
+    {
+      path: '/user/forum',
+      name: 'ForumApp',
+      component: ForumApp
+    },
   ],
   base: '/m/',
   mode: 'history'

@@ -93,6 +93,12 @@
       >
         Achievements
       </a>
+      <router-link
+        :to="urlFor.forum"
+        @click.native="$emit('refocus')"
+      >
+        Forum
+      </router-link>
       <a
         :href="urlFor.forum"
       >
