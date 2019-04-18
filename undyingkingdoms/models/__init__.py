@@ -16,7 +16,7 @@ from .chatroom import Chatroom
 from .messages import Message
 from .diplomacy import Diplomacy
 from .magic import Magic
-from .casting import Casting
+from .magic import Casting
 from .clans import Clan
 from .preferences import Preferences
 

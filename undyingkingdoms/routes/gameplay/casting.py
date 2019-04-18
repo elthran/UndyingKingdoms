@@ -9,7 +9,7 @@ from werkzeug.utils import redirect
 from undyingkingdoms import app
 from undyingkingdoms.models import County, Notification
 from undyingkingdoms.models.magic import Magic
-from undyingkingdoms.models.casting import Casting
+from undyingkingdoms.models.magic import Casting
 
 
 @app.route('/gameplay/casting/<target_id>', methods=['GET', 'POST'])
@@ -51,6 +51,7 @@ def cast_spell(spell_id, target_id):
     county = current_user.county
     target = County.query.get(target_id)
     spell = Magic.query.get(spell_id)
+
 
     eligible_targets = [spell.targets]
 

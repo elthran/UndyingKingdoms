@@ -11,7 +11,7 @@ from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
 from undyingkingdoms.models.technologies import Technology
 from undyingkingdoms.models.trades import Trade
-from undyingkingdoms.models.casting import Casting
+from undyingkingdoms.models.magic import Casting
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
     happiness_modifier, spell_chance_modifier, infiltration_success_modifier
