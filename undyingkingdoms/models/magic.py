@@ -4,7 +4,6 @@ from undyingkingdoms.models.bases import GameEvent, db
 class Magic(GameEvent):
 
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
-    county_day = db.Column(db.Integer)
     name = db.Column(db.String(64))
     class_name = db.Column(db.String(64))
     category = db.Column(db.String(64))  # instant, timed, aura
