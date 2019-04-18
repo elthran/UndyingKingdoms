@@ -117,8 +117,7 @@ def cast_spell(spell_id, target_id):
     elif cast.name == 'secrets of alchemy':
         max_iron = min(county.iron, 10)
         county.iron -= max_iron
-        county.gold += floor(max_iron * (1 + county.buildings['arcane'].total * county.buildings['arcane'].output / 100))
-        print("casting alchemy..", floor(max_iron * (1 + county.buildings['arcane'].total * county.buildings['arcane'].output / 100)))
+        county.gold += floor(max_iron * (1 + county.buildings['arcane'].total * county.buildings['arcane'].output / 10))
     elif cast.name == 'plague winds':
         notification = Notification(
             target.id,
