@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.models.forms.profile import ProfileSecurityForm
+from undyingkingdoms.models.forms.profile import ProfileSecurityForm, ProfileEmailForm
 
 
 @app.route('/user/profile/<tab>', methods=['GET', 'POST'])
@@ -11,11 +11,27 @@ from undyingkingdoms.models.forms.profile import ProfileSecurityForm
 @login_required
 def profile(template, tab):
     user = current_user
-    form = ProfileSecurityForm()
-    if form.validate_on_submit():
-        if user.check_password(form.old_password.data):
-            user.set_password_hash(form.new_password.data)
-            flash("You have updated your password.")
+
+    password_form = ProfileSecurityForm()
+    email_form = ProfileEmailForm()
+
+    if password_form.validate_on_submit():
+        if user.check_password(password_form.old_password.data):
+            user.set_password_hash(password_form.new_password.data)
+            flash("You have updated your password")
         else:
             flash("Your old password was incorrect")
-    return render_template(template, user=current_user, tab=tab, form=form)
+
+    elif email_form.validate_on_submit():
+        if user.check_password(email_form.password.data):
+            user.email = email_form.email.data
+            user.is_verified = False
+            flash("You have updated your email address")
+        else:
+            flash("Your password was incorrect")
+
+    return render_template(template,
+                           user=current_user,
+                           tab=tab,
+                           password_form=password_form,
+                           email_form=email_form)

@@ -19,3 +19,8 @@ class ProfileSecurityForm(FlaskForm):
     def passwords_match(self):
         if self.new_password.data != self.retype_new_password.data:
             return True
+
+
+class ProfileEmailForm(FlaskForm):
+    email = StringField('Email Address', validators=[Email(), DataRequired(message='Forgot your email address?')])
+    password = PasswordField('Password', validators=[DataRequired(message='Must provide a password.')])

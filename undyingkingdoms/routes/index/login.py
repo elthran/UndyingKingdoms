@@ -33,6 +33,8 @@ def login(template):
                 notification = Notification(user.county.id, "Login Reward", "Your people appreciate your trust in letting them run their own affairs. They give you {} gold as a thank you.".format(gold_reward), user.county.kingdom.world.day)
                 notification.save()
             login_user(user)
+            if not user.is_verified:
+                return redirect(url_for('activate'))
             return redirect(
                 url_for('overview'))
         else:
