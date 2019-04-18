@@ -21,7 +21,7 @@ class Effect(Command):
 
     def get_specifics(self):
         """Initialize an object from a casting name."""
-        return globals()[to_class_name(self.casting.name)]()
+        return globals()[to_class_name(self.casting.name)](self)
 
     def execute(self):
         if self.spell.mana_sustain > 0:
@@ -30,12 +30,20 @@ class Effect(Command):
         self.effect_specifics.execute()
 
 
-class Inspire(Effect):
+class EffectMixin:
+    def __init__(self, effect):
+        self.spell = effect.spell
+        self.casting = effect.casting
+        self.caster = effect.caster
+        self.target = effect.target
+
+
+class Inspire(EffectMixin, Command):
     def execute(self):
         amount = 5 * (self.caster.buildings['arcane'].total * self.caster.buildings['arcane'].output) / 100
         self.caster.happiness += floor(amount)
 
 
-class SummonGolem(Effect):
+class SummonGolem(EffectMixin, Command):
     def execute(self):
         pass

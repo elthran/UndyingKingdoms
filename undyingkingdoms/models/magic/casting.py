@@ -35,7 +35,7 @@ class Casting(GameEvent):
         self.active = False
         self.mana_sustain = 0
 
-    def execute(self, spell, county, target):
+    def activate(self, spell, county, target):
         """Attempt to cast the spell."""
 
         # spell should still cost event if not successful?
