@@ -35,17 +35,35 @@ class Casting(GameEvent):
 
     def execute(self, spell, county, target):
         """Attempt to cast the spell."""
+
+        # spell should still cost event if not successful?
+        county.mana -= spell.mana_cost
+
+        # check if spell fails
         if county.chance_to_cast_spell() < randint(1, 100) or (target.chance_to_disrupt_spell() > randint(1, 100) and self.target_relation == 'hostile'):  # Spell failed to cast
             self.success = False
             self.duration = 0
             self.active = False
             return False  # casting failure
 
+        self.handle_war(county, spell, target)
+
         if spell.category == 'aura':
             self.active = True
             self.mana_sustain = spell.mana_sustain
-        county.mana -= spell.mana_cost
         return True  # casting successful
+
+    def handle_war(self, county, spell, target):
+        """Check if war points should be awarded."""
+        if self.target_relation == 'hostile':
+            kingdom = county.kingdom
+            war = kingdom.get_war(target)
+            if war:
+                if war.kingdom_id == kingdom.id:
+                    war.attacker_current += spell.mana_cost // 2
+                else:
+                    war.defender_current += spell.mana_cost // 2
+                kingdom.update_war_status(war, target)
 
     @staticmethod
     def get_active_spells(county):

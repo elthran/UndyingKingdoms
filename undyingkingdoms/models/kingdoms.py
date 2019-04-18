@@ -219,5 +219,30 @@ class Kingdom(GameState):
         alliance.duration = 24
         alliance.save()
 
+    def get_war(self, target):
+        """Get war between this kingdom given a target.
+
+        This should be able to be vastly improved with a query.
+        """
+        war = None
+        for each_war in self.kingdom.wars:
+            if each_war.get_other_kingdom(self.kingdom) == target.kingdom:  # If this is true, we are at war with them
+                war = each_war
+                break
+        return war
+
+    def update_war_status(self, war, target):
+        """Check whether a war is won and if so update status."""
+        # this kingdom is aggressor
+        if war.kingdom_id == self.id:
+            if war.attacker_current >= war.attacker_goal:
+                self.war_won(war)
+                war.status = "Won"
+        else:  # this kingdom is defender
+            if war.defender_current >= war.defender_goal:
+                target.kingdom.war_won(war)
+                war.status = "Lost"
+
+
 
 

@@ -69,25 +69,6 @@ def cast_spell(spell_id, target_id):
     if not cast_successful:
         return redirect(url_for('casting', target_id=target.id))
 
-    if target_relation == 'hostile':  # Check if war points should be awarded
-        war = None
-        kingdom = current_user.county.kingdom
-        for each_war in kingdom.wars:
-            if each_war.get_other_kingdom(kingdom) == target.kingdom:  # If this is true, we are at war with them
-                war = each_war
-                break
-        if war:
-            if war.kingdom_id == kingdom.id:
-                war.attacker_current += spell.mana_cost // 2
-                if war.attacker_current >= war.attacker_goal:
-                    kingdom.war_won(war)
-                    war.status = "Won"
-            else:
-                war.defender_current += spell.mana_cost // 2
-                if war.defender_current >= war.defender_goal:
-                    target.kingdom.war_won(war)
-                    war.status = "Lost"
-
     if spell.mana_sustain > 0:
         cast.active = True
         cast.mana_sustain = spell.mana_sustain
