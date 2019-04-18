@@ -68,11 +68,7 @@ def cast_spell(spell_id, target_id):
     if not cast_successful:
         return redirect(url_for('casting', target_id=target.id))
 
-    if cast.name == 'secrets of alchemy':
-        max_iron = min(county.iron, 10)
-        county.iron -= max_iron
-        county.gold += floor(max_iron * 10 * (1 + county.buildings['arcane'].total * county.buildings['arcane'].output / 100))
-    elif cast.name == 'plague winds':
+    if cast.name == 'plague winds':
         notification = Notification(
             target.id,
             "Enemy magic", "A plague wind has been summoned by the wizards of {}".format(county.name),

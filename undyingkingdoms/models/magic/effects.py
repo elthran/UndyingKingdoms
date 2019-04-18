@@ -30,7 +30,7 @@ class Effect(Command):
         self.effect_specifics.execute()
 
 
-class EffectMixin:
+class InitMixin:
     def __init__(self, effect):
         self.spell = effect.spell
         self.casting = effect.casting
@@ -38,12 +38,19 @@ class EffectMixin:
         self.target = effect.target
 
 
-class Inspire(EffectMixin, Command):
+class Inspire(InitMixin, Command):
     def execute(self):
         amount = 5 * (self.caster.buildings['arcane'].total * self.caster.buildings['arcane'].output) / 100
         self.caster.happiness += floor(amount)
 
 
-class SummonGolem(EffectMixin, Command):
+class SummonGolem(InitMixin, Command):
     def execute(self):
         pass
+
+
+class SecretsOfAlchemy(InitMixin, Command):
+    def execute(self):
+        max_iron = min(self.caster.iron, 10)
+        self.caster.iron -= max_iron
+        self.caster.gold += floor(max_iron * 10 * (1 + self.caster.buildings['arcane'].total * self.caster.buildings['arcane'].output / 100))
