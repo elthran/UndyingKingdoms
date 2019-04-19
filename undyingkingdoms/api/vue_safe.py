@@ -97,14 +97,25 @@ def vue_safe_message(message):
     )
 
 
+def vue_safe_reply(post):
+    county = post.author.county
+    return dict(
+        timeCreated=post.time_created,
+        author=post.get_author(),
+        leaderUrl=url_for('enemy_overview', county_id=county.id),
+    )
+
 def vue_safe_post(post):
-    try:
-        return dict(
-            timeCreated=post.time_created,
-            author=post.get_author(),
-        )
-    except AttributeError:
-        return None
+    most_recent_reply = post.get_most_recent_reply()
+    return dict(
+        id=post.id,
+        title=post.title,
+        author=post.get_author(),
+        url=url_for('forum', thread_id=post.thread_id, post_id=post.id),
+        mostRecentReply=vue_safe_reply(most_recent_reply) if most_recent_reply else None,
+        votes=post.get_votes(),
+        replyCount=post.get_reply_count(),
+    )
 
 
 def vue_safe_thread(thread):
@@ -113,7 +124,9 @@ def vue_safe_thread(thread):
         id=thread.id,
         title=thread.title,
         author=thread.get_author(),
-        mostRecentPost=vue_safe_post(post),
+        mostRecentPost=vue_safe_reply(post) if post else None,
         postCount=thread.get_post_count(),
-        url=url_for('forum', thread_id=thread.id, post_id=0)
+        url=url_for('forum', thread_id=thread.id, post_id=0),
+        votes=thread.get_votes(),
+        # views=thread.get_views()
     )

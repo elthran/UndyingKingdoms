@@ -5,6 +5,8 @@ import_endpoints(
     api_blueprint,
     __name__,
     [
-        'threads'
+        'threads',
+        'posts',
+        'routing'
     ]
 )

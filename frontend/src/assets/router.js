@@ -29,7 +29,7 @@ export default new VueRouter({
       component: ChatroomApp
     },
     {
-      path: '/user/forum',
+      path: '/user/forum/:thread_id/:post_id',
       name: 'ForumApp',
       component: ForumApp
     },

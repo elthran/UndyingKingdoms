@@ -3,7 +3,6 @@ from sqlalchemy import desc
 from extensions import flask_db as db
 from undyingkingdoms.models.bases import GameEvent
 from undyingkingdoms.models.upvotes import Upvote
-from undyingkingdoms.models.users import User
 
 
 class Forum(GameEvent):
@@ -17,7 +16,8 @@ class Thread(GameEvent):
     forum_id = db.Column(db.Integer, db.ForeignKey('forum.id'), nullable=False)
     posts = db.relationship('Post', backref='thread')
     title = db.Column(db.String(32))
-    author_id = db.Column(db.Integer)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    author = db.relationship("User")
 
     def __init__(self, forum_id, title, author_id):
         self.forum_id = forum_id
@@ -31,8 +31,22 @@ class Thread(GameEvent):
         return Post.query.filter_by(thread_id=self.id).order_by(desc('time_created')).first()
 
     def get_author(self):
-        author = User.query.get(self.author_id)
-        return author.username
+        return self.author.username
+
+    def get_votes(self):
+        """Return sum of all votes on all posts."""
+        return sum([
+            Upvote.query.filter_by(post_id=post.id , vote=1).count()
+            for post in self.posts
+        ])
+
+    def get_views(self):
+        """Return sum of all views on all posts."""
+        raise NotImplementedError("We currently don't have this feature.")
+        # return sum([
+        #     post.views
+        #     for post in self.posts
+        # ])
         
         
 class Post(GameEvent):
@@ -40,8 +54,10 @@ class Post(GameEvent):
     parent_post_id = db.Column(db.Integer)  # 0 if this is the parent
     title = db.Column(db.String(32))
     content = db.Column(db.String(5000))
-    author_id = db.Column(db.Integer)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     votes = db.Column(db.Integer)
+
+    author = db.relationship("User")
 
     def __init__(self, thread_id, author_id, title, content, parent_post_id):
         self.thread_id = thread_id
@@ -65,12 +81,10 @@ class Post(GameEvent):
         return post
 
     def get_author(self):
-        author = User.query.get(self.author_id)
-        return author.username
+        return self.author.username
 
     def get_votes(self):
-        votes = Upvote.query.filter_by(post_id=self.id, vote=1).all()
-        return len(votes)
+        return Upvote.query.filter_by(post_id=self.id, vote=1).count()
 
     def get_vote_status(self, user_id):
         vote = Upvote.query.filter_by(post_id=self.id, user_id=user_id).first()

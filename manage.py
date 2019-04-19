@@ -1,9 +1,11 @@
-from flask_script import Manager, Command
+from flask_script import Manager, Command, Server
 
 from extensions import flask_db as db
 from undyingkingdoms import app
 
 manager = Manager(app)
+
+manager.add_command("serve", Server())
 
 
 @manager.add_command

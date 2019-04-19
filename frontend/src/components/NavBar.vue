@@ -99,11 +99,6 @@
       >
         Forum
       </router-link>
-      <a
-        :href="urlFor.forum"
-      >
-        Forum
-      </a>
       <a :href="urlFor.guide">Player&nbsp;Guide</a>
       <a :href="urlFor.leaderboard">Leaderboard</a>
       <a :href="urlFor.profile">Profile</a>
@@ -125,7 +120,8 @@ export default {
       urlFor: {
         overview: '',
         infrastructure: '',
-        chatroom: ''
+        chatroom: '',
+        forum: '',
       },
       user: Object,
     }
@@ -157,7 +153,7 @@ export default {
     border-width: 0.05em;
     border-color: gray;
     border-radius: 0.2em;
-    text-decoration: none;
+    /*text-decoration: none;*/
   }
 
   .bold {

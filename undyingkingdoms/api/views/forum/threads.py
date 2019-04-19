@@ -1,6 +1,6 @@
-from flask import jsonify, request
+from flask import jsonify
 from flask.views import MethodView
-from flask_login import login_required, current_user
+from flask_login import login_required
 
 from undyingkingdoms.api.vue_safe import vue_safe_thread
 from undyingkingdoms.models.forum import Thread
