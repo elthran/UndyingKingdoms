@@ -63,7 +63,7 @@
       <router-link
         :to="urlFor.chatroom"
         :class="{ bold: user.hasChatMessage }"
-        @click.native="$emit('refocus');user.hasChatMessage = false"
+        @click.native="chatClicked"
       >
         Town&nbsp;Hall
       </router-link>
@@ -130,7 +130,13 @@ export default {
     // if development
     // url is 'http://localhost:5000/api/sidebar' - happens auto-magically.
     this.$hydrate('/api/sidebar')
-  }
+  },
+  methods: {
+    chatClicked () {
+      this.$emit('refocus')
+      this.user.hasChatMessage = false
+    }
+  },
 }
 </script>
 

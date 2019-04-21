@@ -15,7 +15,12 @@
       <div
         class="center title"
       >
-        <a :href="thread.url">{{ thread.title }}</a>
+        <a
+          :href="thread.url"
+          @click.prevent="$emit('push-trail', { url: thread.url, name: thread.title })"
+        >
+          {{ thread.title }}
+        </a>
       </div>
       <most-recent-post
         class="most-recent-post"
@@ -48,7 +53,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .highlight {
   border: solid LightGrey 1px;
   border-radius: 0.5em;

@@ -7,6 +7,7 @@ import_endpoints(
     [
         'threads',
         'posts',
-        'routing'
+        'routing',
+        'replies',
     ]
 )

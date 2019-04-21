@@ -1,30 +1,25 @@
 <template>
-  <div id="thread-posts">
+  <div id="post-replies">
     <div
-      v-for="post in posts"
-      :key="post.id"
-      class="post"
+      v-for="reply in replies"
+      :key="reply.id"
+      class="reply"
     >
       <div class="stats">
-        <div>{{ post.votes }} votes</div>
+        <div>{{ reply.votes }} votes</div>
         <div class="highlight">
-          {{ post.replyCount }} replies
+          {{ reply.replyCount }} replies
         </div>
-        <div>{{ post.views || 'xx' }} views</div>
+        <div>{{ reply.views || 'xx' }} views</div>
       </div>
       <div
-        class="center title"
+        class="content"
       >
-        <a
-          :href="post.url"
-          @click.prevent="$emit('push-trail', { url: post.url, name: post.title })"
-        >
-          {{ post.title }}
-        </a>
+        {{ reply.content }}
       </div>
       <most-recent-post
         class="most-recent-post"
-        :post="post.mostRecentReply"
+        :post="reply"
       />
       <hr class="border-dotted width-100-percent">
     </div>
@@ -35,23 +30,23 @@
 import MostRecentPost from './MostRecentPost.vue'
 
 export default {
-  name: 'ThreadPosts',
+  name: 'PostReplies',
   components: {
-    MostRecentPost
+    MostRecentPost,
   },
   data () {
     return {
-      thread: null,
-      posts: null,
+      post: null,
+      replies: null,
     }
   },
   computed: {
-    thread_id () {
-      return this.$route.params.thread_id
+    post_id () {
+      return this.$route.params.post_id
     },
   },
   mounted () {
-    this.$hydrate('/api/forum/posts?thread_id=' + this.thread_id)
+    this.$hydrate('/api/forum/replies?post_id=' + this.post_id)
     .then(() => {
       // do something interesting
     })
@@ -71,7 +66,7 @@ export default {
 }
 
 @media (max-width: 640px) {
-  .post {
+  .reply {
     display: flex;
     flex-direction: column;
   }
@@ -87,12 +82,12 @@ export default {
 
   .title {
     font-size: 1.3em;
-    margin: 0.3em 0 0.3em
+    margin: 0.3em 0 0.3em;
   }
 }
 
 @media (min-width: 640px) {
-  .post {
+  .reply {
     display: flex;
     flex-wrap: wrap;
   }

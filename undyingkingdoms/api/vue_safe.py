@@ -110,6 +110,7 @@ def vue_safe_post(post):
     return dict(
         id=post.id,
         title=post.title,
+        content=post.content,
         author=post.get_author(),
         url=url_for('forum', thread_id=post.thread_id, post_id=post.id),
         mostRecentReply=vue_safe_reply(most_recent_reply) if most_recent_reply else None,

@@ -2,15 +2,24 @@
   <div id="forum">
     <!-- Show list of all threads -->
     <h1 class="center">
-      <arrow-route :route="forumRoute" />
+      <crumb-trail
+        :trail="routingTrail"
+        @pop-trail="popTrail"
+      />
     </h1>
     <hr>
     <forum-threads
-      v-if="allThreadsView"
+      v-if="forumView"
       class="width-100-percent"
+      @push-trail="pushTrail"
     />
     <thread-posts
-      v-else-if="specificThreadView"
+      v-else-if="threadView"
+      @push-trail="pushTrail"
+    />
+    <post-replies
+      v-else-if="postView"
+      @push-trail="pushTrail"
     />
   </div>
 </template>
@@ -18,18 +27,24 @@
 <script>
 import ForumThreads from './ForumThreads.vue'
 import ThreadPosts from './ThreadPosts.vue'
-import ArrowRoute from '@/components/ArrowRoute.vue'
+import PostReplies from './PostReplies.vue'
+import CrumbTrail from '@/components/CrumbTrail.vue'
 
 export default {
   name: 'ForumApp',
   components: {
     ForumThreads,
     ThreadPosts,
-    ArrowRoute,
+    PostReplies,
+    CrumbTrail,
   },
   data () {
     return {
-      root: ''
+      url: '',
+      routingTrail: [{
+        name: "Forum",
+        url: ''
+      }]
     }
   },
   computed: {
@@ -39,51 +54,48 @@ export default {
     post_id () {
       return this.$route.params.post_id
     },
-    allThreadsView () {
+    forumView () {
       return this.thread_id == 0 && this.post_id == 0
     },
-    specificThreadView () {
+    threadView () {
       return this.thread_id > 0 && this.post_id == 0
     },
-    specificPostView () {
+    postView () {
       return this.thread_id > 0 && this.post_id > 0
     },
-    forumRoute () {
-      var route = []
-      route.push({
-        name: "Forum",
-        url: this.root + '/0/0'
-      })
-      if (this.specificThreadView || this.specificPostView) {
-        route.push({
-          name: "Thread",
-          url: this.root + `/${this.thread_id}/0`
-        })
-      }
-      if (this.specificPostView) {
-        route.push({
-          name: "Post",
-          url: this.root + `/${this.thread_id}/${this.post_id}`
-        })
-      }
-      return route
-    }
   },
   watch: {
     $route (to, from) {
+      console.log("$route", from, to)
       // react to route changes ..
-    }
+    },
+    routingTrail (newVal, oldVal) {
+      console.log("routingTrail", oldVal, newVal)
+    },
   },
   mounted () {
     this.$hydrate('/api/forum/routing')
     .then(() => {
-      // do something interesting
+      console.log("forum hydrate", this.routingTrail)
+      this.routingTrail[0].url = this.url
     })
+  },
+  methods: {
+    pushTrail (newTrail) {
+      console.log("new trail", newTrail)
+      this.$router.push(newTrail.url)
+      this.routingTrail.push(newTrail)
+    },
+    popTrail (newTrail) {
+      // go back one route.
+      this.$router.push(newTrail)
+      this.routingTrail.pop()
+    }
   },
 }
 </script>
 
-<style>
+<style scoped>
 .highlight {
   border: solid LightGrey 1px;
   border-radius: 0.5em;
