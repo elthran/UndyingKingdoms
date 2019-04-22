@@ -13,7 +13,6 @@
 {% if county.get_mana_change() < 0 %}{% else %}+{% endif %}{{ county.get_mana_change() }}
 <img class="resource_icons" src="/static/images/mana_icon.jpg">
 <br><br>
-<p>Chance to successfully cast a spell: {{ county.chance_to_cast_spell() }}%</p>
 <p>Chance to successfully disrupt enemy spells against your county: {{ county.chance_to_disrupt_spell() }}%</p>
 
 <h2>Choose Spell to Cast on {{ target.name }}</h2>

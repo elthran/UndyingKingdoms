@@ -145,12 +145,10 @@ class County(GameState):
             raise AttributeError('Buildings and Armies were not found in metadata')
         if self.background == "Rogue":
             self.technologies = {**self.technologies, **deepcopy(rogue_technology)}
-        for building in self.buildings:
-            self.buildings[building].update_description()
 
         if self.background == "Alchemist":
             self.buildings["lab"].output *= 2
-            self.buildings["lab"].description = f"Each {self.buildings['lab'].class_name} generates {self.buildings['lab'].output} research points per day."
+
 
     @property
     def population(self):
@@ -1109,26 +1107,14 @@ class County(GameState):
         expeditions = Expedition.query.filter_by(county_id=self.id).all()
         return [expedition for expedition in expeditions if expedition.duration > 0]
 
-    def get_bonus_chance_to_catch_thieves(self):
+    def get_chance_to_catch_enemy_thieves(self):
         buffer_time = datetime.utcnow() - timedelta(hours=12)
         operations_on_target = Infiltration.query.filter_by(target_id=self.id).filter_by(success=True).filter(
             Infiltration.time_created > buffer_time).all()
-        counter = 0
-        for mission in operations_on_target:
-            counter += mission.amount_of_thieves
-        chance = (self.buildings['tower'].total * self.buildings['tower'].output) + (5 * counter)
-        return chance
-
-    def get_chance_to_successfully_infiltrate(self):
-        chance = 65
-        if self.technologies.get("espionage i") and self.technologies["espionage i"].completed:
-            chance += 5
-        if self.technologies.get("espionage ii") and self.technologies["espionage ii"].completed:
-            chance += 10
-        if self.technologies.get("espionage iii") and self.technologies["espionage iii"].completed:
-            chance += 10
-        chance += infiltration_success_modifier.get(self.race, ("", 0))[1] \
-                 + infiltration_success_modifier.get(self.background, ("", 0))[1]
+        chance = 0
+        for mission in operations_on_target:  # Each thief who invaded you gives you some protection
+            chance += (mission.amount_of_thieves * 5)
+        chance += self.buildings['tower'].total * self.buildings['tower'].output
         return min(chance, 100)
 
     def chance_to_disrupt_spell(self):
@@ -1138,13 +1124,7 @@ class County(GameState):
             chance += 60
         if self.race == "Dwarf":
             chance += 20
-        return max(chance, 0)
-
-    def chance_to_cast_spell(self):
-        modifier = 0 + spell_chance_modifier.get(self.race, ("", 0))[1] \
-                   + spell_chance_modifier.get(self.background, ("", 0))[1]
-        return 65 + modifier
-
+        return min(chance, 100)
 
     # Terminology
     @property

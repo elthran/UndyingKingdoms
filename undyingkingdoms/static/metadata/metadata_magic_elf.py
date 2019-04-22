@@ -12,5 +12,5 @@ elf_spells = {'population_killer_tier_1': Magic(name='population_killer_tier_1',
                                 targets='self',
                                 known=True,
                                 mana_cost=20,
-                                mana_sustain=20,
+                                mana_sustain=2,
                                 description='While active, your birth rate increase by 50%.')}

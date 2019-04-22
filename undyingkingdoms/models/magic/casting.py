@@ -13,6 +13,7 @@ class Casting(GameEvent):
     county_day = db.Column(db.Integer)
     success = db.Column(db.Boolean)
     name = db.Column(db.String(64))
+    display_name = db.Column(db.String(64))
     duration = db.Column(db.Integer)  # How many game days until the spell ends
 
     active = db.Column(db.Boolean)  # If the spell is currently in play
@@ -20,7 +21,8 @@ class Casting(GameEvent):
 
     # consider passing in spell and country objects
     # as this will make execute more efficient.
-    def __init__(self, county_id, target_id, spell_id, world_day, county_day, name, duration=0, target_relation="Unknown"):
+    def __init__(self, county_id, target_id, spell_id, world_day, county_day, name,
+                 display_name, duration=0, target_relation="Unknown"):
 
         self.county_id = county_id
         self.target_id = target_id
@@ -29,6 +31,7 @@ class Casting(GameEvent):
         self.world_day = world_day
         self.county_day = county_day
         self.name = name
+        self.display_name = display_name
         self.duration = duration
         self.success = True
 
@@ -42,7 +45,7 @@ class Casting(GameEvent):
         effect = Effect(spell, self, county, target)
 
         # check if spell fails
-        if county.chance_to_cast_spell() < randint(1, 100) or (target.chance_to_disrupt_spell() > randint(1, 100) and self.target_relation == 'hostile'):  # Spell failed to cast
+        if target.chance_to_disrupt_spell() > randint(1, 100) and self.target_relation == 'hostile':
             self.success = False
             self.duration = 0
             self.active = False

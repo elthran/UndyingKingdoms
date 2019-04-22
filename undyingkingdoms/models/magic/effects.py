@@ -21,6 +21,7 @@ class Effect(Command):
 
     def get_specifics(self):
         """Initialize an object from a casting name."""
+        print("STUFFFFF:", self.casting.name)
         return globals()[to_class_name(self.casting.name)](self)
 
     def execute(self):

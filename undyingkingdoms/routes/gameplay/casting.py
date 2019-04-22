@@ -62,7 +62,7 @@ def cast_spell(spell_id, target_id):
         return redirect(url_for('casting', target_id=target.id))
 
     cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
-                   county.day, spell.class_name, duration=spell.duration, target_relation=target_relation)
+                   county.day, spell.name, spell.class_name, duration=spell.duration, target_relation=target_relation)
     cast.save()
     cast_successful = cast.activate(spell, county, target)
     if not cast_successful:
@@ -75,13 +75,14 @@ def cast_spell(spell_id, target_id):
             county.kingdom.world.day,
             "Magic")
         notification.save()
-    elif cast.name == 'rune lightning' or cast.name == 'arcane fire' or cast.name == 'green fire' or cast.name == 'incantation of fire':
-        kill_count = floor(int(randint(3, 5) * 0.01 * target.population) * (county.buildings['arcane'].total * county.buildings['arcane'].output) / 100)
+    elif cast.name == 'population_killer_tier_1':
+        kill_count = target.population * county.buildings['arcane'].total * county.buildings['arcane'].output // 10000
         target.population -= kill_count
         notification = Notification(
             target.id,
             "Enemy magic",
-            f"The wizards of {county.name} have cast a spell on your county, killing {kill_count} of your people.",
+            f"The wizards of {county.name} have cast {cast.display_name} on your county, "
+            f"killing {kill_count} of your people.",
             county.kingdom.world.day,
             "Magic")
         notification.save()
