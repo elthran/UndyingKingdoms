@@ -36,3 +36,4 @@ SQLAlchemy==1.2.15
 #undyingkingdoms==0.0.0
 Werkzeug==0.14.1
 WTForms==2.2.1
+Flask-Mobility==0.1.1
