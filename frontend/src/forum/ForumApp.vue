@@ -1,7 +1,7 @@
 <template>
   <div id="forum">
     <!-- Show list of all threads -->
-    <h1 class="center">
+    <h1 class="crumb-trail">
       <crumb-trail
         :trail="routingTrail"
         @pop-trail="popTrail"
@@ -10,15 +10,17 @@
     <hr>
     <forum-threads
       v-if="forumView"
-      class="width-100-percent"
+      class="width-100-percent hide-last-hr"
       @push-trail="pushTrail"
     />
     <thread-posts
       v-else-if="threadView"
+      class="hide-last-hr"
       @push-trail="pushTrail"
     />
     <post-replies
       v-else-if="postView"
+      class="hide-last-hr"
       @push-trail="pushTrail"
     />
   </div>
@@ -40,7 +42,6 @@ export default {
   },
   data () {
     return {
-      url: '',
       routingTrail: [{
         name: "Forum",
         url: ''
@@ -74,10 +75,9 @@ export default {
     },
   },
   mounted () {
-    this.$hydrate('/api/forum/routing')
+    this.$hydrate(`/api/forum/routing?thread_id=${this.thread_id}&post_id=${this.post_id}`)
     .then(() => {
-      console.log("forum hydrate", this.routingTrail)
-      this.routingTrail[0].url = this.url
+      // do something after hydration
     })
   },
   methods: {
@@ -88,8 +88,9 @@ export default {
     },
     popTrail (newTrail) {
       // go back one route.
-      this.$router.push(newTrail)
-      this.routingTrail.pop()
+      console.log(newTrail)
+      this.$router.push(newTrail.url)
+      this.routingTrail.splice(-newTrail.level, newTrail.level)
     }
   },
 }
@@ -108,14 +109,19 @@ export default {
   }
 
   /* remove the last hr in the forum */
-  #forum .thread:last-child, .post:last-child hr:last-child {
+  /deep/ .hide-last-hr > div:last-child > hr:last-child {
     display: none;
   }
+
 }
 
 @media (min-width: 640px) {
   #forum {
     margin: 1.2em 1em;
+  }
+
+  .crumb-trail {
+    text-align: center;
   }
 }
 </style>

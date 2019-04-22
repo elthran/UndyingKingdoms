@@ -19,7 +19,7 @@
       </div>
       <most-recent-post
         class="most-recent-post"
-        :post="reply"
+        :post="post.mostRecentReply"
       />
       <hr class="border-dotted width-100-percent">
     </div>
@@ -48,6 +48,7 @@ export default {
   mounted () {
     this.$hydrate('/api/forum/replies?post_id=' + this.post_id)
     .then(() => {
+      this.replies.unshift(this.post)
       // do something interesting
     })
   },
