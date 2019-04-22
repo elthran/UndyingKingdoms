@@ -1,6 +1,6 @@
 <template>
   <ul id="crumb-trail">
-    <ol
+    <li
       v-for="(crumb, index) in trail"
       :key="index"
     >
@@ -10,13 +10,13 @@
       <template v-else>
         <a
           :href="crumb.url"
-          @click.prevent="$emit('pop-trail', { url: crumb.url, name: crumb.title, level: trail.length-index })"
+          @click.prevent="$emit('pop-trail', { url: crumb.url, name: crumb.title, level: trail.length-index-1 })"
         >
           {{ crumb.name }}
         </a>
       </template>
       <span class="pad">{{ index !== last ? '&#8594;': '' }}</span>
-    </ol>
+    </li>
   </ul>
 </template>
 

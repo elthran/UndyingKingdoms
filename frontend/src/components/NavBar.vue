@@ -3,7 +3,6 @@
     <hr class="width-95-percent">
     <router-link
       :to="urlFor.overview"
-      @click.native="$emit('refocus')"
     >
       County&nbsp;Overview
     </router-link>
@@ -18,7 +17,6 @@
       </a>
       <!-- <router-link
         :to="urlFor.infrastructure"
-        @click.native="$emit('refocus')"
       >
         City&nbsp;Planner
       </router-link> -->
@@ -95,7 +93,6 @@
       </a>
       <router-link
         :to="urlFor.forum"
-        @click.native="$emit('refocus')"
       >
         Forum
       </router-link>

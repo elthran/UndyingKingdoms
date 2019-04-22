@@ -6,7 +6,7 @@
     <div />
     <div />
     <router-view ref="content" />
-    <nav-bar @refocus="focusTop" />
+    <nav-bar />
   </div>
 </template>
 
@@ -25,6 +25,9 @@ export default {
   watch: {
     $route (to, from) {
       this.$emit('refocus')
+      this.$nextTick(() => {
+        this.focusTop()
+      })
     }
   },
   methods: {
