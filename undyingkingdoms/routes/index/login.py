@@ -1,4 +1,3 @@
-from copy import deepcopy
 from datetime import datetime
 from random import randint
 
@@ -8,7 +7,7 @@ from flask_login import current_user
 from flask_login import login_user
 from flask_mobility.decorators import mobile_template
 
-from undyingkingdoms import app, User, db
+from undyingkingdoms import app, User
 from undyingkingdoms.models import Notification
 from undyingkingdoms.models.forms.login import LoginForm
 
@@ -30,7 +29,11 @@ def login(template):
             if user.get_last_logout() and user.county.day > 0 and (datetime.utcnow() - user.get_last_logout()).total_seconds() // 3600 > 6:
                 gold_reward = min((datetime.utcnow() - user.get_last_logout()).seconds // 3600, 48) * randint(5, 7)
                 user.county.gold += gold_reward
-                notification = Notification(user.county.id, "Login Reward", "Your people appreciate your trust in letting them run their own affairs. They give you {} gold as a thank you.".format(gold_reward), user.county.kingdom.world.day)
+                notification = Notification(user.county.id,
+                                            "Login Reward",
+                                            f"Your people appreciate your trust in letting them run their own affairs. "
+                                            f"They give you {gold_reward} gold as a thank you.",
+                                            user.county.kingdom.world.day)
                 notification.save()
             login_user(user)
             if not user.is_verified:

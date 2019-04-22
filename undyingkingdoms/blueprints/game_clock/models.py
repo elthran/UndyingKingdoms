@@ -75,4 +75,4 @@ class BlacklistToken(GameState):
             return False
 
     def __repr__(self):
-        return '<id: token: {}'.format(self.token)
+        return f'<id: token: {self.token}'

@@ -56,8 +56,8 @@ def empty_table(db, name):
     with db.engine.begin() as con:
         try:
             con.execute("SET FOREIGN_KEY_CHECKS=0;")
-            con.execute("LOCK TABLES `{}` WRITE;".format(name))
-            con.execute("TRUNCATE TABLE `{}`;".format(name))
+            con.execute(f"LOCK TABLES `{name}` WRITE;")
+            con.execute(f"TRUNCATE TABLE `{name}`;")
             con.execute("UNLOCK TABLES;")
             con.execute("SET FOREIGN_KEY_CHECKS=1;")
         except Exception as ex:
@@ -73,8 +73,8 @@ def delete_table(db, name):
     with db.engine.begin() as con:
         try:
             con.execute("SET FOREIGN_KEY_CHECKS=0;")
-            con.execute("LOCK TABLES `{}` WRITE;".format(name))
-            con.execute("DROP TABLE IF EXISTS `{}`;".format(name))
+            con.execute(f"LOCK TABLES `{name}` WRITE;")
+            con.execute(f"DROP TABLE IF EXISTS `{name}`;")
             con.execute("UNLOCK TABLES;")
             con.execute("SET FOREIGN_KEY_CHECKS=1;")
         except Exception as ex:
@@ -93,9 +93,9 @@ def drop_then_rebuild_tables(db, tables):
     with db.engine.begin() as con:
         con.execute("SET FOREIGN_KEY_CHECKS=0;")
         for table in tables:
-            con.execute("LOCK TABLES `{}` WRITE;".format(table))
-            con.execute("DROP TABLE IF EXISTS `{}`;".format(table))
-            current_app.logger.info("Dropping table `{}`.".format(table))
+            con.execute(f"LOCK TABLES `{table}` WRITE;")
+            con.execute(f"DROP TABLE IF EXISTS `{table}`;")
+            current_app.logger.info(f"Dropping table `{table}`.")
 
         db.create_all()
         current_app.logger.info("Recreated all tables.")

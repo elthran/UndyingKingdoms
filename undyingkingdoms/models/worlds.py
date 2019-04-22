@@ -113,7 +113,7 @@ class World(GameState):
                     new_table.append(normal_row)
             all_tables.append(new_table)
         # We have a list of smaller lists. Each smaller list should be a csv file (each one is a separate sql table)
-        current_path = "export/age-{}".format(self.age)
+        current_path = f"export/age-{self.age}"
         if not os.path.exists(current_path):
             os.makedirs(current_path)
 
@@ -123,7 +123,7 @@ class World(GameState):
             headers = table.pop(0)
             name = table_name_reference[index]
 
-            filename = "{}/{}_table.csv".format(current_path, name)
+            filename = f"{current_path}/{name}_table.csv"
             df = DataFrame(table)
             df.to_csv(filename, header=headers)
 

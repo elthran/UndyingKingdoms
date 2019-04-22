@@ -18,7 +18,7 @@ def send_decree():
         for county in County.query.filter_by(kingdom_id=county.kingdom_id).all():
             message = Notification(
                 county_id=county.id,
-                title="Royal Decree from {} {}".format(county.title, county.leader),
+                title=f"Royal Decree from {county.title} {county.leader}",
                 content=message_form.content.data,
                 day=county.kingdom.world.day,
                 category="Royal Decree")

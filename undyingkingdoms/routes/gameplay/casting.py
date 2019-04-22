@@ -71,7 +71,7 @@ def cast_spell(spell_id, target_id):
     if cast.name == 'plague winds':
         notification = Notification(
             target.id,
-            "Enemy magic", "A plague wind has been summoned by the wizards of {}".format(county.name),
+            "Enemy magic", f"A plague wind has been summoned by the wizards of {county.name}",
             county.kingdom.world.day,
             "Magic")
         notification.save()
@@ -80,8 +80,8 @@ def cast_spell(spell_id, target_id):
         target.population -= kill_count
         notification = Notification(
             target.id,
-            "Enemy magic", "The wizards of {} have cast a spell on your county, killing {} of your people."
-                .format(county.name, kill_count),
+            "Enemy magic",
+            f"The wizards of {county.name} have cast a spell on your county, killing {kill_count} of your people.",
             county.kingdom.world.day,
             "Magic")
         notification.save()

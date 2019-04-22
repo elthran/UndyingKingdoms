@@ -49,7 +49,7 @@ def build_race_table():
                     val = '+' + str(val)
                 val = str(val) + '%'
             label = df.loc[row, "Modifier Type"].iloc[0][:-9]
-            df.loc[row, 'Modifier Description'] = '{}: {} {}'.format(name, val, label)
+            df.loc[row, 'Modifier Description'] = f'{name}: {val} {label}'
         except IndexError:
             pass
 

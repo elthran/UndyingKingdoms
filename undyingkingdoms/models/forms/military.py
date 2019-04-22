@@ -61,7 +61,7 @@ class MilitaryForm(FlaskForm):
         current_monsters = county.armies['monster'].total + county.armies['monster'].currently_training
         available = max_monsters - current_monsters
         if self.monster.data > available:
-            self.county_id.errors.append("Not enough {}.".format(county.buildings['lair'].class_name))
+            self.county_id.errors.append(f"Not enough {county.buildings['lair'].class_name}.")
             return True
         
     def insufficient_population(self):
