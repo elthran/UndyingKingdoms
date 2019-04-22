@@ -10,17 +10,17 @@
     <hr>
     <forum-threads
       v-if="forumView"
-      class="width-100-percent hide-last-hr"
+      class="hide-last-hr side-margins"
       @push-trail="pushTrail"
     />
     <thread-posts
       v-else-if="threadView"
-      class="hide-last-hr"
+      class="hide-last-hr side-margins"
       @push-trail="pushTrail"
     />
     <post-replies
       v-else-if="postView"
-      class="hide-last-hr"
+      class="hide-last-hr side-margins"
       @push-trail="pushTrail"
     />
   </div>
@@ -65,15 +65,6 @@ export default {
       return this.thread_id > 0 && this.post_id > 0
     },
   },
-  watch: {
-    $route (to, from) {
-      console.log("$route", from, to)
-      // react to route changes ..
-    },
-    routingTrail (newVal, oldVal) {
-      console.log("routingTrail", oldVal, newVal)
-    },
-  },
   mounted () {
     this.$hydrate(`/api/forum/routing?thread_id=${this.thread_id}&post_id=${this.post_id}`)
     .then(() => {
@@ -81,14 +72,13 @@ export default {
     })
   },
   methods: {
+    // add route to trail
     pushTrail (newTrail) {
-      console.log("new trail", newTrail)
       this.$router.push(newTrail.url)
       this.routingTrail.push(newTrail)
     },
+    // go back up "level" routes.
     popTrail (newTrail) {
-      // go back one route.
-      console.log(newTrail)
       this.$router.push(newTrail.url)
       this.routingTrail.splice(-newTrail.level, newTrail.level)
     }
@@ -117,11 +107,20 @@ export default {
 
 @media (min-width: 640px) {
   #forum {
-    margin: 1.2em 1em;
+    width: 100%;
+    margin: 1.2em 1em 0 0;
   }
 
   .crumb-trail {
     text-align: center;
+  }
+
+  .side-margins {
+    margin-right: 1em;
+  }
+
+  /deep/ .most-recent-post {
+    margin-right: 1em;
   }
 }
 </style>

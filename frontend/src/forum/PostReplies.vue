@@ -5,22 +5,24 @@
       :key="reply.id"
       class="reply"
     >
-      <div class="stats">
-        <div>{{ reply.votes }} votes</div>
-        <div class="highlight">
-          {{ reply.replyCount }} replies
+      <div class="body">
+        <div class="stats">
+          <div>{{ reply.votes }} votes</div>
+          <div class="highlight">
+            {{ reply.replyCount }} replies
+          </div>
+          <div>{{ reply.views || 'xx' }} views</div>
         </div>
-        <div>{{ reply.views || 'xx' }} views</div>
+        <div
+          class="content"
+        >
+          {{ reply.content }}
+        </div>
+        <most-recent-post
+          class="most-recent-post"
+          :post="post.mostRecentReply"
+        />
       </div>
-      <div
-        class="content"
-      >
-        {{ reply.content }}
-      </div>
-      <most-recent-post
-        class="most-recent-post"
-        :post="post.mostRecentReply"
-      />
       <hr class="border-dotted width-100-percent">
     </div>
   </div>
@@ -81,8 +83,8 @@ export default {
     margin-right: 0.3em;
   }
 
-  .title {
-    font-size: 1.3em;
+  .content {
+    font-size: 1.2em;
     margin: 0.3em 0 0.3em;
   }
 }
@@ -91,6 +93,10 @@ export default {
   .reply {
     display: flex;
     flex-wrap: wrap;
+  }
+
+  .body {
+    display: flex;
   }
 
   .center {
@@ -102,16 +108,18 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex-shrink: 0;
   }
 
-  .title {
-    font-size: 1.3em;
+  .content {
+    font-size: 1.2em;
     padding-left: 1em;
     padding-right: 1em;
   }
 
   .most-recent-post {
     margin-top: auto;
+    flex-shrink: 0;
   }
 }
 </style>
