@@ -89,3 +89,6 @@ class Casting(GameEvent):
         # I suggest making this an SQL query eventually.
         return sum(spell.mana_sustain
                    for spell in Casting.get_active_spells(county))
+
+    # def display_description(self):
+    #     return self.description.format(self.display_name, self.output)

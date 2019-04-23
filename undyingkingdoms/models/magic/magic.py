@@ -51,3 +51,6 @@ class Magic(GameEvent):
     @staticmethod
     def get_unknown_spells(county):
         return Magic.query.filter_by(county_id=county.id, known=False).all()
+
+    def display_description(self):
+        return self.description.format(self.display_name, self.output)
