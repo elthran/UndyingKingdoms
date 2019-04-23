@@ -48,10 +48,31 @@ class InstantHappiness(InitMixin, Command):
 
 class RaiseDeathRate(InitMixin, Command):
     def execute(self):
+        notification = Notification(self.target.id,
+                                    "Enemy magic",
+                                    f"A plague wind has been summoned by the wizards of {self.caster.name}",
+                                    self.caster.kingdom.world.day,
+                                    "Magic")
+        notification.save()
+
+
+class RaiseOffensivePower(InitMixin, Command):
+    def execute(self):
         pass
 
 
-class PopulationKillerTier1(InitMixin, Command):
+class RaiseBirthRate(InitMixin, Command):
+    def execute(self):
+        notification = Notification(self.target.id,
+                                    "Enemy magic",
+                                    f"A plague wind has been summoned by the wizards of {self.caster.name}",
+                                    self.caster.kingdom.world.day,
+                                    "Magic")
+        notification.save()
+
+
+
+class PopulationKiller(InitMixin, Command):
     def execute(self):
         modifier = 1 + (self.caster.buildings['arcane'].total * self.caster.buildings['arcane'].output) / 100
         kill_count = int(self.target.population * modifier * self.spell.output / 100)
@@ -70,13 +91,10 @@ class SummonGolem(InitMixin, Command):
         pass
 
 
-class SummonGolem(InitMixin, Command):
-    def execute(self):
-        pass
-
-
-class RaiseMagicDisrupt(InitMixin, Command):
+class ConvertIronToGold(InitMixin, Command):
     def execute(self):
         max_iron = min(self.caster.iron, 10)
         self.caster.iron -= max_iron
-        self.caster.gold += floor(max_iron * 10 * (1 + self.caster.buildings['arcane'].total * self.caster.buildings['arcane'].output / 100))
+        casting_bonus = 1 + self.caster.buildings['arcane'].total * self.caster.buildings['arcane'].output / 100
+        self.caster.gold += floor(max_iron * 10 * casting_bonus)
+

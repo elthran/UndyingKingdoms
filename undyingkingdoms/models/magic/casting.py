@@ -12,6 +12,7 @@ class Casting(GameEvent):
     world_day = db.Column(db.Integer)
     county_day = db.Column(db.Integer)
     success = db.Column(db.Boolean)
+    output = db.Column(db.Float)
     name = db.Column(db.String(64))
     display_name = db.Column(db.String(64))
     duration = db.Column(db.Integer)  # How many game days until the spell ends
@@ -22,7 +23,7 @@ class Casting(GameEvent):
     # consider passing in spell and country objects
     # as this will make execute more efficient.
     def __init__(self, county_id, target_id, spell_id, world_day, county_day, name,
-                 display_name, duration=0, target_relation="Unknown"):
+                 display_name, duration=0, target_relation="Unknown", output=0):
 
         self.county_id = county_id
         self.target_id = target_id
@@ -34,6 +35,7 @@ class Casting(GameEvent):
         self.display_name = display_name
         self.duration = duration
         self.success = True
+        self.output = output
 
         self.active = False
         self.mana_sustain = 0

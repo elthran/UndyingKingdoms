@@ -40,7 +40,7 @@ def build_testing_objects():
     user.is_active = True
     user.is_verified = True
     user.save()
-    county = County(2, "Northern Wastes", "Haldon", user.id, 'Dwarf', 'Sir', 'Merchant')
+    county = County(2, "Northern Wastes", "Haldon", user.id, 'Human', 'Sir', 'Merchant')
     county.save()
     county.vote = county.id
     county.buildings['arcane'].total = 5

@@ -657,20 +657,24 @@ class County(GameState):
     def get_death_rate(self):
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + \
                    death_rate_modifier.get(self.background, ("", 0))[1]
+
+        raise_death_rate = Casting.query.filter_by(target_id=self.id, name="raise_death_rate").filter(Casting.duration > 0).first()
+        if raise_death_rate:
+            modifier += raise_death_rate.output
+
         death_rate = (2 / self.healthiness) * modifier
 
-        plague_wind = Casting.query.filter_by(target_id=self.id).filter(Casting.duration > 0).first()
-        if plague_wind:
-            death_rate *= 1.5
         return int(death_rate * self.population)
 
     def get_birth_rate(self):
         modifier = 1 + birth_rate_modifier.get(self.race, ("", 0))[1] + \
                    birth_rate_modifier.get(self.background, ("", 0))[1]
         modifier += (self.buildings['house'].total / self.land) * self.buildings['house'].output
-        ambrosia = Casting.query.filter_by(target_id=self.id, name="ambrosia", active=1).first()
-        if ambrosia:
-            modifier += 0.5
+
+        raise_birth_rate = Casting.query.filter_by(target_id=self.id, name="raise_birth_rate").filter(Casting.duration > 0).first()
+        if raise_birth_rate:
+            modifier += raise_birth_rate.output
+
         raw_rate = (self.happiness / 100) * (self.land / 5)  # 5% times your happiness rating
         return int(raw_rate * modifier)
 
@@ -842,14 +846,14 @@ class County(GameState):
         strength = 0
         modifier = 1 + offensive_power_modifier.get(self.race, ("", 0))[1] \
                    + offensive_power_modifier.get(self.background, ("", 0))[1]
+
         if self.technologies['steel'].completed:
             modifier += 0.10
-        bloodlust = Casting.query.filter_by(target_id=self.id, name="bloodlust").filter(Casting.duration > 0).first()
-        if bloodlust:
-            modifier += 0.15
-        discipline = Casting.query.filter_by(target_id=self.id, name="discipline").filter(Casting.duration > 0).first()
-        if discipline:
-            modifier += 0.05
+
+        raise_offensive_power = Casting.query.filter_by(target_id=self.id, name="raise_offensive_power").filter((Casting.duration > 0) | (Casting.active == True)).first()
+        if raise_offensive_power:
+            modifier += raise_offensive_power.output
+
         if army:
             for unit in self.armies.values():
                 if unit.name != 'archer' and unit.name != 'besieger':

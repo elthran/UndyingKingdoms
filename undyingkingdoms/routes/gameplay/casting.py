@@ -62,19 +62,13 @@ def cast_spell(spell_id, target_id):
         return redirect(url_for('casting', target_id=target.id))
 
     cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
-                   county.day, spell.name, spell.display_name, duration=spell.duration, target_relation=target_relation)
+                   county.day, spell.name, spell.display_name, duration=spell.duration,
+                   target_relation=target_relation, output=spell.output)
     cast.save()
     cast_successful = cast.activate(spell, county, target)
     if not cast_successful:
         return redirect(url_for('casting', target_id=target.id))
 
-    if cast.name == 'plague winds':
-        notification = Notification(
-            target.id,
-            "Enemy magic", f"A plague wind has been summoned by the wizards of {county.name}",
-            county.kingdom.world.day,
-            "Magic")
-        notification.save()
     return redirect(url_for('casting', target_id=target.id))
 
 
