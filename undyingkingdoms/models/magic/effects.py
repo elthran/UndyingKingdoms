@@ -57,11 +57,13 @@ class ModifyGrainRate(InitMixin, Command):
 
 class ModifyDeathRate(InitMixin, Command):
     def execute(self):
-        notification = Notification(self.target.id,
-                                    "Enemy magic",
-                                    f"A plague wind has been summoned by the wizards of {self.caster.name}",
-                                    self.caster.kingdom.world.day,
-                                    "Magic")
+        notification = Notification(
+            self.target.id,
+            "Enemy magic",
+            f"A plague wind has been summoned by the wizards of {self.caster.name}",
+            self.caster.kingdom.world.day,
+            "Magic"
+        )
         notification.save()
 
 
@@ -72,11 +74,13 @@ class ModifyOffensivePower(InitMixin, Command):
 
 class ModifyBirthRate(InitMixin, Command):
     def execute(self):
-        notification = Notification(self.target.id,
-                                    "Enemy magic",
-                                    f"A plague wind has been summoned by the wizards of {self.caster.name}",
-                                    self.caster.kingdom.world.day,
-                                    "Magic")
+        notification = Notification(
+            self.target.id,
+            "Enemy magic",
+            f"A plague wind has been summoned by the wizards of {self.caster.name}",
+            self.caster.kingdom.world.day,
+            "Magic"
+        )
         notification.save()
 
 
@@ -84,12 +88,14 @@ class PopulationKiller(InitMixin, Command):
     def execute(self):
         kill_count = int(self.target.population * self.caster.spell_modifier * self.spell.output / 100)
         self.target.population -= kill_count
-        notification = Notification(self.target.id,
-                                    "Enemy magic",
-                                    f"The wizards of {self.caster.name} have cast {self.spell.display_name} on your county,"
-                                    f" killing {kill_count} of your people.",
-                                    self.caster.kingdom.world.day,
-                                    "Magic")
+        notification = Notification(
+            self.target.id,
+            "Enemy magic",
+            f"The wizards of {self.caster.name} have cast {self.spell.display_name} on your county,"
+            f" killing {kill_count} of your people.",
+            self.caster.kingdom.world.day,
+            "Magic"
+        )
         notification.save()
 
 
@@ -103,4 +109,3 @@ class ConvertIronToGold(InitMixin, Command):
         max_iron = min(self.caster.iron, 10)
         self.caster.iron -= max_iron
         self.caster.gold += floor(max_iron * 10 * self.caster.spell_modifier)
-
