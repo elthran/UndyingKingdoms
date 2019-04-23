@@ -306,6 +306,10 @@ class County(GameState):
         return base
 
     @property
+    def spell_modifier(self):
+        return 1 + (self.buildings["arcane"].total * self.buildings["arcane"].output / 100)
+
+    @property
     def seed(self):
         return self.kingdom.world.day
 
@@ -593,6 +597,9 @@ class County(GameState):
         modifier = 1
         if self.technologies['agriculture'].completed:
             modifier += 0.5
+        modify_grain_rate = Casting.query.filter_by(target_id=self.id, name="modify_grain_rate").filter((Casting.duration > 0) | (Casting.active == True)).all()
+        for spell in modify_grain_rate or []:
+            modifier += spell.output * self.spell_modifier
         return int(self.buildings['field'].total * self.buildings['field'].output * modifier)
 
     def get_produced_dairy(self):
@@ -658,9 +665,10 @@ class County(GameState):
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + \
                    death_rate_modifier.get(self.background, ("", 0))[1]
 
-        raise_death_rate = Casting.query.filter_by(target_id=self.id, name="raise_death_rate").filter(Casting.duration > 0).first()
-        if raise_death_rate:
-            modifier += raise_death_rate.output
+        modify_death_rate = Casting.query.filter_by(target_id=self.id, name="modify_death_rate").filter(
+            (Casting.duration > 0) | (Casting.active == True)).all()
+        for spell in modify_death_rate or []:
+            modifier += spell.output * self.spell_modifier
 
         death_rate = (2 / self.healthiness) * modifier
 
@@ -671,9 +679,9 @@ class County(GameState):
                    birth_rate_modifier.get(self.background, ("", 0))[1]
         modifier += (self.buildings['house'].total / self.land) * self.buildings['house'].output
 
-        raise_birth_rate = Casting.query.filter_by(target_id=self.id, name="raise_birth_rate").filter(Casting.duration > 0).first()
-        if raise_birth_rate:
-            modifier += raise_birth_rate.output
+        modify_birth_rate = Casting.query.filter_by(target_id=self.id, name="modify_birth_rate").filter((Casting.duration > 0) | (Casting.active == True)).all()
+        for spell in modify_birth_rate or []:
+            modifier += spell.output * self.spell_modifier
 
         raw_rate = (self.happiness / 100) * (self.land / 5)  # 5% times your happiness rating
         return int(raw_rate * modifier)
@@ -850,9 +858,9 @@ class County(GameState):
         if self.technologies['steel'].completed:
             modifier += 0.10
 
-        raise_offensive_power = Casting.query.filter_by(target_id=self.id, name="raise_offensive_power").filter((Casting.duration > 0) | (Casting.active == True)).first()
-        if raise_offensive_power:
-            modifier += raise_offensive_power.output
+        modify_offensive_power = Casting.query.filter_by(target_id=self.id, name="modify_offensive_power").filter((Casting.duration > 0) | (Casting.active == True)).all()
+        for spell in modify_offensive_power or []:
+            modifier += spell.output * self.spell_modifier
 
         if army:
             for unit in self.armies.values():
@@ -1123,12 +1131,15 @@ class County(GameState):
 
     def chance_to_disrupt_spell(self):
         chance = 0
-        magical_barrier = Casting.query.filter_by(target_id=self.id, active=1, name="shroud of magic").first()
-        if magical_barrier:
-            chance += 60
+
+        modify_magic_disrupt = Casting.query.filter_by(target_id=self.id, name="modify_magic_disrupt").filter((Casting.duration > 0) | (Casting.active == True)).all()
+        for spell in modify_magic_disrupt or []:
+            chance += spell.output * self.spell_modifier
+
         if self.race == "Dwarf":
-            chance += 20
-        return min(chance, 100)
+            chance += 15
+
+        return int(min(chance, 100))
 
     # Terminology
     @property

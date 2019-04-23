@@ -9,13 +9,13 @@ human_spells = {'population_killer': Magic(name='population_killer',
                                            output=5,
                                            description='A blasts of fire hits the enemy county, '
                                                        'killing 5% of their populace.'),
-                'raise_offensive_power': Magic(name='raise_offensive_power',
-                                               display_name='Discipline',
-                                               category='aura',
-                                               targets='self',
-                                               known=True,
-                                               mana_cost=5,
-                                               mana_sustain=1,
-                                               output=0.05,
-                                               description='While active, your troops have +5% attack power.')
+                'modify_offensive_power': Magic(name='modify_offensive_power',
+                                                display_name='Discipline',
+                                                category='aura',
+                                                targets='self',
+                                                known=True,
+                                                mana_cost=5,
+                                                mana_sustain=1,
+                                                output=0.05,
+                                                description='While active, your troops have +5% attack power.')
                 }

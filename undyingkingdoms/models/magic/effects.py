@@ -41,27 +41,21 @@ class InitMixin:
 
 class InstantHappiness(InitMixin, Command):
     def execute(self):
-        modifier = 1 + (self.caster.buildings['arcane'].total * self.caster.buildings['arcane'].output) / 100
-        amount = floor(self.spell.output * modifier)
+        amount = floor(self.spell.output * self.caster.spell_modifier)
         self.caster.happiness += amount
 
 
-class RaiseDeathRate(InitMixin, Command):
-    def execute(self):
-        notification = Notification(self.target.id,
-                                    "Enemy magic",
-                                    f"A plague wind has been summoned by the wizards of {self.caster.name}",
-                                    self.caster.kingdom.world.day,
-                                    "Magic")
-        notification.save()
-
-
-class RaiseOffensivePower(InitMixin, Command):
+class ModifyMagicDisrupt(InitMixin, Command):
     def execute(self):
         pass
 
 
-class RaiseBirthRate(InitMixin, Command):
+class ModifyGrainRate(InitMixin, Command):
+    def execute(self):
+        pass
+
+
+class ModifyDeathRate(InitMixin, Command):
     def execute(self):
         notification = Notification(self.target.id,
                                     "Enemy magic",
@@ -71,11 +65,24 @@ class RaiseBirthRate(InitMixin, Command):
         notification.save()
 
 
+class ModifyOffensivePower(InitMixin, Command):
+    def execute(self):
+        pass
+
+
+class ModifyBirthRate(InitMixin, Command):
+    def execute(self):
+        notification = Notification(self.target.id,
+                                    "Enemy magic",
+                                    f"A plague wind has been summoned by the wizards of {self.caster.name}",
+                                    self.caster.kingdom.world.day,
+                                    "Magic")
+        notification.save()
+
 
 class PopulationKiller(InitMixin, Command):
     def execute(self):
-        modifier = 1 + (self.caster.buildings['arcane'].total * self.caster.buildings['arcane'].output) / 100
-        kill_count = int(self.target.population * modifier * self.spell.output / 100)
+        kill_count = int(self.target.population * self.caster.spell_modifier * self.spell.output / 100)
         self.target.population -= kill_count
         notification = Notification(self.target.id,
                                     "Enemy magic",
@@ -95,6 +102,5 @@ class ConvertIronToGold(InitMixin, Command):
     def execute(self):
         max_iron = min(self.caster.iron, 10)
         self.caster.iron -= max_iron
-        casting_bonus = 1 + self.caster.buildings['arcane'].total * self.caster.buildings['arcane'].output / 100
-        self.caster.gold += floor(max_iron * 10 * casting_bonus)
+        self.caster.gold += floor(max_iron * 10 * self.caster.spell_modifier)
 
