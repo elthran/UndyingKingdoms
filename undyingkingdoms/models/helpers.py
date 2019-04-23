@@ -56,8 +56,8 @@ def empty_table(db, name):
     with db.engine.begin() as con:
         try:
             con.execute("SET FOREIGN_KEY_CHECKS=0;")
-            con.execute("LOCK TABLES `{}` WRITE;".format(name))
-            con.execute("TRUNCATE TABLE `{}`;".format(name))
+            con.execute(f"LOCK TABLES `{name}` WRITE;")
+            con.execute(f"TRUNCATE TABLE `{name}`;")
             con.execute("UNLOCK TABLES;")
             con.execute("SET FOREIGN_KEY_CHECKS=1;")
         except Exception as ex:
@@ -73,8 +73,8 @@ def delete_table(db, name):
     with db.engine.begin() as con:
         try:
             con.execute("SET FOREIGN_KEY_CHECKS=0;")
-            con.execute("LOCK TABLES `{}` WRITE;".format(name))
-            con.execute("DROP TABLE IF EXISTS `{}`;".format(name))
+            con.execute(f"LOCK TABLES `{name}` WRITE;")
+            con.execute(f"DROP TABLE IF EXISTS `{name}`;")
             con.execute("UNLOCK TABLES;")
             con.execute("SET FOREIGN_KEY_CHECKS=1;")
         except Exception as ex:
@@ -93,11 +93,35 @@ def drop_then_rebuild_tables(db, tables):
     with db.engine.begin() as con:
         con.execute("SET FOREIGN_KEY_CHECKS=0;")
         for table in tables:
-            con.execute("LOCK TABLES `{}` WRITE;".format(table))
-            con.execute("DROP TABLE IF EXISTS `{}`;".format(table))
-            current_app.logger.info("Dropping table `{}`.".format(table))
+            con.execute(f"LOCK TABLES `{table}` WRITE;")
+            con.execute(f"DROP TABLE IF EXISTS `{table}`;")
+            current_app.logger.info(f"Dropping table `{table}`.")
 
         db.create_all()
         current_app.logger.info("Recreated all tables.")
         con.execute("SET FOREIGN_KEY_CHECKS=1;")
         con.execute("UNLOCK TABLES;")
+
+
+def get_target_relation(county, target):
+    """Return the relationship between two counties.
+
+    This will get more complex over time and should be optimized.
+    """
+    if county == target:
+        target_relation = 'self'
+    elif target.kingdom in county.kingdom.allies:
+        target_relation = 'friendly'
+    else:
+        target_relation = 'hostile'
+
+    # elif target_county.kingdom in county.kingdom.enemies:
+    #     targets = 'hostile'
+    # else:
+    #     targets = 'all'
+    # (spell.targets == 'self' and target != county) or
+    # (spell.targets == 'friendly' and target.kingdom in county.kingdom.enemies) or
+    # (spell.targets == 'hostile' and target.kingdom in county.kingdom.allies) or
+    # (spell.targets == 'hostile' and target == county)
+
+    return target_relation

@@ -20,18 +20,15 @@ def create_bots(n=1):
     for i in range(n):
         smallest_kingdom = min(kingdoms, key=lambda x: len(x.counties))
         bot_name = uuid4()
-        user = User("bot_{}".format(bot_name),
-                    "bot_{}@gmail.com".format(bot_name),
+        user = User(f"bot_{bot_name}",
+                    f"bot_{bot_name}@gmail.com",
                     "1234")
         user.is_bot = True
         user.save()
         county = County(
-            smallest_kingdom.id, "{}{}".format(
-                choice(bot_county_prefix),
-                choice(bot_county_suffix)),
-            "{}{}".format(
-                choice(bot_leader_prefix),
-                choice(bot_leader_suffix)),
+            smallest_kingdom.id,
+            f"{choice(bot_county_prefix)}{choice(bot_county_suffix)}",
+            f"{choice(bot_leader_prefix)}{choice(bot_leader_suffix)}",
             user.id,
             choice(["Human", "Elf", "Dwarf", "Goblin"]),
             choice(["Sir", "Lady"]),
@@ -49,7 +46,11 @@ def create_bots(n=1):
 def create_notification(message):
     world = World.query.first()
     for county in County.query.all():
-        notification = Notification(county.id, "Admin Update from {}".format(current_user.county.leader), message, world.day, "Admin")
+        notification = Notification(county.id,
+                                    f"Admin Update from {current_user.county.leader}",
+                                    message,
+                                    world.day,
+                                    "Admin")
         notification.save()
     return jsonify(
         status="success",

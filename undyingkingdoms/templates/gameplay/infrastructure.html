@@ -184,7 +184,7 @@ h2 {
           <span class="buildingStoneCost">{{ building.stone_cost or 0 }}</span><img class="resource_icons" src="/static/images/stone_icon.jpg">
         </td>
         <td>{{ building.workers_employed * building.total }} ({{ building.workers_employed }} each)</td>
-        <td>{{ building.description }}</td>
+        <td>{{ building.display_description() }}</td>
       </tr>
       {% endfor %}
       <tr style="font-weight:bold;">

@@ -18,14 +18,7 @@ from undyingkingdoms.models.magic import Casting
 def casting(template, target_id):
     county = current_user.county
     target_county = County.query.get(target_id)
-    if target_county == county:
-        targets = 'self'
-    elif target_county.kingdom in county.kingdom.allies:
-        targets = 'friendly'
-    elif target_county.kingdom in county.kingdom.enemies:
-        targets = 'hostile'
-    else:
-        targets = 'all'
+
     known_spells = Magic.get_know_spells(county)
     unknown_spells = Magic.get_unknown_spells(county)
     active_spells = Casting.get_active_spells(county)
@@ -35,7 +28,6 @@ def casting(template, target_id):
     return render_template(
         template,
         target=target_county,
-        targets=targets,
         known_spells=known_spells,
         unknown_spells=unknown_spells,
         active_spells=active_spells,
@@ -62,29 +54,13 @@ def cast_spell(spell_id, target_id):
         return redirect(url_for('casting', target_id=target.id))
 
     cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
-                   county.day, spell.class_name, duration=spell.duration, target_relation=target_relation)
+                   county.day, spell.name, spell.display_name, duration=spell.duration,
+                   target_relation=target_relation, output=spell.output)
     cast.save()
     cast_successful = cast.activate(spell, county, target)
     if not cast_successful:
         return redirect(url_for('casting', target_id=target.id))
 
-    if cast.name == 'plague winds':
-        notification = Notification(
-            target.id,
-            "Enemy magic", "A plague wind has been summoned by the wizards of {}".format(county.name),
-            county.kingdom.world.day,
-            "Magic")
-        notification.save()
-    elif cast.name == 'rune lightning' or cast.name == 'arcane fire' or cast.name == 'green fire' or cast.name == 'incantation of fire':
-        kill_count = floor(int(randint(3, 5) * 0.01 * target.population) * (county.buildings['arcane'].total * county.buildings['arcane'].output) / 100)
-        target.population -= kill_count
-        notification = Notification(
-            target.id,
-            "Enemy magic", "The wizards of {} have cast a spell on your county, killing {} of your people."
-                .format(county.name, kill_count),
-            county.kingdom.world.day,
-            "Magic")
-        notification.save()
     return redirect(url_for('casting', target_id=target.id))
 
 

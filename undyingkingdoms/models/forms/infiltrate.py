@@ -29,5 +29,5 @@ class InfiltrateForm(FlaskForm):
             self.amount.errors.append("You must send at least one thief.")
             return True
         if thieves_being_sent > maximum_per_mission:
-            self.amount.errors.append("You can not send more than {} thieves at a time.".format(maximum_per_mission))
+            self.amount.errors.append(f"You can not send more than {maximum_per_mission} thieves at a time.")
             return True

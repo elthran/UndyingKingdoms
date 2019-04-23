@@ -29,6 +29,6 @@ class Building(GameState):
         self.output = output
         self.description = description
 
-    def update_description(self):
-        self.description = self.description.format(self.class_name, self.output)
+    def display_description(self):
+        return self.description.format(self.class_name, self.output)
 

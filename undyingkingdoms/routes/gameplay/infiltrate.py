@@ -68,7 +68,7 @@ def infiltrate(template, county_id):
                 report.duration = randint(8, 10)
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
-                                            "They stole {} gold from our coffers.".format(gold_stolen),
+                                            f"They stole {gold_stolen} gold from our coffers.",
                                             current_user.county.kingdom.world.day)
             elif mission == 'burn crops':
                 crops_burned = min(target.buildings['field'].total, form.amount.data)
@@ -77,7 +77,7 @@ def infiltrate(template, county_id):
                 report.duration = randint(14, 16)
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
-                                            "They burned {} of our crops.".format(crops_burned),
+                                            f"They burned {crops_burned} of our crops.",
                                             current_user.county.kingdom.world.day)
             elif mission == 'sow distrust':
                 happiness_lost = min(target.happiness, form.amount.data * 3)
@@ -104,10 +104,10 @@ def infiltrate(template, county_id):
                 report.duration = randint(6, 8)
                 notification = Notification(target.id,
                                             "Thieves raided our lands",
-                                            "They have stolen {} of our research.",
+                                            f"They have stolen {research_stolen} of our research.",
                                             current_user.county.kingdom.world.day)
         else:
-            notification = Notification(target.id, "You caught enemy thieves from {}".format(current_user.county.name),
+            notification = Notification(target.id, f"You caught enemy thieves from {current_user.county.name}",
                                         "You caught them before they could accomplish their task",
                                         current_user.county.kingdom.world.day)
             report.duration = randint(16, 18)

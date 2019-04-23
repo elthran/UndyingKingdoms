@@ -40,9 +40,9 @@ class Achievement(GameEvent):
     def get_earned_required_amount_message(self):
         if self.current_tier == 0:
             return "You have made no progress on this achievement."
-        return "Last reward at {} {}.".format(getattr(self, "tier" + str(self.current_tier)), self.name)
+        return f"Last reward at {getattr(self, 'tier' + str(self.current_tier))} {self.name}."
 
     def get_next_required_amount_message(self):
         if self.current_tier == self.maximum_tier:
             return "You have unlocked all tiers."
-        return "Next reward at {} {}.".format(getattr(self, "tier" + str(self.current_tier + 1)), self.name)
+        return f"Next reward at {getattr(self, 'tier' + str(self.current_tier + 1))} {self.name}."

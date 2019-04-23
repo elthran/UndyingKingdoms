@@ -7,7 +7,7 @@ if __name__ == "__main__":
     """
 
     import os
-    os.system("python3 -m pytest -vvs {}".format(__file__))
+    os.system(f"python3 -m pytest -vvs {__file__}")
     exit(1)  # prevents code from trying to run file afterwards.
 
 from undyingkingdoms import User

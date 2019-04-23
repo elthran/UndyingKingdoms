@@ -1,28 +1,27 @@
 from undyingkingdoms.models.bases import GameEvent, db
+from undyingkingdoms.models.helpers import get_target_relation
 
 
 class Magic(GameEvent):
 
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
     name = db.Column(db.String(64))
-    class_name = db.Column(db.String(64))
+    display_name = db.Column(db.String(64))
     category = db.Column(db.String(64))  # instant, timed, aura
     targets = db.Column(db.String(16))  # self, friendly, hostile, all
     known = db.Column(db.Boolean)
     mana_cost = db.Column(db.Integer)
     mana_sustain = db.Column(db.Integer)  # Mana required to spend each day to sustain the spell
     duration = db.Column(db.Integer)  # How many game days the spell lasts for
-    output = db.Column(db.Integer)  # Sometimes used to weigh the power of the spell.
+    output = db.Column(db.Float)  # Sometimes used to weigh the power of the spell.
     description = db.Column(db.String(128))
 
-    def __init__(self, name, class_name=None, category='instant', targets='self',
+    def __init__(self, name, display_name, category='instant', targets='self',
                  known=False, mana_cost=0, mana_sustain=0, duration=0, output=0,
                  description="Unknown"):
 
         self.name = name
-        self.class_name = class_name
-        if class_name is None:
-            self.class_name = name
+        self.display_name = display_name
         self.category = category
         self.targets = targets
         self.known = known
@@ -34,15 +33,10 @@ class Magic(GameEvent):
 
     def validate_targeting(self, county, target):
         eligible_targets = [self.targets]
-        if eligible_targets[0] == 'friendly':
+        if 'friendly' in eligible_targets:
             eligible_targets.append('self')
-        if county == target:
-            target_relation = 'self'
-        elif target.kingdom in county.kingdom.allies:
-            target_relation = 'friendly'
-        else:
-            target_relation = 'hostile'
 
+        target_relation = get_target_relation(county, target)
         valid_target = (target_relation in eligible_targets)
         return valid_target, target_relation
 
@@ -53,3 +47,6 @@ class Magic(GameEvent):
     @staticmethod
     def get_unknown_spells(county):
         return Magic.query.filter_by(county_id=county.id, known=False).all()
+
+    def display_description(self):
+        return self.description.format(self.display_name, self.output)

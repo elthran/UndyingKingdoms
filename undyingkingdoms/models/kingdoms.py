@@ -207,10 +207,10 @@ class Kingdom(GameState):
     def war_won(self, war):
         enemy = war.get_other_kingdom(self)
         for county in self.counties:
-            notice = Notification(county.id, "War", "We have won the war against {}!".format(enemy.name), self.world.day, "War")
+            notice = Notification(county.id, "War", f"We have won the war against {enemy.name}!", self.world.day, "War")
             notice.save()
         for county in enemy.counties:
-            notice = Notification(county.id, "War", "We have lost the war against {}!".format(self.name), self.world.day, "War")
+            notice = Notification(county.id, "War", f"We have lost the war against {self.name}!", self.world.day, "War")
             notice.save()
         self.wars_won_ta += 1
         self.wars_won_lt += 1
@@ -225,7 +225,7 @@ class Kingdom(GameState):
         This should be able to be vastly improved with a query.
         """
         war = None
-        for each_war in self.kingdom.wars:
+        for each_war in self.wars:
             if each_war.get_other_kingdom(self.kingdom) == target.kingdom:  # If this is true, we are at war with them
                 war = each_war
                 break
@@ -242,7 +242,3 @@ class Kingdom(GameState):
             if war.defender_current >= war.defender_goal:
                 target.kingdom.war_won(war)
                 war.status = "Lost"
-
-
-
-

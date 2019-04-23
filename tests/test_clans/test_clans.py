@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     import os
 
-    os.system("python3 -m pytest -vvsx {}".format(__file__))
+    os.system(f"python3 -m pytest -vvsx {__file__}")
     exit(1)  # prevents code from trying to run file afterwards.
 
 
@@ -40,7 +40,7 @@ def test_clan_invites(app):
         clan2 = Clan(1, user2.id)
         clan2.save()
         assert user.clan == clan is not None
-        assert user2.clan == None
+        assert user2.clan is None
         assert user.clan.invited == [user2]
 
 

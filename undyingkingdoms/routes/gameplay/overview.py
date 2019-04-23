@@ -146,8 +146,9 @@ def trade(county_id):
         trade_notice = Notification(
             target_county.id,
             "You were offered a trade",
-            "{} has offered you a trade. Visit the trading page.".format(county.name),
-            county.kingdom.world.day, "Trade")
+            f"{county.name} has offered you a trade. Visit the trading page.",
+            county.kingdom.world.day,
+            "Trade")
         trade_notice.save()
 
         return redirect(url_for('trading'))

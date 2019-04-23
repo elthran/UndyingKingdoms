@@ -41,7 +41,7 @@ def trading_reply(trade_id):
             target_county.grain_stores -= trade.grain_to_receive
             county.grain_stores += trade.grain_to_receive
             trade.status = "Accepted"
-            notice = Notification(county.id, "Trade", "Your trade was accepted by {}".format(current_user.county.name),
+            notice = Notification(county.id, "Trade", f"Your trade was accepted by {current_user.county.name}",
                                   current_user.county.kingdom.world.day, category="Trade")
             notice.save()
             return jsonify(
@@ -55,7 +55,7 @@ def trading_reply(trade_id):
             )
     elif "reject" in request.args:
         trade.status = "Rejected"
-        notice = Notification(county.id, "Trade", "Your trade was rejected by {}".format(current_user.county.name),
+        notice = Notification(county.id, "Trade", f"Your trade was rejected by {current_user.county.name}",
                               current_user.county.kingdom.world.day, category="Trade")
         notice.save()
         return jsonify(
