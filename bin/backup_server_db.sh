@@ -1,3 +1,14 @@
+#!/bin/bash
+
+echo "Do you wish to backup the server and overwrite your local database?"
+echo "Type a number then press enter."
+select yn in "Yes" "No"; do
+	case $yn in
+	    Yes ) break;;
+	    No ) exit;;
+	esac
+done
+
 HOST="undyingkingdoms@ssh.pythonanywhere.com"
 ssh -t $HOST '
 mysqldump --defaults-extra-file=~/.mysql/mysql.cnf > ~/dump.sql
