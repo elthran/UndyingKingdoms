@@ -5,7 +5,7 @@ class Magic(GameEvent):
 
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
     name = db.Column(db.String(64))
-    class_name = db.Column(db.String(64))
+    display_name = db.Column(db.String(64))
     category = db.Column(db.String(64))  # instant, timed, aura
     targets = db.Column(db.String(16))  # self, friendly, hostile, all
     known = db.Column(db.Boolean)
@@ -15,14 +15,12 @@ class Magic(GameEvent):
     output = db.Column(db.Integer)  # Sometimes used to weigh the power of the spell.
     description = db.Column(db.String(128))
 
-    def __init__(self, name, class_name=None, category='instant', targets='self',
+    def __init__(self, name, display_name, category='instant', targets='self',
                  known=False, mana_cost=0, mana_sustain=0, duration=0, output=0,
                  description="Unknown"):
 
         self.name = name
-        self.class_name = class_name
-        if class_name is None:
-            self.class_name = name
+        self.display_name = display_name
         self.category = category
         self.targets = targets
         self.known = known

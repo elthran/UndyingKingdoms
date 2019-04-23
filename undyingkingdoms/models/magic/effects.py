@@ -1,5 +1,6 @@
 from math import floor
 
+from undyingkingdoms.models.notifications import Notification
 from utilities.helpers import to_class_name
 from .interface import Command
 
@@ -21,7 +22,6 @@ class Effect(Command):
 
     def get_specifics(self):
         """Initialize an object from a casting name."""
-        print("STUFFFFF:", self.casting.name)
         return globals()[to_class_name(self.casting.name)](self)
 
     def execute(self):
@@ -39,10 +39,30 @@ class InitMixin:
         self.target = effect.target
 
 
-class Inspire(InitMixin, Command):
+class InstantHappiness(InitMixin, Command):
     def execute(self):
-        amount = 5 * (self.caster.buildings['arcane'].total * self.caster.buildings['arcane'].output) / 100
-        self.caster.happiness += floor(amount)
+        modifier = 1 + (self.caster.buildings['arcane'].total * self.caster.buildings['arcane'].output) / 100
+        amount = floor(self.spell.output * modifier)
+        self.caster.happiness += amount
+
+
+class RaiseDeathRate(InitMixin, Command):
+    def execute(self):
+        pass
+
+
+class PopulationKillerTier1(InitMixin, Command):
+    def execute(self):
+        modifier = 1 + (self.caster.buildings['arcane'].total * self.caster.buildings['arcane'].output) / 100
+        kill_count = int(self.target.population * modifier * self.spell.output / 100)
+        self.target.population -= kill_count
+        notification = Notification(self.target.id,
+                                    "Enemy magic",
+                                    f"The wizards of {self.caster.name} have cast {self.spell.display_name} on your county,"
+                                    f" killing {kill_count} of your people.",
+                                    self.caster.kingdom.world.day,
+                                    "Magic")
+        notification.save()
 
 
 class SummonGolem(InitMixin, Command):
@@ -50,7 +70,12 @@ class SummonGolem(InitMixin, Command):
         pass
 
 
-class SecretsOfAlchemy(InitMixin, Command):
+class SummonGolem(InitMixin, Command):
+    def execute(self):
+        pass
+
+
+class RaiseMagicDisrupt(InitMixin, Command):
     def execute(self):
         max_iron = min(self.caster.iron, 10)
         self.caster.iron -= max_iron

@@ -62,7 +62,7 @@ def cast_spell(spell_id, target_id):
         return redirect(url_for('casting', target_id=target.id))
 
     cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
-                   county.day, spell.name, spell.class_name, duration=spell.duration, target_relation=target_relation)
+                   county.day, spell.name, spell.display_name, duration=spell.duration, target_relation=target_relation)
     cast.save()
     cast_successful = cast.activate(spell, county, target)
     if not cast_successful:
@@ -72,17 +72,6 @@ def cast_spell(spell_id, target_id):
         notification = Notification(
             target.id,
             "Enemy magic", f"A plague wind has been summoned by the wizards of {county.name}",
-            county.kingdom.world.day,
-            "Magic")
-        notification.save()
-    elif cast.name == 'population_killer_tier_1':
-        kill_count = target.population * county.buildings['arcane'].total * county.buildings['arcane'].output // 10000
-        target.population -= kill_count
-        notification = Notification(
-            target.id,
-            "Enemy magic",
-            f"The wizards of {county.name} have cast {cast.display_name} on your county, "
-            f"killing {kill_count} of your people.",
             county.kingdom.world.day,
             "Magic")
         notification.save()
