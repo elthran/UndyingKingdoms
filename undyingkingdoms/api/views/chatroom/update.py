@@ -51,5 +51,5 @@ class UpdateAPI(MethodView):
             ), 303
         else:
             return jsonify(
-                debugMessage='Failed from validation.'
+                debugMessage='Failed form validation.'
             ), 400

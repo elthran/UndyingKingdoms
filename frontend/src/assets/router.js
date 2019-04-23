@@ -8,19 +8,7 @@ import LoadingComponent from '@/components/LoadingComponent.vue'
 import ErrorComponent from '@/components/ErrorComponent.vue'
 import OverviewApp from '@/overview/OverviewApp.vue'
 import InfrastructureApp from '@/infrastructure/InfrastructureApp.vue'
-const AsyncChatroomApp = () => ({
-  // The component to load (should be a Promise)
-  component: import(/* webpackChunkName: "ChatroomApp" */ '@/chatroom/ChatroomApp.vue'),
-  // A component to use while the async component is loading
-  loading: LoadingComponent,
-  // A component to use if the load fails
-  error: ErrorComponent,
-  // Delay before showing the loading component. Default: 200ms.
-  delay: 50,
-  // The error component will be displayed if a timeout is
-  // provided and exceeded. Default: Infinity.
-  timeout: 3000
-})
+const AsyncChatroomApp = () => import(/* webpackChunkName: "ChatroomApp" */ '@/chatroom/ChatroomApp.vue')
 import ForumApp from '@/forum/ForumApp.vue'
 
 Vue.use(VueRouter)

@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from undyingkingdoms.api.vue_safe import vue_safe_post, vue_safe_thread
 from undyingkingdoms.models.forms.message import MessageForm
@@ -20,3 +20,14 @@ class PostsAPI(MethodView):
     @login_required
     def post(self):
         form = MessageForm()
+        post_id = request.args.get('post_id', 0, type=int)
+        thread_id = request.args.get('thread_id', type=int)
+        if form.validate_on_submit():
+            post = Post(thread_id, current_user.id, form.title.data, form.content.data, post_id)
+            post.save()
+            return jsonify(
+                debugMessage='Your post was saved.',
+            ), 201
+        return jsonify(
+            debugMessage='Failed form validation.'
+        ), 400

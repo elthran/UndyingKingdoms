@@ -100,9 +100,9 @@ export default {
   }
 
   /* remove the last hr in the forum */
-  /deep/ .hide-last-hr > div:last-child > hr:last-child {
+  /*/deep/ .hide-last-hr > div:last-child > hr:last-child {
     display: none;
-  }
+  }*/
 
 }
 

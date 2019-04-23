@@ -31,7 +31,7 @@
     <br>
     <message-input
       title="Create New Thread"
-      post-url="/api/forum/posts"
+      :post-url="`/api/forum/posts?thread_id=${thread_id}`"
     />
   </div>
 </template>

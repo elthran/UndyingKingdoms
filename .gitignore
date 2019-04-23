@@ -16,6 +16,7 @@ frontend/node_modules
 /System Volume Information/
 package-lock.json
 dump.sql
+bin/activate
 
 # Log files
 npm-debug.log*
