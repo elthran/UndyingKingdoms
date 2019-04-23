@@ -1,4 +1,5 @@
 from undyingkingdoms.models.bases import GameEvent, db
+from undyingkingdoms.models.helpers import get_target_relation
 
 
 class Magic(GameEvent):
@@ -32,15 +33,10 @@ class Magic(GameEvent):
 
     def validate_targeting(self, county, target):
         eligible_targets = [self.targets]
-        if eligible_targets[0] == 'friendly':
+        if 'friendly' in eligible_targets:
             eligible_targets.append('self')
-        if county == target:
-            target_relation = 'self'
-        elif target.kingdom in county.kingdom.allies:
-            target_relation = 'friendly'
-        else:
-            target_relation = 'hostile'
 
+        target_relation = get_target_relation(county, target)
         valid_target = (target_relation in eligible_targets)
         return valid_target, target_relation
 

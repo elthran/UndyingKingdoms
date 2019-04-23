@@ -242,7 +242,3 @@ class Kingdom(GameState):
             if war.defender_current >= war.defender_goal:
                 target.kingdom.war_won(war)
                 war.status = "Lost"
-
-
-
-

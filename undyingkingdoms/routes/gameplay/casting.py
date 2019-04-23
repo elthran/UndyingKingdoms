@@ -18,14 +18,7 @@ from undyingkingdoms.models.magic import Casting
 def casting(template, target_id):
     county = current_user.county
     target_county = County.query.get(target_id)
-    if target_county == county:
-        targets = 'self'
-    elif target_county.kingdom in county.kingdom.allies:
-        targets = 'friendly'
-    elif target_county.kingdom in county.kingdom.enemies:
-        targets = 'hostile'
-    else:
-        targets = 'all'
+
     known_spells = Magic.get_know_spells(county)
     unknown_spells = Magic.get_unknown_spells(county)
     active_spells = Casting.get_active_spells(county)
@@ -35,7 +28,6 @@ def casting(template, target_id):
     return render_template(
         template,
         target=target_county,
-        targets=targets,
         known_spells=known_spells,
         unknown_spells=unknown_spells,
         active_spells=active_spells,
