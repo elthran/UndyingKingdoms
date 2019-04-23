@@ -7,7 +7,6 @@ from undyingkingdoms.models.forum import Thread
 
 
 class ThreadsAPI(MethodView):
-    @login_required
     def get(self):
         threads = Thread.query.all()
         return jsonify(

@@ -1,5 +1,6 @@
 <template>
   <div id="forum">
+    <prefix-title title="Forum" />
     <!-- Show list of all threads -->
     <h1 class="crumb-trail">
       <crumb-trail

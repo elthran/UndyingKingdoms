@@ -7,7 +7,6 @@ from undyingkingdoms.models.forum import Post
 
 
 class RepliesAPI(MethodView):
-    @login_required
     def get(self):
         post_id = request.args.get('post_id', 0, int)
         post = Post.query.get(post_id)

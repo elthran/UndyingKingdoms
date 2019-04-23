@@ -28,16 +28,23 @@
       />
       <hr class="border-dotted width-100-percent">
     </div>
+    <br>
+    <message-input
+      title="Create New Thread"
+      post-url="/api/forum/posts"
+    />
   </div>
 </template>
 
 <script>
 import MostRecentPost from './MostRecentPost.vue'
+import MessageInput from '@/components/MessageInput.vue'
 
 export default {
   name: 'ThreadPosts',
   components: {
-    MostRecentPost
+    MostRecentPost,
+    MessageInput,
   },
   data () {
     return {

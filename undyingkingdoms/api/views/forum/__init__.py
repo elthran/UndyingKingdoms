@@ -9,5 +9,6 @@ import_endpoints(
         'posts',
         'routing',
         'replies',
+        'messaging'
     ]
 )

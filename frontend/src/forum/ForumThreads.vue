@@ -37,7 +37,7 @@ import MostRecentPost from './MostRecentPost.vue'
 export default {
   name: 'ForumThreads',
   components: {
-    MostRecentPost
+    MostRecentPost,
   },
   data () {
     return {

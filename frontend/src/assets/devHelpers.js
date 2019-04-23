@@ -29,7 +29,7 @@ async function login () {
         // console.log("You are already logged in!")
         return "You are already logged in."
       } else {
-        await $.ajax({
+        return await $.ajax({
           type: "POST",
           url: loginUrl,
           data: $.param({
@@ -48,6 +48,7 @@ async function login () {
           error: (error) => {
             console.log('POST login failed');
             console.log(error);
+            return false
           }
         });
       }
@@ -55,6 +56,7 @@ async function login () {
     error: (error) => {
       console.log("login get request failed")
       console.log(error);
+      return false
     }
   });
 }
@@ -62,9 +64,16 @@ async function login () {
 // This function auto executes.
 export const devLogin = function () {
   if (process.env.NODE_ENV === 'development') {
-    return login();
+    return login()
+    .then(() => {
+      return true
+    })
+    .catch(() => {
+      console.log("Login failed, try reloading the page a few times ....")
+      return false
+    })
   } else {
-    return {};
+    return null
   }
 }();
 

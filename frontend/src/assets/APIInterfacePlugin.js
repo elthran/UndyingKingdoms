@@ -58,19 +58,9 @@ APIInterface.install = function (Vue, options) {
       dataType: 'json' // type of data returned, not type sent.
     })
     .then((response) => {
-      if (response.data.status === 'success') {
-        delete response.data.status
-        delete response.data.message
-        callback(this, response.data)
-      } else if (!(response.data.hasOwnProperty('status'))) {
-        console.log('You need to add as "success" attribute to the api "' + url + '" return jsonify.')
-        console.log('You should probably add a "message" attribute as well for debugging purposes.')
-      } else {
-        console.log("$sendForm failed", response)
-      }
+      return response.data
     })
     .catch((error) => {
-      console.log("$sendForm errors are:", error)
       return Promise.reject(error)
     })
   }

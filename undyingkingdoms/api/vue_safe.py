@@ -61,15 +61,21 @@ def vue_safe_form(form):
     for field in form:
         key = field.name
         if key != 'csrf_token':
-            vs_form[key] = dict(
-                choices = vue_safe_array(field.choices),
-                id=key
-            )
+            try:
+                vs_form[key] = dict(
+                        choices = vue_safe_array(field.choices),
+                        id=key
+                    )
+            except AttributeError:
+                vs_form[key] = dict(
+                    id=key,
+                    html=field()
+                )
         else:
             vs_form[key] = dict(
                 value=field.current_token,
                 id=key,
-                html=form.csrf_token
+                html=field()
             )
     return vs_form
 
