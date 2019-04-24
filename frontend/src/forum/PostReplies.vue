@@ -6,20 +6,11 @@
       class="reply"
     >
       <div class="body">
-        <div class="stats">
-          <div>{{ reply.votes }} votes</div>
-          <div
-            v-if="reply.replyCount"
-            class="highlight"
-          >
-            {{ reply.replyCount }} replies
-          </div>
-          <div
-            v-if="reply.views"
-          >
-            {{ reply.views || 'xx' }} views
-          </div>
-        </div>
+        <forum-stats
+          :votes="reply.votes"
+          :reply-count="reply.replyCount"
+          :views="reply.views"
+        />
         <div
           class="content"
         >
@@ -47,12 +38,14 @@
 <script>
 import MostRecentPost from './MostRecentPost.vue'
 import MessageInput from '@/components/MessageInput.vue'
+import ForumStats from './ForumStats.vue'
 
 export default {
   name: 'PostReplies',
   components: {
     MostRecentPost,
     MessageInput,
+    ForumStats,
   },
   data () {
     return {
@@ -83,12 +76,6 @@ export default {
 </script>
 
 <style scoped>
-.highlight {
-  border: solid LightGrey 1px;
-  border-radius: 0.5em;
-  padding: 0.2em;
-}
-
 .most-recent-post {
   margin-left: auto;
 }
@@ -97,15 +84,6 @@ export default {
   .reply {
     display: flex;
     flex-direction: column;
-  }
-
-  .stats {
-    display: flex;
-  }
-
-  .highlight {
-    margin-left: 0.3em;
-    margin-right: 0.3em;
   }
 
   .content {
@@ -127,13 +105,6 @@ export default {
   .center {
     margin-left: auto;
     margin-right: auto;
-  }
-
-  .stats {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-shrink: 0;
   }
 
   .content {

@@ -5,13 +5,11 @@
       :key="post.id"
       class="post"
     >
-      <div class="stats">
-        <div>{{ post.votes }} votes</div>
-        <div class="highlight">
-          {{ post.replyCount }} replies
-        </div>
-        <div>{{ post.views || 'xx' }} views</div>
-      </div>
+      <forum-stats
+        :votes="post.votes"
+        :reply-count="post.replyCount"
+        :views="post.views"
+      />
       <div
         class="center title"
       >
@@ -41,12 +39,14 @@
 <script>
 import MostRecentPost from './MostRecentPost.vue'
 import MessageInput from '@/components/MessageInput.vue'
+import ForumStats from './ForumStats.vue'
 
 export default {
   name: 'ThreadPosts',
   components: {
     MostRecentPost,
     MessageInput,
+    ForumStats,
   },
   data () {
     return {
@@ -74,12 +74,6 @@ export default {
 </script>
 
 <style scoped>
-.highlight {
-  border: solid LightGrey 1px;
-  border-radius: 0.5em;
-  padding: 0.2em;
-}
-
 .most-recent-post {
   margin-left: auto;
 }
@@ -88,15 +82,6 @@ export default {
   .post {
     display: flex;
     flex-direction: column;
-  }
-
-  .stats {
-    display: flex;
-  }
-
-  .highlight {
-    margin-left: 0.3em;
-    margin-right: 0.3em;
   }
 
   .title {
@@ -114,12 +99,6 @@ export default {
   .center {
     margin-left: auto;
     margin-right: auto;
-  }
-
-  .stats {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
 
   .title {
