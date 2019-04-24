@@ -8,6 +8,7 @@
     <h2>{{ title }}</h2>
     <div v-html="form.csrf" />
     <input
+      v-if="titleInput"
       id="title"
       ref="title"
       name="title"
@@ -42,6 +43,12 @@ export default {
   name: 'MessageInput',
   props: {
     title: String,
+    titleInput: {
+      type: Boolean,
+      default () {
+        return true
+      }
+    },
     buttonLabel: {
       type: String,
       default () {
@@ -72,7 +79,9 @@ export default {
       this.$sendForm(this.$refs.form)
       .then(() => {
         // clear form
-        this.$refs.title.value = ''
+        if (this.titleInput) {
+          this.$refs.title.value = ''
+        }
         this.$refs.content.value = ''
         this.$emit("message-sent")
       })

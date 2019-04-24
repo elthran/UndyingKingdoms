@@ -106,18 +106,25 @@ def vue_safe_message(message):
 def vue_safe_reply(post):
     county = post.author.county
     return dict(
+        title=post.title,
+        content=post.content,
         timeCreated=post.time_created,
         author=post.get_author(),
         leaderUrl=url_for('enemy_overview', county_id=county.id),
+        votes=post.get_votes(),
     )
 
+
 def vue_safe_post(post):
+    county = post.author.county
     most_recent_reply = post.get_most_recent_reply()
     return dict(
         id=post.id,
         title=post.title,
         content=post.content,
         author=post.get_author(),
+        timeCreated=post.time_created,
+        leaderUrl=url_for('enemy_overview', county_id=county.id),
         url=url_for('forum', thread_id=post.thread_id, post_id=post.id),
         mostRecentReply=vue_safe_reply(most_recent_reply) if most_recent_reply else None,
         votes=post.get_votes(),

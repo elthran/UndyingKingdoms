@@ -8,33 +8,51 @@
       <div class="body">
         <div class="stats">
           <div>{{ reply.votes }} votes</div>
-          <div class="highlight">
+          <div
+            v-if="reply.replyCount"
+            class="highlight"
+          >
             {{ reply.replyCount }} replies
           </div>
-          <div>{{ reply.views || 'xx' }} views</div>
+          <div
+            v-if="reply.views"
+          >
+            {{ reply.views || 'xx' }} views
+          </div>
         </div>
         <div
           class="content"
         >
           {{ reply.content }}
         </div>
-        <most-recent-post
-          class="most-recent-post"
-          :post="post.mostRecentReply"
-        />
       </div>
+      <most-recent-post
+        class="most-recent-post"
+        :post="reply"
+      />
       <hr class="border-dotted width-100-percent">
     </div>
+    <br>
+    <message-input
+      title=""
+      :title-input="false"
+      button-label="Reply to Post"
+      :post-url="`/api/forum/posts?thread_id=${thread_id}&post_id=${post_id}`"
+      @message-sent="fetchPosts"
+    />
+    <br>
   </div>
 </template>
 
 <script>
 import MostRecentPost from './MostRecentPost.vue'
+import MessageInput from '@/components/MessageInput.vue'
 
 export default {
   name: 'PostReplies',
   components: {
     MostRecentPost,
+    MessageInput,
   },
   data () {
     return {
@@ -46,14 +64,21 @@ export default {
     post_id () {
       return this.$route.params.post_id
     },
+    thread_id () {
+      return this.$route.params.thread_id
+    },
   },
   mounted () {
-    this.$hydrate('/api/forum/replies?post_id=' + this.post_id)
+    this.fetchPosts()
     .then(() => {
-      this.replies.unshift(this.post)
       // do something interesting
     })
   },
+  methods: {
+    fetchPosts () {
+      return this.$hydrate('/api/forum/replies?post_id=' + this.post_id)
+    }
+  }
 }
 </script>
 
