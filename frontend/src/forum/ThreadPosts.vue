@@ -32,6 +32,7 @@
     <message-input
       title="Create New Thread"
       :post-url="`/api/forum/posts?thread_id=${thread_id}`"
+      @message-sent="fetchPosts"
     />
     <br>
   </div>
@@ -59,11 +60,16 @@ export default {
     },
   },
   mounted () {
-    this.$hydrate('/api/forum/posts?thread_id=' + this.thread_id)
+    this.fetchPosts()
     .then(() => {
       // do something interesting
     })
   },
+  methods: {
+    fetchPosts () {
+      return this.$hydrate('/api/forum/posts?thread_id=' + this.thread_id)
+    }
+  }
 }
 </script>
 

@@ -25,7 +25,7 @@ export default {
       if (minutes >= 1) {
         return minutes + (minutes > 1 ? " minutes" : " minute")
       }
-      var seconds = msDiff / (1000)
+      var seconds = Math.floor(msDiff / (1000))
       return seconds + (seconds > 1 ? " seconds" : " second")
     },
   },

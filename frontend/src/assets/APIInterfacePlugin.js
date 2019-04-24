@@ -44,14 +44,14 @@ APIInterface.install = function (Vue, options) {
     return data
   }
 
-  Vue.prototype.$sendForm = async function (form, callback) {
+  Vue.prototype.$sendForm = async function (form) {
     // FormData will only use input fields that use the name attribute.
     var formData = new FormData(form)
     if (!formData.has('csrf_token')) {
       formData.set('csrf_token', formData.get('CSRFToken') || formData.get('csrfToken'))
     }
     // console.log("form", form, form.getAttribute('action'))
-    this.axios({
+    return this.axios({
       url: form.getAttribute('action'),
       method: 'POST',
       headers: { 'X-CSRF-TOKEN': formData.get('csrf_token') },

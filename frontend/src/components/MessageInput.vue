@@ -71,9 +71,10 @@ export default {
     sendForm () {
       this.$sendForm(this.$refs.form)
       .then(() => {
-        // this.$refs.title.value = ''
-        // this.$refs.content.value = ''
         // clear form
+        this.$refs.title.value = ''
+        this.$refs.content.value = ''
+        this.$emit("message-sent")
       })
       .catch((error) => {
         console.log("MessageInput error:", error)
