@@ -33,6 +33,7 @@
       title="Create New Thread"
       :post-url="`/api/forum/posts?thread_id=${thread_id}`"
     />
+    <br>
   </div>
 </template>
 

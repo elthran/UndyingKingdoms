@@ -45,23 +45,25 @@ APIInterface.install = function (Vue, options) {
   }
 
   Vue.prototype.$sendForm = async function (form, callback) {
-    const { default: $ } = await import(/* webpackChunkName: "jquery" */ 'jquery')
-    if (!(form instanceof $)) {
-      form = $(form)
+    // FormData will only use input fields that use the name attribute.
+    var formData = new FormData(form)
+    if (!formData.has('csrf_token')) {
+      formData.set('csrf_token', formData.get('CSRFToken') || formData.get('csrfToken'))
     }
+    // console.log("form", form, form.getAttribute('action'))
     this.axios({
-      url: form.attr("action"),
+      url: form.getAttribute('action'),
       method: 'POST',
-      // need to verify csrf id, I might be wrong.
-      headers: { 'X-CSRF-TOKEN': $('#csrf_token').val() },
-      data: form.serialize(),
+      headers: { 'X-CSRF-TOKEN': formData.get('csrf_token') },
+      data: formData,
       dataType: 'json' // type of data returned, not type sent.
     })
     .then((response) => {
       return response.data
     })
     .catch((error) => {
-      return Promise.reject(error)
+      console.log("$sendForm error:", error.response)
+      return Promise.reject(error.response.data)
     })
   }
 
@@ -79,9 +81,9 @@ APIInterface.install = function (Vue, options) {
     return this.axios({
       url: formData.get('action'),
       method: 'POST',
-      headers: {'X-CSRF-TOKEN': formData.get('csrf_token')},
+      headers: {'X-CSRF-TOKEN': formData.get('csrf_token') },
       data: formData,
-      dataType: 'json'  // type of datareturned, not type sent
+      dataType: 'json'  // type of data returned, not type sent
     })
     .then((response) => {
       return response.data

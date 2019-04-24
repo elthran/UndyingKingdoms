@@ -9,6 +9,8 @@
     <div v-html="form.csrf" />
     <input
       id="title"
+      ref="title"
+      name="title"
       autofocus
       :maxlength="form.TITLE_SIZE"
       placeholder="Title"
@@ -17,6 +19,8 @@
     >
     <textarea
       id="content"
+      ref="content"
+      name="content"
       cols="100"
       rows="10"
       placeholder="Content"
@@ -62,7 +66,12 @@ export default {
     sendForm () {
       this.$sendForm(this.$refs.form)
       .then(() => {
+        // this.$refs.title.value = ''
+        // this.$refs.content.value = ''
         // clear form
+      })
+      .catch((error) => {
+        console.log("MessageInput error:", error)
       })
     }
   }
