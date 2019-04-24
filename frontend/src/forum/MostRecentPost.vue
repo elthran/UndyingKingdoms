@@ -12,17 +12,21 @@ export default {
   },
   methods: {
     formatedTime (time) {
-      var date = new Date(time + "Z");
-      var hours = ("0" + date.getHours()).slice(-2);
-      var minutes = ("0" + date.getMinutes()).slice(-2);
-      var seconds = ("0" + date.getSeconds()).slice(-2);
+      var msDiff = new Date() - new Date(time + "Z");
+      var days = Math.floor(msDiff / (1000*60*60*24))
+      if (days >= 1) {
+        return days + (days > 1 ? " days" : " day")
+      }
+      var hours = Math.floor(msDiff / (1000*60*60))
       if (hours >= 1) {
         return hours + (hours > 1 ? " hours" : " hour")
-      } else if (minutes >= 1) {
-        return minutes + (minutes > 1 ? " minutes" : " minute")
-      } else {
-        return seconds + (seconds > 1 ? " seconds" : " second")
       }
+      var minutes = Math.floor(msDiff / (1000*60))
+      if (minutes >= 1) {
+        return minutes + (minutes > 1 ? " minutes" : " minute")
+      }
+      var seconds = msDiff / (1000)
+      return seconds + (seconds > 1 ? " seconds" : " second")
     },
   },
 }

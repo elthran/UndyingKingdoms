@@ -16,6 +16,7 @@
       placeholder="Title"
       type="text"
       value=""
+      required
     >
     <textarea
       id="content"
@@ -25,8 +26,12 @@
       rows="10"
       placeholder="Content"
       :maxlength="form.CONTENT_SIZE"
+      required
     />
-    <button type="submit">
+    <button
+      id="button"
+      type="submit"
+    >
       {{ buttonLabel }}
     </button>
   </form>
@@ -91,5 +96,15 @@ export default {
 #content {
   margin-top: 0.3em;
   margin-bottom: 1em;
+}
+
+@media (min-width: 640px) {
+  #button {
+    max-width: 22em
+  }
+
+  #title {
+    max-width: 32em;
+  }
 }
 </style>
