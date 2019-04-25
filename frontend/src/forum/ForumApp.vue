@@ -66,6 +66,11 @@ export default {
       return this.thread_id > 0 && this.post_id > 0
     },
   },
+  watch: {
+    $route (to, from) {
+      this.$hydrate(`/api/forum/routing?thread_id=${to.params.thread_id}&post_id=${to.params.post_id}`)
+    }
+  },
   mounted () {
     this.$hydrate(`/api/forum/routing?thread_id=${this.thread_id}&post_id=${this.post_id}`)
     .then(() => {
@@ -76,12 +81,10 @@ export default {
     // add route to trail
     pushTrail (newTrail) {
       this.$router.push(newTrail.url)
-      this.routingTrail.push(newTrail)
     },
     // go back up "level" routes.
     popTrail (newTrail) {
       this.$router.push(newTrail.url)
-      this.routingTrail.splice(-newTrail.level, newTrail.level)
     }
   },
 }
