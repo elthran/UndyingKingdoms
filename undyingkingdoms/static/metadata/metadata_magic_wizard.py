@@ -13,7 +13,7 @@ wizard_spells = {
                                        'killing five of their defenders.'),
     'modify_grain_rate': Magic(
         name='modify_grain_rate',
-        display_name='modify_grain_rate',
+        display_name='Nature\'s Blessing',
         source='Wizard',
         category='aura',
         targets='friendly',
