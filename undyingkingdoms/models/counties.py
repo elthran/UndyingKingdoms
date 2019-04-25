@@ -1114,7 +1114,15 @@ class County(GameState):
         return events
 
     def get_total_number_of_thieves(self):
-        return self.buildings['tavern'].total * self.buildings['tavern'].output
+        base = self.buildings['tavern'].total
+        modifier = self.buildings['tavern'].output
+        if self.technologies["espionage i"].completed:
+            modifier += 1
+        if self.technologies["espionage ii"].completed:
+            modifier += 1
+        if self.technologies["espionage iii"].completed:
+            modifier += 1
+        return base * modifier
 
     # Infiltrations
     def get_number_of_available_thieves(self):
