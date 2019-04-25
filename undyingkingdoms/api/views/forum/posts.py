@@ -8,6 +8,7 @@ from undyingkingdoms.models.forum import Post, Thread
 
 
 class PostsAPI(MethodView):
+    @login_required
     def get(self):
         thread_id = request.args.get('thread_id', 0, int)
         thread = Thread.query.get(thread_id)

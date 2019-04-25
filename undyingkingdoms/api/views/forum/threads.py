@@ -1,11 +1,13 @@
 from flask import jsonify
 from flask.views import MethodView
+from flask_login import login_required
 
 from undyingkingdoms.api.vue_safe import vue_safe_thread
 from undyingkingdoms.models.forum import Thread
 
 
 class ThreadsAPI(MethodView):
+    @login_required
     def get(self):
         threads = Thread.query.all()
         return jsonify(
