@@ -18,6 +18,17 @@ def import_endpoints(blueprint, mod_name, endpoints):
         js - http.get('/api/economy/population')
         python - url_for('api.economy_population_api')
         (someday, url_for('api.economy.population'))
+
+    Note: endpoints can now be a dictionary with optional path arguments.
+    {
+        'messaging': None,
+        'upvote': {
+            'path_ags': '/<int:post_id>'
+        },
+    }
+    Produces:
+        js - http.get('/api/economy/population/n')
+        python - url_for('api.economy_population_api', post_id=n)
     """
 
     # undyingkingdoms.api.views.infrastructure -> infrastructure
@@ -26,7 +37,11 @@ def import_endpoints(blueprint, mod_name, endpoints):
         mod = import_module('.' + endpoint, mod_name)
         class_name = to_class_name(endpoint) + 'API'
         Class = getattr(mod, class_name)
+        try:  # add optional path arguments
+            path = endpoints[endpoint]['path_args']
+        except (KeyError, TypeError):
+            path = ''
         blueprint.add_url_rule(
-            f'/{folder}/{endpoint}',
+            f'/{folder}/{endpoint}{path}',
             view_func=Class.as_view(f'{folder}_{endpoint}_api')
         )

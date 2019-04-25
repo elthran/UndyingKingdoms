@@ -1,6 +1,8 @@
 <template>
   <div class="stats">
-    <div>{{ votes }} votes</div>
+    <div>
+      {{ votes }} votes
+    </div>
     <div
       v-if="replyCount"
       class="highlight"

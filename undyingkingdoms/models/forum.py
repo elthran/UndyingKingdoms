@@ -87,8 +87,13 @@ class Post(GameEvent):
         return Upvote.query.filter_by(post_id=self.id, vote=1).count()
 
     def get_vote_status(self, user_id):
+        """Return 1 for voted and 0 for not voted.
+
+        If no vote exists then vote is 0.
+        This uses integers rather than booleans because it makes math easier.
+        """
         vote = Upvote.query.filter_by(post_id=self.id, user_id=user_id).first()
-        if vote:
-            return 1 - vote.vote
-        else:
-            return 1
+        try:
+            return vote.vote
+        except AttributeError:
+            return 0

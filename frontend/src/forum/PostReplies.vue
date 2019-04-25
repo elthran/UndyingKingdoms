@@ -6,14 +6,14 @@
       class="reply"
     >
       <div class="body">
-        <forum-stats
-          :votes="reply.votes"
-          :reply-count="reply.replyCount"
-          :views="reply.views"
-        />
         <div
           class="content"
         >
+          <forum-vote
+            :votes="reply.votes"
+            :up-vote="reply.upVote"
+            @voted="updateVote(reply.id)"
+          />
           {{ reply.content }}
         </div>
       </div>
@@ -38,14 +38,14 @@
 <script>
 import MostRecentPost from './MostRecentPost.vue'
 import MessageInput from '@/components/MessageInput.vue'
-import ForumStats from './ForumStats.vue'
+import ForumVote from './ForumVote.vue'
 
 export default {
   name: 'PostReplies',
   components: {
     MostRecentPost,
     MessageInput,
-    ForumStats,
+    ForumVote,
   },
   data () {
     return {
@@ -70,6 +70,9 @@ export default {
   methods: {
     fetchPosts () {
       return this.$hydrate('/api/forum/replies?post_id=' + this.post_id)
+    },
+    updateVote (id) {
+      this.axios.get('/api/forum/upvote/' + id)
     }
   }
 }
@@ -109,7 +112,6 @@ export default {
 
   .content {
     font-size: 1.2em;
-    padding-left: 1em;
     padding-right: 1em;
   }
 
