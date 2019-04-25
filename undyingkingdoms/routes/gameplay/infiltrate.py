@@ -35,9 +35,7 @@ def infiltrate(template, county_id):
                               current_user.county.day, mission, form.amount.data)
         report.save()
 
-        chance_of_success = current_user.county.get_chance_to_successfully_infiltrate() \
-                            + form.amount.data \
-                            - target.get_bonus_chance_to_catch_thieves()
+        chance_of_success = max(min(100 + form.amount.data - target.get_chance_to_catch_enemy_thieves(), 100), 0)
 
         if chance_of_success >= randint(1, 100):
             # Add increase to war score

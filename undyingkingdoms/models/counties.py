@@ -1141,6 +1141,7 @@ class County(GameState):
         chance = 0
         for mission in operations_on_target:  # Each thief who invaded you gives you some protection
             chance += (mission.amount_of_thieves * 5)
+
         chance += self.buildings['tower'].total * self.buildings['tower'].output
 
         modify_thief_prevention = Casting.query.filter_by(target_id=self.id, name="modify_thief_prevention").filter(
@@ -1148,7 +1149,7 @@ class County(GameState):
         for spell in modify_thief_prevention or []:
             chance += spell.output * self.spell_modifier
 
-        return max(min(chance, 100), 0)
+        return int(max(min(chance, 100), 0))
 
     def chance_to_disrupt_spell(self):
         chance = 0
