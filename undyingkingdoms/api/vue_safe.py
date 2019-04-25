@@ -112,7 +112,7 @@ def vue_safe_reply(post):
         content=post.content,
         timeCreated=post.time_created,
         author=post.get_author(),
-        leaderUrl=url_for('enemy_overview', county_id=county.id),
+        leaderUrl=url_for('enemy_overview', county_id=county.id) if county else None,
         votes=post.get_votes(),
         upVote=post.get_vote_status(current_user.id),
     )
@@ -128,7 +128,7 @@ def vue_safe_post(post):
         content=post.content,
         author=post.get_author(),
         timeCreated=post.time_created,
-        leaderUrl=url_for('enemy_overview', county_id=county.id),
+        leaderUrl=url_for('enemy_overview', county_id=county.id) if county else None,
         url=url_for('forum', thread_id=post.thread_id, post_id=post.id),
         mostRecentReply=vue_safe_reply(most_recent_reply) if most_recent_reply else None,
         votes=post.get_votes(),
