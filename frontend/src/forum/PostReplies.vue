@@ -6,35 +6,46 @@
       class="reply"
     >
       <div class="body">
-        <div class="stats">
-          <div>{{ reply.votes }} votes</div>
-          <div class="highlight">
-            {{ reply.replyCount }} replies
-          </div>
-          <div>{{ reply.views || 'xx' }} views</div>
-        </div>
         <div
           class="content"
         >
+          <forum-vote
+            :votes="reply.votes"
+            :up-vote="reply.upVote"
+            @voted="updateVote(reply.id)"
+          />
           {{ reply.content }}
         </div>
-        <most-recent-post
-          class="most-recent-post"
-          :post="post.mostRecentReply"
-        />
       </div>
+      <most-recent-post
+        class="most-recent-post"
+        :post="reply"
+      />
       <hr class="border-dotted width-100-percent">
     </div>
+    <br>
+    <message-input
+      title=""
+      :title-input="false"
+      button-label="Reply to Post"
+      :post-url="`/api/forum/posts?thread_id=${thread_id}&post_id=${post_id}`"
+      @message-sent="fetchPosts"
+    />
+    <br>
   </div>
 </template>
 
 <script>
 import MostRecentPost from './MostRecentPost.vue'
+import MessageInput from '@/components/MessageInput.vue'
+import ForumVote from './ForumVote.vue'
 
 export default {
   name: 'PostReplies',
   components: {
     MostRecentPost,
+    MessageInput,
+    ForumVote,
   },
   data () {
     return {
@@ -46,24 +57,28 @@ export default {
     post_id () {
       return this.$route.params.post_id
     },
+    thread_id () {
+      return this.$route.params.thread_id
+    },
   },
   mounted () {
-    this.$hydrate('/api/forum/replies?post_id=' + this.post_id)
+    this.fetchPosts()
     .then(() => {
-      this.replies.unshift(this.post)
       // do something interesting
     })
   },
+  methods: {
+    fetchPosts () {
+      return this.$hydrate('/api/forum/replies?post_id=' + this.post_id)
+    },
+    updateVote (id) {
+      this.axios.get('/api/forum/upvote/' + id)
+    }
+  }
 }
 </script>
 
 <style scoped>
-.highlight {
-  border: solid LightGrey 1px;
-  border-radius: 0.5em;
-  padding: 0.2em;
-}
-
 .most-recent-post {
   margin-left: auto;
 }
@@ -72,15 +87,6 @@ export default {
   .reply {
     display: flex;
     flex-direction: column;
-  }
-
-  .stats {
-    display: flex;
-  }
-
-  .highlight {
-    margin-left: 0.3em;
-    margin-right: 0.3em;
   }
 
   .content {
@@ -104,16 +110,8 @@ export default {
     margin-right: auto;
   }
 
-  .stats {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-shrink: 0;
-  }
-
   .content {
     font-size: 1.2em;
-    padding-left: 1em;
     padding-right: 1em;
   }
 

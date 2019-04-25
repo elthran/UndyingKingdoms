@@ -6,7 +6,6 @@ from undyingkingdoms.models.forum import Post, Thread
 
 
 class RoutingAPI(MethodView):
-    @login_required
     def get(self):
         post_id = request.args.get('post_id', type=int)
         thread_id = request.args.get('thread_id', type=int)

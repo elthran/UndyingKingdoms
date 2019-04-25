@@ -1,5 +1,6 @@
 <template>
   <div id="forum">
+    <prefix-title title="Forum" />
     <!-- Show list of all threads -->
     <h1 class="crumb-trail">
       <crumb-trail
@@ -99,9 +100,9 @@ export default {
   }
 
   /* remove the last hr in the forum */
-  /deep/ .hide-last-hr > div:last-child > hr:last-child {
+  /*/deep/ .hide-last-hr > div:last-child > hr:last-child {
     display: none;
-  }
+  }*/
 
 }
 

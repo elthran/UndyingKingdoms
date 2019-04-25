@@ -66,7 +66,6 @@ def import_routes():
     import undyingkingdoms.routes.gameplay.royal_court
     import undyingkingdoms.routes.clans.generic_clan
     import undyingkingdoms.routes.gameplay.chatroom
-    import undyingkingdoms.routes.gameplay.upvote
     import undyingkingdoms.routes.gameplay.infiltrate
 
     import undyingkingdoms.routes.user.achievements

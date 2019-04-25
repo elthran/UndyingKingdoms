@@ -44,34 +44,26 @@ APIInterface.install = function (Vue, options) {
     return data
   }
 
-  Vue.prototype.$sendForm = async function (form, callback) {
-    const { default: $ } = await import(/* webpackChunkName: "jquery" */ 'jquery')
-    if (!(form instanceof $)) {
-      form = $(form)
+  Vue.prototype.$sendForm = async function (form) {
+    // FormData will only use input fields that use the name attribute.
+    var formData = new FormData(form)
+    if (!formData.has('csrf_token')) {
+      formData.set('csrf_token', formData.get('CSRFToken') || formData.get('csrfToken'))
     }
-    this.axios({
-      url: form.attr("action"),
+    // console.log("form", form, form.getAttribute('action'))
+    return this.axios({
+      url: form.getAttribute('action'),
       method: 'POST',
-      // need to verify csrf id, I might be wrong.
-      headers: { 'X-CSRF-TOKEN': $('#csrf_token').val() },
-      data: form.serialize(),
+      headers: { 'X-CSRF-TOKEN': formData.get('csrf_token') },
+      data: formData,
       dataType: 'json' // type of data returned, not type sent.
     })
     .then((response) => {
-      if (response.data.status === 'success') {
-        delete response.data.status
-        delete response.data.message
-        callback(this, response.data)
-      } else if (!(response.data.hasOwnProperty('status'))) {
-        console.log('You need to add as "success" attribute to the api "' + url + '" return jsonify.')
-        console.log('You should probably add a "message" attribute as well for debugging purposes.')
-      } else {
-        console.log("$sendForm failed", response)
-      }
+      return response.data
     })
     .catch((error) => {
-      console.log("$sendForm errors are:", error)
-      return Promise.reject(error)
+      console.log("$sendForm error:", error.response)
+      return Promise.reject(error.response.data)
     })
   }
 
@@ -89,9 +81,9 @@ APIInterface.install = function (Vue, options) {
     return this.axios({
       url: formData.get('action'),
       method: 'POST',
-      headers: {'X-CSRF-TOKEN': formData.get('csrf_token')},
+      headers: {'X-CSRF-TOKEN': formData.get('csrf_token') },
       data: formData,
-      dataType: 'json'  // type of datareturned, not type sent
+      dataType: 'json'  // type of data returned, not type sent
     })
     .then((response) => {
       return response.data

@@ -1,4 +1,5 @@
 from flask import url_for
+from flask_login import current_user
 
 
 def vue_safe_nbsp(s):
@@ -61,15 +62,21 @@ def vue_safe_form(form):
     for field in form:
         key = field.name
         if key != 'csrf_token':
-            vs_form[key] = dict(
-                choices = vue_safe_array(field.choices),
-                id=key
-            )
+            try:
+                vs_form[key] = dict(
+                        choices = vue_safe_array(field.choices),
+                        id=key
+                    )
+            except AttributeError:
+                vs_form[key] = dict(
+                    id=key,
+                    html=field()
+                )
         else:
             vs_form[key] = dict(
                 value=field.current_token,
                 id=key,
-                html=form.csrf_token
+                html=field()
             )
     return vs_form
 
@@ -86,7 +93,6 @@ def vue_safe_news(news):
 
 
 def vue_safe_message(message):
-    # return "({time}) {leader}: {content}".format(time=self.get_pretty_timestamp(), leader=self.get_county_leader_name(), content=self.content)
     return dict(
         time=message.time_created,
         leader=message.get_county_leader_name(),
@@ -98,24 +104,36 @@ def vue_safe_message(message):
 
 
 def vue_safe_reply(post):
-    county = post.author.county
+    user = post.author
+    county = user.county
     return dict(
+        id=post.id,
+        title=post.title,
+        content=post.content,
         timeCreated=post.time_created,
         author=post.get_author(),
         leaderUrl=url_for('enemy_overview', county_id=county.id),
+        votes=post.get_votes(),
+        upVote=post.get_vote_status(current_user.id),
     )
 
+
 def vue_safe_post(post):
+    user = post.author
+    county = user.county
     most_recent_reply = post.get_most_recent_reply()
     return dict(
         id=post.id,
         title=post.title,
         content=post.content,
         author=post.get_author(),
+        timeCreated=post.time_created,
+        leaderUrl=url_for('enemy_overview', county_id=county.id),
         url=url_for('forum', thread_id=post.thread_id, post_id=post.id),
         mostRecentReply=vue_safe_reply(most_recent_reply) if most_recent_reply else None,
         votes=post.get_votes(),
         replyCount=post.get_reply_count(),
+        upVote=post.get_vote_status(current_user.id),
     )
 
 

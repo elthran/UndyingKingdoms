@@ -5,13 +5,11 @@
       :key="post.id"
       class="post"
     >
-      <div class="stats">
-        <div>{{ post.votes }} votes</div>
-        <div class="highlight">
-          {{ post.replyCount }} replies
-        </div>
-        <div>{{ post.views || 'xx' }} views</div>
-      </div>
+      <forum-stats
+        :votes="post.votes"
+        :reply-count="post.replyCount"
+        :views="post.views"
+      />
       <div
         class="center title"
       >
@@ -28,16 +26,27 @@
       />
       <hr class="border-dotted width-100-percent">
     </div>
+    <br>
+    <message-input
+      title="Create New Thread"
+      :post-url="`/api/forum/posts?thread_id=${thread_id}`"
+      @message-sent="fetchPosts"
+    />
+    <br>
   </div>
 </template>
 
 <script>
 import MostRecentPost from './MostRecentPost.vue'
+import MessageInput from '@/components/MessageInput.vue'
+import ForumStats from './ForumStats.vue'
 
 export default {
   name: 'ThreadPosts',
   components: {
-    MostRecentPost
+    MostRecentPost,
+    MessageInput,
+    ForumStats,
   },
   data () {
     return {
@@ -51,21 +60,20 @@ export default {
     },
   },
   mounted () {
-    this.$hydrate('/api/forum/posts?thread_id=' + this.thread_id)
+    this.fetchPosts()
     .then(() => {
       // do something interesting
     })
   },
+  methods: {
+    fetchPosts () {
+      return this.$hydrate('/api/forum/posts?thread_id=' + this.thread_id)
+    }
+  }
 }
 </script>
 
 <style scoped>
-.highlight {
-  border: solid LightGrey 1px;
-  border-radius: 0.5em;
-  padding: 0.2em;
-}
-
 .most-recent-post {
   margin-left: auto;
 }
@@ -74,15 +82,6 @@ export default {
   .post {
     display: flex;
     flex-direction: column;
-  }
-
-  .stats {
-    display: flex;
-  }
-
-  .highlight {
-    margin-left: 0.3em;
-    margin-right: 0.3em;
   }
 
   .title {
@@ -100,12 +99,6 @@ export default {
   .center {
     margin-left: auto;
     margin-right: auto;
-  }
-
-  .stats {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
 
   .title {

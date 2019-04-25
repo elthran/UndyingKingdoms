@@ -3,7 +3,11 @@
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
+  // using dev public path of "/" fixes async components.
   publicPath: '/static/dist',
+  // process.env.NODE_ENV === 'production'
+  //   ? '/static/dist'
+  //   : '/',
   // options
   outputDir: '../undyingkingdoms/static/dist',
   indexPath: '../../templates/dist/index.html',
