@@ -95,7 +95,8 @@ input {
     {{ email_form.csrf_token }}
     {{ render_field(email_form.email, placeholder="New email address", autofocus="") }}
     {{ render_field(email_form.password, placeholder="Password") }}
-    <button type="submit">Update Email</button>
+    <button type="submit" disabled>Update Email</button>
+    *Currently disabled until a bug is fixed*
   </form>
 
 {% endif %}

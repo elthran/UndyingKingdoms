@@ -1,3 +1,5 @@
+from random import randint
+
 from math import floor
 
 from undyingkingdoms.models.notifications import Notification
@@ -45,9 +47,43 @@ class InstantHappiness(InitMixin, Command):
         self.caster.happiness += amount
 
 
+class InstantResearch(InitMixin, Command):
+    def execute(self):
+        amount = floor(self.spell.output * self.caster.spell_modifier)
+        self.caster.research += amount
+
+
+class StealGold(InitMixin, Command):
+    def execute(self):
+        amount = min(self.target.gold, floor(self.spell.output * self.caster.spell_modifier))
+        self.caster.gold += amount
+        self.target.gold -= amount
+        notification = Notification(
+            self.target.id,
+            "Enemy magic",
+            f"Enemy wizards of {self.caster.name} have convinced you to send them {amount} gold.",
+            self.caster.kingdom.world.day,
+            "Magic"
+        )
+        notification.save()
+
+
 class ModifyMagicDisrupt(InitMixin, Command):
     def execute(self):
         pass
+
+
+class ModifyThiefPrevention(InitMixin, Command):
+    def execute(self):
+        notification = Notification(
+            self.target.id,
+            "Enemy magic",
+            f"Enemy wizards of {self.caster.name} have shrouded your land in darkness, "
+            f"making it very difficult to catch enemy thieves.",
+            self.caster.kingdom.world.day,
+            "Magic"
+        )
+        notification.save()
 
 
 class ModifyGrainRate(InitMixin, Command):
@@ -74,14 +110,7 @@ class ModifyOffensivePower(InitMixin, Command):
 
 class ModifyBirthRate(InitMixin, Command):
     def execute(self):
-        notification = Notification(
-            self.target.id,
-            "Enemy magic",
-            f"A plague wind has been summoned by the wizards of {self.caster.name}",
-            self.caster.kingdom.world.day,
-            "Magic"
-        )
-        notification.save()
+        pass
 
 
 class PopulationKiller(InitMixin, Command):
@@ -99,6 +128,21 @@ class PopulationKiller(InitMixin, Command):
         notification.save()
 
 
+class ArcherKiller(InitMixin, Command):
+    def execute(self):
+        kill_count = min(self.target.armies['archer'].total, self.caster.spell_modifier * self.spell.output)
+        self.target.population -= kill_count
+        notification = Notification(
+            self.target.id,
+            "Enemy magic",
+            f"The wizards of {self.caster.name} have cast {self.spell.display_name} on your county,"
+            f" killing {kill_count} of your {self.target.armies['archer'].class_name_plural}.",
+            self.caster.kingdom.world.day,
+            "Magic"
+        )
+        notification.save()
+
+
 class SummonGolem(InitMixin, Command):
     def execute(self):
         pass
@@ -108,4 +152,10 @@ class ConvertIronToGold(InitMixin, Command):
     def execute(self):
         max_iron = min(self.caster.iron, 10)
         self.caster.iron -= max_iron
-        self.caster.gold += floor(max_iron * 10 * self.caster.spell_modifier)
+        self.caster.gold += floor(max_iron * self.spell.output * self.caster.spell_modifier)
+
+
+class ConvertCitizensIntoPeasants(InitMixin, Command):
+    def execute(self):
+        max_peasants = min(self.caster.get_available_workers(), self.spell.output * self.caster.spell_modifier)
+        self.caster.armies['peasant'].total += max_peasants

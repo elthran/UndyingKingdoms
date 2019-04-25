@@ -26,11 +26,16 @@ from undyingkingdoms.static.metadata.metadata_buildings_dwarf import dwarf_build
 from undyingkingdoms.static.metadata.metadata_buildings_elf import elf_buildings
 from undyingkingdoms.static.metadata.metadata_buildings_goblin import goblin_buildings
 from undyingkingdoms.static.metadata.metadata_buildings_human import human_buildings
+from undyingkingdoms.static.metadata.metadata_magic_alchemist import alchemist_spells
 from undyingkingdoms.static.metadata.metadata_magic_all import generic_spells
 from undyingkingdoms.static.metadata.metadata_magic_dwarf import dwarf_spells
 from undyingkingdoms.static.metadata.metadata_magic_elf import elf_spells
 from undyingkingdoms.static.metadata.metadata_magic_goblin import goblin_spells
 from undyingkingdoms.static.metadata.metadata_magic_human import human_spells
+from undyingkingdoms.static.metadata.metadata_magic_merchant import merchant_spells
+from undyingkingdoms.static.metadata.metadata_magic_rogue import rogue_spells
+from undyingkingdoms.static.metadata.metadata_magic_warlord import warlord_spells
+from undyingkingdoms.static.metadata.metadata_magic_wizard import wizard_spells
 from undyingkingdoms.static.metadata.metadata_research_all import generic_technology
 from undyingkingdoms.static.metadata.metadata_research_dwarf import dwarf_technology
 from undyingkingdoms.static.metadata.metadata_research_elf import elf_technology
@@ -143,7 +148,17 @@ class County(GameState):
             self.technologies = {**deepcopy(generic_technology), **deepcopy(goblin_technology)}
         else:
             raise AttributeError('Buildings and Armies were not found in metadata')
-        if self.background == "Rogue":
+
+        if self.background == "Alchemist":
+            self.magic = {**self.magic, **deepcopy(alchemist_spells)}
+        elif self.background == "Merchant":
+            self.magic = {**self.magic, **deepcopy(merchant_spells)}
+        elif self.background == "Warlord":
+            self.magic = {**self.magic, **deepcopy(warlord_spells)}
+        elif self.background == "Wizard":
+            self.magic = {**self.magic, **deepcopy(wizard_spells)}
+        elif self.background == "Rogue":
+            self.magic = {**self.magic, **deepcopy(rogue_spells)}
             self.technologies = {**self.technologies, **deepcopy(rogue_technology)}
 
         if self.background == "Alchemist":
@@ -1127,7 +1142,13 @@ class County(GameState):
         for mission in operations_on_target:  # Each thief who invaded you gives you some protection
             chance += (mission.amount_of_thieves * 5)
         chance += self.buildings['tower'].total * self.buildings['tower'].output
-        return min(chance, 100)
+
+        modify_thief_prevention = Casting.query.filter_by(target_id=self.id, name="modify_thief_prevention").filter(
+            (Casting.duration > 0) | (Casting.active == True)).all()
+        for spell in modify_thief_prevention or []:
+            chance += spell.output * self.spell_modifier
+
+        return max(min(chance, 100), 0)
 
     def chance_to_disrupt_spell(self):
         chance = 0
