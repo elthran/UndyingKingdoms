@@ -17,7 +17,7 @@
 
 <h2>Choose Spell to Cast on {{ target.name }}</h2>
 {% for spell in known_spells %}
-    {{ spell.display_name.title() }}
+    {{ spell.display_name }} ({{ spell.source }})
     <br>Cost: {{ spell.mana_cost }} <img class="resource_icons" src="/static/images/mana_icon.jpg">
     {% if spell.mana_sustain %} + {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per turn{% endif %}
     <br>Type: {{ spell.category.title() }} {% if spell.category == 'timed' %} ({{ spell.duration }} days){% endif %}
