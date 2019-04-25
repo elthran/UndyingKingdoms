@@ -1,7 +1,3 @@
-from random import randint
-
-from math import floor
-
 from undyingkingdoms.models.notifications import Notification
 from utilities.helpers import to_class_name
 from .interface import Command
@@ -13,9 +9,9 @@ class Effect(Command):
         self.casting = casting
         self.caster = caster
         self.target = target
-        # initialize class from name.
-        self.effect_specifics = self.get_specifics()
         self.power = int(spell.output * caster.spell_modifier)
+        # Initialize class from name. This must go after the previous lines
+        self.effect_specifics = self.get_specifics()
         self.pay_cost()
 
     def pay_cost(self):
