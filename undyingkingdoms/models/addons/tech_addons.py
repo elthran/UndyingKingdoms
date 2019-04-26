@@ -48,7 +48,7 @@ def advance_research_addon(cls):
         if technology.current >= technology.required:  # You save left over research
             self.research = technology.current - technology.required
             technology.completed = True
-            available_technologies = self.get_available_technologies()
+            available_technologies = self.get_available_techs()
             if available_technologies:
                 self.research_choice = available_technologies[0].name
             else:

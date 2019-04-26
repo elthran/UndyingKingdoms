@@ -80,15 +80,26 @@ class County(GameState):
     expeditions = db.relationship('Expedition', backref='county')
     infiltrations = db.relationship('Infiltration', backref='county', foreign_keys='[Infiltration.county_id]')
 
-    buildings = db.relationship("Building",
-                                collection_class=attribute_mapped_collection('name'),
-                                cascade="all, delete, delete-orphan", passive_deletes=True)
-    armies = db.relationship("Army",
-                             collection_class=attribute_mapped_collection('name'),
-                             cascade="all, delete, delete-orphan", passive_deletes=True)
-    magic = db.relationship("Magic",
-                            collection_class=attribute_mapped_collection('name'),
-                            cascade="all, delete, delete-orphan", passive_deletes=True)
+    buildings = db.relationship(
+        "Building",
+        collection_class=attribute_mapped_collection('name'),
+        cascade="all, delete, delete-orphan", passive_deletes=True
+    )
+    armies = db.relationship(
+        "Army",
+        collection_class=attribute_mapped_collection('name'),
+        cascade="all, delete, delete-orphan", passive_deletes=True
+    )
+    magic = db.relationship(
+        "Magic",
+        collection_class=attribute_mapped_collection('name'),
+        cascade="all, delete, delete-orphan", passive_deletes=True
+    )
+    technologies = db.relationship(
+        "Technology",
+        collection_class=attribute_mapped_collection('name'),
+        cascade="all, delete, delete-orphan", passive_deletes=True
+    )
 
     preferences = db.relationship("Preferences", uselist=False)
 
