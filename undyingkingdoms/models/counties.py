@@ -1118,11 +1118,11 @@ class County(GameState):
     def get_total_number_of_thieves(self):
         base = self.buildings['tavern'].total
         modifier = self.buildings['tavern'].output
-        if self.technologies["espionage i"].completed:
+        if "espionage i" in self.technologies and self.technologies["espionage i"].completed:
             modifier += 1
-        if self.technologies["espionage ii"].completed:
+        if "espionage ii" in self.technologies and self.technologies["espionage ii"].completed:
             modifier += 1
-        if self.technologies["espionage iii"].completed:
+        if "espionage iii" in self.technologies and self.technologies["espionage iii"].completed:
             modifier += 1
         return base * modifier
 
