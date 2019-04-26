@@ -1,6 +1,3 @@
-from undyingkingdoms import User
-from undyingkingdoms.controler.initialize import initialize_county, pick_kingdom
-
 if __name__ == "__main__":
     """Allow running just this test.
 
@@ -12,24 +9,26 @@ if __name__ == "__main__":
     os.system(f"python3 -m pytest -vvsx {__file__}")
     exit(1)  # prevents code from trying to run file afterwards.
 
-import pytest
+from tests import bp
 
-from undyingkingdoms.models import County
+from tests.fakes import UserFactory
+from undyingkingdoms.controler.initialize import initialize_county, pick_kingdom
 
 
 def initialize_account():
-    user = User('username', 'email@gmail.com', 'password')
+    user = UserFactory()
     user.save()
     kingdom = pick_kingdom(user, False)
     county = initialize_county(user, kingdom, 'county', 'leader', 'Merchant', 'Dwarf', 'Baron')
+    return county
 
 
 def test_completed_techs(app):
     with app.app_context():
-        county = County.query.get(1)
+        county = initialize_account()
         assert county.completed_techs == []
 
-        tech1 = county.technologies[0]
+        tech1 = county.technologies['agriculture']
         tech1.completed = True
 
         assert county.completed_techs == [tech1]

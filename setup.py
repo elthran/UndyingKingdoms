@@ -33,6 +33,8 @@ setup(
         'flask-cors',
         'sendgrid',
         'requests',
+        'Faker',
+        'factory_boy',
     ],
 )
 
