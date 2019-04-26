@@ -16,13 +16,21 @@ APIInterface.install = function (Vue, options) {
     // console.log('hydrating')
     return this.axios.get(url)
     .then((response) => {
-      // if (!(response.data.hasOwnProperty('debugMessage'))) {
-      //   console.log('You need to add as "debugMessage" attribute to the api "' + url + '" return jsonify.')
-      // }
-      // delete response.data.debugMessage
+//      console.log("$hydrate response", response)
       return this.$deployData(response.data)
     })
     .catch((error) => {
+//      console.log("$hydrate error", error)
+      // console.log("status", error.response.status)
+      if (error.response.status === 401) {
+        // redirect to login
+        return this.axios.get('/api/routing/login')
+        .then((response) => {
+          window.location.href = response.data.url
+          return Promise.resolve(null)
+        })
+      }
+      // this.$router.push('/login/')
       console.log("$hydrate errors are:", error, error.response)
       return Promise.reject(error)
     })

@@ -1,11 +1,13 @@
 from datetime import datetime
 
-from flask import url_for
+from flask import url_for, request, jsonify
 from flask_login import current_user
 from sqlalchemy.exc import DatabaseError
 from werkzeug.utils import redirect
+from werkzeug.wrappers import Response
 
 from undyingkingdoms import app, db
+from undyingkingdoms.routes.index.initialize import initialize
 
 
 @app.after_request
@@ -36,4 +38,17 @@ def in_active_session():
                 app.logger.critical("in_active_session setter is failing", str(ex))
             finally:
                 return None
+    return None
+
+
+@app.before_request
+def check_for_county():
+    """Implement in_active_session for every request."""
+
+    if current_user.is_authenticated:
+        print(request.endpoint)
+        if not current_user.county and \
+            request.endpoint not in ('initialize', 'static', 'api.routing_api', 'login'):
+            return redirect(url_for('initialize'))
+            pass
     return None

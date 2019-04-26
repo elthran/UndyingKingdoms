@@ -1,9 +1,10 @@
 import os
 import socket
 
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, url_for
 from flask_sslify import SSLify
 from flask_login import LoginManager
+from werkzeug.utils import redirect
 
 from extensions import flask_db, flask_json, flask_csrf, flask_mobility, flask_mail, flask_cors
 from undyingkingdoms.GeoIP import geo_ip
@@ -81,6 +82,8 @@ import_routes()
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"  # @login_required will redirect to this page
+# returns unauthorized (401) if fails @login_required for 'api' route.
+login_manager.blueprint_login_views[api_blueprint.name] = None
 
 if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
     # Only runs once. If it's a debug relaunch, it won't run

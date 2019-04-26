@@ -3,9 +3,9 @@ import axios from 'axios';
 
 function baseURL () {
   if (process.env.NODE_ENV === 'development') {
-    return 'http://localhost:5000';
+    return 'http://localhost:5000'
   } else {
-    return '';
+    return ''
   }
 }
 
@@ -79,5 +79,5 @@ export const devLogin = function () {
 
 export const customAxios = axios.create({
   baseURL: baseURL(),
-  withCredentials: true
+  withCredentials: true,
 });
