@@ -39,7 +39,7 @@ h2 {
   </div>
   <h2>Choose Spell to Cast on {{ target.name }}</h2>
     {% for spell in known_spells %}
-      {{ spell.class_name.title() }}
+      {{ spell.display_name }} ({{ spell.source }})
   <br><p>Cost: {{ spell.mana_cost }} <img class="resource_icons" src="/static/images/mana_icon.jpg"></p>
       {% if spell.mana_sustain %} <p>+ {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per turn{% endif %}
       </p>
@@ -93,7 +93,7 @@ h2 {
   <h2>Casting History</h2>
   <ul>
     {% for spell in casting_history|sort(attribute='county_day', reverse=True) %}
-      (Day {{ spell.county_day }}) You cast {{ spell.name.title() }} on county id {{ spell.target_id }}<br>
+      (Day {{ spell.county_day }}) You cast {{ spell.display_name }} on county id {{ spell.target_id }}<br>
     {% else %}
       No active spells
     {% endfor %}

@@ -1,7 +1,3 @@
-from random import randint
-
-from math import floor
-
 from undyingkingdoms.models.notifications import Notification
 from utilities.helpers import to_class_name
 from .interface import Command
@@ -13,7 +9,8 @@ class Effect(Command):
         self.casting = casting
         self.caster = caster
         self.target = target
-        # initialize class from name.
+        self.power = int(spell.output * caster.spell_modifier)
+        # Initialize class from name. This must go after the previous lines
         self.effect_specifics = self.get_specifics()
         self.pay_cost()
 
@@ -39,23 +36,22 @@ class InitMixin:
         self.casting = effect.casting
         self.caster = effect.caster
         self.target = effect.target
+        self.power = effect.power
 
 
 class InstantHappiness(InitMixin, Command):
     def execute(self):
-        amount = floor(self.spell.output * self.caster.spell_modifier)
-        self.caster.happiness += amount
+        self.caster.happiness += self.power
 
 
 class InstantResearch(InitMixin, Command):
     def execute(self):
-        amount = floor(self.spell.output * self.caster.spell_modifier)
-        self.caster.research += amount
+        self.caster.research += self.power
 
 
 class StealGold(InitMixin, Command):
     def execute(self):
-        amount = min(self.target.gold, floor(self.spell.output * self.caster.spell_modifier))
+        amount = min(self.target.gold, self.power)
         self.caster.gold += amount
         self.target.gold -= amount
         notification = Notification(
@@ -115,7 +111,7 @@ class ModifyBirthRate(InitMixin, Command):
 
 class PopulationKiller(InitMixin, Command):
     def execute(self):
-        kill_count = int(self.target.population * self.caster.spell_modifier * self.spell.output / 100)
+        kill_count = int(self.target.population * self.power / 100)
         self.target.population -= kill_count
         notification = Notification(
             self.target.id,
@@ -130,7 +126,7 @@ class PopulationKiller(InitMixin, Command):
 
 class ArcherKiller(InitMixin, Command):
     def execute(self):
-        kill_count = min(self.target.armies['archer'].total, self.caster.spell_modifier * self.spell.output)
+        kill_count = int(self.target.armies['archer'].total, self.power)
         self.target.population -= kill_count
         notification = Notification(
             self.target.id,
@@ -152,10 +148,10 @@ class ConvertIronToGold(InitMixin, Command):
     def execute(self):
         max_iron = min(self.caster.iron, 10)
         self.caster.iron -= max_iron
-        self.caster.gold += floor(max_iron * self.spell.output * self.caster.spell_modifier)
+        self.caster.gold += (max_iron * self.power)
 
 
 class ConvertCitizensIntoPeasants(InitMixin, Command):
     def execute(self):
-        max_peasants = min(self.caster.get_available_workers(), self.spell.output * self.caster.spell_modifier)
+        max_peasants = min(self.caster.get_available_workers(), self.power)
         self.caster.armies['peasant'].total += max_peasants

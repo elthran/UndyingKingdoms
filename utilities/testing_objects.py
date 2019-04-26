@@ -20,7 +20,7 @@ def build_testing_objects():
     user.is_active = True
     user.is_verified = True
     user.save()
-    county = County(1, "Ulthuan", "Elthran", user.id, 'Dwarf', 'Sir', 'Alchemist')
+    county = County(1, "Ulthuan", "Elthran", user.id, 'Dwarf', 'Sir', 'Warlord')
     county.save()
     county.vote = county.id
     county.kingdom_id = 1

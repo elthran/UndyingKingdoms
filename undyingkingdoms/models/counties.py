@@ -164,6 +164,8 @@ class County(GameState):
         if self.background == "Alchemist":
             self.buildings["lab"].output *= 2
 
+    def get_int_between_0_to_100(self, input):
+        return int(max(min(100, input), 0))
 
     @property
     def population(self):
@@ -267,7 +269,7 @@ class County(GameState):
 
     @happiness.setter
     def happiness(self, value):
-        self._happiness = min(max(value, 1), 100)
+        self._happiness = self.get_int_between_0_to_100(value)
 
     @property
     def healthiness(self):
@@ -275,7 +277,7 @@ class County(GameState):
 
     @healthiness.setter
     def healthiness(self, value):
-        self._healthiness = int(min(max(value, 1), 100))
+        self._healthiness = self.get_int_between_0_to_100(value)
 
     @property
     def tax_rate(self):
@@ -1112,7 +1114,15 @@ class County(GameState):
         return events
 
     def get_total_number_of_thieves(self):
-        return self.buildings['tavern'].total * self.buildings['tavern'].output
+        base = self.buildings['tavern'].total
+        modifier = self.buildings['tavern'].output
+        if self.technologies["espionage i"].completed:
+            modifier += 1
+        if self.technologies["espionage ii"].completed:
+            modifier += 1
+        if self.technologies["espionage iii"].completed:
+            modifier += 1
+        return base * modifier
 
     # Infiltrations
     def get_number_of_available_thieves(self):
@@ -1141,6 +1151,7 @@ class County(GameState):
         chance = 0
         for mission in operations_on_target:  # Each thief who invaded you gives you some protection
             chance += (mission.amount_of_thieves * 5)
+
         chance += self.buildings['tower'].total * self.buildings['tower'].output
 
         modify_thief_prevention = Casting.query.filter_by(target_id=self.id, name="modify_thief_prevention").filter(
@@ -1148,7 +1159,7 @@ class County(GameState):
         for spell in modify_thief_prevention or []:
             chance += spell.output * self.spell_modifier
 
-        return max(min(chance, 100), 0)
+        return self.get_int_between_0_to_100(chance)
 
     def chance_to_disrupt_spell(self):
         chance = 0
@@ -1160,7 +1171,7 @@ class County(GameState):
         if self.race == "Dwarf":
             chance += 15
 
-        return int(min(chance, 100))
+        return self.get_int_between_0_to_100(chance)
 
     # Terminology
     @property
