@@ -46,8 +46,8 @@ def check_for_county():
     """Implement in_active_session for every request."""
 
     if current_user.is_authenticated:
-        if not current_user.county and \
-                request.endpoint not in ('initialize', 'static', 'api.routing_api', 'login', 'activate'):
+        # print(request.endpoint)
+        if current_user.county is None and \
+                request.endpoint not in ('initialize', 'static', 'api.routing_api', 'login', 'activate', 'logout'):
             return redirect(url_for('initialize'))
-            pass
     return None
