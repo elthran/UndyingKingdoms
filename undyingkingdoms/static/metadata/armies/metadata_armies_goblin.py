@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from undyingkingdoms.static.metadata.metadata_armies_all import generic_armies
+from undyingkingdoms.static.metadata.armies.metadata_armies_all import generic_armies
 
 goblin_armies = deepcopy(generic_armies)
 # First the strings and descriptions

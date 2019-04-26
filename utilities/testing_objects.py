@@ -20,7 +20,7 @@ def build_testing_objects():
     user.is_active = True
     user.is_verified = True
     user.save()
-    county = County(1, "Ulthuan", "Elthran", user.id, 'Dwarf', 'Sir', 'Warlord')
+    county = County(1, "Ulthuan", "Elthran", user.id, 'Ogre', 'Sir', 'Alchemist')
     county.save()
     county.vote = county.id
     county.kingdom_id = 1
@@ -61,7 +61,7 @@ def build_testing_objects():
     # Create AI1 (He is weak and easier to attack for testing)
     user = User("ai1", "1@gmail.com", "star", is_bot=True)
     user.save()
-    county = County(1, "Robotica1", "Mr. Roboto1", user.id, 'Dwarf', 'Lady', 'Engineer')
+    county = County(1, "Robotica1", "Mr. Roboto1", user.id, 'Dwarf', 'Lady', 'Druid')
     county.save()
     county.vote = county.id
     county.armies['peasant'].amount = 0
@@ -71,7 +71,7 @@ def build_testing_objects():
     # Create AI2 (He is weak and easier to attack for testing)
     user = User("ai2", "2@gmail.com", "star", is_bot=True)
     user.save()
-    county = County(2, "Robotica2", "Mr. Roboto2", user.id, 'Elf', 'Lady', 'Engineer')
+    county = County(2, "Robotica2", "Mr. Roboto2", user.id, 'Elf', 'Lady', 'Merchant')
     county.save()
     county.vote = county.id
     county.armies['peasant'].amount = 0
@@ -81,13 +81,17 @@ def build_testing_objects():
     # Create AI3 (He is weak and easier to attack for testing)
     user = User("ai3", "3@gmail.com", "star", is_bot=True)
     user.save()
-    county = County(2, "Robotica3", "Mr. Roboto3", user.id, 'Human', 'Lady', 'Engineer')
+    county = County(2, "Robotica3", "Mr. Roboto3", user.id, 'Human', 'Lady', 'Hierophant')
     county.save()
     county.vote = county.id
     county.armies['peasant'].amount = 0
     county.armies['archer'].amount = 0
     preferences = Preferences(county.id, user.id)
     preferences.save()
+    # Create user with no county
+    user = User("lonely", "lonely@gmail.com", "star")
+    user.is_verified = True
+    user.save()
     # Create Forum shell
     forum = Forum()
     forum.save()

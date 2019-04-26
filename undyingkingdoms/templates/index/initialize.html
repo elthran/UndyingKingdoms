@@ -66,10 +66,9 @@ button {
   <h1>Dwarves:</h1>
   <ul>
     <li>--- Engineering: +15% Production</li>
-    <li>--- Unending Appetite: Dwarves consume 15% more food each day</li>
     <li>--- Magical Immunity: +15% resistance against enemy spells</li>
+    <li>--- Ravenous: +15% food consumption</li>
   </ul>
-  <br>
   <h2>Military:</h2>
   {% for army in dwarf_armies.values() %}
     <ul>
@@ -79,6 +78,7 @@ button {
         {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
       <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
     </ul>
+  <br>
   {% endfor %}
 </div>
 <div id="humanDiv" style="display:none;">
@@ -86,7 +86,6 @@ button {
   <ul>
     <li>--- None</li>
   </ul>
-  <br>
   <h2>Military:</h2>
   {% for army in human_armies.values() %}
     <ul>
@@ -96,6 +95,7 @@ button {
         {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
       <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
     </ul>
+  <br>
   {% endfor %}
 </div>
 <div id="elfDiv" style="display:none;">
@@ -103,9 +103,8 @@ button {
   <ul>
     <li>--- Elders: -15% Population growth</li>
     <li>--- Citizen Militia: Each non-military citizen adds double their normal defensive value</li>
-    <li>--- Affinity: +5% chance to successfully cast any spell</li>
+    <li>--- Affinity: +5% effectiveness on any spell cast</li>
   </ul>
-  <br>
   <h2>Military:</h2>
   {% for army in elf_armies.values() %}
     <ul>
@@ -115,6 +114,7 @@ button {
         {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
       <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
     </ul>
+  <br>
   {% endfor %}
 </div>
 <div id="goblinDiv" style="display:none;">
@@ -122,9 +122,8 @@ button {
   <ul>
     <li>--- Expendable: +15% Population growth</li>
     <li>--- Infighting: -1 Happiness per day</li>
-    <li>--- Sneaky: +5% success rate on all infiltration missions</li>
+    <li>--- Sneaky: +10% effectiveness on all infiltration missions</li>
   </ul>
-  <br>
   <h2>Military:</h2>
   {% for army in goblin_armies.values() %}
     <ul>
@@ -134,17 +133,135 @@ button {
         {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
       <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
     </ul>
+  <br>
+  {% endfor %}
+</div>
+<div id="ogreDiv" style="display:none;">
+  <h1>Ogres:</h1>
+  <ul>
+    <li>--- Gigantic: +20% food consumption</li>
+    <li>--- Solitary: -25% population growth</li>
+    <li>--- Simple-minded: -10% effectiveness at casting and infiltration</li>
+  </ul>
+  <h2>Military:</h2>
+  {% for army in ogre_armies.values() %}
+    <ul>
+      <li>Name: {{ army.class_name.title() }}</li>
+      <li>Cost: {{ army.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
+        {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
+        {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+      <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+    </ul>
+  <br>
   {% endfor %}
 </div>
 {% endset %}
 
 {% set leaderClassDivs %}
 <!--Consider building a macro/for loop for these-->
+<div id="alchemistDiv" style="display:none;">
+  <h1>Alchemist:</h1>
+  <ul>
+    <li>--- Chemist: Laboratories grant double research points</li>
+  </ul>
+  <h2>Technology Path</h2>
+  {% for tech in alchemist_technology.values() %}
+    <ul>
+      <li>Name: {{ tech.name.title() }}</li>
+      <li>Description: {{ tech.description }}
+    </ul>
+  <br>
+  {% endfor %}
+</div>
+<div id="artificerDiv" style="display:none;">
+  <h1>Artificer:</h1>
+  <ul>
+    <li>--- Engineer: Your county can build an additional building each day</li>
+  </ul>
+  <h2>Technology Path</h2>
+  {% for tech in artificer_technology.values() %}
+    <ul>
+      <li>Name: {{ tech.name.title() }}</li>
+      <li>Description: {{ tech.description }}
+    </ul>
+  <br>
+  {% endfor %}
+</div>
+<div id="clericDiv" style="display:none;">
+  <h1>Cleric:</h1>
+  <ul>
+    <li>--- Healer: ???</li>
+  </ul>
+  <h2>Technology Path</h2>
+  {% for tech in cleric_technology.values() %}
+    <ul>
+      <li>Name: {{ tech.name.title() }}</li>
+      <li>Description: {{ tech.description }}
+    </ul>
+  <br>
+  {% endfor %}
+</div>
+<div id="diplomatDiv" style="display:none;">
+  <h1>Diplomat:</h1>
+  <ul>
+    <li>--- Persuasive: All actions give an additional kingdom relation point</li>
+  </ul>
+  <h2>Technology Path</h2>
+  {% for tech in diplomat_technology.values() %}
+    <ul>
+      <li>Name: {{ tech.name.title() }}</li>
+      <li>Description: {{ tech.description }}
+    </ul>
+  <br>
+  {% endfor %}
+</div>
+<div id="druidDiv" style="display:none;">
+  <h1>Druid:</h1>
+  <ul>
+    <li>--- Naturalist: All food production gets an additional 10% bonus</li>
+  </ul>
+  <h2>Technology Path</h2>
+  {% for tech in druid_technology.values() %}
+    <ul>
+      <li>Name: {{ tech.name.title() }}</li>
+      <li>Description: {{ tech.description }}
+    </ul>
+</div>
+<div id="hierophantDiv" style="display:none;">
+  <h1>Hierophant:</h1>
+  <ul>
+    <li>--- ???: ???</li>
+  </ul>
+  <h2>Technology Path</h2>
+  {% for tech in hierophant_technology.values() %}
+    <ul>
+      <li>Name: {{ tech.name.title() }}</li>
+      <li>Description: {{ tech.description }}
+    </ul>
+</div>
 <div id="merchantDiv" style="display:none;">
   <h1>Merchant:</h1>
   <ul>
     <li>--- Silver Tongue: +15% on all income</li>
   </ul>
+  <h2>Technology Path</h2>
+  {% for tech in merchant_technology.values() %}
+    <ul>
+      <li>Name: {{ tech.name.title() }}</li>
+      <li>Description: {{ tech.description }}
+    </ul>
+</div>
+<div id="rogueDiv" style="display:none;">
+  <h1>Rogue:</h1>
+  <ul>
+    <li>--- Master of Disguise: +15% results from infiltrations</li>
+  </ul>
+  <h2>Technology Path</h2>
+  {% for tech in rogue_technology.values() %}
+    <ul>
+      <li>Name: {{ tech.name.title() }}</li>
+      <li>Description: {{ tech.description }}
+    </ul>
 </div>
 <div id="warlordDiv" style="display:none;">
   <h1>Warlord:</h1>
@@ -152,25 +269,24 @@ button {
     <li>--- Relentless: +10% offensive military strength</li>
     <li>--- Warmonger: No happiness penalty for recruiting soldiers</li>
   </ul>
+  <h2>Technology Path</h2>
+  {% for tech in warlord_technology.values() %}
+    <ul>
+      <li>Name: {{ tech.name.title() }}</li>
+      <li>Description: {{ tech.description }}
+    </ul>
 </div>
 <div id="wizardDiv" style="display:none;">
   <h1>Wizard:</h1>
   <ul>
-    <li>--- Loremaster: +10% chance to cast any spell</li>
+    <li>--- Loremaster: +10% effectiveness on all spells</li>
   </ul>
-</div>
-<div id="rogueDiv" style="display:none;">
-  <h1>Rogue:</h1>
-  <ul>
-    <li>--- Master of Disguise: +15% chance to infiltrate enemy counties</li>
-    <li>--- Army of Shadows: Can send up to 2 additional thieves per mission</li>
-  </ul>
-</div>
-<div id="alchemistDiv" style="display:none;">
-  <h1>Alchemist:</h1>
-  <ul>
-    <li>--- Chemist: Laboratories grant double the research points</li>
-  </ul>
+  <h2>Technology Path</h2>
+  {% for tech in wizard_technology.values() %}
+    <ul>
+      <li>Name: {{ tech.name.title() }}</li>
+      <li>Description: {{ tech.description }}
+    </ul>
 </div>
 {% endset %}
 
@@ -219,10 +335,12 @@ document.getElementById("race").onchange = function () {
     var humanDiv = document.getElementById("humanDiv");
     var elfDiv = document.getElementById("elfDiv");
     var goblinDiv = document.getElementById("goblinDiv");
+    var ogreDiv = document.getElementById("ogreDiv");
     dwarfDiv.style.display = "none";
     humanDiv.style.display = "none";
     elfDiv.style.display = "none";
     goblinDiv.style.display = "none";
+    ogreDiv.style.display = "none";
     if (chosenRace.value === "3") {
         dwarfDiv.style.display = "block";
     } else if (chosenRace.value === "1") {
@@ -231,6 +349,8 @@ document.getElementById("race").onchange = function () {
         elfDiv.style.display = "block";
     } else if (chosenRace.value === "4") {
         goblinDiv.style.display = "block";
+    } else if (chosenRace.value === "5") {
+        ogreDiv.style.display = "block";
     }
 };
 

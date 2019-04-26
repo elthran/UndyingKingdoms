@@ -3,10 +3,22 @@ from undyingkingdoms.models.achievements import Achievement
 # Current price balance: 1 stone == 2 iron == 2 mana == 4 wood == 4 research == 6 gold == 60 food
 
 
-metadata_races = ['Human', 'Elf', 'Dwarf', 'Goblin']
+metadata_races = ['Human', 'Elf', 'Dwarf', 'Goblin', 'Ogre']
 metadata_titles = ['Sir', 'Dame', 'Lord', 'Lady', 'Baron', 'Baroness', 'Duke', 'Duchess', 'Prince', 'Princess']
 
-metadata_backgrounds = ['Warlord', 'Alchemist', 'Merchant', 'Rogue', 'Wizard']
+metadata_backgrounds = ['Alchemist', 'Artificer', 'Cleric', 'Diplomat', 'Druid',
+                        'Hierophant', 'Merchant', 'Rogue', 'Wizard', 'Warlord']
+
+# Warlord: <Battle> and combat.
+# Wizard: <Magic> and casting and summons
+# Rogue: <Thieving> and betrayal and assassinations
+# Druid: <Food> and nature and healing
+# Cleric: <Health> and happiness
+# Alchemist: <Science/Tech> and resource conversion
+# Merchant: <Economy> and happiness and persuasion
+# Artificer: <Infrastructure>
+# Diplomat: <Diplomacy>
+# Hierophant: <Sacrifice> and rituals
 
 kingdom_names = ["Faenoth", "Ecthalion"]
 
@@ -90,18 +102,20 @@ all_achievements = {
 
 # Racial/Class Modifiers (A modifier of 0 means +0%. A modifier of 1 would mean +100%)
 # Percents
-birth_rate_modifier = {'Elf': ("Elders", -0.15), 'Goblin': ("Expendable", 0.15)}
+birth_rate_modifier = {'Elf': ("Elders", -0.15), 'Goblin': ("Expendable", 0.15), 'Ogre': ("Solitary", -0.25)}
 death_rate_modifier = {}
 income_modifier = {'Merchant': ("Silver Tongue", 0.15)}
 offensive_power_modifier = {'Warlord': ("Relentless", 0.10)}
-infiltration_success_modifier = {'Rogue': ("Master of Disguise", 10), 'Goblin': ("Sneaky", 10)}
+infiltration_results_modifier = {'Rogue': ("Master of Disguise", 0.15), 'Ogre': ("Simple-minded", -0.10), 'Goblin': ("Sneaky", 0.10)}
 production_per_worker_modifier = {'Dwarf': ("Dwarven Steel", 0.15)}
 defense_per_citizen_modifier = {'Elf': ("Citizen Militia", 1.00)}
-food_consumed_modifier = {'Dwarf': ("Ravenous", 0.15)}
+food_consumed_modifier = {'Dwarf': ("Ravenous", 0.15), 'Ogre': ("Gigantic", 0.20)}
+food_produced_modifier = {'Druid': ("Naturalist", 0.10)}
 # Amounts
 happiness_modifier = {'Goblin': ("Infighting", -1)}
 amount_of_thieves_modifier = {'Rogue': ("Army of Shadows", 2)}
-spell_chance_modifier = {'Wizard': ("Loremaster", 10), 'Elf': ("Affinity", 5)}
+spell_results_modifier = {'Wizard': ("Loremaster", 10), 'Elf': ("Affinity", 5)}
+buildings_produced_per_day = {'Artificer': ("Engineer", 1)}
 
 
 all_armies = ["peasant", "archer", "soldier", "besieger", "summon", "elite", "monster"]

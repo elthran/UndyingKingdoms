@@ -1,7 +1,7 @@
 from undyingkingdoms.models.technologies import Technology
 
 elf_technology = {
-    'arcane knowledge': Technology(name='arcane knowledge',
+    'knowledge of the ancients': Technology(name='knowledge of the ancients',
                                    required=300,
                                    tier=1,
                                    max_level=1,
