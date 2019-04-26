@@ -372,6 +372,8 @@ class County(GameState):
                 notification.save()
                 self.armies['peasant'].traveling -= expedition.peasant
                 self.armies['soldier'].traveling -= expedition.soldier
+                self.armies['besieger'].traveling -= expedition.besieger
+                self.armies['summon'].traveling -= expedition.summon
                 self.armies['elite'].traveling -= expedition.elite
                 self.armies['monster'].traveling -= expedition.monster
                 self.land += expedition.land_acquired

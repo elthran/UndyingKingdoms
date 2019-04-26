@@ -20,11 +20,7 @@ def attack(template, county_id):
 
     form = AttackForm(county)
 
-    unit_types = (
-        _type
-        for _type in county.armies
-        if _type not in ('archer', 'besieger')
-    )
+    unit_types = (_type for _type in county.armies if _type not in 'archer')
 
     for key in unit_types:
         field = getattr(form, key)

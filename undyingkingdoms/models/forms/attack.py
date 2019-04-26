@@ -5,6 +5,8 @@ from wtforms import SelectField
 class AttackForm(FlaskForm):
     peasant = SelectField('peasant', coerce=int)
     soldier = SelectField('soldier', coerce=int)
+    besieger = SelectField('besieger', coerce=int)
+    summon = SelectField('summon', coerce=int)
     elite = SelectField('elite', coerce=int)
     monster = SelectField('monster', coerce=int)
     
@@ -28,18 +30,15 @@ class AttackForm(FlaskForm):
         Adds army object to form.
         """
         army = {}
-        units = (
-            unit
-            for unit in self.county.armies.values()
-            if unit.name not in ['archer', 'besieger']
-        )
+        units = (unit for unit in self.county.armies.values() if unit.name not in ['archer'])
         for unit in units:
             if self.data[unit.name] > unit.total:
                 return True
             army[unit.name] = self.data[unit.name]
         strength = self.county.get_offensive_strength(army=army)
         if strength < 150:
-            self.peasant.errors.append(f"Must send troops worth at least 150 strength (sent troops worth {strength} strength).")
+            self.peasant.errors.append(f"Must send troops worth at least 150 strength "
+                                       f"(sent troops worth {strength} strength).")
             return True
         self.army = army
         return False

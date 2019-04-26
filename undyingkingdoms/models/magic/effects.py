@@ -141,7 +141,7 @@ class ArcherKiller(InitMixin, Command):
 
 class SummonGolem(InitMixin, Command):
     def execute(self):
-        pass
+        self.target.armies['summon'].total += 1
 
 
 class ConvertIronToGold(InitMixin, Command):

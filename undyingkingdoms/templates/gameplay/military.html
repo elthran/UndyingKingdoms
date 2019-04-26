@@ -152,8 +152,7 @@ th {
               <span style="color:red;">Requires more<br>{{ lair_name }}</span>
             {% else %}
               <div class="slide-container">
-                <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" data-monster
-                     step="1"/>
+                <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" data-monster step="1"/>
               </div>
               <span class="display">0</span>
               <span>
@@ -162,6 +161,8 @@ th {
                 </span>
               </span>
             {% endif %}
+          {% elif army.name == 'summon' %}
+            N/A
           {% else %}
             <div class="slide-container">
               <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
@@ -171,16 +172,20 @@ th {
           <input class="value" name="{{ army.name }}" value="0" hidden/>
         </td>
         <td>
-          {% if army.gold %}
-            <span class="buildingGoldCost">{{ army.gold }}</span><img class="resource_icons" src="/static/images/gold_icon.jpg">
+          {% if army.name == 'summon' %}
+            N/A
+          {% else %}
+            {% if army.gold %}
+              <span class="buildingGoldCost">{{ army.gold }}</span><img class="resource_icons" src="/static/images/gold_icon.jpg">
+            {% endif %}
+            {% if army.wood %}
+              <span class="buildingWoodCost">{{ army.wood }}</span><img class="resource_icons" src="/static/images/wood_icon.jpg">
+            {% endif %}
+            {% if army.iron %}
+              <span class="buildingIronCost">{{ army.iron }}</span><img class="resource_icons" src="/static/images/iron_icon.jpg">
+            {% endif %}
+            {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
           {% endif %}
-          {% if army.wood %}
-            <span class="buildingWoodCost">{{ army.wood }}</span><img class="resource_icons" src="/static/images/wood_icon.jpg">
-          {% endif %}
-          {% if army.iron %}
-            <span class="buildingIronCost">{{ army.iron }}</span><img class="resource_icons" src="/static/images/iron_icon.jpg">
-          {% endif %}
-          {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
         </td>
         <td>{% if army.name == 'besieger' %}<div class="tooltip">*<span class="tooltipText">{{ meta_data["besieger_attack"] }}</span>{% else %}{{ army.attack }}{% endif %}</td>
         <td>{{ army.defence }}</td>
@@ -225,16 +230,16 @@ th {
   {% for expedition in county.get_expeditions() %}
     <br>
     {% if expedition.success == 0 %}
-      Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite + expedition.monster }} troops will
+      Your surviving {{ expedition.peasant + expedition.soldier + expedition.besieger + expedition.summon + expedition.elite + expedition.monster }} troops will
       return in {{ expedition.duration }} days after their failed attack.
     {% elif expedition.mission == 'Attack' %}
-      Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite + expedition.monster }} troops will
+      Your surviving {{ expedition.peasant + expedition.soldier + expedition.besieger + expedition.summon + expedition.elite + expedition.monster }} troops will
       return in {{ expedition.duration }} days with {{ expedition.land_acquired }} acres of newly captured land.
     {% elif expedition.mission == 'Raze' %}
-      Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite + expedition.monster }} troops will
+      Your surviving {{ expedition.peasant + expedition.soldier + expedition.besieger + expedition.summon + expedition.elite + expedition.monster }} troops will
       return in {{ expedition.duration }} days after razing {{ expedition.land_razed }} acres of enemy land.
     {% elif expedition.mission == 'Pillage' %}
-      Your surviving {{ expedition.peasant + expedition.soldier + expedition.elite + expedition.monster }} troops will
+      Your surviving {{ expedition.peasant + expedition.soldier + expedition.besieger + expedition.summon + expedition.elite + expedition.monster }} troops will
       return in {{ expedition.duration }} days with {{ expedition.gold_gained }} gold, {{ expedition.wood_gained }} wood,
       and {{ expedition.iron_gained }} iron.
     {% endif %}

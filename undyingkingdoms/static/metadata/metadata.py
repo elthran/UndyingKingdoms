@@ -104,7 +104,7 @@ amount_of_thieves_modifier = {'Rogue': ("Army of Shadows", 2)}
 spell_chance_modifier = {'Wizard': ("Loremaster", 10), 'Elf': ("Affinity", 5)}
 
 
-all_armies = ["peasant", "archer", "soldier", "elite", "monster"]
+all_armies = ["peasant", "archer", "soldier", "besieger", "summon", "elite", "monster"]
 
 game_descriptions = {"attack": "How much power a unit has when attacking another county.",
                      "defence": "How much power a unit has when defending your county.",
