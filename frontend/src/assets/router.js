@@ -6,6 +6,7 @@ import VueRouter from 'vue-router'
 import '@/assets/chunks.js'
 import LoadingComponent from '@/components/LoadingComponent.vue'
 import ErrorComponent from '@/components/ErrorComponent.vue'
+import NotFoundComponent from '@/components/NotFoundComponent.vue'
 import OverviewApp from '@/overview/OverviewApp.vue'
 import InfrastructureApp from '@/infrastructure/InfrastructureApp.vue'
 const AsyncChatroomApp = () => import(/* webpackChunkName: "ChatroomApp" */ '@/chatroom/ChatroomApp.vue')
@@ -35,6 +36,11 @@ export default new VueRouter({
       name: 'ForumApp',
       component: ForumApp
     },
+    {
+      path: '*',
+      name: '404',
+      component: NotFoundComponent,
+    }
   ],
   base: '/m/',
   mode: 'history'

@@ -3,7 +3,7 @@ from flask.views import MethodView
 from flask_login import current_user, login_required
 
 
-class SideBarAPI(MethodView):
+class SidebarAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
