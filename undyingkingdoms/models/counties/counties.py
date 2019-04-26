@@ -9,7 +9,6 @@ from undyingkingdoms.models.helpers import cached_random
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
-from undyingkingdoms.models.technologies import Technology
 from undyingkingdoms.models.trades import Trade
 from undyingkingdoms.models.magic import Casting
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
@@ -36,7 +35,7 @@ from undyingkingdoms.static.metadata.metadata_magic_merchant import merchant_spe
 from undyingkingdoms.static.metadata.metadata_magic_rogue import rogue_spells
 from undyingkingdoms.static.metadata.metadata_magic_warlord import warlord_spells
 from undyingkingdoms.static.metadata.metadata_magic_wizard import wizard_spells
-from undyingkingdoms.static.metadata.metadata_research_all import generic_technology
+from undyingkingdoms.static.metadata.metadata_research_all import generic_technology, generic_requirements
 from undyingkingdoms.static.metadata.metadata_research_dwarf import dwarf_technology
 from undyingkingdoms.static.metadata.metadata_research_elf import elf_technology
 from undyingkingdoms.static.metadata.metadata_research_goblin import goblin_technology
@@ -87,9 +86,6 @@ class County(GameState):
     armies = db.relationship("Army",
                              collection_class=attribute_mapped_collection('name'),
                              cascade="all, delete, delete-orphan", passive_deletes=True)
-    technologies = db.relationship("Technology",
-                                   collection_class=attribute_mapped_collection('name'),
-                                   cascade="all, delete, delete-orphan", passive_deletes=True)
     magic = db.relationship("Magic",
                             collection_class=attribute_mapped_collection('name'),
                             cascade="all, delete, delete-orphan", passive_deletes=True)
@@ -477,28 +473,6 @@ class County(GameState):
         self.mana += self.get_mana_change()
         self.research += self.get_research_change()
         self.happiness += self.get_happiness_change()
-
-    def advance_research(self):
-        technology = self.technologies[self.research_choice]
-        technology.current += self.research
-        if technology.current >= technology.required:  # You save left over research
-            self.research = technology.current - technology.required
-            technology.completed = True
-            available_technologies = self.get_available_technologies()
-            if available_technologies:
-                self.research_choice = available_technologies[0].name
-            else:
-                self.research = 0
-        else:
-            self.research = 0
-            
-    def get_available_technologies(self):
-        available_technologies = Technology.query.filter_by(county_id=self.id).filter_by(completed=False).filter_by(tier=1).all()
-        if not available_technologies:
-            available_technologies = Technology.query.filter_by(county_id=self.id).filter_by(completed=False).filter_by(tier=2).all()
-        if not available_technologies:
-            available_technologies = Technology.query.filter_by(county_id=self.id).filter_by(completed=False).filter_by(tier=3).all()
-        return available_technologies
 
     def get_happiness_change(self):
         change = 7 - self.tax_rate
@@ -1207,8 +1181,3 @@ class County(GameState):
     def __repr__(self):
         return '<County %r (%r)>' % (self.name, self.id)
 
-
-# Attach any add-ons needed to the County class.
-from .county_addons.casting_addon import casting_addon
-
-casting_addon(County)

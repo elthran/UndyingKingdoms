@@ -14,7 +14,12 @@ class Technology(GameEvent):
     completed = db.Column(db.Boolean)
     description = db.Column(db.String(128))
 
-    def __init__(self, name, required, tier, max_level, description):
+    requirement_id = db.Column(db.Integer, db.ForeignKey('technology.id'))
+    requirements = db.relationship("Technology")
+
+    def __init__(self, name, required, tier, max_level, description, requirements=None):
+        if requirements is None:
+            requirements = []
 
         self.world_day = None
         self.county_day = None
@@ -26,3 +31,10 @@ class Technology(GameEvent):
         self.max_level = max_level
         self.completed = False
         self.description = description
+        self.requirements = requirements
+
+    @staticmethod
+    def establish_requirements(techs, metadata):
+        for key in metadata:
+            for requirement in metadata[key]:
+                techs[key].requirements.append(techs[requirement])
