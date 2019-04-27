@@ -164,104 +164,56 @@ button {
   <ul>
     <li>--- Chemist: Laboratories grant double research points</li>
   </ul>
-  <h2>Technology Path</h2>
-  {% for tech in alchemist_technology.values() %}
-    <ul>
-      <li>Name: {{ tech.name.title() }}</li>
-      <li>Description: {{ tech.description }}
-    </ul>
-  <br>
-  {% endfor %}
+  <h2>{{ class_descriptions['Alchemist'] }}</h2>
 </div>
 <div id="artificerDiv" style="display:none;">
   <h1>Artificer:</h1>
   <ul>
     <li>--- Engineer: Your county can build an additional building each day</li>
   </ul>
-  <h2>Technology Path</h2>
-  {% for tech in artificer_technology.values() %}
-    <ul>
-      <li>Name: {{ tech.name.title() }}</li>
-      <li>Description: {{ tech.description }}
-    </ul>
-  <br>
-  {% endfor %}
+  <h2>{{ class_descriptions['Artificer'] }}</h2>
 </div>
 <div id="clericDiv" style="display:none;">
   <h1>Cleric:</h1>
   <ul>
     <li>--- Healer: ???</li>
   </ul>
-  <h2>Technology Path</h2>
-  {% for tech in cleric_technology.values() %}
-    <ul>
-      <li>Name: {{ tech.name.title() }}</li>
-      <li>Description: {{ tech.description }}
-    </ul>
-  <br>
-  {% endfor %}
+  <h2>{{ class_descriptions['Cleric'] }}</h2>
 </div>
 <div id="diplomatDiv" style="display:none;">
   <h1>Diplomat:</h1>
   <ul>
     <li>--- Persuasive: All actions give an additional kingdom relation point</li>
   </ul>
-  <h2>Technology Path</h2>
-  {% for tech in diplomat_technology.values() %}
-    <ul>
-      <li>Name: {{ tech.name.title() }}</li>
-      <li>Description: {{ tech.description }}
-    </ul>
-  <br>
-  {% endfor %}
+  <h2>{{ class_descriptions['Diplomat'] }}</h2>
 </div>
 <div id="druidDiv" style="display:none;">
   <h1>Druid:</h1>
   <ul>
     <li>--- Naturalist: All food production gets an additional 10% bonus</li>
   </ul>
-  <h2>Technology Path</h2>
-  {% for tech in druid_technology.values() %}
-    <ul>
-      <li>Name: {{ tech.name.title() }}</li>
-      <li>Description: {{ tech.description }}
-    </ul>
+  <h2>{{ class_descriptions['Druid'] }}</h2>
 </div>
 <div id="hierophantDiv" style="display:none;">
   <h1>Hierophant:</h1>
   <ul>
     <li>--- ???: ???</li>
   </ul>
-  <h2>Technology Path</h2>
-  {% for tech in hierophant_technology.values() %}
-    <ul>
-      <li>Name: {{ tech.name.title() }}</li>
-      <li>Description: {{ tech.description }}
-    </ul>
+  <h2>{{ class_descriptions['Hierophant'] }}</h2>
 </div>
 <div id="merchantDiv" style="display:none;">
   <h1>Merchant:</h1>
   <ul>
     <li>--- Silver Tongue: +15% on all income</li>
   </ul>
-  <h2>Technology Path</h2>
-  {% for tech in merchant_technology.values() %}
-    <ul>
-      <li>Name: {{ tech.name.title() }}</li>
-      <li>Description: {{ tech.description }}
-    </ul>
+  <h2>{{ class_descriptions['Merchant'] }}</h2>
 </div>
 <div id="rogueDiv" style="display:none;">
   <h1>Rogue:</h1>
   <ul>
     <li>--- Master of Disguise: +15% results from infiltrations</li>
   </ul>
-  <h2>Technology Path</h2>
-  {% for tech in rogue_technology.values() %}
-    <ul>
-      <li>Name: {{ tech.name.title() }}</li>
-      <li>Description: {{ tech.description }}
-    </ul>
+  <h2>{{ class_descriptions['Rogue'] }}</h2>
 </div>
 <div id="warlordDiv" style="display:none;">
   <h1>Warlord:</h1>
@@ -269,24 +221,14 @@ button {
     <li>--- Relentless: +10% offensive military strength</li>
     <li>--- Warmonger: No happiness penalty for recruiting soldiers</li>
   </ul>
-  <h2>Technology Path</h2>
-  {% for tech in warlord_technology.values() %}
-    <ul>
-      <li>Name: {{ tech.name.title() }}</li>
-      <li>Description: {{ tech.description }}
-    </ul>
+  <h2>{{ class_descriptions['Warlord'] }}</h2>
 </div>
 <div id="wizardDiv" style="display:none;">
   <h1>Wizard:</h1>
   <ul>
     <li>--- Loremaster: +10% effectiveness on all spells</li>
   </ul>
-  <h2>Technology Path</h2>
-  {% for tech in wizard_technology.values() %}
-    <ul>
-      <li>Name: {{ tech.name.title() }}</li>
-      <li>Description: {{ tech.description }}
-    </ul>
+  <h2>{{ class_descriptions['Wizard'] }}</h2>
 </div>
 {% endset %}
 
@@ -330,51 +272,79 @@ button {
 {% block script %}
 <script type="text/javascript">
 document.getElementById("race").onchange = function () {
+
     var chosenRace = document.getElementById("race");
+
     var dwarfDiv = document.getElementById("dwarfDiv");
-    var humanDiv = document.getElementById("humanDiv");
     var elfDiv = document.getElementById("elfDiv");
     var goblinDiv = document.getElementById("goblinDiv");
+    var humanDiv = document.getElementById("humanDiv");
     var ogreDiv = document.getElementById("ogreDiv");
+
     dwarfDiv.style.display = "none";
-    humanDiv.style.display = "none";
     elfDiv.style.display = "none";
     goblinDiv.style.display = "none";
+    humanDiv.style.display = "none";
     ogreDiv.style.display = "none";
-    if (chosenRace.value === "3") {
+
+    if (chosenRace.value === "1") {
         dwarfDiv.style.display = "block";
-    } else if (chosenRace.value === "1") {
-        humanDiv.style.display = "block";
     } else if (chosenRace.value === "2") {
         elfDiv.style.display = "block";
-    } else if (chosenRace.value === "4") {
+    } else if (chosenRace.value === "3") {
         goblinDiv.style.display = "block";
+    } else if (chosenRace.value === "4") {
+        humanDiv.style.display = "block";
     } else if (chosenRace.value === "5") {
         ogreDiv.style.display = "block";
     }
 };
 
 document.getElementById("background").onchange = function () {
+
     var chosenTitle = document.getElementById("background");
+
+    var alchemistDiv = document.getElementById("alchemistDiv");
+    var artificerDiv = document.getElementById("artificerDiv");
+    var clericDiv = document.getElementById("clericDiv");
+    var diplomatDiv = document.getElementById("diplomatDiv");
+    var druidDiv = document.getElementById("druidDiv");
+    var hierophantDiv = document.getElementById("hierophantDiv");
     var merchantDiv = document.getElementById("merchantDiv");
+    var rogueDiv = document.getElementById("rogueDiv");
     var warlordDiv = document.getElementById("warlordDiv");
     var wizardDiv = document.getElementById("wizardDiv");
-    var rogueDiv = document.getElementById("rogueDiv");
-    var alchemistDiv = document.getElementById("alchemistDiv");
+
+    alchemistDiv.style.display = "none";
+    artificerDiv.style.display = "none";
+    clericDiv.style.display = "none";
+    diplomatDiv.style.display = "none";
+    druidDiv.style.display = "none";
+    hierophantDiv.style.display = "none";
     merchantDiv.style.display = "none";
+    rogueDiv.style.display = "none";
     warlordDiv.style.display = "none";
     wizardDiv.style.display = "none";
-    rogueDiv.style.display = "none";
-    alchemistDiv.style.display = "none";
-    if (chosenTitle.value === "3") {
-        merchantDiv.style.display = "block";
-    } else if (chosenTitle.value === "1") {
-        warlordDiv.style.display = "block";
-    } else if (chosenTitle.value === "4") {
-        rogueDiv.style.display = "block";
-    } else if (chosenTitle.value === "2") {
+
+    if (chosenTitle.value === "1") {
         alchemistDiv.style.display = "block";
+    } else if (chosenTitle.value === "2") {
+        artificerDiv.style.display = "block";
+    } else if (chosenTitle.value === "3") {
+        clericDiv.style.display = "block";
+    } else if (chosenTitle.value === "4") {
+        diplomatDiv.style.display = "block";
     } else if (chosenTitle.value === "5") {
+        druidDiv.style.display = "block";
+    } else if (chosenTitle.value === "6") {
+        hierophantDiv.style.display = "block";
+    } else if (chosenTitle.value === "7") {
+        merchantDiv.style.display = "block";
+    } else if (chosenTitle.value === "8") {
+        rogueDiv.style.display = "block";
+    } else if (chosenTitle.value === "9") {
+        warlordDiv.style.display = "block";
+    } else if (chosenTitle.value === "10") {
         wizardDiv.style.display = "block";
     }
 };

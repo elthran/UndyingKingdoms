@@ -13,11 +13,23 @@ merchant_spells = {
     'instant_happiness': Magic(
         name='instant_happiness',
         display_name='Charisma',
+        source='Merchant',
         category='instant',
         targets='self',
         known=True,
         mana_cost=10,
         output=5,
         description='Adds +5 happiness to your county.'
+    ),
+    'summon_tier_1': Magic(
+        name='summon_tier_1',
+        display_name='Summon Fairy',
+        source='Merchant',
+        category='instant',
+        targets='self',
+        known=True,
+        mana_cost=50,
+        output=1,
+        description='Summon a Fairy to join your army.'
     )
 }

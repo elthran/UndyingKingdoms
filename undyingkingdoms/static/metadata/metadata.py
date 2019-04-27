@@ -3,11 +3,22 @@ from undyingkingdoms.models.achievements import Achievement
 # Current price balance: 1 stone == 2 iron == 2 mana == 4 wood == 4 research == 6 gold == 60 food
 
 
-metadata_races = ['Human', 'Elf', 'Dwarf', 'Goblin', 'Ogre']
+metadata_races = ['Dwarf', 'Elf', 'Goblin', 'Human', 'Ogre']
 metadata_titles = ['Sir', 'Dame', 'Lord', 'Lady', 'Baron', 'Baroness', 'Duke', 'Duchess', 'Prince', 'Princess']
 
 metadata_backgrounds = ['Alchemist', 'Artificer', 'Cleric', 'Diplomat', 'Druid',
-                        'Hierophant', 'Merchant', 'Rogue', 'Wizard', 'Warlord']
+                        'Hierophant', 'Merchant', 'Rogue', 'Warlord', 'Wizard']
+metadata_background_descriptions = {
+    'Alchemist': 'Specializes in hastening research and converting resources.',
+    'Artificer': 'An expert in engineering and infrastructure.',
+    'Cleric': 'Has access to many blessings and wards of protection for your county.',
+    'Diplomat': 'Has the ability to persuade other counties.',
+    'Druid': 'An affinity with nature allows them to master food production.',
+    'Hierophant': 'A master cultist who can cast powerful rituals through sacrificing their people.',
+    'Merchant': 'A master of bartering and economics.',
+    'Rogue': 'Capable of espionage and assassination.',
+    'Warlord': 'A master tactician, capable of dominating the battlefield.',
+    'Wizard': 'Has access to a wide arsenal of powerful magic.'}
 
 # Warlord: <Battle> and combat.
 # Wizard: <Magic> and casting and summons
@@ -28,11 +39,13 @@ attack_types = ["Attack", "Pillage", "Raze"]
 
 tax_options = [(i, i) for i in range(16)]
 
-rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (0.75, "Three-Quarters"), (1, "Normal"), (1.5, "One-and-a-half"), (2, "Double"), (3, "Triple")]
+rations_terminology = [(0, "None"), (0.25, "Quarter"), (0.5, "Half"), (0.75, "Three-Quarters"), (1, "Normal"),
+                       (1.5, "One-and-a-half"), (2, "Double"), (3, "Triple")]
 
 excess_worker_choices = [(0, 'Produce Gold'), (1, 'Reclaim Land'), (2, 'Gather Food'), (3, 'Relax')]
 
-all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'quarry', 'fort', 'stables', 'tavern', 'tower', 'bank', 'lab', 'arcane', 'lair']
+all_buildings = ['house', 'field', 'pasture', 'mill', 'mine', 'quarry', 'fort', 'stables', 'tavern', 'tower', 'bank',
+                 'lab', 'arcane', 'lair']
 
 # Don't use modifier in name unless it is racial or class modifier dictionary.
 land_to_clear_ratio = 5
@@ -106,7 +119,8 @@ birth_rate_modifier = {'Elf': ("Elders", -0.15), 'Goblin': ("Expendable", 0.15),
 death_rate_modifier = {}
 income_modifier = {'Merchant': ("Silver Tongue", 0.15)}
 offensive_power_modifier = {'Warlord': ("Relentless", 0.10)}
-infiltration_results_modifier = {'Rogue': ("Master of Disguise", 0.15), 'Ogre': ("Simple-minded", -0.10), 'Goblin': ("Sneaky", 0.10)}
+infiltration_results_modifier = {'Rogue': ("Master of Disguise", 0.15), 'Ogre': ("Simple-minded", -0.10),
+                                 'Goblin': ("Sneaky", 0.10)}
 production_per_worker_modifier = {'Dwarf': ("Dwarven Steel", 0.15)}
 defense_per_citizen_modifier = {'Elf': ("Citizen Militia", 1.00)}
 food_consumed_modifier = {'Dwarf': ("Ravenous", 0.15), 'Ogre': ("Gigantic", 0.20)}
@@ -116,7 +130,6 @@ happiness_modifier = {'Goblin': ("Infighting", -1)}
 amount_of_thieves_modifier = {'Rogue': ("Army of Shadows", 2)}
 spell_results_modifier = {'Wizard': ("Loremaster", 10), 'Elf': ("Affinity", 5)}
 buildings_produced_per_day = {'Artificer': ("Engineer", 1)}
-
 
 all_armies = ["peasant", "archer", "soldier", "besieger", "summon", "elite", "monster"]
 

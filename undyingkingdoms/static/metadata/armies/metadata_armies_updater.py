@@ -27,65 +27,65 @@ def update_armies(background, armies):
         armies['monster'].armour_type = "Plate"
 
     elif background == 'Artificer':
-        armies['summon'].class_name = 'wood golem'
-        armies['summon'].class_name_plural = 'wood golem'
-        armies['summon'].description = 'Wood golems are incredibly well armoured.'
+        armies['summon'].class_name = 'wooden construct'
+        armies['summon'].class_name_plural = 'wooden constructs'
+        armies['summon'].description = 'Wooden construct ...'
         armies['monster'].category = "Infantry"
         armies['monster'].armour_type = "Plate"
 
     elif background == 'Cleric':
-        armies['summon'].class_name = 'holy golem'
-        armies['summon'].class_name_plural = 'holy golem'
-        armies['summon'].description = 'holy golems are incredibly well armoured.'
+        armies['summon'].class_name = 'cherub'
+        armies['summon'].class_name_plural = 'cherubs'
+        armies['summon'].description = 'Cherubs ...'
         armies['monster'].category = "Infantry"
         armies['monster'].armour_type = "Plate"
 
     elif background == 'Diplomat':
-        armies['summon'].class_name = 'talk golem'
-        armies['summon'].class_name_plural = 'talk golem'
-        armies['summon'].description = 'talk golems are incredibly well armoured.'
+        armies['summon'].class_name = 'imp'
+        armies['summon'].class_name_plural = 'imps'
+        armies['summon'].description = 'Imps ...'
         armies['monster'].category = "Infantry"
         armies['monster'].armour_type = "Plate"
 
     elif background == 'Druid':
-        armies['summon'].class_name = 'tree golem'
-        armies['summon'].class_name_plural = 'tree golem'
-        armies['summon'].description = 'tree golems are incredibly well armoured.'
+        armies['summon'].class_name = 'treant'
+        armies['summon'].class_name_plural = 'treants'
+        armies['summon'].description = 'Treants ...'
         armies['monster'].category = "Infantry"
         armies['monster'].armour_type = "Plate"
 
     elif background == 'Hierophant':
-        armies['summon'].class_name = 'sacrifice golem'
-        armies['summon'].class_name_plural = 'sacrifice golem'
-        armies['summon'].description = 'sacrifice golems are incredibly well armoured.'
+        armies['summon'].class_name = 'lesser daemon'
+        armies['summon'].class_name_plural = 'lesser daemons'
+        armies['summon'].description = 'Lesser daemon ...'
         armies['monster'].category = "Infantry"
         armies['monster'].armour_type = "Plate"
 
     elif background == 'Merchant':
-        armies['summon'].class_name = 'gold golem'
-        armies['summon'].class_name_plural = 'gold golem'
-        armies['summon'].description = 'gold golems are incredibly well armoured.'
+        armies['summon'].class_name = 'fairy'
+        armies['summon'].class_name_plural = 'fairies'
+        armies['summon'].description = 'Fairies ...'
         armies['monster'].category = "Infantry"
         armies['monster'].armour_type = "Plate"
 
     elif background == 'Rogue':
-        armies['summon'].class_name = 'thief golem'
-        armies['summon'].class_name_plural = 'thief golem'
-        armies['summon'].description = 'thief golems are incredibly well armoured.'
+        armies['summon'].class_name = 'shadow wraith'
+        armies['summon'].class_name_plural = 'shadow wraiths'
+        armies['summon'].description = 'Shadow wraith ...'
         armies['monster'].category = "Infantry"
         armies['monster'].armour_type = "Plate"
 
     elif background == 'Warlord':
-        armies['summon'].class_name = 'war golem'
-        armies['summon'].class_name_plural = 'war golem'
-        armies['summon'].description = 'war golems are incredibly well armoured.'
+        armies['summon'].class_name = 'valkyrie'
+        armies['summon'].class_name_plural = 'valkyries'
+        armies['summon'].description = 'Valkyrie ...'
         armies['monster'].category = "Infantry"
         armies['monster'].armour_type = "Plate"
 
     elif background == 'Wizard':
-        armies['summon'].class_name = 'magic golem'
-        armies['summon'].class_name_plural = 'magic golem'
-        armies['summon'].description = 'magic golems are incredibly well armoured.'
+        armies['summon'].class_name = 'elemental'
+        armies['summon'].class_name_plural = 'elementals'
+        armies['summon'].description = 'Elementals ...'
         armies['monster'].category = "Infantry"
         armies['monster'].armour_type = "Plate"
 

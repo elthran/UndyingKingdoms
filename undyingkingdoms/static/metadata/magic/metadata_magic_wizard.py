@@ -22,5 +22,16 @@ wizard_spells = {
         mana_sustain=2,
         output=0.5,
         description='Pastures produce +50% grain while this spell is in effect.'
+    ),
+    'summon_tier_1': Magic(
+        name='summon_tier_1',
+        display_name='Summon Elemental',
+        source='Wizard',
+        category='instant',
+        targets='self',
+        known=True,
+        mana_cost=50,
+        output=1,
+        description='Summon an Elemental to join your army.'
     )
 }
