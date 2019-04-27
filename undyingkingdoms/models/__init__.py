@@ -36,13 +36,8 @@ Infiltration.target = db.relationship('County', foreign_keys="[Infiltration.targ
 
 # Attach any addons with multiple participants.
 from .addons.clan_addon import clan_addon
-from undyingkingdoms.models.addons.tech_addons import completed_techs_addon, incomplete_techs_addon, \
-    available_techs_addon, advance_research_addon, establish_requirements_init_addon
 
 clan_addon(User, Clan, Kingdom)
-completed_techs_addon(County)
-incomplete_techs_addon(County)
-available_techs_addon(County)
-advance_research_addon(County)
+
 
 

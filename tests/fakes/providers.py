@@ -1,10 +1,11 @@
 import faker
 from faker.providers import BaseProvider
 
+from tests import bp
 from undyingkingdoms.blueprints.admin.metadata import bot_county_prefix, bot_county_suffix, bot_leader_prefix, \
     bot_leader_suffix
 from undyingkingdoms.static.metadata.metadata import metadata_races, metadata_titles, metadata_backgrounds
-from undyingkingdoms.static.metadata.metadata_research_all import generic_technology, generic_requirements
+from undyingkingdoms.static.metadata.metadata_research_all import generic_technology
 
 fake = faker.Faker()
 
@@ -34,4 +35,5 @@ class Provider(BaseProvider):
 
 
         """
-        return fake.word(ext_word_list=generic_requirements)
+        bp()
+        return fake.pystruct(value_types=['dict', 'str'], ext_word_list=self.tech())
