@@ -9,7 +9,7 @@ def completed_techs_addon(cls):
         primaryjoin=(
             "and_("
             "County.id==technology.c.county_id, "
-            "technology.c.completed==True"
+            "technology.c.completed"
             ")"
         )
 

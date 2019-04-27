@@ -3,12 +3,8 @@ from undyingkingdoms.models import County, Preferences, Kingdom
 
 def initialize_county(user, kingdom, county_name, leader_name, background, race, title):
     county = County(
-        kingdom.id, county_name, leader_name, user.id, race, title, background
+        kingdom.id, county_name, leader_name, user, race, title, background
     )
-    county.save()
-    county.vote = county.id
-    preferences = Preferences(county.id, user.id)
-    preferences.save()
     return county
 
 

@@ -67,3 +67,6 @@ class TestingConfig:
     # Disable CSRF tokens in the Forms (only valid for testing purposes!)
     WTF_CSRF_ENABLED = False
 
+    # show all sql queries
+    # SQLALCHEMY_ECHO = True
+

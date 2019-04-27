@@ -12,7 +12,7 @@ from undyingkingdoms.models.forms.votes import VoteForm
 @login_required
 def kingdom(template, kingdom_id=0):
     kingdom = Kingdom.query.get(kingdom_id)
-    form = VoteForm(vote=current_user.county.preferences.vote)
+    form = VoteForm(vote=current_user.county.preferences.vote_id)
     form.vote.choices = [(county.id, county.name) for county in current_user.county.kingdom.counties]
     if form.validate_on_submit():
         current_user.county.cast_vote(form.vote.data)

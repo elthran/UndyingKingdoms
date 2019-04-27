@@ -98,15 +98,15 @@ class County(GameState):
     technologies = db.relationship(
         "Technology",
         collection_class=attribute_mapped_collection('name'),
-        cascade="all, delete, delete-orphan", passive_deletes=True
+        cascade="all, delete, delete-orphan", passive_deletes=True,
     )
 
-    preferences = db.relationship("Preferences", uselist=False)
+    preferences = db.relationship("Preferences", back_populates='county', uselist=False, foreign_keys="Preferences.county_id")
 
-    def __init__(self, kingdom_id, name, leader, user_id, race, title, background):
+    def __init__(self, kingdom_id, name, leader, user, race, title, background):
         self.name = name
         self.leader = leader
-        self.user_id = user_id
+        self.user = user
         self.kingdom_id = kingdom_id
         self.race = race
         self.title = title

@@ -11,24 +11,26 @@ if __name__ == "__main__":
 
 from tests import bp
 
-from tests.fakes import UserFactory
+from tests.fakes import UserFactory, CountyFactory
 from undyingkingdoms.controler.initialize import initialize_county, pick_kingdom
 
 
 def initialize_account():
-    user = UserFactory()
-    user.save()
-    kingdom = pick_kingdom(user, False)
-    county = initialize_county(user, kingdom, 'county', 'leader', 'Merchant', 'Dwarf', 'Baron')
+    user = UserFactory.create()
+    county = CountyFactory.create(user=user)
     return county
 
 
 def test_completed_techs(app):
     with app.app_context():
+        # app.config['SQLALCHEMY_ECHO'] = True
         county = initialize_account()
+
         assert county.completed_techs == []
+        assert set(county.technologies.values()) == set(county.incomplete_techs)
 
         tech1 = county.technologies['agriculture']
         tech1.completed = True
 
+        bp()
         assert county.completed_techs == [tech1]
