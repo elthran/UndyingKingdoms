@@ -1,44 +1,48 @@
 import functools
 
-from extensions import flask_db as db
+from sqlalchemy.ext.hybrid import hybrid_property
+
+from tests import bp
 
 
 def completed_techs_addon(cls):
-    cls.completed_techs = db.relationship(
-        'Technology',
-        primaryjoin=(
-            "and_("
-            "County.id==technology.c.county_id, "
-            "technology.c.completed"
-            ")"
-        )
+    def get_completed_techs(self):
+        """Return generator of completed technologies.
 
-    )
+        Note: for reuse convert to list or set.
+        """
+        for tech in self.technologies.values():
+            if tech.completed:
+                yield tech
+
+    cls.completed_techs = hybrid_property(get_completed_techs)
 
 
 def incomplete_techs_addon(cls):
-    cls.incomplete_techs = db.relationship(
-        'Technology',
-        primaryjoin=(
-            "and_("
-            "County.id==technology.c.county_id, "
-            "technology.c.completed==False"
-            ")"
-        )
+    def get_incomplete_techs(self):
+        """Return generator of not completed technologies.
 
-    )
+        Note: for reuse convert to list or set.
+        """
+        for tech in self.technologies.values():
+            if not tech.completed:
+                yield tech
+
+    cls.incomplete_techs = hybrid_property(get_incomplete_techs)
 
 
 def available_techs_addon(cls):
     def get_available_techs(self):
-        completed_tech = self.completed_techs
-        available_techs = []
-        for tech in self.incomplete_techs:
-            if (tech.requirements - completed_tech) is None:
-                available_techs.append(tech)
-        return available_techs
+        """Generate incomplete techs with met requirements.
 
-    cls.get_available_techs = get_available_techs
+        Note: for reuse convert to list or set.
+        """
+        completed_techs = set(self.completed_techs)
+        for tech in self.incomplete_techs:
+            if (set(tech.requirements) - completed_techs) is None:
+                yield tech
+
+    cls.available_techs = hybrid_property(get_available_techs)
 
 
 def advance_research_addon(cls):
@@ -60,6 +64,23 @@ def advance_research_addon(cls):
 
 
 def establish_requirements_init_addon(county_cls, tech_cls, metadata):
+    """Decorate county creation with requirement generation.
+
+    :param county_cls: County object.
+    :param tech_cls: Technology object.
+    :param metadata: a dictionary of tech requirement names.
+    :return: None
+
+    Does:
+        metadata = {
+            'public works': [
+                'engineering',
+                'logistics'
+            ],
+        }
+        county = County()
+        Technology.establish_requirements(county.technologies, metadata)
+    """
     def establish_requirements(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):

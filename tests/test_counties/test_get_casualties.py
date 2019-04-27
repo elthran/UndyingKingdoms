@@ -14,12 +14,14 @@ from undyingkingdoms.models.counties import County
 def test_get_casualties(app):
     with app.app_context():
         county = County.query.first()
+        raise Warning("county.get_casualites() no longer exists, please update this code!")
         assert 8 < county.get_casualties(500) < 61
 
 
 def test_negative_casualties(app):
     with app.app_context():
         county = County.query.first()
+        raise Warning("county.get_casualites() no longer exists, please update this code!")
         assert 34 < county.get_casualties(500000) < 500000
 
         for unit in county.armies.values():

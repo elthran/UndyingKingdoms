@@ -27,11 +27,20 @@ def test_completed_techs(app):
         county = initialize_account()
         county.save()
 
-        assert county.completed_techs == []
+        assert list(county.completed_techs) == []
         assert set(county.technologies.values()) == set(county.incomplete_techs)
 
-        tech1 = county.technologies['agriculture']
-        tech1.completed = True
+        tech = county.technologies['agriculture']
+        tech.completed = True
 
-        bp()
-        assert county.completed_techs == [tech1]
+        assert list(county.completed_techs) == [tech]
+        assert len(list(county.incomplete_techs)) == len(county.technologies) - 1
+
+
+def test_available_techs(app):
+    with app.app_context():
+        county = initialize_account()
+        county.save()
+
+        assert list(county.technologies) != []
+        assert list(county.available_techs) != []
