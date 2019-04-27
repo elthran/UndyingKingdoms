@@ -16,8 +16,8 @@ from undyingkingdoms.controler.initialize import initialize_county, pick_kingdom
 
 
 def initialize_account():
-    user = UserFactory.create()
-    county = CountyFactory.create(user=user)
+    user = UserFactory()
+    county = CountyFactory(user=user)
     return county
 
 
@@ -25,6 +25,7 @@ def test_completed_techs(app):
     with app.app_context():
         # app.config['SQLALCHEMY_ECHO'] = True
         county = initialize_account()
+        county.save()
 
         assert county.completed_techs == []
         assert set(county.technologies.values()) == set(county.incomplete_techs)

@@ -28,7 +28,7 @@ class Preferences(GameState):
     weather_choices = ["clear skies", "stormy", "sunny", "cloudy", "light rain", "overcast"]
 
     def all_messages_query(self):
-        return Chatroom.query.filter((Chatroom.is_global) | (Chatroom.kingdom_id == self.county.kingdom_id))
+        return Chatroom.query.filter(Chatroom.is_global | (Chatroom.kingdom_id == self.county.kingdom_id))
 
     def has_mail(self):
         return Message.query.filter_by(county_id=self.county_id, unread=True).first() is not None
@@ -47,8 +47,8 @@ class Preferences(GameState):
             return most_recent_message.time_created
 
     def __init__(self, county, user):
-        self.county_id = county
-        self.user_id = user
+        self.county = county
+        self.user = user
         self.tax_rate = 8
         self.rations = 1
         self.production_choice = 0

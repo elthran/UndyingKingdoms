@@ -1,6 +1,7 @@
-from factory import LazyAttribute, Faker
+import factory
 from factory.alchemy import SQLAlchemyModelFactory
 from faker.providers import BaseProvider
+import faker
 
 from extensions import flask_db
 from tests import bp
@@ -13,23 +14,28 @@ county_names = ['Daspeoland', 'Ieswouya', 'Iofrary', 'Zufra', 'Straodan', 'Spueq
 leader_names = ['Smartsprinter', 'Mossfollower', 'Mildstone', 'Fourtree', 'Wheattide', 'Netherguard', 'Terrastriker', 'Freegloom', 'Talltail', 'Heartmark']
 
 
+fake = faker.Faker()
+
+
 class Provider(BaseProvider):
     def county(self):
-        return Faker('word', ext_word_list=county_names)
+        return fake.word(ext_word_list=county_names)
 
     def leader(self):
-        return Faker('word', ext_word_list=leader_names)
+        return fake.word(ext_word_list=leader_names)
 
     def race(self):
-        return Faker('word', ext_word_list=metadata_races)
+        return fake.word(ext_word_list=metadata_races)
 
     def title(self):
-        return Faker('word', ext_word_list=metadata_titles)
+        return fake.word(ext_word_list=metadata_titles)
 
     def background(self):
-        return Faker('word', ext_word_list=metadata_backgrounds)
+        return fake.word(ext_word_list=metadata_backgrounds)
 
-Faker.add_provider(Provider)
+
+factory.Faker.add_provider(Provider)
+
 
 class SQLAlcMeta:
     sqlalchemy_session = flask_db.session
@@ -40,8 +46,8 @@ class UserFactory(SQLAlchemyModelFactory):
     class Meta(SQLAlcMeta):
         model = User
 
-    username = Faker('user_name')
-    email = LazyAttribute(lambda a: a.username + "@email.ca")
+    username = factory.Faker('user_name')
+    email = factory.LazyAttribute(lambda a: a.username + "@email.ca")
     password = 'password'
 
 
@@ -50,9 +56,9 @@ class CountyFactory(SQLAlchemyModelFactory):
         model = County
 
     user = UserFactory.build()
-    kingdom_id = LazyAttribute(lambda a: pick_kingdom(a.user, False).id)
-    name = Faker('county')
-    leader = Faker('leader')
-    race = Faker('race')
-    title = Faker('title')
-    background = Faker('background')
+    kingdom_id = factory.LazyAttribute(lambda a: pick_kingdom(a.user, False).id)
+    name = factory.Faker('county')
+    leader = factory.Faker('leader')
+    race = factory.Faker('race')
+    title = factory.Faker('title')
+    background = factory.Faker('background')
