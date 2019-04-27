@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
 from tests import bp
 
-from tests.fakes import UserFactory, CountyFactory
+from tests.fakes.factories import UserFactory, CountyFactory
 from undyingkingdoms.controler.initialize import initialize_county, pick_kingdom
 
 

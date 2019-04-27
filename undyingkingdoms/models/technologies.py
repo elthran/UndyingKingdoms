@@ -7,7 +7,7 @@ class Technology(GameEvent):
     county_day = db.Column(db.Integer)
     name = db.Column(db.String(64))
     current = db.Column(db.Integer)
-    required = db.Column(db.Integer)
+    cost = db.Column(db.Integer)
     tier = db.Column(db.Integer)
     level = db.Column(db.Integer)
     max_level = db.Column(db.Integer)
@@ -17,7 +17,7 @@ class Technology(GameEvent):
     requirement_id = db.Column(db.Integer, db.ForeignKey('technology.id'))
     requirements = db.relationship("Technology")
 
-    def __init__(self, name, required, tier, max_level, description, requirements=None):
+    def __init__(self, name, cost, tier, max_level, description, requirements=None):
         if requirements is None:
             requirements = []
 
@@ -25,7 +25,7 @@ class Technology(GameEvent):
         self.county_day = None
         self.name = name
         self.current = 0
-        self.required = required
+        self.cost = cost
         self.tier = tier
         self.level = 0
         self.max_level = max_level
