@@ -35,6 +35,7 @@ class Technology(GameEvent):
 
     @staticmethod
     def establish_requirements(techs, metadata):
+        """Merge a dict of requirements in a dict of technologies."""
         for key in metadata:
             for requirement in metadata[key]:
                 techs[key].requirements.append(techs[requirement])

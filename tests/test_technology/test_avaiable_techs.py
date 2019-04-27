@@ -12,11 +12,16 @@ if __name__ == "__main__":
 from tests import bp
 
 from tests.fakes.factories import UserFactory, CountyFactory
+from tests.fakes.providers import fake
+from undyingkingdoms.models import Preferences, Technology
 
 
 def initialize_account():
     user = UserFactory()
     county = CountyFactory(user=user)
+    Preferences(county, user)
+    requirements = fake.requirements()
+    Technology.establish_requirements(county.technologies, requirements)
     return county
 
 

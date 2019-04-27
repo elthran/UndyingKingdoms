@@ -35,7 +35,7 @@ def available_techs_addon(cls):
 
         Note: for reuse convert to list or set.
         """
-        bp()
+
         completed_techs = set(self.completed_techs)
         for tech in self.incomplete_techs:
             if not (set(tech.requirements) - completed_techs):
