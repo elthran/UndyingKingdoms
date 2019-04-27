@@ -3,12 +3,14 @@ from flask_login import current_user, login_required
 
 from undyingkingdoms import app
 from undyingkingdoms.controler.initialize import initialize_county, pick_kingdom
+from undyingkingdoms.models import Technology
 from undyingkingdoms.models.forms.initialize import InitializeForm
 from undyingkingdoms.static.metadata.metadata import metadata_races, metadata_backgrounds, metadata_titles
 from undyingkingdoms.static.metadata.metadata_armies_dwarf import dwarf_armies
 from undyingkingdoms.static.metadata.metadata_armies_elf import elf_armies
 from undyingkingdoms.static.metadata.metadata_armies_goblin import goblin_armies
 from undyingkingdoms.static.metadata.metadata_armies_human import human_armies
+from undyingkingdoms.static.metadata.metadata_research_all import generic_requirements
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])
@@ -40,9 +42,10 @@ def initialize():
         background = backgrounds[form.background.data]
         county_name = form.county.data
         leader_name = form.leader.data
-        initialize_county(
+        county = initialize_county(
             current_user, kingdom, county_name, leader_name, background, race, title
         )
+        Technology.establish_requirements(county.technologies, generic_requirements)
         return redirect(url_for('overview'))
     return render_template(
         "index/initialize.html",

@@ -38,14 +38,11 @@ Infiltration.target = db.relationship('County', foreign_keys="[Infiltration.targ
 from .addons.clan_addon import clan_addon
 from undyingkingdoms.models.addons.tech_addons import completed_techs_addon, incomplete_techs_addon, \
     available_techs_addon, advance_research_addon, establish_requirements_init_addon
-from undyingkingdoms.static.metadata.metadata_research_all import generic_requirements
-from undyingkingdoms.models.counties.preferences_addon import preferences_init_addon
 
 clan_addon(User, Clan, Kingdom)
 completed_techs_addon(County)
 incomplete_techs_addon(County)
 available_techs_addon(County)
 advance_research_addon(County)
-establish_requirements_init_addon(County, Technology, generic_requirements)
-preferences_init_addon(County, Preferences)
+
 

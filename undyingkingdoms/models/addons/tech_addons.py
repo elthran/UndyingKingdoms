@@ -1,5 +1,3 @@
-import functools
-
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from tests import bp
@@ -63,32 +61,3 @@ def advance_research_addon(cls):
 
     cls.advance_research = advance_research
 
-
-def establish_requirements_init_addon(county_cls, tech_cls, metadata):
-    """Decorate county creation with requirement generation.
-
-    :param county_cls: County object.
-    :param tech_cls: Technology object.
-    :param metadata: a dictionary of tech requirement names.
-    :return: None
-
-    Does:
-        metadata = {
-            'public works': [
-                'engineering',
-                'logistics'
-            ],
-        }
-        county = County()
-        Technology.establish_requirements(county.technologies, metadata)
-    """
-    def establish_requirements(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            self = args[0]  # I think?
-            result = func(*args, **kwargs)
-            tech_cls.establish_requirements(self.technologies, metadata)
-            return result
-        return wrapper
-
-    county_cls.__init__ = establish_requirements(county_cls.__init__)
