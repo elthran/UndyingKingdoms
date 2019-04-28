@@ -2,7 +2,7 @@ import math
 
 
 def bell_curvish(size):
-    """Produce a bell curvish distribution of groups.
+    """Produce a bell curve-ish distribution of groups.
 
     [[round(y / sum(bell_curvish(x)) * 100)
       for y in bell_curvish(x)]
@@ -37,6 +37,7 @@ def bell_curvish(size):
 
 
 def normalize(values, bounds):
+    """Normalize some data between given bounds."""
     return [
         bounds['desired']['lower'] + (x - bounds['actual']['lower'])
         * (bounds['desired']['upper'] - bounds['desired']['lower'])
@@ -45,11 +46,12 @@ def normalize(values, bounds):
     ]
 
 
-def curve_bounds(curve, words, lower=4):
+def curve_bounds(curve, data, lower=4):
+    """Return the bounds of a curve given data"""
     bounds = dict(
         desired=dict(
             lower=lower,
-            upper=len(words),
+            upper=len(data),
         ),
         actual=dict(
             lower=curve[0],

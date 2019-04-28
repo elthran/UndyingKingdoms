@@ -12,7 +12,7 @@ from undyingkingdoms.static.metadata.armies.metadata_armies_dwarf import dwarf_a
 from undyingkingdoms.static.metadata.armies.metadata_armies_elf import elf_armies
 from undyingkingdoms.static.metadata.armies.metadata_armies_goblin import goblin_armies
 from undyingkingdoms.static.metadata.armies.metadata_armies_human import human_armies
-from undyingkingdoms.static.metadata.metadata_research_all import generic_requirements
+from undyingkingdoms.static.metadata.research.metadata_research_all import generic_requirements
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])

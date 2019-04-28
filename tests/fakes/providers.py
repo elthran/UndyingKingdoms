@@ -8,7 +8,7 @@ from undyingkingdoms.blueprints.admin.metadata import bot_county_prefix, bot_cou
     bot_leader_suffix
 from undyingkingdoms.calculations.distributions import bell_curvish, normalize, curve_bounds
 from undyingkingdoms.static.metadata.metadata import metadata_races, metadata_titles, metadata_backgrounds
-from undyingkingdoms.static.metadata.metadata_research_all import generic_technology
+from undyingkingdoms.static.metadata.research.metadata_research_all import generic_technology
 from utilities.helpers import romanize
 
 fake = faker.Faker()
@@ -43,8 +43,9 @@ class Provider(BaseProvider):
         return fake.word(ext_word_list=technologies)
 
     def requirement(self, requirements=None, nb_elements=2, variable_nb_elements=True):
-        """Looks like this:
+        """Return a technology its associated requirement list.
 
+        Looks like this:
         ('public works', ['engineering', 'logistics'])
         """
         if variable_nb_elements:
@@ -59,8 +60,9 @@ class Provider(BaseProvider):
         return key, value
 
     def requirements(self, requirements=None, depth=6, level_1s=4, variable_nb_elements=True):
-        """Looks like this:
+        """Return a tree of depth x with a bell curve-ish shape.
 
+        Looks like this:
         generic_requirements = {
             'public works': [
                 'engineering',
@@ -72,11 +74,12 @@ class Provider(BaseProvider):
             requirements = generic_technology.keys()
         if variable_nb_elements:
             level_1s = self.randomize_nb_elements(level_1s, min=1)
+        if depth < 3:
+            raise ValueError("You can't generate a tree of less than 3 depth.")
 
         curve = bell_curvish(depth)
         bounds = curve_bounds(curve, requirements, level_1s)
         norms = [round(n) for n in normalize(curve, bounds)]
-
 
         req_dict = {}
         for index, layer_size in enumerate(norms):
