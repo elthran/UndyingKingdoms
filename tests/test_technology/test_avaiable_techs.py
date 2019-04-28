@@ -9,7 +9,7 @@ if __name__ == "__main__":
     os.system(f"python3 -m pytest -vvsx {__file__}")
     exit(1)  # prevents code from trying to run file afterwards.
 
-from tests import bp
+from tests import bp, pp
 
 from tests.fakes.factories import UserFactory, CountyFactory
 from tests.fakes.providers import fake
@@ -43,6 +43,7 @@ def test_available_techs(app):
     with app.app_context():
         county = initialize_account()
         requirements = fake.requirements()
+        # pp(requirements)
         Technology.establish_requirements(county.technologies, requirements)
         county.save()
 

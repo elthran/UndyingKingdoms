@@ -84,6 +84,7 @@ class Provider(BaseProvider):
         req_dict = {}
         for index, layer_size in enumerate(norms):
             for _ in range(layer_size):
+                # TODO: should reduce local set of requirements each execution
                 key, value = self.requirement(requirements)
                 # names to be 1st, 2nd, 3rd, etc.
                 key = romanize(key, index)
