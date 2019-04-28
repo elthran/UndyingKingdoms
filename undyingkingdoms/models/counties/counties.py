@@ -11,36 +11,55 @@ from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
 from undyingkingdoms.models.trades import Trade
 from undyingkingdoms.models.magic import Casting
+from undyingkingdoms.static.metadata.armies.metadata_armies_updater import update_armies
+from undyingkingdoms.static.metadata.magic.metadata_magic_artificer import artificer_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_cleric import cleric_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_diplomat import diplomat_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_druid import druid_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_hierophant import hierophant_spells
 from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
-    happiness_modifier, spell_chance_modifier, infiltration_success_modifier
+    happiness_modifier, buildings_produced_per_day, food_produced_modifier
 
 from copy import deepcopy
 
-from undyingkingdoms.static.metadata.metadata_armies_dwarf import dwarf_armies
-from undyingkingdoms.static.metadata.metadata_armies_elf import elf_armies
-from undyingkingdoms.static.metadata.metadata_armies_goblin import goblin_armies
-from undyingkingdoms.static.metadata.metadata_armies_human import human_armies
-from undyingkingdoms.static.metadata.metadata_buildings_dwarf import dwarf_buildings
-from undyingkingdoms.static.metadata.metadata_buildings_elf import elf_buildings
-from undyingkingdoms.static.metadata.metadata_buildings_goblin import goblin_buildings
-from undyingkingdoms.static.metadata.metadata_buildings_human import human_buildings
-from undyingkingdoms.static.metadata.metadata_magic_alchemist import alchemist_spells
-from undyingkingdoms.static.metadata.metadata_magic_all import generic_spells
-from undyingkingdoms.static.metadata.metadata_magic_dwarf import dwarf_spells
-from undyingkingdoms.static.metadata.metadata_magic_elf import elf_spells
-from undyingkingdoms.static.metadata.metadata_magic_goblin import goblin_spells
-from undyingkingdoms.static.metadata.metadata_magic_human import human_spells
-from undyingkingdoms.static.metadata.metadata_magic_merchant import merchant_spells
-from undyingkingdoms.static.metadata.metadata_magic_rogue import rogue_spells
-from undyingkingdoms.static.metadata.metadata_magic_warlord import warlord_spells
-from undyingkingdoms.static.metadata.metadata_magic_wizard import wizard_spells
-from undyingkingdoms.static.metadata.metadata_research_all import generic_technology, generic_requirements
-from undyingkingdoms.static.metadata.metadata_research_dwarf import dwarf_technology
-from undyingkingdoms.static.metadata.metadata_research_elf import elf_technology
-from undyingkingdoms.static.metadata.metadata_research_goblin import goblin_technology
-from undyingkingdoms.static.metadata.metadata_research_human import human_technology
-from undyingkingdoms.static.metadata.metadata_research_rogue import rogue_technology
+from undyingkingdoms.static.metadata.armies.metadata_armies_dwarf import dwarf_armies
+from undyingkingdoms.static.metadata.armies.metadata_armies_elf import elf_armies
+from undyingkingdoms.static.metadata.armies.metadata_armies_goblin import goblin_armies
+from undyingkingdoms.static.metadata.armies.metadata_armies_human import human_armies
+from undyingkingdoms.static.metadata.armies.metadata_armies_ogre import ogre_armies
+from undyingkingdoms.static.metadata.buildings.metadata_buildings_dwarf import dwarf_buildings
+from undyingkingdoms.static.metadata.buildings.metadata_buildings_elf import elf_buildings
+from undyingkingdoms.static.metadata.buildings.metadata_buildings_goblin import goblin_buildings
+from undyingkingdoms.static.metadata.buildings.metadata_buildings_human import human_buildings
+from undyingkingdoms.static.metadata.buildings.metadata_buildings_ogre import ogre_buildings
+from undyingkingdoms.static.metadata.magic.metadata_magic_alchemist import alchemist_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_all import generic_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_dwarf import dwarf_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_elf import elf_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_goblin import goblin_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_human import human_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_merchant import merchant_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_ogre import ogre_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_rogue import rogue_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_warlord import warlord_spells
+from undyingkingdoms.static.metadata.magic.metadata_magic_wizard import wizard_spells
+from undyingkingdoms.static.metadata.research.metadata_research_alchemist import alchemist_technology
+from undyingkingdoms.static.metadata.research.metadata_research_all import generic_technology
+from undyingkingdoms.static.metadata.research.metadata_research_artificer import artificer_technology
+from undyingkingdoms.static.metadata.research.metadata_research_cleric import cleric_technology
+from undyingkingdoms.static.metadata.research.metadata_research_diplomat import diplomat_technology
+from undyingkingdoms.static.metadata.research.metadata_research_druid import druid_technology
+from undyingkingdoms.static.metadata.research.metadata_research_dwarf import dwarf_technology
+from undyingkingdoms.static.metadata.research.metadata_research_elf import elf_technology
+from undyingkingdoms.static.metadata.research.metadata_research_goblin import goblin_technology
+from undyingkingdoms.static.metadata.research.metadata_research_hierophant import hierophant_technology
+from undyingkingdoms.static.metadata.research.metadata_research_human import human_technology
+from undyingkingdoms.static.metadata.research.metadata_research_merchant import merchant_technology
+from undyingkingdoms.static.metadata.research.metadata_research_ogre import ogre_technology
+from undyingkingdoms.static.metadata.research.metadata_research_rogue import rogue_technology
+from undyingkingdoms.static.metadata.research.metadata_research_warlord import warlord_technology
+from undyingkingdoms.static.metadata.research.metadata_research_wizard import wizard_technology
 
 
 class County(GameState):
@@ -153,23 +172,56 @@ class County(GameState):
             self.armies = deepcopy(goblin_armies)
             self.magic = {**deepcopy(generic_spells), **deepcopy(goblin_spells)}
             self.technologies = {**deepcopy(generic_technology), **deepcopy(goblin_technology)}
+        elif self.race == 'Ogre':
+            self.buildings = deepcopy(ogre_buildings)
+            self.armies = deepcopy(ogre_armies)
+            self.magic = {**deepcopy(generic_spells), **deepcopy(ogre_spells)}
+            self.technologies = {**deepcopy(generic_technology), **deepcopy(ogre_technology)}
         else:
             raise AttributeError('Buildings and Armies were not found in metadata')
 
+        self.armies = update_armies(self.background, self.armies)
+
         if self.background == "Alchemist":
             self.magic = {**self.magic, **deepcopy(alchemist_spells)}
+            self.technologies = {**self.technologies, **deepcopy(alchemist_technology)}
+            self.buildings["lab"].output *= 2
+
+        elif self.background == "Artificer":
+            self.magic = {**self.magic, **deepcopy(artificer_spells)}
+            self.technologies = {**self.technologies, **deepcopy(artificer_technology)}
+
+        elif self.background == "Cleric":
+            self.magic = {**self.magic, **deepcopy(cleric_spells)}
+            self.technologies = {**self.technologies, **deepcopy(cleric_technology)}
+
+        elif self.background == "Diplomat":
+            self.magic = {**self.magic, **deepcopy(diplomat_spells)}
+            self.technologies = {**self.technologies, **deepcopy(diplomat_technology)}
+
+        elif self.background == "Druid":
+            self.magic = {**self.magic, **deepcopy(druid_spells)}
+            self.technologies = {**self.technologies, **deepcopy(druid_technology)}
+
+        elif self.background == "Hierophant":
+            self.magic = {**self.magic, **deepcopy(hierophant_spells)}
+            self.technologies = {**self.technologies, **deepcopy(hierophant_technology)}
+
         elif self.background == "Merchant":
             self.magic = {**self.magic, **deepcopy(merchant_spells)}
+            self.technologies = {**self.technologies, **deepcopy(merchant_technology)}
+
         elif self.background == "Warlord":
             self.magic = {**self.magic, **deepcopy(warlord_spells)}
+            self.technologies = {**self.technologies, **deepcopy(warlord_technology)}
+
         elif self.background == "Wizard":
             self.magic = {**self.magic, **deepcopy(wizard_spells)}
+            self.technologies = {**self.technologies, **deepcopy(wizard_technology)}
+
         elif self.background == "Rogue":
             self.magic = {**self.magic, **deepcopy(rogue_spells)}
             self.technologies = {**self.technologies, **deepcopy(rogue_technology)}
-
-        if self.background == "Alchemist":
-            self.buildings["lab"].output *= 2
 
     def get_int_between_0_to_100(self, input):
         return int(max(min(100, input), 0))
@@ -380,6 +432,8 @@ class County(GameState):
                 notification.save()
                 self.armies['peasant'].traveling -= expedition.peasant
                 self.armies['soldier'].traveling -= expedition.soldier
+                self.armies['besieger'].traveling -= expedition.besieger
+                self.armies['summon'].traveling -= expedition.summon
                 self.armies['elite'].traveling -= expedition.elite
                 self.armies['monster'].traveling -= expedition.monster
                 self.land += expedition.land_acquired
@@ -598,6 +652,7 @@ class County(GameState):
 
     def get_produced_grain(self):
         modifier = 1
+        modifier += food_produced_modifier.get(self.race, ("", 0))[1] + food_produced_modifier.get(self.background, ("", 0))[1]
         if self.technologies['agriculture'].completed:
             modifier += 0.5
         modify_grain_rate = Casting.query.filter_by(target_id=self.id, name="modify_grain_rate").filter((Casting.duration > 0) | (Casting.active == True)).all()
@@ -607,6 +662,7 @@ class County(GameState):
 
     def get_produced_dairy(self):
         modifier = 1
+        modifier += food_produced_modifier.get(self.race, ("", 0))[1] + food_produced_modifier.get(self.background, ("", 0))[1]
         if self.technologies['animal husbandry'].completed:
             modifier += 0.5
         verdant_growth = Casting.query.filter_by(target_id=self.id, active=1, name="verdant growth").first()
@@ -812,8 +868,13 @@ class County(GameState):
 
     def get_number_of_buildings_produced_per_day(self):
         amount = 3
+
         if self.technologies.get("engineering") and self.technologies["engineering"].completed:
             amount += 1
+
+        amount += buildings_produced_per_day.get(self.race, ("", 0))[1] \
+                  + buildings_produced_per_day.get(self.background, ("", 0))[1]
+
         return amount
 
     def produce_pending_buildings(self):
@@ -940,6 +1001,29 @@ class County(GameState):
         self.population -= citizens_killed
         return casualties + citizens_killed
 
+    def get_score_from_winning_battle(self, enemy, modifier):
+        score = (enemy.land ** 3) / (self.land ** 2) * 0.1
+        modifier -= max((self.day - enemy.day) ** 0.8 / 100, 0)
+        score = max(score, 1) * modifier  # Add the current modifier
+        score = int(min(score, enemy.land * 0.2))  # Make sure it doesn't exceed 20% of their land
+        return score
+
+    def get_resources_from_winning_pillage(self, enemy, modifier):
+        enemy_resources = {'gold': (enemy.gold, 1),
+                           'wood': (enemy.wood, 1.5),
+                           'iron': (enemy.iron, 3)}
+        modifier -= max((self.day - enemy.day + self.land - enemy.land) ** 0.8 / 100, 0)
+        enemy_total_value = enemy_resources['gold'][0] + enemy_resources['wood'][0] + enemy_resources['iron'][0]
+        attackers_gain_value = min(enemy_total_value * 0.2 * modifier, 500)  # You can gain a maximum of 500 value from a pillage
+        gains = {'gold': 0, 'wood': 0, 'iron': 0}
+        while attackers_gain_value > 0:
+            enemy_resources = {key: value for key, value in enemy_resources.items() if value[0] > 0}
+            element = choice(list(enemy_resources))
+            attackers_gain_value -= enemy_resources[element][1]
+            gains[element] += 1
+        print(gains)
+        return gains
+
     def battle_results(self, army, enemy, attack_type):
         war = None
         rewards_modifier = 1.00
@@ -997,20 +1081,16 @@ class County(GameState):
         expedition.duration = self.get_army_duration(win, attack_type)
         if win:
             expedition.success = True
+            war_score = self.get_score_from_winning_battle(enemy, rewards_modifier)
             if expedition.mission == "Attack":
-                land_gained = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1) * rewards_modifier
-                land_gained = int(min(land_gained, enemy.land * 0.2))
-                war_score = land_gained
-                expedition.land_acquired = land_gained
-                enemy.land -= land_gained
+                expedition.land_acquired = war_score
+                enemy.land -= war_score
                 notification = Notification(enemy.id, notification_title,
-                                            f"You lost {land_gained} acres and {defence_casualties} troops in the battle.",
+                                            f"You lost {war_score} acres and {defence_casualties} troops in the battle.",
                                             self.kingdom.world.day)
-                message += f" You gained {land_gained} acres, but lost {casualties} troops in the battle."
+                message += f" You gained {war_score} acres, but lost {casualties} troops in the battle."
             elif expedition.mission == "Raze":
-                land_razed = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1) * rewards_modifier
-                land_razed = int(min(land_razed, enemy.land * 0.2))
-                war_score = land_razed
+                land_razed = int(war_score * 1.50)
                 expedition.land_razed = land_razed
                 enemy.land -= land_razed
                 notification = Notification(enemy.id, notification_title,
@@ -1018,18 +1098,7 @@ class County(GameState):
                                             self.kingdom.world.day)
                 message += f" You razed {land_razed} acres, but lost {casualties} troops in the battle."
             elif expedition.mission == "Pillage":
-                war_score = int(min(max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1) * rewards_modifier, enemy.land * 0.2))
-                enemy_resources = {'gold': (enemy.gold, 1),
-                                   'wood': (enemy.wood, 1.5),
-                                   'iron': (enemy.iron, 3)}
-                enemy_total_value = enemy_resources['gold'][0] + enemy_resources['wood'][0] + enemy_resources['iron'][0]
-                attackers_gain_value = min(enemy_total_value * 0.2 * rewards_modifier, 500)  # You can gain a maximum of 500 value from a pillage
-                gains = {'gold': 0, 'wood': 0, 'iron': 0}
-                while attackers_gain_value > 0:
-                    enemy_resources = {key: value for key, value in enemy_resources.items() if value[0] > 0}
-                    element = choice(list(enemy_resources))
-                    attackers_gain_value -= enemy_resources[element][1]
-                    gains[element] += 1
+                gains = self.get_resources_from_winning_pillage(enemy, rewards_modifier)
                 expedition.gold_gained = gains['gold']
                 expedition.wood_gained = gains['wood']
                 expedition.iron_gained = gains['iron']

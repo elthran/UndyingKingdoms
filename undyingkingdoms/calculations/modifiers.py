@@ -65,6 +65,9 @@ def get_modifiers(county, mod_type, filter_key):
         if county.technologies.get('ranger training') and county.technologies['ranger training'].completed:
             if filter_key == 'soldier':
                 mod_sum += 2
+        if county.technologies.get('sharpened sticks') and county.technologies['sharpened sticks'].completed:
+            if filter_key == 'peasant':
+                mod_sum += 1
 
     if mod_type == 'unit_defence':
         if county.technologies.get('dwarven muskets') and county.technologies['dwarven muskets'].completed:

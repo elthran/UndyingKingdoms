@@ -45,6 +45,8 @@ class DAU(GameEvent):
     peasant = db.Column(db.Integer)
     soldier = db.Column(db.Integer)
     archer = db.Column(db.Integer)
+    besieger = db.Column(db.Integer)
+    summon = db.Column(db.Integer)
     elite = db.Column(db.Integer)
     monster = db.Column(db.Integer)
     maximum_offense = db.Column(db.Integer)
@@ -107,6 +109,8 @@ class DAU(GameEvent):
         self.peasant = county.armies['peasant'].total
         self.soldier = county.armies['soldier'].total
         self.archer = county.armies['archer'].total
+        self.besieger = county.armies['besieger'].total
+        self.summon = county.armies['summon'].total
         self.elite = county.armies['elite'].total
         self.monster = county.armies['monster'].total
         self.maximum_offense = county.get_offensive_strength(scoreboard=True)

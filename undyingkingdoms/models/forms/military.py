@@ -10,6 +10,8 @@ class MilitaryForm(FlaskForm):
     peasant = IntegerField('peasant', validators=[NumberRange(min=0, max=None)], default=0)
     archer = IntegerField('archer', validators=[NumberRange(min=0, max=None)], default=0)
     soldier = IntegerField('soldier', validators=[NumberRange(min=0, max=None)], default=0)
+    besieger = IntegerField('besieger', validators=[NumberRange(min=0, max=None)], default=0)
+    summon = IntegerField('summon', validators=[NumberRange(min=0, max=None)], default=0)
     elite = IntegerField('elite', validators=[NumberRange(min=0, max=None)], default=0)
     monster = IntegerField('monster', validators=[NumberRange(min=0, max=None)], default=0)
 
@@ -31,7 +33,7 @@ class MilitaryForm(FlaskForm):
     def insufficient_gold(self):
         gold_cost = 0
         county = County.query.get(self.county_id.data)
-        for army in [self.peasant, self.archer, self.soldier, self.elite, self.monster]:
+        for army in [self.peasant, self.archer, self.soldier, self.besieger, self.summon, self.elite, self.monster]:
             gold_cost += county.armies[army.name].gold * army.data
         if gold_cost > county.gold:
             self.county_id.errors.append("Not enough gold.")
@@ -40,7 +42,7 @@ class MilitaryForm(FlaskForm):
     def insufficient_wood(self):
         wood_cost = 0
         county = County.query.get(self.county_id.data)
-        for army in [self.peasant, self.archer, self.soldier, self.elite, self.monster]:
+        for army in [self.peasant, self.archer, self.soldier, self.besieger, self.summon, self.elite, self.monster]:
             wood_cost += county.armies[army.name].wood * army.data
         if wood_cost > county.wood:
             self.county_id.errors.append("Not enough wood.")
@@ -49,7 +51,7 @@ class MilitaryForm(FlaskForm):
     def insufficient_iron(self):
         iron_cost = 0
         county = County.query.get(self.county_id.data)
-        for army in [self.peasant, self.archer, self.soldier, self.elite, self.monster]:
+        for army in [self.peasant, self.archer, self.soldier, self.besieger, self.summon, self.elite, self.monster]:
             iron_cost += county.armies[army.name].iron * army.data
         if iron_cost > county.iron:
             self.county_id.errors.append("Not enough iron.")
@@ -68,7 +70,7 @@ class MilitaryForm(FlaskForm):
         county = County.query.get(self.county_id.data)
         available_population = county.get_available_workers()
         required_population = 0
-        for army in [self.peasant, self.archer, self.soldier, self.elite, self.monster]:
+        for army in [self.peasant, self.archer, self.soldier, self.besieger, self.summon, self.elite, self.monster]:
             required_population += army.data
         if required_population > available_population:
             self.county_id.errors.append("Not enough people are available.")

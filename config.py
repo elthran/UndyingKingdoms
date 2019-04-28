@@ -1,5 +1,6 @@
 import private_config
 
+SITE_URL = 'https://www.undyingkingdoms.com'
 DATABASE_NAME = "undyingkingdoms"
 
 MYSQL_BASE = "mysql+mysqldb://{user}:{passwd}@{host}/{dbname}?{options}"

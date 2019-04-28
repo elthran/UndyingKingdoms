@@ -24,6 +24,8 @@ def test_battle_results(app, client):
             peasant=50,
             soldier=100,
             archer=0,
+            besieger=0,
+            summon=10,
             elite=10,
             monster=0
         )

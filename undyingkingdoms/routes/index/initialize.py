@@ -5,11 +5,13 @@ from undyingkingdoms import app
 from undyingkingdoms.controler.initialize import initialize_county, pick_kingdom
 from undyingkingdoms.models import Technology
 from undyingkingdoms.models.forms.initialize import InitializeForm
-from undyingkingdoms.static.metadata.metadata import metadata_races, metadata_backgrounds, metadata_titles
-from undyingkingdoms.static.metadata.metadata_armies_dwarf import dwarf_armies
-from undyingkingdoms.static.metadata.metadata_armies_elf import elf_armies
-from undyingkingdoms.static.metadata.metadata_armies_goblin import goblin_armies
-from undyingkingdoms.static.metadata.metadata_armies_human import human_armies
+from undyingkingdoms.static.metadata.armies.metadata_armies_ogre import ogre_armies
+from undyingkingdoms.static.metadata.metadata import metadata_races, metadata_backgrounds, metadata_titles, \
+    metadata_background_descriptions
+from undyingkingdoms.static.metadata.armies.metadata_armies_dwarf import dwarf_armies
+from undyingkingdoms.static.metadata.armies.metadata_armies_elf import elf_armies
+from undyingkingdoms.static.metadata.armies.metadata_armies_goblin import goblin_armies
+from undyingkingdoms.static.metadata.armies.metadata_armies_human import human_armies
 from undyingkingdoms.static.metadata.metadata_research_all import generic_requirements
 
 
@@ -53,5 +55,7 @@ def initialize():
         dwarf_armies=dwarf_armies,
         human_armies=human_armies,
         elf_armies=elf_armies,
-        goblin_armies=goblin_armies
+        goblin_armies=goblin_armies,
+        ogre_armies=ogre_armies,
+        class_descriptions=metadata_background_descriptions
     )

@@ -139,9 +139,9 @@ class ArcherKiller(InitMixin, Command):
         notification.save()
 
 
-class SummonGolem(InitMixin, Command):
+class SummonTier1(InitMixin, Command):
     def execute(self):
-        pass
+        self.target.armies['summon'].total += self.power
 
 
 class ConvertIronToGold(InitMixin, Command):

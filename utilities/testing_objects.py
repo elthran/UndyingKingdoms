@@ -3,6 +3,7 @@ from private_config import JACOB_TEMPORARY_EMAIL, JACOB_TEMPORARY_ACCOUNT_PASSWO
 from undyingkingdoms import User
 from undyingkingdoms.models import World, Kingdom, County
 from undyingkingdoms.models.forum import Forum, Thread
+from undyingkingdoms.models.preferences import Preferences
 from undyingkingdoms.static.metadata.metadata import kingdom_names
 
 
@@ -18,8 +19,8 @@ def build_testing_objects():
     user.is_admin = True
     user.is_active = True
     user.is_verified = True
-    user.save()
-    county = County(1, "Ulthuan", "Elthran", user, 'Dwarf', 'Sir', 'Warlord')
+    county = County(1, "Ulthuan", "Elthran", user, 'Ogre', 'Sir', 'Alchemist')
+    Preferences(county, user)
     county.save()
     county.vote = county.id
     county.kingdom_id = 1
@@ -36,8 +37,8 @@ def build_testing_objects():
     user.is_admin = True
     user.is_active = True
     user.is_verified = True
-    user.save()
     county = County(2, "Northern Wastes", "Haldon", user, 'Human', 'Sir', 'Merchant')
+    Preferences(county, user)
     county.save()
     county.vote = county.id
     county.buildings['arcane'].total = 5
@@ -55,28 +56,32 @@ def build_testing_objects():
     kingdom.leader = county.id
     # Create AI1 (He is weak and easier to attack for testing)
     user = User("ai1", "1@gmail.com", "star", is_bot=True)
-    user.save()
-    county = County(1, "Robotica1", "Mr. Roboto1", user, 'Dwarf', 'Lady', 'Engineer')
+    county = County(1, "Robotica1", "Mr. Roboto1", user, 'Dwarf', 'Lady', 'Druid')
+    Preferences(county, user)
     county.save()
     county.vote = county.id
     county.armies['peasant'].amount = 0
     county.armies['archer'].amount = 0
     # Create AI2 (He is weak and easier to attack for testing)
     user = User("ai2", "2@gmail.com", "star", is_bot=True)
-    user.save()
-    county = County(2, "Robotica2", "Mr. Roboto2", user, 'Elf', 'Lady', 'Engineer')
+    county = County(2, "Robotica2", "Mr. Roboto2", user, 'Elf', 'Lady', 'Merchant')
+    Preferences(county, user)
     county.save()
     county.vote = county.id
     county.armies['peasant'].amount = 0
     county.armies['archer'].amount = 0
     # Create AI3 (He is weak and easier to attack for testing)
     user = User("ai3", "3@gmail.com", "star", is_bot=True)
-    user.save()
-    county = County(2, "Robotica3", "Mr. Roboto3", user, 'Human', 'Lady', 'Engineer')
+    county = County(2, "Robotica3", "Mr. Roboto3", user, 'Human', 'Lady', 'Hierophant')
+    Preferences(county, user)
     county.save()
     county.vote = county.id
     county.armies['peasant'].amount = 0
     county.armies['archer'].amount = 0
+    # Create user with no county
+    user = User("lonely", "lonely@gmail.com", "star")
+    user.is_verified = True
+    user.save()
     # Create Forum shell
     forum = Forum()
     forum.save()

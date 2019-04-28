@@ -1,6 +1,8 @@
 import pandas as pd
-from undyingkingdoms.static.metadata import metadata, metadata_armies_all, metadata_armies_human, metadata_armies_elf, \
-    metadata_armies_dwarf, metadata_armies_goblin
+from undyingkingdoms.static.metadata import metadata
+from undyingkingdoms.static.metadata.armies import metadata_armies_all
+
+
 # from undyingkingdoms.static.metadata import *
 
 

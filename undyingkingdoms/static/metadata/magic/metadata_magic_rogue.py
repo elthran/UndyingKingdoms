@@ -15,6 +15,7 @@ rogue_spells = {
     'modify_death_rate': Magic(
         name='modify_death_rate',
         display_name='Poisoned Wells',
+        source='Rogue',
         category='timed',
         targets='hostile',
         known=True,
@@ -24,4 +25,15 @@ rogue_spells = {
         description='Poisons an enemy county for 12 days. '
                     'While poisoned, their people die 50% more quickly.'
     ),
+    'summon_tier_1': Magic(
+        name='summon_tier_1',
+        display_name='Summon Shadow Wraith',
+        source='Rogue',
+        category='instant',
+        targets='self',
+        known=True,
+        mana_cost=50,
+        output=1,
+        description='Summon a Shadow Wraith to join your army.'
+    )
 }

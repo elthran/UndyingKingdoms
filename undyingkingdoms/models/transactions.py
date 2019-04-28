@@ -34,6 +34,7 @@ class Transaction(GameEvent):
     peasant = db.Column(db.Integer)
     archer = db.Column(db.Integer)
     soldier = db.Column(db.Integer)
+    besieger = db.Column(db.Integer)
     elite = db.Column(db.Integer)
     monster = db.Column(db.Integer)
 
@@ -61,6 +62,7 @@ class Transaction(GameEvent):
         self.peasant = 0
         self.archer = 0
         self.soldier = 0
+        self.besieger = 0
         self.elite = 0
         self.monster = 0
 

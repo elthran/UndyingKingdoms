@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from undyingkingdoms.static.metadata.metadata_buildings_all import generic_buildings
+from undyingkingdoms.static.metadata.buildings.metadata_buildings_all import generic_buildings
 
 
 elf_buildings = deepcopy(generic_buildings)
