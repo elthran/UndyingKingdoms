@@ -87,8 +87,6 @@ class Provider(BaseProvider):
                 value = [romanize(v, index) for v in value]
                 req_dict[key] = value
 
-        bp()
-
         return req_dict
 
 

@@ -24,9 +24,9 @@ def build_testing_objects():
     county.vote = county.id
     county.kingdom_id = 1
     county.buildings['arcane'].total = 5
-    county.technologies['arcane knowledge I'].completed = True
-    county.technologies['arcane knowledge II'].completed = True
-    county.technologies['arcane knowledge III'].completed = True
+    county.technologies['arcane knowledge'].completed = True
+    # county.technologies['arcane knowledge II'].completed = True
+    # county.technologies['arcane knowledge III'].completed = True
     county.mana = 500
     county.happiness = 80
     kingdom = Kingdom.query.get(1)
@@ -41,9 +41,9 @@ def build_testing_objects():
     county.save()
     county.vote = county.id
     county.buildings['arcane'].total = 5
-    county.technologies['arcane knowledge I'].completed = True
-    county.technologies['arcane knowledge II'].completed = True
-    county.technologies['arcane knowledge III'].completed = True
+    county.technologies['arcane knowledge'].completed = True
+    # county.technologies['arcane knowledge II'].completed = True
+    # county.technologies['arcane knowledge III'].completed = True
     county.mana = 500
     county.happiness = 80
     county.iron = 200

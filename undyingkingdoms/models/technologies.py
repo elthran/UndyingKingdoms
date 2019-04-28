@@ -35,7 +35,14 @@ class Technology(GameEvent):
 
     @staticmethod
     def establish_requirements(techs, metadata):
-        """Merge a dict of requirements in a dict of technologies."""
+        """Merge a dict of requirements in a dict of technologies.
+
+        When a requirement doesn't exist a new tech should be added
+        to the user.
+        """
         for key in metadata:
             for requirement in metadata[key]:
-                techs[key].requirements.append(techs[requirement])
+                try:
+                    techs[key].requirements.append(techs[requirement])
+                except KeyError:
+                    pass  # add new tech to techs

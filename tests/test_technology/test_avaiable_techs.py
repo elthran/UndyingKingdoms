@@ -20,8 +20,6 @@ def initialize_account():
     user = UserFactory()
     county = CountyFactory(user=user)
     Preferences(county, user)
-    requirements = fake.requirements()
-    Technology.establish_requirements(county.technologies, requirements)
     return county
 
 
@@ -44,7 +42,10 @@ def test_completed_techs(app):
 def test_available_techs(app):
     with app.app_context():
         county = initialize_account()
+        requirements = fake.requirements()
+        Technology.establish_requirements(county.technologies, requirements)
         county.save()
 
         assert list(county.technologies) != []
         assert list(county.available_techs) != []
+        assert set(county.technologies.values()) != set(county.available_techs)

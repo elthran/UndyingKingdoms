@@ -321,12 +321,13 @@ class County(GameState):
     @property
     def max_mana(self):
         base = 40
-        if self.technologies['arcane knowledge I'].completed:
+        # TODO: this should be generate from tech list
+        if self.technologies['arcane knowledge'].completed:
             base += 20
-        if self.technologies['arcane knowledge II'].completed:
-            base += 20
-        if self.technologies['arcane knowledge III'].completed:
-            base += 20
+        # if self.technologies['arcane knowledge II'].completed:
+        #     base += 20
+        # if self.technologies['arcane knowledge III'].completed:
+        #     base += 20
         return base
 
     @property
