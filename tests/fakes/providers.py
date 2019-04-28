@@ -3,11 +3,13 @@ from itertools import repeat
 import faker
 from faker.providers import BaseProvider
 
-from tests import bp
+from tests import bp, pp
 from undyingkingdoms.blueprints.admin.metadata import bot_county_prefix, bot_county_suffix, bot_leader_prefix, \
     bot_leader_suffix
+from undyingkingdoms.calculations.distributions import bell_curvish, normalize, curve_bounds
 from undyingkingdoms.static.metadata.metadata import metadata_races, metadata_titles, metadata_backgrounds
 from undyingkingdoms.static.metadata.metadata_research_all import generic_technology
+from utilities.helpers import romanize
 
 fake = faker.Faker()
 
@@ -40,7 +42,7 @@ class Provider(BaseProvider):
             technologies = generic_technology.keys()
         return fake.word(ext_word_list=technologies)
 
-    def requirement(self, ext_word_list=None, nb_elements=2, variable_nb_elements=True):
+    def requirement(self, requirements=None, nb_elements=2, variable_nb_elements=True):
         """Looks like this:
 
         ('public works', ['engineering', 'logistics'])
@@ -48,15 +50,15 @@ class Provider(BaseProvider):
         if variable_nb_elements:
             nb_elements = self.randomize_nb_elements(nb_elements, min=0)
 
-        if ext_word_list is None:
-            ext_word_list = generic_technology.keys()
+        if requirements is None:
+            requirements = generic_technology.keys()
 
-        key = self.generator.word(ext_word_list=ext_word_list)
-        value = self.generator.words(nb_elements, ext_word_list=set(ext_word_list) - {key})
+        key = self.generator.word(ext_word_list=requirements)
+        value = self.generator.words(nb_elements, ext_word_list=set(requirements) - {key})
 
         return key, value
 
-    def requirements(self, ext_word_list=None, nb_elements=10, variable_nb_elements=True):
+    def requirements(self, requirements=None, depth=6, level_1s=4, variable_nb_elements=True):
         """Looks like this:
 
         generic_requirements = {
@@ -66,13 +68,29 @@ class Provider(BaseProvider):
             ],
         }
         """
-        if ext_word_list is None:
-            ext_word_list = generic_technology.keys()
-
+        if requirements is None:
+            requirements = generic_technology.keys()
         if variable_nb_elements:
-            nb_elements = self.randomize_nb_elements(nb_elements, min=1)
+            level_1s = self.randomize_nb_elements(level_1s, min=1)
 
-        return dict(f() for f in repeat(self.generator.requirement, nb_elements))
+        curve = bell_curvish(depth)
+        bounds = curve_bounds(curve, requirements, level_1s)
+        norms = [round(n) for n in normalize(curve, bounds)]
+
+
+        req_dict = {}
+        for index, layer_size in enumerate(norms):
+            for _ in range(layer_size):
+                key, value = self.requirement(requirements)
+                # names to be 1st, 2nd, 3rd, etc.
+                key = romanize(key, index)
+                value = [romanize(v, index) for v in value]
+                req_dict[key] = value
+
+        bp()
+
+        return req_dict
 
 
 fake.add_provider(Provider)
+

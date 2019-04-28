@@ -40,25 +40,27 @@ generic_technology = {
         tier=2,
         max_level=1,
         description='Your county generates an additional 1 happiness each day.'),
-    'arcane knowledge I': Technology(
-        name='arcane knowledge I',
+    'arcane knowledge': Technology(
+        name='arcane knowledge',
         cost=500,
         tier=1,
         max_level=3,
         description='Each level raises your maximum mana by 20.'),
-    'arcane knowledge II': Technology(
-        name='arcane knowledge II',
-        cost=500,
-        tier=2,
-        max_level=3,
-        description='Each level raises your maximum mana by 20.'),
-    'arcane knowledge III': Technology(
-        name='arcane knowledge III',
-        cost=500,
-        tier=3,
-        max_level=3,
-        description='Each level raises your maximum mana by 20.')
+    # 'arcane knowledge II': Technology(
+    #     name='arcane knowledge II',
+    #     cost=500,
+    #     tier=2,
+    #     max_level=3,
+    #     description='Each level raises your maximum mana by 20.'),
+    # 'arcane knowledge III': Technology(
+    #     name='arcane knowledge III',
+    #     cost=500,
+    #     tier=3,
+    #     max_level=3,
+    #     description='Each level raises your maximum mana by 20.')
 }
+
+generic_technology = {**{k + " I": v for k, v in generic_technology}}
 
 generic_requirements = {
     'public works': [

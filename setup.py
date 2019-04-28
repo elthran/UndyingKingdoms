@@ -35,6 +35,7 @@ setup(
         'requests',
         'Faker',
         'factory_boy',
+        'roman',
     ],
 )
 
