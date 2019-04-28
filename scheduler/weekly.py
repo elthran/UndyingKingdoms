@@ -9,8 +9,9 @@ if path not in sys.path:
     sys.path = [path] + sys.path
 
 from scheduler import private_bearer_token
+from config import SITE_URL
 
-route = "https://undyingkingdoms.pythonanywhere.com/game_clock/advance_age"
+route = SITE_URL + "/game_clock/advance_age"
 
 print("Correct weekday for age reset")
 print("Current time:", datetime.utcnow())
