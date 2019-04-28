@@ -1017,7 +1017,7 @@ class County(GameState):
 
     def get_score_from_winning_battle(self, enemy, modifier):
         score = (enemy.land ** 3) / (self.land ** 2) * 0.1
-        modifier -= (self.day - enemy.day) / 100
+        modifier -= max((self.day - enemy.day) ** 0.8 / 100, 0)
         score = max(score, 1) * modifier  # Add the current modifier
         score = int(min(score, enemy.land * 0.2))  # Make sure it doesn't exceed 20% of their land
         return score
@@ -1026,7 +1026,7 @@ class County(GameState):
         enemy_resources = {'gold': (enemy.gold, 1),
                            'wood': (enemy.wood, 1.5),
                            'iron': (enemy.iron, 3)}
-        modifier -= (self.day - enemy.day + self.land - enemy.land) / 100
+        modifier -= max((self.day - enemy.day + self.land - enemy.land) ** 0.8 / 100, 0)
         enemy_total_value = enemy_resources['gold'][0] + enemy_resources['wood'][0] + enemy_resources['iron'][0]
         attackers_gain_value = min(enemy_total_value * 0.2 * modifier, 500)  # You can gain a maximum of 500 value from a pillage
         gains = {'gold': 0, 'wood': 0, 'iron': 0}
