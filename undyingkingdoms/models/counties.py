@@ -1015,6 +1015,29 @@ class County(GameState):
         self.population -= citizens_killed
         return casualties + citizens_killed
 
+    def get_score_from_winning_battle(self, enemy, modifier):
+        score = (enemy.land ** 3) / (self.land ** 2) * 0.1
+        modifier -= (self.day - enemy.day) / 100
+        score = max(score, 1) * modifier  # Add the current modifier
+        score = int(min(score, enemy.land * 0.2))  # Make sure it doesn't exceed 20% of their land
+        return score
+
+    def get_resources_from_winning_pillage(self, enemy, modifier):
+        enemy_resources = {'gold': (enemy.gold, 1),
+                           'wood': (enemy.wood, 1.5),
+                           'iron': (enemy.iron, 3)}
+        modifier -= (self.day - enemy.day + self.land - enemy.land) / 100
+        enemy_total_value = enemy_resources['gold'][0] + enemy_resources['wood'][0] + enemy_resources['iron'][0]
+        attackers_gain_value = min(enemy_total_value * 0.2 * modifier, 500)  # You can gain a maximum of 500 value from a pillage
+        gains = {'gold': 0, 'wood': 0, 'iron': 0}
+        while attackers_gain_value > 0:
+            enemy_resources = {key: value for key, value in enemy_resources.items() if value[0] > 0}
+            element = choice(list(enemy_resources))
+            attackers_gain_value -= enemy_resources[element][1]
+            gains[element] += 1
+        print(gains)
+        return gains
+
     def battle_results(self, army, enemy, attack_type):
         war = None
         rewards_modifier = 1.00
@@ -1072,20 +1095,16 @@ class County(GameState):
         expedition.duration = self.get_army_duration(win, attack_type)
         if win:
             expedition.success = True
+            war_score = self.get_score_from_winning_battle(enemy, rewards_modifier)
             if expedition.mission == "Attack":
-                land_gained = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1) * rewards_modifier
-                land_gained = int(min(land_gained, enemy.land * 0.2))
-                war_score = land_gained
-                expedition.land_acquired = land_gained
-                enemy.land -= land_gained
+                expedition.land_acquired = war_score
+                enemy.land -= war_score
                 notification = Notification(enemy.id, notification_title,
-                                            f"You lost {land_gained} acres and {defence_casualties} troops in the battle.",
+                                            f"You lost {war_score} acres and {defence_casualties} troops in the battle.",
                                             self.kingdom.world.day)
-                message += f" You gained {land_gained} acres, but lost {casualties} troops in the battle."
+                message += f" You gained {war_score} acres, but lost {casualties} troops in the battle."
             elif expedition.mission == "Raze":
-                land_razed = max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1) * rewards_modifier
-                land_razed = int(min(land_razed, enemy.land * 0.2))
-                war_score = land_razed
+                land_razed = int(war_score * 1.50)
                 expedition.land_razed = land_razed
                 enemy.land -= land_razed
                 notification = Notification(enemy.id, notification_title,
@@ -1093,18 +1112,7 @@ class County(GameState):
                                             self.kingdom.world.day)
                 message += f" You razed {land_razed} acres, but lost {casualties} troops in the battle."
             elif expedition.mission == "Pillage":
-                war_score = int(min(max((enemy.land ** 3) * 0.1 / (self.land ** 2), 1) * rewards_modifier, enemy.land * 0.2))
-                enemy_resources = {'gold': (enemy.gold, 1),
-                                   'wood': (enemy.wood, 1.5),
-                                   'iron': (enemy.iron, 3)}
-                enemy_total_value = enemy_resources['gold'][0] + enemy_resources['wood'][0] + enemy_resources['iron'][0]
-                attackers_gain_value = min(enemy_total_value * 0.2 * rewards_modifier, 500)  # You can gain a maximum of 500 value from a pillage
-                gains = {'gold': 0, 'wood': 0, 'iron': 0}
-                while attackers_gain_value > 0:
-                    enemy_resources = {key: value for key, value in enemy_resources.items() if value[0] > 0}
-                    element = choice(list(enemy_resources))
-                    attackers_gain_value -= enemy_resources[element][1]
-                    gains[element] += 1
+                gains = self.get_resources_from_winning_pillage(enemy, rewards_modifier)
                 expedition.gold_gained = gains['gold']
                 expedition.wood_gained = gains['wood']
                 expedition.iron_gained = gains['iron']
