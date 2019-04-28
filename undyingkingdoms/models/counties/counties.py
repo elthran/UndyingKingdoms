@@ -4,62 +4,16 @@ from random import choice, randint
 from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
+from undyingkingdoms.calculations.distributions import get_int_between_0_to_100
 from undyingkingdoms.models.bases import GameState, db
+from undyingkingdoms.models.counties.specifics import add_racial_data, add_background_data
 from undyingkingdoms.models.helpers import cached_random
 from undyingkingdoms.models.notifications import Notification
 from undyingkingdoms.models.expeditions import Expedition
 from undyingkingdoms.models.infiltrations import Infiltration
 from undyingkingdoms.models.trades import Trade
 from undyingkingdoms.models.magic import Casting
-from undyingkingdoms.static.metadata.armies.metadata_armies_updater import update_armies
-from undyingkingdoms.static.metadata.magic.metadata_magic_artificer import artificer_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_cleric import cleric_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_diplomat import diplomat_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_druid import druid_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_hierophant import hierophant_spells
-from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
-    income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
-    happiness_modifier, buildings_produced_per_day, food_produced_modifier
-
-from copy import deepcopy
-
-from undyingkingdoms.static.metadata.armies.metadata_armies_dwarf import dwarf_armies
-from undyingkingdoms.static.metadata.armies.metadata_armies_elf import elf_armies
-from undyingkingdoms.static.metadata.armies.metadata_armies_goblin import goblin_armies
-from undyingkingdoms.static.metadata.armies.metadata_armies_human import human_armies
-from undyingkingdoms.static.metadata.armies.metadata_armies_ogre import ogre_armies
-from undyingkingdoms.static.metadata.buildings.metadata_buildings_dwarf import dwarf_buildings
-from undyingkingdoms.static.metadata.buildings.metadata_buildings_elf import elf_buildings
-from undyingkingdoms.static.metadata.buildings.metadata_buildings_goblin import goblin_buildings
-from undyingkingdoms.static.metadata.buildings.metadata_buildings_human import human_buildings
-from undyingkingdoms.static.metadata.buildings.metadata_buildings_ogre import ogre_buildings
-from undyingkingdoms.static.metadata.magic.metadata_magic_alchemist import alchemist_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_all import generic_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_dwarf import dwarf_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_elf import elf_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_goblin import goblin_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_human import human_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_merchant import merchant_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_ogre import ogre_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_rogue import rogue_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_warlord import warlord_spells
-from undyingkingdoms.static.metadata.magic.metadata_magic_wizard import wizard_spells
-from undyingkingdoms.static.metadata.research.metadata_research_alchemist import alchemist_technology
-from undyingkingdoms.static.metadata.research.metadata_research_all import generic_technology
-from undyingkingdoms.static.metadata.research.metadata_research_artificer import artificer_technology
-from undyingkingdoms.static.metadata.research.metadata_research_cleric import cleric_technology
-from undyingkingdoms.static.metadata.research.metadata_research_diplomat import diplomat_technology
-from undyingkingdoms.static.metadata.research.metadata_research_druid import druid_technology
-from undyingkingdoms.static.metadata.research.metadata_research_dwarf import dwarf_technology
-from undyingkingdoms.static.metadata.research.metadata_research_elf import elf_technology
-from undyingkingdoms.static.metadata.research.metadata_research_goblin import goblin_technology
-from undyingkingdoms.static.metadata.research.metadata_research_hierophant import hierophant_technology
-from undyingkingdoms.static.metadata.research.metadata_research_human import human_technology
-from undyingkingdoms.static.metadata.research.metadata_research_merchant import merchant_technology
-from undyingkingdoms.static.metadata.research.metadata_research_ogre import ogre_technology
-from undyingkingdoms.static.metadata.research.metadata_research_rogue import rogue_technology
-from undyingkingdoms.static.metadata.research.metadata_research_warlord import warlord_technology
-from undyingkingdoms.static.metadata.research.metadata_research_wizard import wizard_technology
+from .all_metadata_imports import *
 
 
 class County(GameState):
@@ -151,80 +105,10 @@ class County(GameState):
         self.lifetime_stone = self._stone
         self.lifetime_research = self._research
         self.lifetime_mana = self._mana
-        # Buildings and Armies extracted from metadata
-        if self.race == 'Dwarf':
-            self.buildings = deepcopy(dwarf_buildings)
-            self.armies = deepcopy(dwarf_armies)
-            self.magic = {**deepcopy(generic_spells), **deepcopy(dwarf_spells)}
-            self.technologies = {**deepcopy(generic_technology), **deepcopy(dwarf_technology)}
-        elif self.race == 'Human':
-            self.buildings = deepcopy(human_buildings)
-            self.armies = deepcopy(human_armies)
-            self.magic = {**deepcopy(generic_spells), **deepcopy(human_spells)}
-            self.technologies = {**deepcopy(generic_technology), **deepcopy(human_technology)}
-        elif self.race == 'Elf':
-            self.buildings = deepcopy(elf_buildings)
-            self.armies = deepcopy(elf_armies)
-            self.magic = {**deepcopy(generic_spells), **deepcopy(elf_spells)}
-            self.technologies = {**deepcopy(generic_technology), **deepcopy(elf_technology)}
-        elif self.race == 'Goblin':
-            self.buildings = deepcopy(goblin_buildings)
-            self.armies = deepcopy(goblin_armies)
-            self.magic = {**deepcopy(generic_spells), **deepcopy(goblin_spells)}
-            self.technologies = {**deepcopy(generic_technology), **deepcopy(goblin_technology)}
-        elif self.race == 'Ogre':
-            self.buildings = deepcopy(ogre_buildings)
-            self.armies = deepcopy(ogre_armies)
-            self.magic = {**deepcopy(generic_spells), **deepcopy(ogre_spells)}
-            self.technologies = {**deepcopy(generic_technology), **deepcopy(ogre_technology)}
-        else:
-            raise AttributeError('Buildings and Armies were not found in metadata')
 
+        add_racial_data(self)
         self.armies = update_armies(self.background, self.armies)
-
-        if self.background == "Alchemist":
-            self.magic = {**self.magic, **deepcopy(alchemist_spells)}
-            self.technologies = {**self.technologies, **deepcopy(alchemist_technology)}
-            self.buildings["lab"].output *= 2
-
-        elif self.background == "Artificer":
-            self.magic = {**self.magic, **deepcopy(artificer_spells)}
-            self.technologies = {**self.technologies, **deepcopy(artificer_technology)}
-
-        elif self.background == "Cleric":
-            self.magic = {**self.magic, **deepcopy(cleric_spells)}
-            self.technologies = {**self.technologies, **deepcopy(cleric_technology)}
-
-        elif self.background == "Diplomat":
-            self.magic = {**self.magic, **deepcopy(diplomat_spells)}
-            self.technologies = {**self.technologies, **deepcopy(diplomat_technology)}
-
-        elif self.background == "Druid":
-            self.magic = {**self.magic, **deepcopy(druid_spells)}
-            self.technologies = {**self.technologies, **deepcopy(druid_technology)}
-
-        elif self.background == "Hierophant":
-            self.magic = {**self.magic, **deepcopy(hierophant_spells)}
-            self.technologies = {**self.technologies, **deepcopy(hierophant_technology)}
-
-        elif self.background == "Merchant":
-            self.magic = {**self.magic, **deepcopy(merchant_spells)}
-            self.technologies = {**self.technologies, **deepcopy(merchant_technology)}
-
-        elif self.background == "Warlord":
-            self.magic = {**self.magic, **deepcopy(warlord_spells)}
-            self.technologies = {**self.technologies, **deepcopy(warlord_technology)}
-
-        elif self.background == "Wizard":
-            self.magic = {**self.magic, **deepcopy(wizard_spells)}
-            self.technologies = {**self.technologies, **deepcopy(wizard_technology)}
-
-        elif self.background == "Rogue":
-            self.magic = {**self.magic, **deepcopy(rogue_spells)}
-            self.technologies = {**self.technologies, **deepcopy(rogue_technology)}
-
-    def get_int_between_0_to_100(self, input):
-        return int(max(min(100, input), 0))
+        add_background_data(self)
 
     @property
     def population(self):
@@ -328,7 +212,7 @@ class County(GameState):
 
     @happiness.setter
     def happiness(self, value):
-        self._happiness = self.get_int_between_0_to_100(value)
+        self._happiness = get_int_between_0_to_100(value)
 
     @property
     def healthiness(self):
@@ -336,7 +220,7 @@ class County(GameState):
 
     @healthiness.setter
     def healthiness(self, value):
-        self._healthiness = self.get_int_between_0_to_100(value)
+        self._healthiness = get_int_between_0_to_100(value)
 
     @property
     def tax_rate(self):
@@ -1214,7 +1098,7 @@ class County(GameState):
         for spell in modify_thief_prevention or []:
             chance += spell.output * self.spell_modifier
 
-        return self.get_int_between_0_to_100(chance)
+        return get_int_between_0_to_100(chance)
 
     def chance_to_disrupt_spell(self):
         chance = 0
@@ -1226,7 +1110,7 @@ class County(GameState):
         if self.race == "Dwarf":
             chance += 15
 
-        return self.get_int_between_0_to_100(chance)
+        return get_int_between_0_to_100(chance)
 
     # Terminology
     @property

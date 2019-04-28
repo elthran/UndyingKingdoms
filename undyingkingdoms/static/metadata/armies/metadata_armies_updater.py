@@ -2,22 +2,23 @@ from undyingkingdoms.models.armies import Army
 
 
 def update_armies(background, armies):
-
-    armies['summon'] = Army(name='summon',
-                            class_name='summon',
-                            class_name_plural='summons',
-                            total=0,
-                            trainable_per_day=0,
-                            gold=100,
-                            iron=100,
-                            wood=100,
-                            upkeep=0,
-                            category='Summoned',
-                            attack=5,
-                            defence=5,
-                            health=5,
-                            armour_type='Not implemented',
-                            description='Summoned creatures, bound by magic.')
+    armies['summon'] = Army(
+        name='summon',
+        class_name='summon',
+        class_name_plural='summons',
+        total=0,
+        trainable_per_day=0,
+        gold=100,
+        iron=100,
+        wood=100,
+        upkeep=0,
+        category='Summoned',
+        attack=5,
+        defence=5,
+        health=5,
+        armour_type='Not implemented',
+        description='Summoned creatures, bound by magic.'
+    )
 
     if background == 'Alchemist':
         armies['summon'].class_name = 'iron golem'

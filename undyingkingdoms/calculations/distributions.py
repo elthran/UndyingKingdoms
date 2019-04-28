@@ -59,3 +59,7 @@ def curve_bounds(curve, data, lower=4):
         )
     )
     return bounds
+
+
+def get_int_between_0_to_100(input):
+    return int(max(min(100, input), 0))
