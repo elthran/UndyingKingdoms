@@ -2,9 +2,9 @@ from flask import url_for, redirect, render_template
 from flask_login import current_user, login_required
 
 from undyingkingdoms import app
-from undyingkingdoms.models import County, Kingdom
+from undyingkingdoms.controler.initialize import initialize_county, pick_kingdom
+from undyingkingdoms.models import Technology
 from undyingkingdoms.models.forms.initialize import InitializeForm
-from undyingkingdoms.models.preferences import Preferences
 from undyingkingdoms.static.metadata.armies.metadata_armies_ogre import ogre_armies
 from undyingkingdoms.static.metadata.metadata import metadata_races, metadata_backgrounds, metadata_titles, \
     metadata_background_descriptions
@@ -12,6 +12,7 @@ from undyingkingdoms.static.metadata.armies.metadata_armies_dwarf import dwarf_a
 from undyingkingdoms.static.metadata.armies.metadata_armies_elf import elf_armies
 from undyingkingdoms.static.metadata.armies.metadata_armies_goblin import goblin_armies
 from undyingkingdoms.static.metadata.armies.metadata_armies_human import human_armies
+from undyingkingdoms.static.metadata.research.metadata_research_all import generic_requirements
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])
@@ -33,24 +34,20 @@ def initialize():
         form.clan.choices = [(i[0], i[1]) for i in [(0, "Random"), (1, "Clan")]]
     else:
         form.clan.choices = [(i[0], i[1]) for i in [(0, "Random")]]
-    kingdoms = Kingdom.query.filter_by(clan=False).all()  # Select all public kingdoms
-    smallest_kingdom = min(kingdoms, key=lambda x: len(x.counties))  # Get the smallest
-    kingdom_id = smallest_kingdom.id
-    
+
     if form.validate_on_submit():
-        if form.clan.data == 1:
-            kingdom_id = current_user.clan.kingdom_id
-        county = County(kingdom_id,
-                        form.county.data,
-                        form.leader.data,
-                        current_user.id,
-                        races[form.race.data],
-                        titles[form.title.data],
-                        backgrounds[form.background.data])
-        county.save()
-        county.vote = county.id
-        preferences = Preferences(county.id, county.user.id)
-        preferences.save()
+        has_clan = form.data.clan == 1
+        kingdom = pick_kingdom(current_user, has_clan)
+
+        race = races[form.data.race]
+        title = titles[form.title.data]
+        background = backgrounds[form.background.data]
+        county_name = form.county.data
+        leader_name = form.leader.data
+        county = initialize_county(
+            current_user, kingdom, county_name, leader_name, background, race, title
+        )
+        Technology.establish_requirements(county.technologies, generic_requirements)
         return redirect(url_for('overview'))
     return render_template(
         "index/initialize.html",

@@ -1,3 +1,5 @@
+from undyingkingdoms.static.metadata.metadata import attack_types
+
 if __name__ == "__main__":
     """Allow running just this test.
     
@@ -16,7 +18,7 @@ def test_battle_results(app, client):
     with app.app_context():
         user1 = User('user1', 'user1@gmail.com', 'password')
         user1.save()
-        county1 = County(1, "County1", "Leader1", user1.id, "Human", "Sir", "Merchant")
+        county1 = County(1, "County1", "Leader1", user1, "Human", "Sir", "Merchant")
         county1.save()
         army1 = dict(
             peasant=50,
@@ -30,9 +32,10 @@ def test_battle_results(app, client):
 
         user2 = User('user2', 'user2@gmail.com', 'password')
         user2.save()
-        county2 = County(1, "County2", "Leader2", user2.id, "Human", "Sir", "Merchant")
+        county2 = County(1, "County2", "Leader2", user2, "Human", "Sir", "Merchant")
         county2.save()
         # create user 1
         # create user 2
         # simulate attack.
-        assert 'You claimed a massive victory and gained 15 acres, but lost' in county1.battle_results(army1, county2)
+        result = county1.battle_results(army1, county2, attack_types[0])
+        assert isinstance(result, str) and len(result) > 0

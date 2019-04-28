@@ -28,6 +28,7 @@ def app():
         test_db.session.commit()
 
     yield app
+    app.config['SQLALCHEMY_ECHO'] = False
 
     with app.app_context():
         test_db.drop_all()

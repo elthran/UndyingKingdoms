@@ -19,19 +19,17 @@ def build_testing_objects():
     user.is_admin = True
     user.is_active = True
     user.is_verified = True
-    user.save()
-    county = County(1, "Ulthuan", "Elthran", user.id, 'Ogre', 'Sir', 'Alchemist')
+    county = County(1, "Ulthuan", "Elthran", user, 'Ogre', 'Sir', 'Alchemist')
+    Preferences(county, user)
     county.save()
     county.vote = county.id
     county.kingdom_id = 1
     county.buildings['arcane'].total = 5
-    county.technologies['arcane knowledge I'].completed = True
-    county.technologies['arcane knowledge II'].completed = True
-    county.technologies['arcane knowledge III'].completed = True
+    county.technologies['arcane knowledge'].completed = True
+    # county.technologies['arcane knowledge II'].completed = True
+    # county.technologies['arcane knowledge III'].completed = True
     county.mana = 500
     county.happiness = 80
-    preferences = Preferences(county.id, user.id)
-    preferences.save()
     kingdom = Kingdom.query.get(1)
     kingdom.leader = county.id
     # Create Haldon
@@ -39,14 +37,14 @@ def build_testing_objects():
     user.is_admin = True
     user.is_active = True
     user.is_verified = True
-    user.save()
-    county = County(2, "Northern Wastes", "Haldon", user.id, 'Human', 'Sir', 'Merchant')
+    county = County(2, "Northern Wastes", "Haldon", user, 'Human', 'Sir', 'Merchant')
+    Preferences(county, user)
     county.save()
     county.vote = county.id
     county.buildings['arcane'].total = 5
-    county.technologies['arcane knowledge I'].completed = True
-    county.technologies['arcane knowledge II'].completed = True
-    county.technologies['arcane knowledge III'].completed = True
+    county.technologies['arcane knowledge'].completed = True
+    # county.technologies['arcane knowledge II'].completed = True
+    # county.technologies['arcane knowledge III'].completed = True
     county.mana = 500
     county.happiness = 80
     county.iron = 200
@@ -54,40 +52,32 @@ def build_testing_objects():
     county.armies['elite'].total = 100
     county.buildings['tavern'].total = 5
     county.population += 500
-    preferences = Preferences(county.id, user.id)
-    preferences.save()
     kingdom = Kingdom.query.get(2)
     kingdom.leader = county.id
     # Create AI1 (He is weak and easier to attack for testing)
     user = User("ai1", "1@gmail.com", "star", is_bot=True)
-    user.save()
-    county = County(1, "Robotica1", "Mr. Roboto1", user.id, 'Dwarf', 'Lady', 'Druid')
+    county = County(1, "Robotica1", "Mr. Roboto1", user, 'Dwarf', 'Lady', 'Druid')
+    Preferences(county, user)
     county.save()
     county.vote = county.id
     county.armies['peasant'].amount = 0
     county.armies['archer'].amount = 0
-    preferences = Preferences(county.id, user.id)
-    preferences.save()
     # Create AI2 (He is weak and easier to attack for testing)
     user = User("ai2", "2@gmail.com", "star", is_bot=True)
-    user.save()
-    county = County(2, "Robotica2", "Mr. Roboto2", user.id, 'Elf', 'Lady', 'Merchant')
+    county = County(2, "Robotica2", "Mr. Roboto2", user, 'Elf', 'Lady', 'Merchant')
+    Preferences(county, user)
     county.save()
     county.vote = county.id
     county.armies['peasant'].amount = 0
     county.armies['archer'].amount = 0
-    preferences = Preferences(county.id, user.id)
-    preferences.save()
     # Create AI3 (He is weak and easier to attack for testing)
     user = User("ai3", "3@gmail.com", "star", is_bot=True)
-    user.save()
-    county = County(2, "Robotica3", "Mr. Roboto3", user.id, 'Human', 'Lady', 'Hierophant')
+    county = County(2, "Robotica3", "Mr. Roboto3", user, 'Human', 'Lady', 'Hierophant')
+    Preferences(county, user)
     county.save()
     county.vote = county.id
     county.armies['peasant'].amount = 0
     county.armies['archer'].amount = 0
-    preferences = Preferences(county.id, user.id)
-    preferences.save()
     # Create user with no county
     user = User("lonely", "lonely@gmail.com", "star")
     user.is_verified = True

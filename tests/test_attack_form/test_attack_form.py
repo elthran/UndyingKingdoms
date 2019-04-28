@@ -39,6 +39,7 @@ def test_attack_form_validation(app):
         form.elite.data = 0
         form.monster.data = 0
 
+        raise Warning("Attack form has more variables, this test is out of date.")
         if not form.validate():
             print(form.errors)
             assert 'Must send at least 25 troops.' in form.errors['peasant']

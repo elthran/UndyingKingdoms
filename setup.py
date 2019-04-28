@@ -25,7 +25,7 @@ setup(
         'pandas',
         'flask-sslify',
         'maxminddb',
-        'sqlalchemy-utils',
+        'SQLAlchemy-Utils',
         'PyJWT',
         'requests',
         'flask-script',
@@ -33,6 +33,9 @@ setup(
         'flask-cors',
         'sendgrid',
         'requests',
+        'Faker',
+        'factory_boy',
+        'roman',
     ],
 )
 
