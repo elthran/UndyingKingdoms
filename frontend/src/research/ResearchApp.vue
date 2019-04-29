@@ -12,52 +12,79 @@
 
     <h2>Current Research:</h2>
     <p>Note: More technologies become available as you complete all research within a tier.</p>
-    <!-- <form id="research-form" action="{{ url_for('research_api') }}" accept-charset="UTF-8">
-      {{ form.csrf_token }}
-      <p>Name:
-        <select-generator
+    <form
+      id="research-form"
+      ref="form"
+      action="/api/research/update"
+      accept-charset="UTF-8"
+    >
+      <div v-html="form.csrf" />
+      <p>
+        Name: <select-generator
           v-model="selectedResearch"
-          :options="{{ form.technology.choices | vuesafe }}"
-          id-name="{{ form.technology.id }}"
-        ></select-generator>
+          :options="form.technology.choices"
+          :id-name="form.technology.id"
+        />
       </p>
-      <p>Description: v{ description }</p>
-      <p>Progress: v{ progressCurrent } / v{ progressRequired }</p>
+      <p>Description: {{ description }}</p>
+      <p>Progress: {{ progressCurrent }} / {{ progressRequired }}</p>
     </form>
     <br><br>
     <h2>Known Technologies</h2>
-    <ul>
-      {% for technology in known_technologies %}
-      <li>{{ technology.name.title() }}: {{ technology.description }}</li>
-      {% else %}
-        <li>No technologies have been researched yet.</li>
-      {% endfor %}
-    </ul><br><br><br>
+    <ul v-if="knownTechnologies.length > 0">
+      <li
+        v-for="technology in knownTechnologies"
+        :key="technology.id"
+      >
+        {{ technology.name }}: {{ technology.description }}
+      </li>
+    </ul>
+    <p v-else>
+      No technologies have been researched yet.
+    </p>
+    <br><br><br>
     <h2>All Technologies (still in testing): When all techs of a tier are researched, the next tier is unlocked</h2>
-    {% for technology in all_technologies %}
-      <li>{{ technology.name.title() }} (Tier {{ technology.tier }}): {{ technology.description }}</li>
-      {% endfor %} -->
+    <ul>
+      <li
+        v-for="technology in allTechnologies"
+        :key="technology.id"
+      >
+        {{ technology.name }} (Tier {{ technology.tier }}): {{ technology.description }}
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
+import SelectGenerator from '@/components/SelectGenerator.vue'
+
 export default {
   name: 'ResearchApp',
+  components: {
+    SelectGenerator,
+  },
   data () {
     return {
       county: Object,
-      form: Object,
+      form: {
+        technology: {
+          choices: [],
+          id: '',
+        },
+      },
       urlFor: Object,
       researchChange: -1,
       selectedResearch: -1,
       description: '',
       progressCurrent: -1,
       progressRequired: -1,
+      knownTechnologies: [],
+      allTechnologies: [],
     }
   },
   watch: {
     selectedResearch () {
-      sendForm($('#research-form'), this.updatePage)
+      // sendForm($('#research-form'), this.updatePage)
     }
   },
   mounted () {
@@ -72,13 +99,6 @@ export default {
     }
   }
 }
-// // Beautiful Jinja hacked in variables.
-// var RESEARCH_CHANGE = {{ research_change }};
-// var SELECTED_RESEARCH = {{ current_tech.id }};
-// var DESCRIPTION = "{{ current_tech.description }}";
-// var PROGRESS_CURRENT = {{ current_tech.current }};
-// var PROGRESS_REQUIRED = {{ current_tech.cost }};
-// // But please keep them separate.
 </script>
 
 <style scoped>

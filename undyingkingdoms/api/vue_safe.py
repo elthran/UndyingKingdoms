@@ -149,3 +149,14 @@ def vue_safe_thread(thread):
         votes=thread.get_votes(),
         # views=thread.get_views()
     )
+
+
+def generic_vue_safe(obj, attributes):
+    """Get all passed attributes from object.
+
+    return in a dictionary.
+    """
+    vue_obj = {'id': obj.id}
+    for attr in attributes:
+        vue_obj[attr] = getattr(obj, attr)
+    return vue_obj
