@@ -57,24 +57,23 @@ def vue_safe_form(form):
     I might need to check type to accommodate other forms.
     """
 
-    vs_form = {}
+    vs_form = {
+        'csrf_token': dict(
+            value=form.csrf_token.current_token,
+            id=form.csrf_token.name,
+            html=form.csrf_token()
+        )
+    }
 
     for field in form:
         key = field.name
-        if key != 'csrf_token':
-            try:
-                vs_form[key] = dict(
-                        choices = vue_safe_array(field.choices),
-                        id=key
-                    )
-            except AttributeError:
-                vs_form[key] = dict(
-                    id=key,
-                    html=field()
-                )
-        else:
+        try:
             vs_form[key] = dict(
-                value=field.current_token,
+                    choices = vue_safe_array(field.choices),
+                    id=key
+                )
+        except AttributeError:
+            vs_form[key] = dict(
                 id=key,
                 html=field()
             )

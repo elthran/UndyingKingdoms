@@ -4,10 +4,11 @@ from flask_login import login_required, current_user
 
 from tests import bp
 from undyingkingdoms.api.vue_safe import vue_safe_form, generic_vue_safe
+from undyingkingdoms.models import Technology
 from undyingkingdoms.models.forms.technology import TechnologyForm
 
 
-class DataAPI(MethodView):
+class UpdateAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
@@ -45,3 +46,31 @@ class DataAPI(MethodView):
             progressCurrent=current_tech.current,
             progressRequired=current_tech.cost,
         )
+
+    @login_required
+    def post(self):
+        county = current_user.county
+        form = TechnologyForm()
+
+        form.technology.choices = [
+            (tech.id, tech.name)
+            for tech in county.available_techs
+        ]
+
+        if form.validate_on_submit():
+            tech = Technology.query.get(form.technology.data)
+            # update choice.
+            county.research_choice = tech
+
+            bp()
+            return jsonify(
+                debugMessage='You have updated your current research choice.',
+                researchChange=county.get_research_change(),
+                description=tech.description,
+                progressCurrent=tech.current,
+                progressRequired=tech.cost,
+                form=vue_safe_form(form)
+            ), 201
+        return jsonify(
+            debugMessage='Your research form did not pass validation.'
+        ), 403

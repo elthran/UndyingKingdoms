@@ -18,7 +18,7 @@
       action="/api/research/update"
       accept-charset="UTF-8"
     >
-      <div v-html="form.csrf" />
+      <div v-html="form.csrf_token.html" />
       <p>
         Name: <select-generator
           v-model="selectedResearch"
@@ -71,6 +71,9 @@ export default {
           choices: [],
           id: '',
         },
+        csrf_token: {
+          html: '',
+        }
       },
       urlFor: Object,
       researchChange: -1,
@@ -84,18 +87,29 @@ export default {
   },
   watch: {
     selectedResearch () {
-      // sendForm($('#research-form'), this.updatePage)
+
     }
   },
   mounted () {
-    this.$hydrate('/api/research/data')
+    this.$hydrate('/api/research/update')
+    .then(() => {
+      this.$watch('selectedResearch', this.updatePage)
+    })
   },
   methods: {
     updatePage (data) {
-      this.researchChange = data.researchChange;
-      this.description = data.description;
-      this.progressCurrent = data.progressCurrent;
-      this.progressRequired = data.progressRequired;
+      console.log('selectedResearch changed')
+      this.$sendForm(this.$refs.form)
+      .then((data) => {
+        console.log('selectedResearch should have saved')
+        this.$deployData(data)
+      }).catch((error) => {
+        console.log(error.debugMessage)
+      })
+      // this.researchChange = data.researchChange;
+      // this.description = data.description;
+      // this.progressCurrent = data.progressCurrent;
+      // this.progressRequired = data.progressRequired;
     }
   }
 }

@@ -5,7 +5,7 @@ import_endpoints(
     api_blueprint,
     __name__,
     [
-        'data',
+        'update',
     ]
 )
 
