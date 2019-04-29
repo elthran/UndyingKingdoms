@@ -24,7 +24,7 @@
     <h2>They don't factor in any modifiers or bonuses you may have from technology, magic, races, etc.</h2>
     <br>
     <ul>
-        <li>Current Army has <span id="calculatedAttack">0</span> attack power and would gain {{ county.get_score_from_winning_battle(enemy, 1) }} war points if victorious</li>
+        <li>Current Army has <span id="calculatedAttack">0</span> attack power and would gain {{ county.get_score_from_winning_battle(enemy, 1) * 1.15|int }} war points if victorious</li>
         <li>Attack: Duration 18 days, gains {{ county.get_score_from_winning_battle(enemy, 1) }} acres</li>
         <li>Pillage: Duration 12 days, steals {{ county.get_resources_from_winning_pillage(enemy, 1) }}</li>
         <li>Raze: Duration 8 days, destroys {{ county.get_score_from_winning_battle(enemy, 1) * 1.5|int }} acres</li>
