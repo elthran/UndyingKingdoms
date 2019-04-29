@@ -1,3 +1,5 @@
+from random import choice
+
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from tests import bp
@@ -46,14 +48,14 @@ def available_techs_addon(cls):
 
 def advance_research_addon(cls):
     def advance_research(self):
-        technology = self.technologies[self.research_choice]
+        technology = self.research_choice
         technology.current += self.research
         if technology.current >= technology.required:  # You save left over research
             self.research = technology.current - technology.required
             technology.completed = True
             available_technologies = list(self.available_techs)
             if available_technologies:
-                self.research_choice = available_technologies[0].name
+                self.research_choice = choice(available_technologies)
             else:
                 self.research = 0
         else:

@@ -19,7 +19,7 @@ def research(template):
     all_technologies = Technology.query.filter_by(county_id=county.id).order_by('tier').all()
     form.technology.choices = [(tech.id, tech.name.title()) for tech in available_technologies]
 
-    current_tech = Technology.query.filter_by(county_id=county.id, name=county.research_choice).first()
+    current_tech = county.research_choice
 
     return render_template(
         template,
@@ -44,7 +44,7 @@ def research_api():
     if form.validate_on_submit():
         tech = Technology.query.get(form.technology.data)
         # update choice.
-        county.research_choice = tech.name
+        county.research_choice = tech
 
         return jsonify(
             status='success',

@@ -97,7 +97,7 @@ def infiltrate(template, county_id):
                                             "They have found out some secrets regarding our military.",
                                             county.kingdom.world.day)
             elif mission == 'steal research':
-                current_technology = target.technologies[target.research_choice]
+                current_technology = target.research_choice
                 research_stolen = min(current_technology.current, form.amount.data * 10 * gain_modifier)
                 current_technology.current -= research_stolen
                 county.research += research_stolen
