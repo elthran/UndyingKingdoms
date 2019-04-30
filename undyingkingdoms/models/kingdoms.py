@@ -226,7 +226,7 @@ class Kingdom(GameState):
         """
         war = None
         for each_war in self.wars:
-            if each_war.get_other_kingdom(self.kingdom) == target.kingdom:  # If this is true, we are at war with them
+            if each_war.get_other_kingdom(self) == target.kingdom:  # If this is true, we are at war with them
                 war = each_war
                 break
         return war

@@ -130,8 +130,8 @@ generic_buildings = {
         gold_cost=50,
         wood_cost=15,
         stone_cost=5,
-        output=5,
-        description="Each {0} gives you +{1}% to catch enemy thieves."),
+        output=7,
+        description="Each percent of land dedicated to {0} gives you +{1}% to catch enemy thieves."),
     'lab': Building(
         name='lab',
         class_name='Unnamed',

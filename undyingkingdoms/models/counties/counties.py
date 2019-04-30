@@ -1002,16 +1002,9 @@ class County(GameState):
             if war:
                 if war.kingdom_id == self.kingdom.id:  # We are the attack
                     war.attacker_current += war_score
-                    if war.attacker_current >= war.attacker_goal:
-                        self.kingdom.war_won(war)
-                        war.status = "Won"
-                        message += f" We have won the war against {enemy.kingdom.name}!"
                 else:
                     war.defender_current += war_score
-                    if war.defender_current >= war.defender_goal:
-                        enemy.kingdom.war_won(war)
-                        war.status = "Lost"
-                        message += f" We have won the war against {enemy.kingdom.name}!"
+                self.kingdom.update_war_status(war, enemy)
         else:
             expedition.success = False
             notification = Notification(enemy.id, notification_title,
@@ -1093,7 +1086,7 @@ class County(GameState):
         for mission in operations_on_target:  # Each thief who invaded you gives you some protection
             chance += (mission.amount_of_thieves * 5)
 
-        chance += self.buildings['tower'].total * self.buildings['tower'].output
+        chance += (self.buildings['tower'].total * 100 / self.land) * self.buildings['tower'].output
 
         modify_thief_prevention = Casting.query.filter_by(target_id=self.id, name="modify_thief_prevention").filter(
             (Casting.duration > 0) | (Casting.active == True)).all()
