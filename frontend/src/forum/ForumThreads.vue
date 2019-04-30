@@ -21,6 +21,7 @@
         </a>
       </div>
       <most-recent-post
+        v-if="thread.mostRecentPost"
         class="most-recent-post"
         :post="thread.mostRecentPost"
       />

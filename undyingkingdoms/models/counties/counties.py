@@ -70,8 +70,10 @@ class County(GameState):
     )
     technologies = db.relationship(
         "Technology",
-        collection_class=attribute_mapped_collection('name'),
-        cascade="all, delete, delete-orphan", passive_deletes=True,
+        collection_class=attribute_mapped_collection('key'),
+        cascade="all, delete, delete-orphan",
+        passive_deletes=True,
+        order_by="Technology.tier"
     )
 
     preferences = db.relationship("Preferences", back_populates='county', uselist=False, foreign_keys="Preferences.county_id")

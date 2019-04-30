@@ -42,11 +42,14 @@ def test_completed_techs(app):
 def test_available_techs(app):
     with app.app_context():
         county = initialize_account()
-        requirements = fake.requirements()
-        # pp(requirements)
+        level_1s = 4
+        requirements = fake.requirements(county.technologies.keys(), level_1s=level_1s)
+        pp(requirements)
         Technology.establish_requirements(county.technologies, requirements)
         county.save()
 
         assert list(county.technologies) != []
         assert list(county.available_techs) != []
         assert set(county.technologies.values()) != set(county.available_techs)
+        # bp()
+        assert len(county.technologies.values()) == len(list(county.available_techs)) + level_1s

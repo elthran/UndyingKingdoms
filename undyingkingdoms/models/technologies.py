@@ -1,3 +1,5 @@
+from sqlalchemy.ext.hybrid import hybrid_property
+
 from undyingkingdoms.models.bases import GameEvent, db
 
 
@@ -16,6 +18,10 @@ class Technology(GameEvent):
 
     requirement_id = db.Column(db.Integer, db.ForeignKey('technology.id'))
     requirements = db.relationship("Technology")
+
+    @hybrid_property
+    def key(self):
+        return self.name.lower()
 
     def __init__(self, name, cost, tier, max_level, description, requirements=None):
         if requirements is None:

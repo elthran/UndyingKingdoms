@@ -76,6 +76,9 @@ export default {
   },
   mounted () {
     this.$hydrate('/api/infrastructure/idle_population')
+    .then(() => {
+      this.$emit('loaded')
+    })
   }
 }
 </script>

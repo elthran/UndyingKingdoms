@@ -94,6 +94,9 @@ export default {
   },
   mounted () {
     this.$hydrate('/api/infrastructure/buildings')
+    .then(() => {
+      this.$emit('loaded')
+    })
   },
   methods: {
     submitForm () {

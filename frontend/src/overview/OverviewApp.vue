@@ -1,5 +1,8 @@
 <template>
-  <div id="content">
+  <div
+    id="content"
+    class="invisible"
+  >
     <prefix-title title="Overview" />
     <county-description />
     <div class="max-width-1 width-100-percent inner-content ">
@@ -70,6 +73,9 @@ export default {
   },
   mounted () {
     this.$hydrate('/api/overview/news')
+    .then(() => {
+      this.$el.classList.remove('invisible')
+    })
   }
 }
 </script>

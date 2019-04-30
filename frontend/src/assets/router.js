@@ -11,6 +11,7 @@ import OverviewApp from '@/overview/OverviewApp.vue'
 import InfrastructureApp from '@/infrastructure/InfrastructureApp.vue'
 const AsyncChatroomApp = () => import(/* webpackChunkName: "ChatroomApp" */ '@/chatroom/ChatroomApp.vue')
 import ForumApp from '@/forum/ForumApp.vue'
+import ResearchApp from '@/research/ResearchApp.vue'
 
 Vue.use(VueRouter)
 
@@ -19,22 +20,27 @@ export default new VueRouter({
     {
       path: '/gameplay/overview',
       name: 'OverviewApp',
-      component: OverviewApp
+      component: OverviewApp,
     },
     {
       path: '/gameplay/infrastructure',
       name: 'InfrastructureApp',
-      component: InfrastructureApp
+      component: InfrastructureApp,
     },
     {
       path: '/gameplay/chatroom',
       name: 'ChatroomApp',
-      component: AsyncChatroomApp
+      component: AsyncChatroomApp,
     },
     {
       path: '/user/forum/:thread_id/:post_id',
       name: 'ForumApp',
-      component: ForumApp
+      component: ForumApp,
+    },
+    {
+      path: '/gameplay/research',
+      name: 'ResearchApp',
+      component: ResearchApp,
     },
     {
       path: '*',

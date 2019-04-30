@@ -2,8 +2,8 @@ from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
 
 from undyingkingdoms import app
-from undyingkingdoms.api.views.infrastructure.build_buildings import BuildBuildingsAPI
-from undyingkingdoms.api.views.infrastructure.helpers import max_buildable_by_cost
+from undyingkingdoms.api.infrastructure.build_buildings import BuildBuildingsAPI
+from undyingkingdoms.api.infrastructure.helpers import max_buildable_by_cost
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm, ExcessProductionForm
 from undyingkingdoms.routes.helpers import mobile_on_vue
 from undyingkingdoms.static.metadata.metadata import game_descriptions, excess_worker_choices, land_to_clear_ratio

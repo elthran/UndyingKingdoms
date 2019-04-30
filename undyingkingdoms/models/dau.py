@@ -101,7 +101,7 @@ class DAU(GameEvent):
         self.healthiness = county.healthiness
 
         self.production_choice = county.production_choice
-        self.research_choice = county.research_choice
+        self.research_choice = county.research_choice.name
         self.rations = county.rations
         self.taxes = county.tax_rate
         self.technologies = len(county.technologies)

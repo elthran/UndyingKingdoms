@@ -1,7 +1,8 @@
 from private_config import JACOB_TEMPORARY_EMAIL, JACOB_TEMPORARY_ACCOUNT_PASSWORD, MARLEN_TEMPORARY_EMAIL, \
     MARLEN_TEMPORARY_ACCOUNT_PASSWORD
+from tests.fakes.providers import fake
 from undyingkingdoms import User
-from undyingkingdoms.models import World, Kingdom, County
+from undyingkingdoms.models import World, Kingdom, County, Technology
 from undyingkingdoms.models.forum import Forum, Thread
 from undyingkingdoms.models.preferences import Preferences
 from undyingkingdoms.static.metadata.metadata import kingdom_names
@@ -21,6 +22,8 @@ def build_testing_objects():
     user.is_verified = True
     county = County(1, "Ulthuan", "Elthran", user, 'Ogre', 'Sir', 'Alchemist')
     Preferences(county, user)
+    requirements = fake.requirements(county.technologies.keys())
+    Technology.establish_requirements(county.technologies, requirements)
     county.save()
     county.vote = county.id
     county.kingdom_id = 1
@@ -39,6 +42,8 @@ def build_testing_objects():
     user.is_verified = True
     county = County(2, "Northern Wastes", "Haldon", user, 'Human', 'Sir', 'Merchant')
     Preferences(county, user)
+    requirements = fake.requirements(county.technologies.keys())
+    Technology.establish_requirements(county.technologies, requirements)
     county.save()
     county.vote = county.id
     county.buildings['arcane'].total = 5

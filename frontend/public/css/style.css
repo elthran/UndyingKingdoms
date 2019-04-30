@@ -178,6 +178,10 @@ a:active {
     margin-left: 1em;
 }
 
+.tab-2 {
+  margin-left: 2em;
+}
+
 .hanging-indent {
     padding-left: 1em;
     text-indent: -1em;

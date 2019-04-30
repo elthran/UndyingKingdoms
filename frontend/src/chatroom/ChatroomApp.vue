@@ -1,12 +1,13 @@
 <template>
   <div
     id="chatroom"
+    class="invisible"
     :style="{ maxHeight: correctedHeight + 'px' }"
   >
     <prefix-title title="Town Hall" />
     <div id="header">
       <h1>Discussion</h1>
-      <toggle-swtich
+      <toggle-switch
         v-model="globalChatOn"
         on-label="global"
         off-label="kingdom"
@@ -51,9 +52,9 @@ import ChatList from './ChatList.vue'
 export default {
   name: 'ChatroomApp',
   components: {
-    'toggle-swtich': ToggleSwitch,
+    ToggleSwitch,
     'csrf-token': CSRFToken,
-    'chat-list': ChatList,
+    ChatList,
   },
   data () {
     return {
@@ -94,6 +95,7 @@ export default {
     .then(() => {
       this.scrollToMax()
       this.toggleWatcher = this.$watch('globalChatOn', this.updateChat)
+      this.$el.classList.remove('invisible')
     })
 
     this.$nextTick(() => {
@@ -204,6 +206,7 @@ export default {
 <style scoped>
 #chat-div {
   width: 100%;
+  height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   /* This is all I need to make words break properly ... */
@@ -261,8 +264,9 @@ button {
 @media (min-width: 640px) {
   #chatroom {
     align-items: flex-start;
-    max-width: 40em;
+    width: 100%;
     margin-top: 1em;
+    margin-right: 2em;
   }
 
   #chat-div {

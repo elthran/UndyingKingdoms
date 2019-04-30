@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from random import choice
 
 from sqlalchemy import desc
 
@@ -16,7 +17,8 @@ class Preferences(GameState):
     tax_rate = db.Column(db.Integer)
     rations = db.Column(db.Float)
     production_choice = db.Column(db.Integer)
-    research_choice = db.Column(db.String(128))
+    research_choice_id = db.Column(db.Integer, db.ForeignKey('technology.id'))
+    research_choice = db.relationship("Technology")
     vote_id = db.Column(db.Integer, db.ForeignKey('county.id'))
     last_vote_date = db.Column(db.DateTime)
     weather = db.Column(db.String(32))
@@ -52,7 +54,7 @@ class Preferences(GameState):
         self.tax_rate = 8
         self.rations = 1
         self.production_choice = 0
-        self.research_choice = 'agriculture'
+        self.research_choice = choice(list(county.available_techs))
         self.vote = county
         self.last_vote_date = None
         self.weather = "Sunny"
