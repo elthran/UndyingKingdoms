@@ -49,7 +49,7 @@ generic_technology = [
 ]
 
 generic_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in generic_technology
 }
 

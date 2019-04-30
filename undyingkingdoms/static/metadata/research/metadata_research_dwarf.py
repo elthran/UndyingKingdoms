@@ -32,6 +32,6 @@ dwarf_technology = {
 }
 
 dwarf_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in dwarf_technology
 }

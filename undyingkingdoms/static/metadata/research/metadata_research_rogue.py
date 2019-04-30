@@ -2,7 +2,7 @@ from undyingkingdoms.models.technologies import Technology
 
 rogue_technology = {
     Technology(
-        name='espionage i',
+        name='Espionage',
         cost=500,
         tier=1,
         max_level=1,
@@ -11,6 +11,6 @@ rogue_technology = {
 }
 
 rogue_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in rogue_technology
 }

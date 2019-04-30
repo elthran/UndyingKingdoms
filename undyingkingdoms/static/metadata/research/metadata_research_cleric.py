@@ -11,6 +11,6 @@ cleric_technology = {
 }
 
 cleric_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in cleric_technology
 }

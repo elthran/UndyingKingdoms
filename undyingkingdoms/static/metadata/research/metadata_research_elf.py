@@ -32,6 +32,6 @@ elf_technology = {
 }
 
 elf_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in elf_technology
 }

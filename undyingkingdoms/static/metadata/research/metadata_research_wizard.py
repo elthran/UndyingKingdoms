@@ -10,6 +10,6 @@ wizard_technology = [
 ]
 
 wizard_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in wizard_technology
 }

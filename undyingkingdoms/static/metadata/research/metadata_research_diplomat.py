@@ -11,6 +11,6 @@ diplomat_technology = {
 }
 
 diplomat_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in diplomat_technology
 }

@@ -32,7 +32,9 @@
       </div>
       <p>Description: {{ description }}</p>
       <p>Progress: {{ progressCurrent }} / {{ progressRequired }}</p>
-      <p>More technologies will become available as you complete all research within a tier.</p>
+      <p id="info">
+        More technologies will become available as you complete all research within a tier.
+      </p>
     </form>
     <h2 class="top-spacer-dot-6 bottom-spacer-dot-3">
       Known Technologies
@@ -125,38 +127,32 @@ export default {
 
 <style scoped>
 @media (max-width: 640px) {
-  #content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 1em;
+  #research-app {
+    margin: 1em 1em 0;
+  }
+
+  #header {
+    margin-bottom: 0.6em;
+  }
+
+  #research-form {
+    margin-left: 0;
+  }
+
+  #info {
+    margin-top: 0.3em;
   }
 
   h2 {
-      text-align: left;
-      width: 280px;
-      margin: auto;
-      padding: 1.4em 0;
+    text-align: center;
   }
 
-  .form-control {
-      width: 100%;
-      margin-bottom: 4px;
+  ul {
+    margin-left: 0;
   }
 
-  button {
-      width: 100%;
-  }
-
-  #spacer {
-      height: 1.3em;
-  }
-
-  #checkboxDiv {
-      width: 100%;
-      text-align: left;
-      max-width: 240px;
-      margin-top: 0.6em;
+  li {
+    margin-bottom: 0.3em;
   }
 }
 

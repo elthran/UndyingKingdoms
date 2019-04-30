@@ -32,6 +32,6 @@ human_technology = {
 }
 
 human_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in human_technology
 }

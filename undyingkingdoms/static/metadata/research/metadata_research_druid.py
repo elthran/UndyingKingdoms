@@ -11,6 +11,6 @@ druid_technology = {
 }
 
 druid_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in druid_technology
 }

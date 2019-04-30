@@ -11,6 +11,6 @@ ogre_technology = {
 }
 
 ogre_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in ogre_technology
 }

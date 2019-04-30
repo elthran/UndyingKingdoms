@@ -33,6 +33,6 @@ goblin_technology = {
 
 
 goblin_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in goblin_technology
 }

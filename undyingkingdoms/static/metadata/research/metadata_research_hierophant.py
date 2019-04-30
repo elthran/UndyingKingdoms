@@ -10,6 +10,6 @@ hierophant_technology = {
 }
 
 hierophant_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in hierophant_technology
 }

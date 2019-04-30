@@ -11,6 +11,6 @@ merchant_technology = {
 }
 
 merchant_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in merchant_technology
 }

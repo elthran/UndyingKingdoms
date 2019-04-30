@@ -42,7 +42,7 @@ class Provider(BaseProvider):
             technologies = generic_technology.keys()
         return fake.word(ext_word_list=technologies)
 
-    def requirement(self, requirements=None, nb_elements=2, variable_nb_elements=True):
+    def requirement(self, keys=None, values=None, nb_elements=2, variable_nb_elements=True):
         """Return a technology its associated requirement list.
 
         Looks like this:
@@ -50,12 +50,15 @@ class Provider(BaseProvider):
         """
         if variable_nb_elements:
             nb_elements = self.randomize_nb_elements(nb_elements, min=0)
+        if keys is None:
+            keys = generic_technology.keys()
+        if values is None:
+            values = keys
 
-        if requirements is None:
-            requirements = generic_technology.keys()
-
-        key = self.generator.word(ext_word_list=requirements)
-        value = self.generator.words(nb_elements, ext_word_list=set(requirements) - {key})
+        key = self.generator.word(ext_word_list=keys)
+        # prevent circular dependencies
+        values = set(values) - {key}
+        value = self.generator.words(nb_elements, ext_word_list=values, unique=True)
 
         return key, value
 
@@ -83,12 +86,18 @@ class Provider(BaseProvider):
 
         req_dict = {}
         for index, layer_size in enumerate(norms):
+            keys = set(requirements)
+            values = set(requirements)
             for _ in range(layer_size):
-                # TODO: should reduce local set of requirements each execution
-                key, value = self.requirement(requirements)
+                if len(keys) < 2 or len(values) < 2:
+                    break
+                key, value = self.requirement(keys, values)
+                # prevent circular dependencies
+                keys -= set(value) | {key}
+                values -= {key}
                 # names to be 1st, 2nd, 3rd, etc.
-                key = romanize(key, index)
-                value = [romanize(v, index) for v in value]
+                key = romanize(key, index+1)
+                value = [romanize(v, index+1) for v in value]
                 req_dict[key] = value
 
         return req_dict

@@ -11,6 +11,6 @@ warlord_technology = [
 ]
 
 warlord_technology = {
-    tech.name: tech
+    tech.key: tech
     for tech in warlord_technology
 }
