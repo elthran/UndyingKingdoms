@@ -1,6 +1,7 @@
 from flask import url_for, redirect, render_template
 from flask_login import current_user, login_required
 
+from tests.fakes.providers import fake
 from undyingkingdoms import app
 from undyingkingdoms.controler.initialize import initialize_county, pick_kingdom
 from undyingkingdoms.models import Technology
@@ -47,7 +48,8 @@ def initialize():
         county = initialize_county(
             current_user, kingdom, county_name, leader_name, background, race, title
         )
-        Technology.establish_requirements(county.technologies, generic_requirements)
+        requirements = fake.requirements(county.technologies.keys())
+        Technology.establish_requirements(county.technologies, requirements)
         return redirect(url_for('overview'))
     return render_template(
         "index/initialize.html",
