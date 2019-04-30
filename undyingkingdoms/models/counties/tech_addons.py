@@ -46,6 +46,18 @@ def available_techs_addon(cls):
     cls.available_techs = hybrid_property(get_available_techs)
 
 
+def unavailable_techs_addon(cls):
+    def get_unavailable_techs(self):
+        """Generate techs with unmet requirements.
+
+        Note: returns a set.
+        """
+
+        return set(self.technologies.values()) - set(self.available_tech)
+
+    cls.unavailable_techs = hybrid_property(get_unavailable_techs)
+
+
 def advance_research_addon(cls):
     def advance_research(self):
         technology = self.research_choice
