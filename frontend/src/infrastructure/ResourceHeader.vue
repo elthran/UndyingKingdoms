@@ -97,6 +97,9 @@ export default {
   },
   mounted () {
     this.$hydrate('/api/infrastructure/resources')
+    .then(() => {
+      this.$emit('loaded')
+    })
   }
 }
 </script>

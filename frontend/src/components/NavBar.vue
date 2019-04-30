@@ -1,5 +1,8 @@
 <template>
-  <nav id="mobile-sidebar">
+  <nav
+    id="mobile-sidebar"
+    class="invisible"
+  >
     <hr class="width-95-percent">
     <router-link
       :to="urlFor.overview"
@@ -36,11 +39,11 @@
       >
         Wizard Council
       </a>
-      <a
-        :href="urlFor.research"
+      <router-link
+        :to="urlFor.research"
       >
         Scientist
-      </a>
+      </router-link>
     </div>
     <div class="top-spacer-dot-3 flex-group">
       <h2 class="center width-100-percent">
@@ -127,6 +130,9 @@ export default {
     // if development
     // url is 'http://localhost:5000/api/sidebar' - happens auto-magically.
     this.$hydrate('/api/sidebar')
+    .then(() => {
+      this.$el.classList.remove('invisible')
+    })
   },
 }
 </script>

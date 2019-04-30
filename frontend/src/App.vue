@@ -1,29 +1,31 @@
 <template>
   <div id="app">
     <prefix-title title="Debug" />
-    <!-- magic spacer divs for chatroom, hopefully they don't break anything :P -->
-    <div />
-    <div />
-    <div />
-    <router-view ref="content" />
+    <router-view
+      ref="content"
+    />
     <nav-bar />
   </div>
 </template>
 
 <script>
 import NavBar from '@/components/NavBar.vue'
+// import LoadingComponent from '@/components/LoadingComponent.vue'
 
 export default {
   name: 'App',
   components: {
-    'nav-bar': NavBar
+    NavBar,
+    // LoadingComponent,
   },
   data () {
     return {
+      isLoading: true,
     }
   },
   watch: {
     $route (to, from) {
+      this.isLoading = true
       this.$emit('refocus')
       this.$nextTick(() => {
         this.focusTop()
@@ -33,7 +35,7 @@ export default {
   methods: {
     focusTop () {
       window.scrollTo(0,0);
-    }
+    },
   }
 }
 </script>
@@ -50,7 +52,7 @@ export default {
   #app {
     display: flex;
     flex-direction: row-reverse;
-    justify-content: space-between;
+    justify-content: flex-end;
   }
 }
 </style>

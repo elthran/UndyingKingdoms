@@ -61,8 +61,6 @@ class UpdateAPI(MethodView):
             tech = Technology.query.get(form.technology.data)
             # update choice.
             county.research_choice = tech
-
-            bp()
             return jsonify(
                 debugMessage='You have updated your current research choice.',
                 researchChange=county.get_research_change(),

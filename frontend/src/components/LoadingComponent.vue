@@ -1,6 +1,6 @@
 <template>
   <div>
-    Trying to load component ..
+    Loading component ..
   </div>
 </template>
 

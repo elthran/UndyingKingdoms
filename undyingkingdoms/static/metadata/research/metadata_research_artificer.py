@@ -1,19 +1,16 @@
 from undyingkingdoms.models.technologies import Technology
 
 artificer_technology = {
-    'engineering i': Technology(name='engineering i',
-                              cost=500,
-                              tier=1,
-                              max_level=1,
-                              description='Each thieves den grants an additional thief.'),
-    'engineering ii': Technology(name='engineering ii',
-                               cost=750,
-                               tier=2,
-                               max_level=1,
-                               description='Each thieves den grants an additional thief.'),
-    'engineering iii': Technology(name='engineering iii',
-                                cost=1000,
-                                tier=3,
-                                max_level=1,
-                                description='Each thieves den grants an additional thief.')
+    Technology(
+        name='Engineering',
+        cost=500,
+        tier=1,
+        max_level=1,
+        description='Each thieves den grants an additional thief.'
+    ),
+}
+
+artificer_technology = {
+    tech.name: tech
+    for tech in artificer_technology
 }

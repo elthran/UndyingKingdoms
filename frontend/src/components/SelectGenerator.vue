@@ -1,15 +1,13 @@
 <template>
   <select
     :id="idName"
+    v-model="selected"
     :name="idName"
-    :value="value"
     :disabled="disabled"
-    @input="$emit('input', $event.target.value)"
   >
     <option
       v-for="(option, index) in options"
       :key="index"
-      :selected="option[0] == selected"
       :value="option[0]"
       :disabled="index > max"
     >
@@ -23,14 +21,22 @@ export default {
   name: 'SelectGenerator',
   props: {
     options: Array,
-    value: [Number, String],
     idName: String,
-    selected: [Number, String],
     disabled: Boolean,
+    value: [Number, String],
     max: Number
   },
   data () {
     return {
+      selected: null
+    }
+  },
+  watch: {
+    value (newValue) {
+      this.selected = newValue
+    },
+    selected (newValue) {
+      this.$emit('input', newValue)
     }
   }
 }
