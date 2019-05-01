@@ -1,5 +1,5 @@
 from flask import request, url_for, redirect
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from undyingkingdoms import app
 
@@ -7,4 +7,5 @@ from undyingkingdoms import app
 @app.route('/gameplay/research/', methods=['GET'])
 @login_required
 def research():
+    print(current_user.county.available_techs)
     return redirect(url_for('mobile', path=request.path[1:]))

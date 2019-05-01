@@ -35,6 +35,7 @@ def build_testing_objects():
     county.happiness = 80
     kingdom = Kingdom.query.get(1)
     kingdom.leader = county.id
+    kingdom.approval_rating = 60
     # Create Haldon
     user = User("haldon", MARLEN_TEMPORARY_EMAIL, MARLEN_TEMPORARY_ACCOUNT_PASSWORD)
     user.is_admin = True
@@ -59,6 +60,7 @@ def build_testing_objects():
     county.population += 500
     kingdom = Kingdom.query.get(2)
     kingdom.leader = county.id
+    kingdom.approval_rating = 60
     # Create AI1 (He is weak and easier to attack for testing)
     user = User("ai1", "1@gmail.com", "star", is_bot=True)
     county = County(1, "Robotica1", "Mr. Roboto1", user, 'Dwarf', 'Lady', 'Druid')

@@ -85,7 +85,7 @@ def drop_then_rebuild_tables(db, tables):
     """Drops and rebuilds a list of tables."""
 
     try:
-        db.session.commit() # prevents hangs
+        db.session.commit()  # prevents hangs
     except DatabaseError:
         db.session.rollback()
         raise

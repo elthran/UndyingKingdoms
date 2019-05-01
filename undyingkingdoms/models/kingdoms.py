@@ -143,7 +143,7 @@ class Kingdom(GameState):
         self.name = name
         self.clan = False
         self.leader = 0
-        self.approval_rating = 60
+        self.approval_rating = None
         self.world_id = 1
         self.wars_total_lt = 0
         self.wars_won_lt = 0
@@ -173,6 +173,7 @@ class Kingdom(GameState):
         if self.get_most_popular_county().preferences.get_votes_for_self() >= self.get_votes_needed():
             county = self.get_most_popular_county()
             self.leader = county.id
+            self.approval_rating = 60
             achievement = Achievement.query.filter_by(user_id=county.user_id, category="class_leader",
                                                       sub_category=county.race.lower()).first()
             if achievement:  # This should be unneeded and SHOULD be throwing errors. But while it's in beta we can leave it in

@@ -80,7 +80,7 @@ class User(GameState):
         self._in_active_session = value
         if value:  # Logging in
             try:  # if the user doesn't have a county yet.
-                day = self.count.day
+                day = self.county.kingdom.world.day
             except AttributeError:
                 day = None
             last_session = Session.query.filter_by(user_id=self.id).order_by(desc('time_created')).first()

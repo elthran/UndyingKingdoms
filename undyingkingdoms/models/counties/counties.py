@@ -853,7 +853,7 @@ class County(GameState):
     def remove_casualties_after_attacking(self, attack_power, army, expedition_id):
         casualties = 0
         expedition = Expedition.query.get(expedition_id)
-        hit_points_lost = randint(attack_power // 8, attack_power // 7)
+        hit_points_lost = randint(attack_power // 5, attack_power // 4)
         for unit in army.keys():
             setattr(expedition, unit + '_sent', army[unit])
         while hit_points_lost > 0:
@@ -898,7 +898,8 @@ class County(GameState):
         enemy_resources = {'gold': (enemy.gold, 1),
                            'wood': (enemy.wood, 1.5),
                            'iron': (enemy.iron, 3)}
-        modifier -= max((self.day - enemy.day + self.land - enemy.land) ** 0.8 / 100, 0)
+        if self.day - enemy.day > 0 and self.land > enemy.land:  # If you are older and larger, we lessen your rewards
+            modifier -= (self.day + self.land - enemy.day - enemy.land) ** 0.8 / 100
         enemy_total_value = enemy_resources['gold'][0] + enemy_resources['wood'][0] + enemy_resources['iron'][0]
         attackers_gain_value = min(enemy_total_value * 0.2 * modifier, 500)  # You can gain a maximum of 500 value from a pillage
         gains = {'gold': 0, 'wood': 0, 'iron': 0}
