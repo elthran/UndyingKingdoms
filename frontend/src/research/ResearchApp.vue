@@ -30,7 +30,9 @@
           :id-name="form.technology.id"
         />
       </div>
-      <p>Description: {{ description }}</p>
+      <p class="bottom-spacer-dot-3">
+        Description: {{ description }}
+      </p>
       <p>Progress: {{ progressCurrent }} / {{ progressRequired }}</p>
       <p id="info">
         More technologies will become available as you complete all research within a tier.
@@ -116,16 +118,16 @@ export default {
       }).catch((error) => {
         console.log(error.debugMessage)
       })
-      // this.researchChange = data.researchChange;
-      // this.description = data.description;
-      // this.progressCurrent = data.progressCurrent;
-      // this.progressRequired = data.progressRequired;
     }
   }
 }
 </script>
 
 <style scoped>
+#info {
+  margin-top: 0.6em;
+}
+
 @media (max-width: 640px) {
   #research-app {
     margin: 1em 1em 0;
@@ -137,10 +139,6 @@ export default {
 
   #research-form {
     margin-left: 0;
-  }
-
-  #info {
-    margin-top: 0.3em;
   }
 
   h2 {

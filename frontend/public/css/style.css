@@ -115,13 +115,6 @@ a:active {
     visibility: visible;
 }
 
-.forum_post {
-    float: left;
-    border: dotted 1px;
-    padding: 25px;
-    position: absolute;
-}
-
 .max-width-1 {
   max-width: 19em;
 }
