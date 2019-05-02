@@ -11,7 +11,7 @@ generic_buildings = {
         wood_cost=20,
         stone_cost=0,
         output=5,
-        description='Each percent of land built as a {0} adds +{1}% to your birth rate.'
+        description='Each percent of land built as a {0} increases your birth rate.'
     ),
     'field': Building(
         name='field',
@@ -97,7 +97,7 @@ generic_buildings = {
         wood_cost=20,
         stone_cost=5,
         output=5,
-        description='Each {0} lets your army return from battle {1}% faster.'
+        description='Each percent of land built as {0} helps your army return from battle faster.'
     ),
     'bank': Building(
         name='bank',
@@ -109,7 +109,8 @@ generic_buildings = {
         wood_cost=25,
         stone_cost=5,
         output=6,
-        description="Each {0} produces {1} additional gold per day."),
+        description="Each {0} produces {1} additional gold per day."
+    ),
     'tavern': Building(
         name='tavern',
         class_name='Unnamed',
@@ -120,7 +121,8 @@ generic_buildings = {
         wood_cost=25,
         stone_cost=10,
         output=1,
-        description="Each {0} gives you {1} additional spy to send on missions."),
+        description="Each {0} gives you {1} additional spy to send on missions."
+    ),
     'tower': Building(
         name='tower',
         class_name='watch tower',
@@ -131,7 +133,8 @@ generic_buildings = {
         wood_cost=15,
         stone_cost=5,
         output=7,
-        description="Each percent of land dedicated to {0} gives you +{1}% to catch enemy thieves."),
+        description="Each percent of land dedicated to {0} gives you a better chance to catch enemy thieves."
+    ),
     'lab': Building(
         name='lab',
         class_name='Unnamed',
@@ -142,7 +145,8 @@ generic_buildings = {
         wood_cost=20,
         stone_cost=10,
         output=4,
-        description="Generates {1} points of research each day."),
+        description="Generates {1} points of research each day."
+    ),
     'arcane': Building(
         name='arcane',
         class_name='Unnamed',
@@ -153,7 +157,8 @@ generic_buildings = {
         wood_cost=25,
         stone_cost=15,
         output=5,
-        description="Increases effectiveness of spells by {1}% for each {0}."),
+        description="Increases effectiveness of spells by {1}% for each {0}."
+    ),
     'lair': Building(
         name='lair',
         class_name='Unnamed',
@@ -164,5 +169,6 @@ generic_buildings = {
         wood_cost=125,
         stone_cost=75,
         output=1,
-        description="Each {0} allows you to capture and train {1} monster.")
+        description="Each {0} allows you to capture and train {1} monster."
+    )
 }

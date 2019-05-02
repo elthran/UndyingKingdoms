@@ -622,7 +622,7 @@ class County(GameState):
     def get_birth_rate(self):
         modifier = 1 + birth_rate_modifier.get(self.race, ("", 0))[1] + \
                    birth_rate_modifier.get(self.background, ("", 0))[1]
-        modifier += (self.buildings['house'].total / self.land) * self.buildings['house'].output
+        modifier += (self.buildings['house'].total / self.land * self.buildings['house'].output) ** 0.9
 
         modify_birth_rate = Casting.query.filter_by(target_id=self.id, name="modify_birth_rate").filter((Casting.duration > 0) | (Casting.active == True)).all()
         for spell in modify_birth_rate or []:
@@ -842,7 +842,7 @@ class County(GameState):
     def get_army_duration(self, win, attack_type):
         base_duration = {'Attack': 18, 'Pillage': 12, 'Raze': 8}
         speed_reduction = 100
-        speed_reduction += self.buildings['stables'].total * self.buildings['stables'].output
+        speed_reduction += (self.buildings['stables'].total * self.buildings['stables'].output) ** 0.9
         duration = base_duration[attack_type] * 100 / speed_reduction
         if self.technologies["logistics"].completed:
             duration -= 1
@@ -1087,7 +1087,7 @@ class County(GameState):
         for mission in operations_on_target:  # Each thief who invaded you gives you some protection
             chance += (mission.amount_of_thieves * 5)
 
-        chance += (self.buildings['tower'].total * 100 / self.land) * self.buildings['tower'].output
+        chance += (self.buildings['tower'].total * 100 / self.land * self.buildings['tower'].output) ** 0.9
 
         modify_thief_prevention = Casting.query.filter_by(target_id=self.id, name="modify_thief_prevention").filter(
             (Casting.duration > 0) | (Casting.active == True)).all()
