@@ -18,6 +18,12 @@ def attack(template, county_id):
     county = current_user.county
     enemy = County.query.get(county_id)
 
+    war = None  # This war code is just so the HTML knows if you are at war for points....
+    for each_war in county.kingdom.wars:
+        if each_war.get_other_kingdom(county.kingdom) == enemy.kingdom:  # If this is true, we are at war with them
+            war = each_war
+            break
+
     form = AttackForm(county)
 
     unit_types = (_type for _type in county.armies if _type not in 'archer')
@@ -39,4 +45,4 @@ def attack(template, county_id):
         # Ugly hack to return '{mobile/}gameplay/attack_results.html'
         template = '_results.'.join(template.split('.'))
         return render_template(template, results=results)
-    return render_template(template, enemy=enemy, form=form)
+    return render_template(template, enemy=enemy, form=form, war=war)

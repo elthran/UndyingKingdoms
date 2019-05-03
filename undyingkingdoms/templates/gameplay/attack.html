@@ -11,7 +11,7 @@
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
     <h1>Choose which troops to send:</h1><br>
-    <h2>Current available attack power: {{ county.get_offensive_strength() }}</h2><br>
+    <h2>Current available attack power: {{ county.get_offensive_strength() }}{% if county.armies['besieger'].total %} + {{ county.armies['besieger'].total }} for each enemy fort {% endif %}</h2><br>
     <ul>
         {% for army in county.armies.values() %}{% if army.name != 'archer' %}
         <li>{{ army.class_name.title() }}: {{ form[army.name] }} (Available: {{ army.available }} / {{ army.total }}) (Attack Power: {{ army.attack }} per troop)</li>
@@ -20,14 +20,14 @@
     <p>Choose to make a traditional attack to conquer land, a razing expedition to destroy enemy land, or to pillage and steal gold, wood, and iron.</p>
     <p>{{ form.attack_type }}</p>
     <br>
-    <h2>Below are rough estimates until the UI is improved.</h2>
-    <h2>They don't factor in any modifiers or bonuses you may have from technology, magic, races, etc.</h2>
     <br>
+    <h2>Below are the estimates your generals have:</h2>
     <ul>
-        <li>Current Army has <span id="calculatedAttack">0</span> attack power and would gain {{ county.get_score_from_winning_battle(enemy, 1) * 1.15|int }} war points if victorious</li>
-        <li>Attack: Duration 18 days, gains {{ county.get_score_from_winning_battle(enemy, 1) }} acres</li>
-        <li>Pillage: Duration 12 days, steals {{ county.get_resources_from_winning_pillage(enemy, 1) }}</li>
-        <li>Raze: Duration 8 days, destroys {{ county.get_score_from_winning_battle(enemy, 1) * 1.5|int }} acres</li>
+        {% if war %}{% set modifier = 1.15 %}{% else %}{% set modifier = 1.0 %}{% endif %}
+        <li>Current Army has <span id="calculatedAttack">0</span> attack power {% if war %}and would gain {{ county.get_score_from_winning_battle(enemy, modifier) }} war points if victorious</li>{% endif %}<br>
+        <li>Attack: Duration {{ county.get_army_duration(True, 'Attack') }} days, gains {{ county.get_score_from_winning_battle(enemy, modifier) }} acres</li>
+        <li>Pillage: Duration {{ county.get_army_duration(True, 'Pillage') }} days, steals {{ county.get_resources_from_winning_pillage(enemy, modifier) }}</li>
+        <li>Raze: Duration {{ county.get_army_duration(True, 'Raze') }} days, destroys {{ (county.get_score_from_winning_battle(enemy, modifier) * 1.5)|int }} acres</li>
     </ul>
     <br><br>
     <button type="submit">Attack</button>

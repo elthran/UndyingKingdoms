@@ -105,7 +105,7 @@ th {
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 <div id="content">
-  <h2>Current Attack Power Available: {{ county.get_offensive_strength() }}</h2>
+  <h2>Current Attack Power Available: {{ county.get_offensive_strength() }}{% if county.armies['besieger'].total %} + {{ county.armies['besieger'].total }} for each enemy fort {% endif %}</h2>
   <h2>Current Defensive Power: {{ county.get_defensive_strength() }}</h2>
   <h2>{{ county.get_available_workers() }} workers available for training</h2>
   <form method="POST" accept-charset="UTF-8" role="form">

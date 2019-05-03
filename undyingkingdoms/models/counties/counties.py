@@ -622,7 +622,7 @@ class County(GameState):
     def get_birth_rate(self):
         modifier = 1 + birth_rate_modifier.get(self.race, ("", 0))[1] + \
                    birth_rate_modifier.get(self.background, ("", 0))[1]
-        modifier += (self.buildings['house'].total / self.land * self.buildings['house'].output) ** 0.9
+        modifier += (self.buildings['house'].total ** 0.8) / self.land * self.buildings['house'].output
 
         modify_birth_rate = Casting.query.filter_by(target_id=self.id, name="modify_birth_rate").filter((Casting.duration > 0) | (Casting.active == True)).all()
         for spell in modify_birth_rate or []:
@@ -794,7 +794,7 @@ class County(GameState):
                     break
 
     # Battling
-    def get_offensive_strength(self, army=None, county=None, scoreboard=False):
+    def get_offensive_strength(self, army=None, county=None, scoreboard=False, enemy_forts=0):
         """
         Returns the attack power of your army. If no army is sent in, it checks the full potential of the county.
         params: scoreboard - Looks at total possible power, even for troops who are unavailable
@@ -816,6 +816,8 @@ class County(GameState):
             for unit in self.armies.values():
                 if unit.name != 'archer' and unit.name != 'besieger':
                     strength += army[unit.name] * unit.attack
+                if unit.name == 'besieger':
+                    strength += army[unit.name] * unit.attack * enemy_forts
         elif county:
             for unit in county.armies.values():
                 if scoreboard:
@@ -842,7 +844,7 @@ class County(GameState):
     def get_army_duration(self, win, attack_type):
         base_duration = {'Attack': 18, 'Pillage': 12, 'Raze': 8}
         speed_reduction = 100
-        speed_reduction += (self.buildings['stables'].total * self.buildings['stables'].output) ** 0.9
+        speed_reduction += (self.buildings['stables'].total ** 0.9) * 100 * self.buildings['stables'].output / self.land
         duration = base_duration[attack_type] * 100 / speed_reduction
         if self.technologies["logistics"].completed:
             duration -= 1
@@ -908,13 +910,12 @@ class County(GameState):
             element = choice(list(enemy_resources))
             attackers_gain_value -= enemy_resources[element][1]
             gains[element] += 1
-        print(gains)
         return gains
 
     def battle_results(self, army, enemy, attack_type):
         war = None
         rewards_modifier = 1.00
-        offence_damage = self.get_offensive_strength(army=army)
+        offence_damage = self.get_offensive_strength(army=army, enemy_forts=enemy.buildings["fort"].total)
         defence_damage = enemy.get_defensive_strength()
         expedition = Expedition(self.id, enemy.id, self.kingdom.world.day, self.day, offence_damage, defence_damage, attack_type)
         expedition.save()
@@ -1087,7 +1088,7 @@ class County(GameState):
         for mission in operations_on_target:  # Each thief who invaded you gives you some protection
             chance += (mission.amount_of_thieves * 5)
 
-        chance += (self.buildings['tower'].total * 100 / self.land * self.buildings['tower'].output) ** 0.9
+        chance += (self.buildings['tower'].total ** 0.8) * 100 / self.land * self.buildings['tower'].output
 
         modify_thief_prevention = Casting.query.filter_by(target_id=self.id, name="modify_thief_prevention").filter(
             (Casting.duration > 0) | (Casting.active == True)).all()

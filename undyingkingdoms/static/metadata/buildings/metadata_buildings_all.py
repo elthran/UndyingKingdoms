@@ -96,7 +96,7 @@ generic_buildings = {
         gold_cost=80,
         wood_cost=20,
         stone_cost=5,
-        output=5,
+        output=10,
         description='Each percent of land built as {0} helps your army return from battle faster.'
     ),
     'bank': Building(
