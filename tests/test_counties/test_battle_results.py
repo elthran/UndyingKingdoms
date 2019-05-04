@@ -1,4 +1,4 @@
-from undyingkingdoms.static.metadata.metadata import attack_types
+from undyingkingdoms.metadata.metadata import attack_types
 
 if __name__ == "__main__":
     """Allow running just this test.

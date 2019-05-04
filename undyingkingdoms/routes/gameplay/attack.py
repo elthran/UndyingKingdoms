@@ -6,7 +6,7 @@ from undyingkingdoms import app
 from undyingkingdoms.models import County
 from undyingkingdoms.models.forms.attack import AttackForm
 from undyingkingdoms.routes.helpers import not_self, not_allies
-from undyingkingdoms.static.metadata.metadata import attack_types
+from undyingkingdoms.metadata.metadata import attack_types
 
 
 @app.route('/gameplay/attack/<int:county_id>/', methods=['GET', 'POST'])

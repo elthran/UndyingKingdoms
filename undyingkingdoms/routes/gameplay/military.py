@@ -5,7 +5,7 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models import Transaction, World
 from undyingkingdoms.models.forms.military import MilitaryForm
-from undyingkingdoms.static.metadata.metadata import all_armies, game_descriptions
+from undyingkingdoms.metadata.metadata import all_armies, game_descriptions
 
 
 def monsters_buildable(county):

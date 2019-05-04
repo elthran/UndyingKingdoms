@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField, IntegerField
 
 from undyingkingdoms.models import County
-from undyingkingdoms.static.metadata.metadata import amount_of_thieves_modifier
+from undyingkingdoms.metadata.metadata import amount_of_thieves_modifier
 
 
 class InfiltrateForm(FlaskForm):

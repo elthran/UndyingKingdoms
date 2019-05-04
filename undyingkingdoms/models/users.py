@@ -8,7 +8,7 @@ from undyingkingdoms.models.sessions import Session
 from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.bases import GameState, db
 from werkzeug.security import generate_password_hash, check_password_hash
-from undyingkingdoms.static.metadata.metadata import all_achievements
+from undyingkingdoms.metadata.metadata import all_achievements
 
 
 class User(GameState):

@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from undyingkingdoms.static.metadata.armies.metadata_armies_all import generic_armies
+from undyingkingdoms.metadata.armies.metadata_armies_all import generic_armies
 
 dwarf_armies = deepcopy(generic_armies)
 

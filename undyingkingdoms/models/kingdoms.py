@@ -3,7 +3,7 @@ from undyingkingdoms.models.achievements import Achievement
 from undyingkingdoms.models.counties import County
 from undyingkingdoms.models.diplomacy import Diplomacy
 from undyingkingdoms.models.bases import GameState, db
-from undyingkingdoms.static.metadata.metadata import kingdom_names
+from undyingkingdoms.metadata.metadata import kingdom_names
 
 
 def active_ally_condition(id_join):

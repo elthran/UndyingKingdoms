@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 
 from undyingkingdoms.api.vue_safe import vue_safe_form, vue_safe_metadata_mod
 from undyingkingdoms.models.forms.economy import EconomyForm
-from undyingkingdoms.static.metadata.metadata import rations_terminology, food_consumed_modifier
+from undyingkingdoms.metadata.metadata import rations_terminology, food_consumed_modifier
 
 
 class FoodAPI(MethodView):

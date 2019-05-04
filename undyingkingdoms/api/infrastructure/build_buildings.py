@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 
 from undyingkingdoms.models import Transaction
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm
-from undyingkingdoms.static.metadata.metadata import all_buildings
+from undyingkingdoms.metadata.metadata import all_buildings
 
 
 class BuildBuildingsAPI(MethodView):

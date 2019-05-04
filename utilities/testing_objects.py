@@ -5,8 +5,8 @@ from undyingkingdoms import User
 from undyingkingdoms.models import World, Kingdom, County, Technology
 from undyingkingdoms.models.forum import Forum, Thread
 from undyingkingdoms.models.preferences import Preferences
-from undyingkingdoms.static.metadata.metadata import kingdom_names
-from undyingkingdoms.static.metadata.research.metadata_research_all import generic_requirements
+from undyingkingdoms.metadata.metadata import kingdom_names
+from undyingkingdoms.metadata.research.metadata_research_all import generic_requirements
 
 
 def build_testing_objects():

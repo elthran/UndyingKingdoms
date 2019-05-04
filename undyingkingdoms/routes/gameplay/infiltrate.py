@@ -8,7 +8,7 @@ from undyingkingdoms import app
 from undyingkingdoms.models import Infiltration, County, Notification
 from undyingkingdoms.models.forms.infiltrate import InfiltrateForm
 from undyingkingdoms.routes.helpers import not_allies, not_self
-from undyingkingdoms.static.metadata.metadata import infiltration_missions, amount_of_thieves_modifier, \
+from undyingkingdoms.metadata.metadata import infiltration_missions, amount_of_thieves_modifier, \
     infiltration_results_modifier
 
 

@@ -5,7 +5,7 @@ from werkzeug.utils import redirect
 
 from undyingkingdoms.api.vue_safe import vue_safe_form
 from undyingkingdoms.models.forms.economy import EconomyForm
-from undyingkingdoms.static.metadata.metadata import rations_terminology, tax_options
+from undyingkingdoms.metadata.metadata import rations_terminology, tax_options
 
 
 class UpdateAPI(MethodView):

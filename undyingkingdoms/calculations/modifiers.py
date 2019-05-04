@@ -1,6 +1,6 @@
 from undyingkingdoms.models.technologies import Technology
 
-# from undyingkingdoms.static.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
+# from undyingkingdoms.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
 #     income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
 #     happiness_modifier, buildings_built_per_day_modifier
 #

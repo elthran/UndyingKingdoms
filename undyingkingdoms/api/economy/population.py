@@ -3,7 +3,7 @@ from flask.views import MethodView
 from flask_login import login_required, current_user
 
 from undyingkingdoms.api.vue_safe import vue_safe_metadata_mod
-from undyingkingdoms.static.metadata.metadata import birth_rate_modifier
+from undyingkingdoms.metadata.metadata import birth_rate_modifier
 
 
 class PopulationAPI(MethodView):

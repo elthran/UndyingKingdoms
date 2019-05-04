@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 
 from undyingkingdoms.api.vue_safe import vue_safe_form
 from undyingkingdoms.models.forms.infrastructure import ExcessProductionForm
-from undyingkingdoms.static.metadata.metadata import excess_worker_choices, land_to_clear_ratio
+from undyingkingdoms.metadata.metadata import excess_worker_choices, land_to_clear_ratio
 
 
 class IdlePopulationAPI(MethodView):

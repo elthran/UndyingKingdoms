@@ -6,14 +6,14 @@ from undyingkingdoms import app
 from undyingkingdoms.controler.initialize import initialize_county, pick_kingdom
 from undyingkingdoms.models import Technology
 from undyingkingdoms.models.forms.initialize import InitializeForm
-from undyingkingdoms.static.metadata.armies.metadata_armies_ogre import ogre_armies
-from undyingkingdoms.static.metadata.metadata import metadata_races, metadata_backgrounds, metadata_titles, \
+from undyingkingdoms.metadata.armies.metadata_armies_ogre import ogre_armies
+from undyingkingdoms.metadata.metadata import metadata_races, metadata_backgrounds, metadata_titles, \
     metadata_background_descriptions
-from undyingkingdoms.static.metadata.armies.metadata_armies_dwarf import dwarf_armies
-from undyingkingdoms.static.metadata.armies.metadata_armies_elf import elf_armies
-from undyingkingdoms.static.metadata.armies.metadata_armies_goblin import goblin_armies
-from undyingkingdoms.static.metadata.armies.metadata_armies_human import human_armies
-from undyingkingdoms.static.metadata.research.metadata_research_all import generic_requirements, generic_requirements
+from undyingkingdoms.metadata.armies.metadata_armies_dwarf import dwarf_armies
+from undyingkingdoms.metadata.armies.metadata_armies_elf import elf_armies
+from undyingkingdoms.metadata.armies.metadata_armies_goblin import goblin_armies
+from undyingkingdoms.metadata.armies.metadata_armies_human import human_armies
+from undyingkingdoms.metadata.research.metadata_research_all import generic_requirements, generic_requirements
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])

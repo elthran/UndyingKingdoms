@@ -3,7 +3,7 @@ from flask.views import MethodView
 from flask_login import login_required, current_user
 
 from undyingkingdoms.models.forms.infrastructure import ExcessProductionForm
-from undyingkingdoms.static.metadata.metadata import excess_worker_choices
+from undyingkingdoms.metadata.metadata import excess_worker_choices
 
 
 class AllocateAPI(MethodView):

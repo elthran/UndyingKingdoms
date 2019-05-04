@@ -5,7 +5,7 @@ from sqlalchemy_utils import database_exists, create_database
 import config
 from undyingkingdoms import app as uk_app, flask_db, User
 from undyingkingdoms.models import World, Kingdom, County
-from undyingkingdoms.static.metadata.metadata import kingdom_names
+from undyingkingdoms.metadata.metadata import kingdom_names
 from utilities.testing_objects import build_testing_objects
 
 

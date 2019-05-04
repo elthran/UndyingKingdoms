@@ -1,9 +1,9 @@
 import pandas as pd
-from undyingkingdoms.static.metadata import metadata
-from undyingkingdoms.static.metadata.armies import metadata_armies_all
+from undyingkingdoms.metadata import metadata
+from undyingkingdoms.metadata.armies import metadata_armies_all
 
 
-# from undyingkingdoms.static.metadata import *
+# from undyingkingdoms.metadata import *
 
 
 def build_race_table():
