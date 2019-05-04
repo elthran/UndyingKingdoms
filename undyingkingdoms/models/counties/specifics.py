@@ -1,28 +1,7 @@
 from copy import deepcopy
 
-from undyingkingdoms.metadata.armies.metadata_armies_dwarf import dwarf_armies
-from undyingkingdoms.metadata.armies.metadata_armies_elf import elf_armies
-from undyingkingdoms.metadata.armies.metadata_armies_goblin import goblin_armies
-from undyingkingdoms.metadata.armies.metadata_armies_human import human_armies
-from undyingkingdoms.metadata.armies.metadata_armies_ogre import ogre_armies
-from undyingkingdoms.metadata.buildings.metadata_buildings_dwarf import dwarf_buildings
-from undyingkingdoms.metadata.buildings.metadata_buildings_elf import elf_buildings
-from undyingkingdoms.metadata.buildings.metadata_buildings_goblin import goblin_buildings
-from undyingkingdoms.metadata.buildings.metadata_buildings_human import human_buildings
-from undyingkingdoms.metadata.buildings.metadata_buildings_ogre import ogre_buildings
 from undyingkingdoms.metadata.magic.metadata_magic_all import generic_spells
-from undyingkingdoms.metadata.magic.metadata_magic_dwarf import dwarf_spells
-from undyingkingdoms.metadata.magic.metadata_magic_elf import elf_spells
-from undyingkingdoms.metadata.magic.metadata_magic_goblin import goblin_spells
-from undyingkingdoms.metadata.magic.metadata_magic_human import human_spells
-from undyingkingdoms.metadata.magic.metadata_magic_ogre import ogre_spells
 from undyingkingdoms.metadata.research.metadata_research_all import generic_technology
-from undyingkingdoms.metadata.research.metadata_research_dwarf import dwarf_technology
-from undyingkingdoms.metadata.research.metadata_research_elf import elf_technology
-from undyingkingdoms.metadata.research.metadata_research_goblin import goblin_technology
-from undyingkingdoms.metadata.research.metadata_research_human import human_technology
-from undyingkingdoms.metadata.research.metadata_research_ogre import ogre_technology
-
 from . import all_metadata_imports as md
 
 
