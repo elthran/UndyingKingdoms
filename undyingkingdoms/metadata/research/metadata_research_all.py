@@ -71,10 +71,10 @@ def generate_tech_levels(techs, requirements):
             next_level_tech = deepcopy(tech)
             next_level_tech.tier = tech.tier + level
             next_level_tech.name = romanize(tech.name, next_level_tech.tier)
-            try:
-                next_level_tech.output = tech.output * (level + 1)
-            except TypeError:
-                pass
+            # try:
+            #     next_level_tech.output = tech.output * (level + 1)
+            # except TypeError:
+            #     pass
             all_techs.append(next_level_tech)
 
             # merge custom and generated requirements
