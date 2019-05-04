@@ -6,7 +6,7 @@ from undyingkingdoms.models import World, Kingdom, County, Technology
 from undyingkingdoms.models.forum import Forum, Thread
 from undyingkingdoms.models.preferences import Preferences
 from undyingkingdoms.static.metadata.metadata import kingdom_names
-from undyingkingdoms.static.metadata.research.metadata_research_all import test_requirements
+from undyingkingdoms.static.metadata.research.metadata_research_all import generic_requirements
 
 
 def build_testing_objects():
@@ -24,7 +24,7 @@ def build_testing_objects():
     county = County(1, "Ulthuan", "Elthran", user, 'Ogre', 'Sir', 'Wizard')
     Preferences(county, user)
     # requirements = fake.requirements(county.technologies.keys())
-    Technology.establish_requirements(county.technologies, test_requirements)
+    Technology.establish_requirements(county.technologies, generic_requirements)
     county.save()
     county.vote = county.id
     county.kingdom_id = 1
@@ -46,7 +46,7 @@ def build_testing_objects():
     county = County(2, "Northern Wastes", "Haldon", user, 'Human', 'Sir', 'Merchant')
     Preferences(county, user)
     # requirements = fake.requirements(county.technologies.keys())
-    Technology.establish_requirements(county.technologies, test_requirements)
+    Technology.establish_requirements(county.technologies, generic_requirements)
     county.save()
     county.vote = county.id
     county.buildings['arcane'].total = 5
