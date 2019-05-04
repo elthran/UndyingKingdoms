@@ -17,9 +17,9 @@ class UpdateAPI(MethodView):
             generic_vue_safe(tech, ['name', 'description'])
             for tech in county.completed_techs
         ]
-        all_technologies = [
+        available_technologies = [
             generic_vue_safe(tech, ['name', 'description', 'tier'])
-            for tech in county.technologies.values()
+            for tech in county.available_techs
         ]
 
         form = TechnologyForm()
@@ -38,7 +38,7 @@ class UpdateAPI(MethodView):
             form=vue_safe_form(form),
             county=county_data,
             knownTechnologies=known_technologies,
-            allTechnologies=all_technologies,
+            availableTechnologies=available_technologies,
             researchChange=county.get_research_change(),
             currentTech=current_tech.name,
             description=current_tech.description,

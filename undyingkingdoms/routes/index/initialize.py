@@ -48,8 +48,8 @@ def initialize():
         county = initialize_county(
             current_user, kingdom, county_name, leader_name, background, race, title
         )
-        requirements = fake.requirements(county.technologies.keys())
-        Technology.establish_requirements(county.technologies, generic_requirements)
+        # requirements = fake.requirements(county.technologies.keys())
+        Technology.establish_requirements(county.technologies, test_requirements)
         return redirect(url_for('overview'))
     return render_template(
         "index/initialize.html",

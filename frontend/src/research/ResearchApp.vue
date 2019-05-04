@@ -35,7 +35,7 @@
       </p>
       <p>Progress: {{ progressCurrent }} / {{ progressRequired }}</p>
       <p id="info">
-        More technologies will become available as you complete all research within a tier.
+        More technologies will become available after you complete their requirements.
       </p>
     </form>
     <h2 class="top-spacer-dot-6 bottom-spacer-dot-3">
@@ -56,17 +56,18 @@
       No technologies have been researched yet.
     </p>
     <h2 class="top-spacer-dot-6 bottom-spacer-dot-3">
-      All Technologies
+      Available Technologies
     </h2>
-    <p class="tab-2 bottom-spacer-dot-3">
-    </p>
     <ul class="tab-1">
       <li
-        v-for="technology in allTechnologies"
+        v-for="technology in availableTechnologies"
         :key="technology.id"
       >
         {{ technology.name }}: {{ technology.description }} ({{ progressCurrent }} / {{ progressRequired }}
-        <img class="resource_icons" src="/static/dist/images/research_icon.jpg">)
+        <img
+          class="resource_icons"
+          src="/static/dist/images/research_icon.jpg"
+        >)
       </li>
     </ul>
   </div>
@@ -100,7 +101,7 @@ export default {
       progressCurrent: -1,
       progressRequired: -1,
       knownTechnologies: [],
-      allTechnologies: [],
+      availableTechnologies: [],
     }
   },
   mounted () {
