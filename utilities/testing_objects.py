@@ -20,7 +20,7 @@ def build_testing_objects():
     user.is_admin = True
     user.is_active = True
     user.is_verified = True
-    county = County(1, "Ulthuan", "Elthran", user, 'Ogre', 'Sir', 'Alchemist')
+    county = County(1, "Ulthuan", "Elthran", user, 'Ogre', 'Sir', 'Wizard')
     Preferences(county, user)
     requirements = fake.requirements(county.technologies.keys())
     Technology.establish_requirements(county.technologies, requirements)

@@ -126,8 +126,8 @@ class PopulationKiller(InitMixin, Command):
 
 class ArcherKiller(InitMixin, Command):
     def execute(self):
-        kill_count = int(self.target.armies['archer'].total * self.power)
-        self.target.population -= kill_count
+        kill_count = min(self.target.armies['archer'].total, self.power)
+        self.target.armies['archer'].total -= kill_count
         notification = Notification(
             self.target.id,
             "Enemy magic",
