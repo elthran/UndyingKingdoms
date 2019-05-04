@@ -37,10 +37,10 @@ def initialize():
         form.clan.choices = [(i[0], i[1]) for i in [(0, "Random")]]
 
     if form.validate_on_submit():
-        has_clan = form.data.clan == 1
+        has_clan = form.clan.data == 1
         kingdom = pick_kingdom(current_user, has_clan)
 
-        race = races[form.data.race]
+        race = races[form.race.data]
         title = titles[form.title.data]
         background = backgrounds[form.background.data]
         county_name = form.county.data
