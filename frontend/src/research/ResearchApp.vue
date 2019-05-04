@@ -59,14 +59,14 @@
       All Technologies
     </h2>
     <p class="tab-2 bottom-spacer-dot-3">
-      When all techs of a tier are researched, the next tier is unlocked
     </p>
     <ul class="tab-1">
       <li
         v-for="technology in allTechnologies"
         :key="technology.id"
       >
-        {{ technology.name }} (Tier {{ technology.tier }}): {{ technology.description }}
+        {{ technology.name }}: {{ technology.description }} ({{ progressCurrent }} / {{ progressRequired }}
+        <img class="resource_icons" src="/static/dist/images/research_icon.jpg">)
       </li>
     </ul>
   </div>

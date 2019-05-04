@@ -41,6 +41,5 @@ class TechFactory(SQLAlchemyModelFactory):
 
     name = factory.Faker('tech')
     cost = factory.Faker('pyint', min=250, max=100, step=50)
-    tier = 1
     max_level = 1
     description = ""

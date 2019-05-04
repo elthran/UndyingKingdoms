@@ -4,7 +4,6 @@ artificer_technology = {
     Technology(
         name='Engineering',
         cost=500,
-        tier=1,
         max_level=1,
         description='Each thieves den grants an additional thief.'
     ),

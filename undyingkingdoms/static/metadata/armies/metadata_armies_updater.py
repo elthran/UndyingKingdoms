@@ -66,8 +66,12 @@ def update_armies(background, armies):
         armies['summon'].class_name = 'fairy'
         armies['summon'].class_name_plural = 'fairies'
         armies['summon'].description = 'Fairies ...'
-        armies['monster'].category = "Infantry"
-        armies['monster'].armour_type = "Plate"
+        armies['summon'].category = "Infantry"
+        armies['summon'].armour_type = "Plate"
+        armies['summon'].attack = 5
+        armies['summon'].defence = 3
+        armies['summon'].health = 1
+        armies['summon'].armour_type = "Unarmoured"
 
     elif background == 'Rogue':
         armies['summon'].class_name = 'shadow wraith'

@@ -13,7 +13,7 @@ from undyingkingdoms.static.metadata.armies.metadata_armies_dwarf import dwarf_a
 from undyingkingdoms.static.metadata.armies.metadata_armies_elf import elf_armies
 from undyingkingdoms.static.metadata.armies.metadata_armies_goblin import goblin_armies
 from undyingkingdoms.static.metadata.armies.metadata_armies_human import human_armies
-from undyingkingdoms.static.metadata.research.metadata_research_all import generic_requirements
+from undyingkingdoms.static.metadata.research.metadata_research_all import generic_requirements, test_requirements
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])
@@ -49,7 +49,7 @@ def initialize():
             current_user, kingdom, county_name, leader_name, background, race, title
         )
         requirements = fake.requirements(county.technologies.keys())
-        Technology.establish_requirements(county.technologies, requirements)
+        Technology.establish_requirements(county.technologies, generic_requirements)
         return redirect(url_for('overview'))
     return render_template(
         "index/initialize.html",

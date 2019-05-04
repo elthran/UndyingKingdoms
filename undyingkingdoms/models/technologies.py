@@ -9,8 +9,9 @@ class Technology(GameEvent):
     county_day = db.Column(db.Integer)
     name = db.Column(db.String(64))
     current = db.Column(db.Integer)
-    cost = db.Column(db.Integer)
     tier = db.Column(db.Integer)
+    output = db.Column(db.Float)
+    cost = db.Column(db.Integer)
     level = db.Column(db.Integer)
     max_level = db.Column(db.Integer)
     completed = db.Column(db.Boolean)
@@ -23,7 +24,7 @@ class Technology(GameEvent):
     def key(self):
         return self.name.lower()
 
-    def __init__(self, name, cost, tier, max_level, description, requirements=None):
+    def __init__(self, name, cost, max_level, description, requirements=None, tier=1, output=None):
         if requirements is None:
             requirements = []
 
@@ -32,8 +33,9 @@ class Technology(GameEvent):
         self.name = name
         self.current = 0
         self.cost = cost
-        self.tier = tier
         self.level = 0
+        self.tier = tier
+        self.output = output
         self.max_level = max_level
         self.completed = False
         self.description = description

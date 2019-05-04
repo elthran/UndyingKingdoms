@@ -29,6 +29,7 @@ def build_testing_objects():
     county.kingdom_id = 1
     county.buildings['arcane'].total = 5
     county.technologies['arcane knowledge'].completed = True
+    county.buildings['lab'].total = 100
     # county.technologies['arcane knowledge II'].completed = True
     # county.technologies['arcane knowledge III'].completed = True
     county.mana = 500

@@ -540,7 +540,9 @@ class County(GameState):
         modifier = 1
         modifier += food_produced_modifier.get(self.race, ("", 0))[1] + food_produced_modifier.get(self.background, ("", 0))[1]
         if self.technologies['agriculture'].completed:
-            modifier += 0.5
+            modifier += self.technologies['agriculture'].output
+        if self.technologies['agriculture ii'].completed:
+            modifier += self.technologies['agriculture ii'].output
         modify_grain_rate = Casting.query.filter_by(target_id=self.id, name="modify_grain_rate").filter((Casting.duration > 0) | (Casting.active == True)).all()
         for spell in modify_grain_rate or []:
             modifier += spell.output * self.spell_modifier
