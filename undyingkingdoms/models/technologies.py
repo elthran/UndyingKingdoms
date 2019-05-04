@@ -15,7 +15,7 @@ class Technology(GameEvent):
     level = db.Column(db.Integer)
     max_level = db.Column(db.Integer)
     completed = db.Column(db.Boolean)
-    description = db.Column(db.String(128))
+    _description = db.Column(db.String(128))
 
     requirement_id = db.Column(db.Integer, db.ForeignKey('technology.id'))
     requirements = db.relationship("Technology")
@@ -23,6 +23,10 @@ class Technology(GameEvent):
     @hybrid_property
     def key(self):
         return self.name.lower()
+
+    @hybrid_property
+    def description(self):
+        return self._description.format(output=self.output)
 
     def __init__(self, name, cost, max_level, description, requirements=None, tier=1, output=None):
         if requirements is None:
@@ -38,7 +42,7 @@ class Technology(GameEvent):
         self.output = output
         self.max_level = max_level
         self.completed = False
-        self.description = description
+        self._description = description
         self.requirements = requirements
 
     @staticmethod
