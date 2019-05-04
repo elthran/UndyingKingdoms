@@ -70,6 +70,10 @@ class World(GameState):
     def advance_age(self):
         kingdoms = Kingdom.query.all()
         counties = County.query.all()
+        users = User.query.all()
+        for user in users:
+            if user.county:
+                user.ages_completed += 1
         for kingdom in kingdoms:
             kingdom.leader = 0
             kingdom.wars_total_ta = 0
