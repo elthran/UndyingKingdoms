@@ -258,15 +258,10 @@ class County(GameState):
 
     @property
     def max_mana(self):
-        base = 40
+        base = 20
         # TODO: this should be generate from tech list
-        if self.technologies['arcane knowledge'].completed:
-            base += 20
-        # if self.technologies['arcane knowledge II'].completed:
-        #     base += 20
-        # if self.technologies['arcane knowledge III'].completed:
-        #     base += 20
-        return base
+        base += sum(tech.output for tech in self.completed_techs if 'arcane knowledge' in tech.key)
+        return int(base)
 
     @property
     def spell_modifier(self):
@@ -691,9 +686,10 @@ class County(GameState):
 
     def get_mana_change(self):
         growth = 2
+        growth += sum(tech.output for tech in self.completed_techs if 'winds of magic' in tech.key)
         active_spells = Casting.query.filter_by(county_id=self.id).filter_by(active=True).all()
         loss = sum(spell.mana_sustain for spell in active_spells)
-        difference = growth - loss
+        difference = int(growth - loss)
         if difference < 0 and self.mana + difference < 0:
             active_spells[0].active = False
             notice = Notification(self.id,
@@ -757,13 +753,12 @@ class County(GameState):
     def get_number_of_buildings_produced_per_day(self):
         amount = 3
 
-        if self.technologies.get("engineering") and self.technologies["engineering"].completed:
-            amount += 1
+        amount += sum(tech.output for tech in self.completed_techs if 'engineering' in tech.key)
 
         amount += buildings_produced_per_day.get(self.race, ("", 0))[1] \
                   + buildings_produced_per_day.get(self.background, ("", 0))[1]
 
-        return amount
+        return int(amount)
 
     def produce_pending_buildings(self):
         """

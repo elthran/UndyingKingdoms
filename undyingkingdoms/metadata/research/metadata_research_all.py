@@ -27,8 +27,9 @@ generic_technology = [
     Technology(
         name='Engineering',
         cost=250,
-        max_level=1,
-        description='+1 building can be built each day.',
+        max_level=3,
+        description='+{output:.0f} building can be built each day for each level.',
+        output=1
     ),
     Technology(
         name='Logistics',
@@ -45,9 +46,16 @@ generic_technology = [
     Technology(
         name='Arcane Knowledge',
         cost=500,
-        max_level=3,
+        max_level=5,
         description='Each level raises your maximum mana by {output:.0f}.',
         output=20,
+    ),
+    Technology(
+        name='Winds of Magic',
+        cost=1250,
+        max_level=2,
+        description='Each level raises your mana generation per day by {output:.0f}.',
+        output=1,
     ),
 ]
 
