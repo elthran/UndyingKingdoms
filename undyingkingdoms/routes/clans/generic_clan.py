@@ -25,7 +25,7 @@ def generic_clan(template):
 
         kingdom = Kingdom.query.get(clan.kingdom_id)
         all_users = User.query.filter(User.id != user.id).all()
-        eligible_users = [user for user in all_users if user not in clan.members and user not in clan.invited]
+        eligible_users = [user for user in all_users if user not in clan.members and user not in clan.invited and user.county]
         return render_template(template, form=form, kingdom=kingdom, users=eligible_users)
 
     if form.validate_on_submit():
