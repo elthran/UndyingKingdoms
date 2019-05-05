@@ -1,7 +1,7 @@
 import pandas as pd
 from undyingkingdoms.metadata import metadata
 from undyingkingdoms.metadata.armies import metadata_armies_all
-
+import undyingkingdoms.metadata.armies as armies
 
 # from undyingkingdoms.metadata import *
 
@@ -77,7 +77,7 @@ def build_modifier_table():
         i += 1
 
     for race in metadata.metadata_races:
-        mod = globals()['metadata_armies_' + race.lower()]
+        mod = getattr(armies, f'metadata_armies_{race.lower()}')
         army = getattr(mod, race.lower() + '_armies')
         for k, v in army.items():
             df.loc[i, 'Race'] = race

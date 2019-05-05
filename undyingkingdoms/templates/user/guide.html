@@ -16,7 +16,7 @@
     display: flex;
     margin-top: 1em;
     border: 1px solid;
-    border-radius: 4px
+    border-radius: 4px;
 }
 
 .top-spacer-1 {
@@ -83,7 +83,7 @@
   <div class="compare-div">
     {% for background in races.Background.dropna().unique() %}
       <div class="side-spacer">
-        <h1>{{ background }}:</h1>
+        <h1>{{ background }}</h1>
         <ul>
           {% set select = races.Background == background %}
           {% for row in races.loc[select, 'Modifier Description'].dropna() %}
