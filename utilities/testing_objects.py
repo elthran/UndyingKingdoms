@@ -1,13 +1,10 @@
 from private_config import JACOB_TEMPORARY_EMAIL, JACOB_TEMPORARY_ACCOUNT_PASSWORD, MARLEN_TEMPORARY_EMAIL, \
     MARLEN_TEMPORARY_ACCOUNT_PASSWORD
-from tests.fakes.providers import fake
 from undyingkingdoms import User
 from undyingkingdoms.controler.initialize import initialize_county
-from undyingkingdoms.models.exports import World, Kingdom, County, Technology
+from undyingkingdoms.models.exports import World, Kingdom
 from undyingkingdoms.models.forum import Forum, Thread
-from undyingkingdoms.models.exports import Preferences
 from undyingkingdoms.metadata.metadata import kingdom_names
-from undyingkingdoms.metadata.research.metadata_research_all import generic_requirements
 
 
 def build_testing_objects():
