@@ -1,4 +1,4 @@
-from undyingkingdoms.models.bases import GameState, db
+from .bases import GameState, db
 
 
 class Upvote(GameState):

@@ -12,7 +12,7 @@ done
 python3.6 - <<-'EOF'
 print("Running ...")
 from undyingkingdoms import app
-from undyingkingdoms.models import World
+from undyingkingdoms.models.exports import World
 app.app_context().push()
 world = World.query.first()
 world.advance_age()

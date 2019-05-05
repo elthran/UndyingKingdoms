@@ -7,9 +7,9 @@ from flask_mobility.decorators import mobile_template
 from werkzeug.utils import redirect
 
 from undyingkingdoms import app
-from undyingkingdoms.models import County, Notification
-from undyingkingdoms.models.magic import Magic
-from undyingkingdoms.models.magic import Casting
+from undyingkingdoms.models.exports import County, Notification
+from undyingkingdoms.models.exports import Magic
+from undyingkingdoms.models.exports import Casting
 
 
 @app.route('/gameplay/casting/<target_id>', methods=['GET', 'POST'])

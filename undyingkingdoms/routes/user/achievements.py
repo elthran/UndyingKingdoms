@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app, db
-from undyingkingdoms.models import Achievement
+from undyingkingdoms.models.exports import Achievement
 
 
 @app.route('/user/achievements/', methods=['GET', 'POST'])

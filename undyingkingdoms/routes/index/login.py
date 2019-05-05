@@ -8,7 +8,7 @@ from flask_login import login_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app, User
-from undyingkingdoms.models import Notification
+from undyingkingdoms.models.exports import Notification
 from undyingkingdoms.models.forms.login import LoginForm
 
 

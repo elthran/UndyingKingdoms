@@ -3,10 +3,10 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.models import County, Message, Notification
+from undyingkingdoms.models.exports import County, Message, Notification
 from undyingkingdoms.models.forms.message import MessageForm
 from undyingkingdoms.models.forms.trade import TradeForm
-from undyingkingdoms.models.trades import Trade
+from undyingkingdoms.models.exports import Trade
 from undyingkingdoms.routes.helpers import mobile_on_vue, not_self
 
 """

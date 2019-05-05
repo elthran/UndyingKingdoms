@@ -2,7 +2,7 @@ from flask import jsonify
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
-from undyingkingdoms.models import Transaction
+from undyingkingdoms.models.exports import Transaction
 from undyingkingdoms.models.forms.infrastructure import InfrastructureForm
 from undyingkingdoms.metadata.metadata import all_buildings
 

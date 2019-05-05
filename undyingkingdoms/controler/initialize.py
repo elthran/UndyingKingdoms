@@ -1,4 +1,7 @@
-from undyingkingdoms.models import County, Preferences, Kingdom
+from random import choice
+
+from undyingkingdoms.metadata.research.metadata_research_all import generic_requirements
+from undyingkingdoms.models.exports import County, Preferences, Kingdom, Technology
 
 
 def initialize_county(user, kingdom, county_name, leader_name, background, race, title):
@@ -7,6 +10,9 @@ def initialize_county(user, kingdom, county_name, leader_name, background, race,
         kingdom.id, county_name, leader_name, user, race, title, background
     )
     Preferences(county, user)
+    # requirements = fake.requirements(county.technologies.keys())
+    Technology.establish_requirements(county.technologies, generic_requirements)
+    county.research_choice = choice(list(county.available_techs))
     return county
 
 

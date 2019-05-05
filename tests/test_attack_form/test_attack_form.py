@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
 
 from undyingkingdoms.models.forms.attack import AttackForm
-from undyingkingdoms.models.users import User
+from undyingkingdoms.models.exports import User
 
 
 def test_attack_form_validation(app):

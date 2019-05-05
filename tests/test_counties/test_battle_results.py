@@ -10,8 +10,8 @@ if __name__ == "__main__":
     os.system(f"python3 -m pytest -vv {__file__}")
     exit(1)  # prevents code from trying to run file afterwards.
 
-from undyingkingdoms.models.counties import County
-from undyingkingdoms.models.users import User
+from undyingkingdoms.models.exports import County
+from undyingkingdoms.models.exports import User
 
 
 def test_battle_results(app, client):

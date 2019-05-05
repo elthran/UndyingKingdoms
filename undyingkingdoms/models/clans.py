@@ -1,4 +1,4 @@
-from undyingkingdoms.models.bases import GameEvent, db
+from .bases import GameEvent, db
 
 class Clan(GameEvent):
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)

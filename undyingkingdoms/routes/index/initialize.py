@@ -1,10 +1,8 @@
 from flask import url_for, redirect, render_template
 from flask_login import current_user, login_required
 
-from tests.fakes.providers import fake
 from undyingkingdoms import app
 from undyingkingdoms.controler.initialize import initialize_county, pick_kingdom
-from undyingkingdoms.models import Technology
 from undyingkingdoms.models.forms.initialize import InitializeForm
 from undyingkingdoms.metadata.armies.metadata_armies_ogre import ogre_armies
 from undyingkingdoms.metadata.metadata import metadata_races, metadata_backgrounds, metadata_titles, \
@@ -13,7 +11,6 @@ from undyingkingdoms.metadata.armies.metadata_armies_dwarf import dwarf_armies
 from undyingkingdoms.metadata.armies.metadata_armies_elf import elf_armies
 from undyingkingdoms.metadata.armies.metadata_armies_goblin import goblin_armies
 from undyingkingdoms.metadata.armies.metadata_armies_human import human_armies
-from undyingkingdoms.metadata.research.metadata_research_all import generic_requirements, generic_requirements
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])
@@ -48,8 +45,6 @@ def initialize():
         county = initialize_county(
             current_user, kingdom, county_name, leader_name, background, race, title
         )
-        # requirements = fake.requirements(county.technologies.keys())
-        Technology.establish_requirements(county.technologies, generic_requirements)
         return redirect(url_for('overview'))
     return render_template(
         "index/initialize.html",

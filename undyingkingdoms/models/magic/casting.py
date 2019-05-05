@@ -1,6 +1,6 @@
 from random import randint
 
-from undyingkingdoms.models.bases import GameEvent, db
+from ..bases import GameEvent, db
 from .effects import Effect
 
 

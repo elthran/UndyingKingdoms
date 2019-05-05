@@ -11,7 +11,7 @@ if __name__ == "__main__":
     exit(1)  # prevents code from trying to run file afterwards.
 
 from undyingkingdoms import User
-from undyingkingdoms.models import Diplomacy, Kingdom
+from undyingkingdoms.models.exports import Diplomacy, Kingdom
 
 def test_pending_alliances(app):
     with app.app_context():

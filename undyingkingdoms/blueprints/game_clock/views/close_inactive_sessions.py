@@ -2,7 +2,7 @@ from datetime import datetime
 
 from flask.views import MethodView
 
-from undyingkingdoms.models.users import User
+from undyingkingdoms.models.exports import User
 from .helpers import check_clock_key
 
 

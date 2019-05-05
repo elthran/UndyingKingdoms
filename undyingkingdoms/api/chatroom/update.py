@@ -6,7 +6,7 @@ from flask.views import MethodView
 from flask_login import login_required, current_user
 
 from undyingkingdoms.api.vue_safe import vue_safe_message
-from undyingkingdoms.models import Chatroom
+from undyingkingdoms.models.exports import Chatroom
 from undyingkingdoms.models.forms.message import MessageForm
 
 

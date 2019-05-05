@@ -1,7 +1,7 @@
 import json
 
 from tests.helpers import login
-from undyingkingdoms.models import DAU
+from undyingkingdoms.models.exports import DAU
 
 
 def test_advance_analytics(client):

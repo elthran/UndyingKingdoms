@@ -1,4 +1,4 @@
-from undyingkingdoms.models.bases import GameEvent, db
+from .bases import GameEvent, db
 
 
 class Trade(GameEvent):

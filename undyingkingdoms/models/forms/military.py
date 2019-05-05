@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import IntegerField, SubmitField
 from wtforms.validators import NumberRange
 
-from undyingkingdoms.models.counties import County
+from undyingkingdoms.models.exports import County
 
 
 class MilitaryForm(FlaskForm):

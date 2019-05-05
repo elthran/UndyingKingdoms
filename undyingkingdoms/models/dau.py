@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 
 from extensions import flask_db as db
-from undyingkingdoms.models import Session, User
-from undyingkingdoms.models.bases import GameEvent
+from .exports import Session, User
+from .bases import GameEvent
 
 
 class DAU(GameEvent):

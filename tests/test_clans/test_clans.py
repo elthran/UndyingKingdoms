@@ -12,9 +12,9 @@ if __name__ == "__main__":
     exit(1)  # prevents code from trying to run file afterwards.
 
 
-from undyingkingdoms.models.users import User
-from undyingkingdoms.models.clans import Clan
-from undyingkingdoms.models.kingdoms import Kingdom
+from undyingkingdoms.models.exports import User
+from undyingkingdoms.models.exports import Clan
+from undyingkingdoms.models.exports import Kingdom
 
 def test_clan_creation(app):
     with app.app_context():

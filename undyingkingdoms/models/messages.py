@@ -1,7 +1,7 @@
 from flask import url_for
 
-from undyingkingdoms.models.bases import GameState, db
-from undyingkingdoms.models import County, World
+from .bases import GameState, db
+from .exports import County, World
 
 
 class Message(GameState):

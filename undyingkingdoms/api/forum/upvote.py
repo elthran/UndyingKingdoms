@@ -2,7 +2,7 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
-from undyingkingdoms.models.upvotes import Upvote
+from undyingkingdoms.models.exports import Upvote
 
 
 class UpvoteAPI(MethodView):

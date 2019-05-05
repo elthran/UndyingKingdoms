@@ -3,7 +3,7 @@ from factory.alchemy import SQLAlchemyModelFactory
 
 from undyingkingdoms import User
 from undyingkingdoms.controler.initialize import pick_kingdom
-from undyingkingdoms.models import County, Technology
+from undyingkingdoms.models.exports import County, Technology
 
 
 from tests.fakes.mixins import SQLAlcMeta

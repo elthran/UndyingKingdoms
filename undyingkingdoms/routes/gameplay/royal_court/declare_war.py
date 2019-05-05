@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import redirect
 
 from undyingkingdoms import app
-from undyingkingdoms.models import Kingdom, Diplomacy, Notification
+from undyingkingdoms.models.exports import Kingdom, Diplomacy, Notification
 from undyingkingdoms.routes.gameplay.royal_court.helpers import build_relations_form
 
 

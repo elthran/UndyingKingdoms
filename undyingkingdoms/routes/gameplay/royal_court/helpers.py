@@ -1,6 +1,6 @@
 from sqlalchemy.sql.functions import count
 
-from undyingkingdoms.models import Kingdom
+from undyingkingdoms.models.exports import Kingdom
 from undyingkingdoms.models.forms.royal_court import RoyalCourtRelationsForm
 
 

@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.models import Transaction, World
+from undyingkingdoms.models.exports import Transaction, World
 from undyingkingdoms.models.forms.military import MilitaryForm
 from undyingkingdoms.metadata.metadata import all_armies, game_descriptions
 

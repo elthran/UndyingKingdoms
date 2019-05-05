@@ -1,6 +1,6 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from undyingkingdoms.models.bases import GameEvent, db
+from .bases import GameEvent, db
 
 
 class Technology(GameEvent):

@@ -1,5 +1,5 @@
 from extensions import flask_db as db
-from undyingkingdoms.models.bases import GameEvent
+from .bases import GameEvent
 
 
 class Achievement(GameEvent):

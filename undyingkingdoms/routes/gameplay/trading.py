@@ -3,8 +3,8 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.models import County, Notification
-from undyingkingdoms.models.trades import Trade
+from undyingkingdoms.models.exports import County, Notification
+from undyingkingdoms.models.exports import Trade
 
 
 @app.route('/gameplay/trading/', methods=['GET'])

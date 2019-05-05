@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import redirect
 
 from undyingkingdoms import app, User
-from undyingkingdoms.models import Clan, Notification
+from undyingkingdoms.models.exports import Clan, Notification
 
 
 @app.route('/clans/clan_invite/<int:user_id>/<int:clan_id>', methods=['GET', 'POST'])

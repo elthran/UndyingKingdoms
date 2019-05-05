@@ -4,7 +4,7 @@ import os
 from flask import Blueprint, request, current_app, jsonify
 
 # causes import loop, need to refactor model design
-# from undyingkingdoms.models.users import User
+# from undyingkingdoms.models.exports import User
 
 geo_ip = Blueprint('geoip', __name__, url_prefix='/geo_ip')
 

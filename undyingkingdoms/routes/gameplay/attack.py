@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.models import County
+from undyingkingdoms.models.exports import County
 from undyingkingdoms.models.forms.attack import AttackForm
 from undyingkingdoms.routes.helpers import not_self, not_allies
 from undyingkingdoms.metadata.metadata import attack_types

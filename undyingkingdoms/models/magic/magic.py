@@ -1,5 +1,5 @@
-from undyingkingdoms.models.bases import GameEvent, db
-from undyingkingdoms.models.helpers import get_target_relation
+from ..bases import GameEvent, db
+from ..helpers import get_target_relation
 
 
 class Magic(GameEvent):

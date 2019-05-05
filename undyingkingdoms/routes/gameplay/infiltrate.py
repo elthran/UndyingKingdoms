@@ -5,7 +5,7 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.models import Infiltration, County, Notification
+from undyingkingdoms.models.exports import Infiltration, County, Notification
 from undyingkingdoms.models.forms.infiltrate import InfiltrateForm
 from undyingkingdoms.routes.helpers import not_allies, not_self
 from undyingkingdoms.metadata.metadata import infiltration_missions, amount_of_thieves_modifier, \

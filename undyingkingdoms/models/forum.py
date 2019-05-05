@@ -1,8 +1,8 @@
 from sqlalchemy import desc
 
 from extensions import flask_db as db
-from undyingkingdoms.models.bases import GameEvent
-from undyingkingdoms.models.upvotes import Upvote
+from .bases import GameEvent
+from .exports import Upvote
 
 
 class Forum(GameEvent):

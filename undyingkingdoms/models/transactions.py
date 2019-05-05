@@ -1,5 +1,4 @@
-from extensions import flask_db as db
-from undyingkingdoms.models.bases import GameEvent
+from .bases import GameEvent, db
 from undyingkingdoms.metadata.metadata import all_buildings, all_armies
 
 transactions = ["buy", "sell"]

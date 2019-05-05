@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import redirect
 
 from undyingkingdoms import app
-from undyingkingdoms.models import County, Notification
+from undyingkingdoms.models.exports import County, Notification
 from undyingkingdoms.models.forms.royal_court import RoyalCourtMessageForm
 
 

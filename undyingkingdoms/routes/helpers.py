@@ -5,7 +5,7 @@ from flask import url_for, request
 from flask_login import current_user
 from werkzeug.utils import redirect
 
-from undyingkingdoms.models import County
+from undyingkingdoms.models.exports import County
 
 
 def admin_required(func):

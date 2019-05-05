@@ -1,4 +1,4 @@
-from undyingkingdoms.models.notifications import Notification
+from ..notifications import Notification
 from utilities.helpers import to_class_name
 from .interface import Command
 

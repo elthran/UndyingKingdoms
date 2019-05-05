@@ -4,14 +4,14 @@ from uuid import uuid4
 from flask import jsonify
 from flask_login import current_user
 
-from undyingkingdoms.models import World
-from undyingkingdoms.models.preferences import Preferences
+from undyingkingdoms.models.exports import World
+from undyingkingdoms.models.exports import Preferences
 from undyingkingdoms.utilities.convert_metadata import build_race_table, build_modifier_table
 from .metadata import bot_county_prefix, bot_county_suffix, bot_leader_prefix, bot_leader_suffix
-from undyingkingdoms.models.notifications import Notification
-from undyingkingdoms.models.counties import County
-from undyingkingdoms.models.users import User
-from undyingkingdoms.models.kingdoms import Kingdom
+from undyingkingdoms.models.exports import Notification
+from undyingkingdoms.models.exports import County
+from undyingkingdoms.models.exports import User
+from undyingkingdoms.models.exports import Kingdom
 
 
 def create_bots(n=1):

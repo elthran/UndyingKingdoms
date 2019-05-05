@@ -3,8 +3,8 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app, User
-from undyingkingdoms.models import Kingdom
-from undyingkingdoms.models.clans import Clan
+from undyingkingdoms.models.exports import Kingdom
+from undyingkingdoms.models.exports import Clan
 from undyingkingdoms.models.forms.create_kingdom import CreateKingdomForm
 
 

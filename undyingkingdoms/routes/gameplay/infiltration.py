@@ -4,7 +4,7 @@ from flask_mobility.decorators import mobile_template
 from sqlalchemy import desc
 
 from undyingkingdoms import app
-from undyingkingdoms.models import Infiltration
+from undyingkingdoms.models.exports import Infiltration
 
 
 @app.route('/gameplay/infiltration/', methods=['GET', 'POST'])

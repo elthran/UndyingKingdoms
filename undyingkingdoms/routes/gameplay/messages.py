@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.models import Message
+from undyingkingdoms.models.exports import Message
 
 
 @app.route('/gameplay/messages/', methods=['GET', 'POST'])

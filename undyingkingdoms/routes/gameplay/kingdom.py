@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
-from undyingkingdoms.models import Kingdom
+from undyingkingdoms.models.exports import Kingdom
 from undyingkingdoms.models.forms.votes import VoteForm
 
 

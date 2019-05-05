@@ -1,7 +1,7 @@
 import json
 
 from tests.helpers import login
-from undyingkingdoms.models import World
+from undyingkingdoms.models.exports import World
 
 
 def test_advance_day(client):

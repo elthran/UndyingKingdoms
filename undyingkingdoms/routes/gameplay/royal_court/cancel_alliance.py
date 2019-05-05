@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import redirect
 
 from undyingkingdoms import app
-from undyingkingdoms.models import Diplomacy
+from undyingkingdoms.models.exports import Diplomacy
 
 
 @app.route('/gameplay/cancel_alliance/<int:kingdom_id>', methods=['POST'])

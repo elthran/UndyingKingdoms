@@ -42,7 +42,7 @@ app.register_blueprint(admin_blueprint)
 app.register_blueprint(game_clock_blueprint)
 app.register_blueprint(api_blueprint)
 
-from undyingkingdoms.models.users import User
+from undyingkingdoms.models.exports import User
 
 
 def import_routes():

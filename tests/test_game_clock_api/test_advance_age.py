@@ -14,7 +14,7 @@ if __name__ == "__main__":
 import json
 
 from tests.helpers import login
-from undyingkingdoms.models import World, County
+from undyingkingdoms.models.exports import World, County
 
 
 def test_advance_age(client):

@@ -2,7 +2,7 @@ from flask import url_for, redirect
 from flask_login import login_required, current_user
 
 from undyingkingdoms import app
-from undyingkingdoms.models import Clan
+from undyingkingdoms.models.exports import Clan
 
 
 @app.route('/clans/clan_leave/', methods=['GET', 'POST'])

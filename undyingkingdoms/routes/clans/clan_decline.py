@@ -4,7 +4,7 @@ from flask_mobility.decorators import mobile_template
 from werkzeug.utils import redirect
 
 from undyingkingdoms import app, db
-from undyingkingdoms.models import Clan
+from undyingkingdoms.models.exports import Clan
 
 
 @app.route('/clans/clan_decline/', methods=['GET', 'POST'])

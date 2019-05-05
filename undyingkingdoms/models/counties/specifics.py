@@ -1,5 +1,6 @@
 from copy import deepcopy
 
+from ..magic import Magic
 from undyingkingdoms.metadata.magic.metadata_magic_all import generic_spells
 from undyingkingdoms.metadata.research.metadata_research_all import generic_technology
 from . import all_metadata_imports as md

@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 
 from tests import bp
 from undyingkingdoms.api.vue_safe import vue_safe_form, generic_vue_safe
-from undyingkingdoms.models import Technology
+from undyingkingdoms.models.exports import Technology
 from undyingkingdoms.models.forms.technology import TechnologyForm
 
 

@@ -1,5 +1,5 @@
-from undyingkingdoms.models.bases import GameState, db
-from undyingkingdoms.models import County
+from .bases import GameState, db
+from .exports import County
 
 
 class Chatroom(GameState):

@@ -28,7 +28,7 @@ setup(
         'SQLAlchemy-Utils',
         'PyJWT',
         'requests',
-        'flask-script',
+        'Flask-Script',
         'Flask-Mobility',
         'flask-cors',
         'sendgrid',

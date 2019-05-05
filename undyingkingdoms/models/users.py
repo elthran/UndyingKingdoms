@@ -4,11 +4,11 @@ from copy import deepcopy
 from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
-from undyingkingdoms.models.sessions import Session
-from undyingkingdoms.models.achievements import Achievement
-from undyingkingdoms.models.bases import GameState, db
+from .sessions import Session
+from .achievements import Achievement
+from .bases import GameState, db
 from werkzeug.security import generate_password_hash, check_password_hash
-from undyingkingdoms.metadata.metadata import all_achievements
+from undyingkingdoms.metadata.metadata_achievements import all_achievements
 
 
 class User(GameState):

@@ -3,8 +3,8 @@ from random import choice
 
 from sqlalchemy import desc
 
-from undyingkingdoms.models import Chatroom, Message
-from undyingkingdoms.models.bases import GameState, db
+from undyingkingdoms.models.exports import Chatroom, Message
+from .bases import GameState, db
 
 
 class Preferences(GameState):

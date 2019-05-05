@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import SelectField, IntegerField
 
-from undyingkingdoms.models import County
+from undyingkingdoms.models.exports import County
 from undyingkingdoms.metadata.metadata import amount_of_thieves_modifier
 
 

@@ -13,7 +13,7 @@ from tests import bp, pp
 
 from tests.fakes.factories import UserFactory, CountyFactory
 from tests.fakes.providers import fake
-from undyingkingdoms.models import Preferences, Technology
+from undyingkingdoms.models.exports import Preferences, Technology
 
 
 def initialize_account():

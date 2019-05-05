@@ -5,14 +5,14 @@ from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
 from undyingkingdoms.calculations.distributions import get_int_between_0_to_100
-from undyingkingdoms.models.bases import GameState, db
-from undyingkingdoms.models.counties.specifics import add_racial_data, add_background_data
-from undyingkingdoms.models.helpers import cached_random
-from undyingkingdoms.models.notifications import Notification
-from undyingkingdoms.models.expeditions import Expedition
-from undyingkingdoms.models.infiltrations import Infiltration
-from undyingkingdoms.models.trades import Trade
-from undyingkingdoms.models.magic import Casting
+from ..magic import Casting
+from ..bases import GameState, db
+from .specifics import add_racial_data, add_background_data
+from ..helpers import cached_random
+from ..notifications import Notification
+from ..expeditions import Expedition
+from ..infiltrations import Infiltration
+from ..trades import Trade
 from .all_metadata_imports import *
 
 
@@ -373,7 +373,7 @@ class County(GameState):
         self.day += 1
 
     def temporary_bot_tweaks(self):
-        from undyingkingdoms.models.users import User
+        from undyingkingdoms.models.exports import User
 
         friendly_counties = County.query.join(User).filter(County.kingdom_id==self.kingdom_id, ~User.is_bot).all()
         friendly_counties_ids = [county.id for county in friendly_counties]
