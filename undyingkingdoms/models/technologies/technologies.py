@@ -16,9 +16,16 @@ class Technology(GameEvent):
     max_level = db.Column(db.Integer)
     completed = db.Column(db.Boolean)
     _description = db.Column(db.String(128))
+    effects = db.Column(db.PickleType)
 
     requirement_id = db.Column(db.Integer, db.ForeignKey('technology.id'))
     requirements = db.relationship("Technology")
+
+    @db.validates('effects')
+    def validate_effects(self, key, effects):
+        if effects.__class__ != list:
+            return [effects]
+        return effects
 
     @hybrid_property
     def key(self):
@@ -26,8 +33,14 @@ class Technology(GameEvent):
 
     @hybrid_property
     def description(self):
-        # future: just list effects?
-        return self._description.format(output=self.output)
+        """Map all effect kwargs into the description format string.
+
+        Note that output is included as well.
+        """
+        all_kwargs = dict(output=self.output)
+        for effect in self.effects:
+            all_kwargs.update(effect.kwargs)
+        return self._description.format(**all_kwargs)
 
     def __init__(self, name, cost, max_level, description, requirements=None, tier=1, output=None, effects=None):
         if requirements is None:
