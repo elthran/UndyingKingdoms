@@ -58,20 +58,17 @@ def unavailable_techs_addon(cls):
     cls.unavailable_techs = hybrid_property(get_unavailable_techs)
 
 
-def advance_research_addon(cls):
-    def advance_research(self):
-        technology = self.research_choice
-        technology.current += self.research
-        if technology.current >= technology.cost:  # You save left over research
-            self.research = technology.current - technology.cost
-            technology.completed = True
-            available_technologies = list(self.available_techs)
-            if available_technologies:
-                self.research_choice = choice(available_technologies)
-            else:
-                self.research = 0
+def advance_research(county):
+    tech = county.research_choice
+    tech.current += county.research
+    if tech.current >= tech.cost:  # You save left over research
+        county.research = tech.current - tech.cost
+        tech.completed = True
+        tech.activate(county)
+        available_technologies = list(county.available_techs)
+        if available_technologies:
+            county.research_choice = choice(available_technologies)
         else:
-            self.research = 0
-
-    cls.advance_research = advance_research
-
+            county.research = 0
+    else:
+        county.research = 0

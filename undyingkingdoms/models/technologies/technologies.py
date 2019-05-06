@@ -1,11 +1,11 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from .bases import GameEvent, db
+from ..bases import GameEvent, db
 
 
 class Technology(GameEvent):
     county_id = db.Column(db.Integer, db.ForeignKey('county.id', ondelete="CASCADE"), nullable=False)
-    world_day = db.Column(db.Integer)  # Day you started to reearch
+    world_day = db.Column(db.Integer)  # Day you started to research
     county_day = db.Column(db.Integer)
     name = db.Column(db.String(64))
     current = db.Column(db.Integer)
@@ -26,11 +26,14 @@ class Technology(GameEvent):
 
     @hybrid_property
     def description(self):
+        # future: just list effects?
         return self._description.format(output=self.output)
 
-    def __init__(self, name, cost, max_level, description, requirements=None, tier=1, output=None):
+    def __init__(self, name, cost, max_level, description, requirements=None, tier=1, output=None, effects=None):
         if requirements is None:
             requirements = []
+        if effects is None:
+            effects = []
 
         self.world_day = None
         self.county_day = None
@@ -44,10 +47,11 @@ class Technology(GameEvent):
         self.completed = False
         self._description = description
         self.requirements = requirements
+        self.effects = effects
 
     @staticmethod
     def establish_requirements(techs, metadata):
-        """Merge a dict of requirements in a dict of technologies.
+        """Merge a dict of requirements with a dict of technologies.
 
         When a requirement doesn't exist a new tech should be added
         to the user.
@@ -58,3 +62,7 @@ class Technology(GameEvent):
                     techs[key].requirements.append(techs[requirement])
                 except KeyError:
                     pass  # add new tech to techs
+
+    def activate(self, county):
+        for effect in self.effects:
+            effect.execute(county)

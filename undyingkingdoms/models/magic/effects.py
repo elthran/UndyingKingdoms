@@ -1,6 +1,6 @@
 from ..notifications import Notification
 from utilities.helpers import to_class_name
-from .interface import Command
+from ..interfaces import Command
 
 
 class Effect(Command):

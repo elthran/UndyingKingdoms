@@ -5,6 +5,7 @@ from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
 from undyingkingdoms.calculations.distributions import get_int_between_0_to_100
+from .tech_addons import advance_research
 from ..magic import Casting
 from ..bases import GameState, db
 from .specifics import add_racial_data, add_background_data
@@ -293,7 +294,7 @@ class County(GameState):
         Add a WORLD. Tracks day. Has game clock.
         """
         self.update_daily_resources()
-        self.advance_research()
+        advance_research(self)
         self.produce_pending_buildings()
         self.produce_pending_armies()
         self.apply_excess_production_value()
