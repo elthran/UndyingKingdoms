@@ -5,7 +5,8 @@ wizard_technology = [
         name='Spell Crafting',
         cost=500,
         max_level=1,
-        description='Each thieves den grants an additional thief.'),
+        description='Generate an additional mana each day.',
+        output=1)
 ]
 
 wizard_technology = {

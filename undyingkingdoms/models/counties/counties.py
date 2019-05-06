@@ -663,8 +663,10 @@ class County(GameState):
     def get_gold_change(self):
         modifier = 1 + income_modifier.get(self.race, ("", 0))[1] \
                    + income_modifier.get(self.background, ("", 0))[1]
-        if self.technologies.get("economics") and self.technologies["economics"].completed:
-            modifier += 0.15
+
+        modifier += sum(tech.output for tech in self.completed_techs if 'economics' in tech.key)
+        modifier += sum(tech.output for tech in self.completed_techs if 'mercantilism' in tech.key)
+        modifier += sum(tech.output for tech in self.completed_techs if 'bartering' in tech.key)
         if self.production_choice == 0:
             excess_worker_income = self.get_excess_production_value(self.production_choice)
         else:
@@ -677,9 +679,10 @@ class County(GameState):
         return self.buildings['mill'].total * self.buildings['mill'].output
 
     def get_iron_income(self):
+        bonus = int(sum(tech.output for tech in self.completed_techs if 'mining' in tech.key))
         if self.technologies.get("smelting") and self.technologies["smelting"].completed:
-            return self.buildings['mine'].total * (self.buildings['mine'].output + 1)
-        return self.buildings['mine'].total * self.buildings['mine'].output
+            return self.buildings['mine'].total * (self.buildings['mine'].output + 1) + bonus
+        return self.buildings['mine'].total * self.buildings['mine'].output + bonus
 
     def get_stone_income(self):
         return self.buildings['quarry'].total * self.buildings['quarry'].output
@@ -687,6 +690,7 @@ class County(GameState):
     def get_mana_change(self):
         growth = 2
         growth += sum(tech.output for tech in self.completed_techs if 'winds of magic' in tech.key)
+        growth += sum(tech.output for tech in self.completed_techs if 'spell crafting' in tech.key)
         active_spells = Casting.query.filter_by(county_id=self.id).filter_by(active=True).all()
         loss = sum(spell.mana_sustain for spell in active_spells)
         difference = int(growth - loss)
@@ -702,9 +706,10 @@ class County(GameState):
         return difference
 
     def get_research_change(self):
+        bonus = int(sum(tech.output for tech in self.completed_techs if 'alchemy' in tech.key))
         if self.technologies.get("arcane knowledge") and self.technologies["arcane knowledge"].completed:
-            return self.buildings['lab'].total * (self.buildings['lab'].output + 1)
-        return self.buildings['lab'].total * self.buildings['lab'].output
+            return self.buildings['lab'].total * (self.buildings['lab'].output + 1) + bonus
+        return self.buildings['lab'].total * self.buildings['lab'].output + bonus
 
     # Building
     def get_production_modifier(self):  # Modifiers your excess production
