@@ -78,4 +78,4 @@ class Technology(GameEvent):
 
     def activate(self, county):
         for effect in self.effects:
-            effect.execute(county)
+            effect.activate(county)

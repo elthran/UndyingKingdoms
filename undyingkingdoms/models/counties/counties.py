@@ -6,7 +6,6 @@ from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
 from undyingkingdoms.calculations.distributions import get_int_between_0_to_100
-from .tech_addons import advance_research
 from ..magic import Casting
 from ..bases import GameState, db
 from .specifics import add_racial_data, add_background_data
@@ -69,13 +68,6 @@ class County(GameState):
         "Magic",
         collection_class=attribute_mapped_collection('name'),
         cascade="all, delete, delete-orphan", passive_deletes=True
-    )
-    technologies = db.relationship(
-        "Technology",
-        collection_class=attribute_mapped_collection('key'),
-        cascade="all, delete, delete-orphan",
-        passive_deletes=True,
-        order_by="Technology.tier"
     )
 
     preferences = db.relationship("Preferences", back_populates='county', uselist=False, foreign_keys="Preferences.county_id")
