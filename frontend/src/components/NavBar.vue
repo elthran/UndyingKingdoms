@@ -122,6 +122,7 @@ export default {
         infrastructure: '',
         chatroom: '',
         forum: '',
+        research: '',
       },
       user: Object,
     }
