@@ -5,7 +5,7 @@ hierophant_technology = {
         name='Sacrifice',
         cost=500,
         max_level=1,
-        description='Each thieves den grants an additional thief.'),
+        description='All units gain +2 attack and -1 health.'),
 }
 
 hierophant_technology = {
