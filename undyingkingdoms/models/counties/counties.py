@@ -1,3 +1,4 @@
+import warnings
 from datetime import datetime, timedelta
 from random import choice, randint
 
@@ -294,7 +295,7 @@ class County(GameState):
         Add a WORLD. Tracks day. Has game clock.
         """
         self.update_daily_resources()
-        advance_research(self)
+        self.advance_research()
         self.produce_pending_buildings()
         self.produce_pending_armies()
         self.apply_excess_production_value()
@@ -533,16 +534,8 @@ class County(GameState):
             self.healthiness -= min(healthiness_loss, 5)
 
     def get_produced_grain(self):
-        modifier = 1
-        modifier += food_produced_modifier.get(self.race, ("", 0))[1] + food_produced_modifier.get(self.background, ("", 0))[1]
-        if self.technologies['agriculture'].completed:
-            modifier += self.technologies['agriculture'].output
-        if self.technologies['agriculture ii'].completed:
-            modifier += self.technologies['agriculture ii'].output
-        modify_grain_rate = Casting.query.filter_by(target_id=self.id, name="modify_grain_rate").filter((Casting.duration > 0) | (Casting.active == True)).all()
-        for spell in modify_grain_rate or []:
-            modifier += spell.output * self.spell_modifier
-        return int(self.buildings['field'].total * self.buildings['field'].output * modifier)
+        warnings.warn("`get_produced_grain()` is deprecated, use attribute `produced_grain` instead.", DeprecationWarning)
+        return self.produced_grain
 
     def get_produced_dairy(self):
         modifier = 1
