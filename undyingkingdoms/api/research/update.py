@@ -18,7 +18,7 @@ class UpdateAPI(MethodView):
             for tech in county.completed_techs
         ]
         available_technologies = [
-            generic_vue_safe(tech, ['name', 'description', 'tier'])
+            generic_vue_safe(tech, ['name', 'description', 'tier', 'current', 'cost'])
             for tech in county.available_techs
         ]
 

@@ -60,10 +60,10 @@
     </h2>
     <ul class="tab-1">
       <li
-        v-for="technology in availableTechnologies"
-        :key="technology.id"
+        v-for="tech in availableTechnologies"
+        :key="tech.id"
       >
-        {{ technology.name }}: {{ technology.description }} ({{ progressCurrent }} / {{ progressRequired }}
+        {{ tech.name }}: {{ tech.description }} ({{ tech.current }} / {{ tech.cost }}
         <img
           class="resource_icons"
           src="/static/dist/images/research_icon.jpg"
