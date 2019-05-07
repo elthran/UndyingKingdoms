@@ -11,6 +11,11 @@ def add_background_data(self):
     background_spells = getattr(md, f'{background}_spells')
     background_technology = getattr(md, f'{background}_technology')
 
+    # Make sure tech names don't overlap.
+    # This should probably be part of some fancy test suite ...
+    intersection = set(self.technologies.keys()) & background_technology.keys()
+    assert intersection == set(), f"Names of technologies conflict: {intersection}."
+
     self.magic = {**self.magic, **deepcopy(background_spells)}
     self.technologies = {**self.technologies, **deepcopy(background_technology)}
 

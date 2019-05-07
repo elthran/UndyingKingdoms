@@ -4,7 +4,6 @@ from ..bases import GameEvent, db
 
 
 class Technology(GameEvent):
-    county_id = db.Column(db.Integer, db.ForeignKey('county.id', ondelete="CASCADE"), nullable=False)
     world_day = db.Column(db.Integer)  # Day you started to research
     county_day = db.Column(db.Integer)
     name = db.Column(db.String(64))
@@ -14,12 +13,24 @@ class Technology(GameEvent):
     cost = db.Column(db.Integer)
     level = db.Column(db.Integer)
     max_level = db.Column(db.Integer)
-    completed = db.Column(db.Boolean)
+    _completed = db.Column(db.Boolean)
     _description = db.Column(db.String(128))
     effects = db.Column(db.PickleType)
 
     requirement_id = db.Column(db.Integer, db.ForeignKey('technology.id'))
     requirements = db.relationship("Technology")
+
+    @hybrid_property
+    def completed(self):
+        return self._completed
+
+    @completed.setter
+    def completed(self, value):
+        """Toggle tech activation when you complete it."""
+        if value is True:
+            self.activate(self.county)
+        self.deactivate(self.county)
+        self._completed = value
 
     @db.validates('effects')
     def validate_effects(self, key, effects):
@@ -57,7 +68,7 @@ class Technology(GameEvent):
         self.tier = tier
         self.output = output
         self.max_level = max_level
-        self.completed = False
+        self._completed = False
         self._description = description
         self.requirements = requirements
         self.effects = effects
@@ -79,3 +90,7 @@ class Technology(GameEvent):
     def activate(self, county):
         for effect in self.effects:
             effect.activate(county)
+
+    def deactivate(self, county):
+        for effect in self.effects:
+            effect.undo(county)
