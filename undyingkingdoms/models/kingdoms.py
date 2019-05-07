@@ -170,12 +170,16 @@ class Kingdom(GameState):
         return max(counties, key=lambda x: x[0])[1]
 
     def count_votes(self):
-        if self.get_most_popular_county().preferences.get_votes_for_self() >= self.get_votes_needed():
-            county = self.get_most_popular_county()
+        county = self.get_most_popular_county()
+        preferences = county.preferences
+        if preferences.get_votes_for_self() >= self.get_votes_needed():
             self.leader = county.id
             self.approval_rating = 60
-            achievement = Achievement.query.filter_by(user_id=county.user_id, category="class_leader",
-                                                      sub_category=county.race.lower()).first()
+            achievement = Achievement.query.filter_by(
+                user_id=county.user_id,
+                category="class_leader",
+                sub_category=county.race.lower()
+            ).first()
             if achievement:  # This should be unneeded and SHOULD be throwing errors. But while it's in beta we can leave it in
                 achievement.current_tier += 1
             notification = Notification(county.id, "Leader", "You have been crowned ruler of this kingdom!", self.world.day)

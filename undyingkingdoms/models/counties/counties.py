@@ -284,7 +284,7 @@ class County(GameState):
         self.kingdom.count_votes()
 
     def display_vote(self):
-        vote = County.query.get(self.preferences.vote)
+        vote = self.preferences.vote
         return vote.name
 
     # Advance day

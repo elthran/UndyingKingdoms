@@ -52,8 +52,8 @@ def build_testing_objects():
     county.armies['elite'].total = 100
     county.buildings['tavern'].total = 5
     county.population += 500
-    kingdom2.leader = county.id
-    kingdom2.approval_rating = 60
+    # kingdom2.leader = county.id
+    # kingdom2.approval_rating = 60
     # Create AI1 (He is weak and easier to attack for testing)
     user = User("ai1", "1@gmail.com", "star", is_bot=True)
     county = initialize_county(user, kingdom1, "Robotica1", "Mr. Roboto1", 'Druid', 'Dwarf', 'Lady')
