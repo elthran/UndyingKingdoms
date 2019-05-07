@@ -98,9 +98,6 @@ export default {
 
 <style scoped>
 #chatlist {
-  border: solid 1px;
-  border-radius: 4px;
-  padding: 0.4em;
   min-height: 14em;
   width: 100%;
   height: 100%;
