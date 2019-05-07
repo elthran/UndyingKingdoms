@@ -1,5 +1,6 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
+from tests import bp
 from ..bases import GameEvent, db
 
 
@@ -28,8 +29,10 @@ class Technology(GameEvent):
     def completed(self, value):
         """Toggle tech activation when you complete it."""
         if value is True:
+            if self.key == "agriculture": bp()
             self.activate(self.county)
-        self.deactivate(self.county)
+        else:
+            self.deactivate(self.county)
         self._completed = value
 
     @db.validates('effects')

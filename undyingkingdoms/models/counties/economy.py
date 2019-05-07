@@ -32,12 +32,9 @@ class Economy(GameState):
     @hybrid_property
     def grain_produced(self):
         county = self.county
-        building_production = int(
-            county.buildings['field'].total
-            * county.buildings['field'].output
-            * self.grain_modifier
-        )
-        return self._grain_produced + building_production
+        field = county.buildings['field']
+        building_production = field.total * field.output
+        return (self._grain_produced + building_production) * self.grain_modifier
 
     @grain_produced.setter
     def grain_produced(self, value):
