@@ -4,7 +4,7 @@ from undyingkingdoms.metadata.research.metadata_research_all import generic_requ
 from undyingkingdoms.models.exports import County, Preferences, Kingdom, Technology
 
 
-def initialize_county(user, kingdom, county_name, leader_name, background, race, title):
+def initialize_county(user, kingdom, county_name, title, leader_name, race, background):
     """Create a new county object with appropriate preferences and tech."""
     county = County(
         kingdom.id, county_name, leader_name, user, race, title, background
