@@ -129,16 +129,3 @@ def get_target_relation(county, target):
 
 def compute_modifier(metadata, race, background):
     return metadata.get(race, ('', 0))[1] + metadata.get(background, ('', 0))[1]
-
-
-def get_modifier_effects(metadata, race, background):
-    effects = dict(modifier={}, produced={})
-    try:
-        effects['modifier']['race'] = metadata[race]
-    except KeyError:
-        pass
-    try:
-        effects['modifier']['background'] = metadata[background]
-    except KeyError:
-        pass
-    return effects
