@@ -9,8 +9,8 @@ generic_technology = [
         name='Agriculture',
         cost=500,
         max_level=2,
-        description="{produced_grain:+0.0%} bonus to all grain production within your county.",
-        effects=MequalsEffect(produced_grain=0.25)
+        description="{grain_modifier:+0.0%} bonus to all grain production within your county.",
+        effects=MequalsEffect(grain_modifier=0.25)
     ),
     Technology(
         name='Animal Husbandry',

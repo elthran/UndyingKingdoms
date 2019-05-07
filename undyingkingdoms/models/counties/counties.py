@@ -527,7 +527,7 @@ class County(GameState):
 
     def get_produced_grain(self):
         warnings.warn("`get_produced_grain()` is deprecated, use attribute `produced_grain` instead.", DeprecationWarning)
-        return self.produced_grain
+        return self.grain_produced
 
     def get_produced_dairy(self):
         modifier = 1

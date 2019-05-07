@@ -19,3 +19,7 @@ def romanize(word, n):
     """
     numeral = roman.toRoman(n)
     return f'{word} {numeral}' if n > 1 else word
+
+
+def strip_leading_underscore(s):
+    return s[1:] if s[0] == '_' else s

@@ -1,5 +1,6 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
+from utilities.helpers import strip_leading_underscore
 from ..bases import db
 
 
@@ -18,7 +19,13 @@ def economy_addon(county_cls, economy_cls):
 
     """
     # hoist all columns from economy into county
-    cols_to_hoist = set([c.name for c in economy_cls.__table__.c]) - set([c.name for c in county_cls.__table__.c])
+    cols_to_hoist = set([
+        strip_leading_underscore(c.name)
+        for c in economy_cls.__table__.c
+    ]) - set([
+        strip_leading_underscore(c.name)
+        for c in county_cls.__table__.c
+    ])
     for col in cols_to_hoist:
         prop = hybrid_property(lambda self: getattr(getattr(self, economy_cls.__table__.name), col))
         setattr(
