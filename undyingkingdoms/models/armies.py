@@ -132,7 +132,7 @@ class Army(GameState):
             bonuses = get_modifiers(self.county, 'unit_health', self.name)  # County, Health, Unit Name
         except AttributeError:
             pass
-        return self._health + bonuses
+        return max(self._health + bonuses, 1)
 
     @health.setter
     def health(self, value):

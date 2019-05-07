@@ -2,10 +2,11 @@ from undyingkingdoms.models.technologies import Technology
 
 diplomat_technology = {
     Technology(
-        name='Diplomacy',
+        name='Bartering',
         cost=500,
         max_level=1,
-        description='Each thieves den grants an additional thief.'
+        description='Increases all gold income by 15%.',
+        output=0.15
     ),
 }
 
