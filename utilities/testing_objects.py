@@ -11,8 +11,9 @@ def build_testing_objects():
     world = World()
     world.save()
     # Create all the kingdoms
-    for i in range(len(kingdom_names)):
-        kingdom = Kingdom(kingdom_names[i])
+    test_kingdom_names = kingdom_names + ["Empty"]
+    for i in range(len(test_kingdom_names)):
+        kingdom = Kingdom(test_kingdom_names[i])
         kingdom.save()
     # Create Elthran
     kingdom1 = Kingdom.query.get(1)
