@@ -5,6 +5,7 @@ from random import choice, randint
 from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
+from tests import bp
 from undyingkingdoms.calculations.distributions import get_int_between_0_to_100
 from ..magic import Casting
 from ..bases import GameState, db
@@ -805,10 +806,22 @@ class County(GameState):
                     break
 
     # Battling
-    def get_offensive_strength(self, *args, **kwargs):
-        DeprecationWarning("This might be depreciated in favour of offensive_power attribute, or if you want to pass args Military.offensive_power.fget(county, someargs, somekwargs)")
-        military_cls = self.military.__class__
-        return military_cls.offensive_power.fget(self, *args, **kwargs)
+    def get_offensive_strength(self, army=None, scoreboard=False, enemy_forts=0):
+        """You can use this if you want strength of an army.
+
+        If you just want the entire county strength use
+        `county.offensive_power` instead.
+        """
+
+        warnings.warn(
+            "This might be depreciated in favour of offensive_power attribute, or if you want to pass args Military.offensive_power.fget(county.military, someargs, somekwargs) ... if I can ever get that code to work :P",
+            DeprecationWarning
+        )
+        military = self.military
+        military_cls = military.__class__
+        return military_cls.__dict__['offensive_power'].fget(
+            military, army=army, scoreboard=scoreboard, enemy_forts=enemy_forts
+        )
 
     def get_defensive_strength(self, scoreboard=False):
         # First get base strength of citizens
