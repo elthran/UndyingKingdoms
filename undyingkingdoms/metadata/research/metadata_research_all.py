@@ -16,7 +16,8 @@ generic_technology = [
         name='Animal Husbandry',
         cost=500,
         max_level=1,
-        description='+50% bonus to all dairy production within your county.',
+        description='{dairy_modifier:+0.0%} bonus to all dairy production within your county.',
+        effects=PlequalsEffect(dairy_modifer=0.5)
     ),
     Technology(
         name='Steel',

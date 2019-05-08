@@ -530,14 +530,9 @@ class County(GameState):
         return self.grain_produced
 
     def get_produced_dairy(self):
-        modifier = 1
-        modifier += food_produced_modifier.get(self.race, ("", 0))[1] + food_produced_modifier.get(self.background, ("", 0))[1]
-        if self.technologies['animal husbandry'].completed:
-            modifier += 0.5
-        verdant_growth = Casting.query.filter_by(target_id=self.id, active=1, name="verdant growth").first()
-        if verdant_growth:
-            modifier += 0.5
-        return int(self.buildings['pasture'].total * self.buildings['pasture'].output * modifier)
+        warnings.warn("`get_produced_dairy()` is deprecated, use attribute `produced_dairy` instead.",
+                      DeprecationWarning)
+        return self.dairy_produced
 
     def get_excess_worker_produced_food(self):
         if self.production_choice == 2:

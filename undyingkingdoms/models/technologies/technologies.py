@@ -1,6 +1,7 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from tests import bp
+from undyingkingdoms.models.notifications import Notification
 from ..bases import GameEvent, db
 
 
@@ -93,6 +94,16 @@ class Technology(GameEvent):
         for effect in self.effects:
             effect.activate(county)
 
+        kingdom = county.kingdom
+        world = kingdom.world
+        notice = Notification(county.id, f"Discovered {self.name}", self.description, world.day, category="Research")
+        notice.save()
+
     def deactivate(self, county):
         for effect in self.effects:
             effect.undo(county)
+
+        kingdom = county.kingdom
+        world = kingdom.world
+        notice = Notification(county.id, f"Lost {self.name}", self.description, world.day, category="Research")
+        notice.save()
