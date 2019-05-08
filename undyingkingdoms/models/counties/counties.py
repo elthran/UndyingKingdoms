@@ -818,10 +818,7 @@ class County(GameState):
             DeprecationWarning
         )
         military = self.military
-        military_cls = military.__class__
-        return military_cls.__dict__['offensive_power'].fget(
-            military, army=army, scoreboard=scoreboard, enemy_forts=enemy_forts
-        )
+        return military.get_offensive_power(army=army, scoreboard=scoreboard, enemy_forts=enemy_forts)
 
     def get_defensive_strength(self, scoreboard=False):
         # First get base strength of citizens

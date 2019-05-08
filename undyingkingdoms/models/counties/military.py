@@ -64,6 +64,10 @@ class Military(GameState):
     def offensive_power(self, value):
         self._offensive_power = value
 
+    def get_offensive_power(self, *args, **kwargs):
+        """Allow access to fget of offensive power hybrid_property."""
+        return Military.__dict__['offensive_power'].fget(self, *args, **kwargs)
+
     def __init__(self, county):
         self.county = county
         self._offensive_modifier = 1 + compute_modifier(offensive_power_modifier, county.race, county.background)
