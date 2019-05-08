@@ -52,10 +52,11 @@ input {
 {% endblock %}
 
 {% block content1 %}
+{% set n_bots = 1 %}
 <div id="content">
   <h1 class="bottom-spacer-1">Admin Tools</h1>
   <div id="body">
-    <button value="bots 3">Add 3 bot counties</button>
+    <button value="bots {{ n_bots }}">Add {{ n_bots }} bot counties</button>
     <input class="top-spacer-1 bottom-spacer-dot-3" id="notice" type="text" name="notice" placeholder="Notification to send ..">
     <button class="bottom-spacer-2" value="notification">Send a notification to all users.</button>
     <button value="update_guide">Update Comparison Guide data.</button>

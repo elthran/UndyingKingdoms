@@ -4,8 +4,9 @@ alchemist_technology = {
     Technology(
         name='Alchemy',
         cost=500,
-        max_level=1,
-        description='Each thieves den grants an additional thief.'
+        max_level=3,
+        description='Generate an additional +5 research each day.',
+        output=5
     ),
 }
 

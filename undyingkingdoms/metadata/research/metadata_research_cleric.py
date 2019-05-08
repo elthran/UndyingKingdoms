@@ -3,9 +3,9 @@ from undyingkingdoms.models.technologies import Technology
 cleric_technology = {
     Technology(
         name='Blessings',
-        cost=500,
-        max_level=1,
-        description='Each thieves den grants an additional thief.'
+        cost=750,
+        max_level=3,
+        description='Grant +1 health to all units.'
     ),
 }
 

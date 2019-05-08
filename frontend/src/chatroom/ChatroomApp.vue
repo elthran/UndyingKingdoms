@@ -211,6 +211,9 @@ export default {
   overflow-y: auto;
   /* This is all I need to make words break properly ... */
   overflow-wrap: break-word;
+  border: solid 1px;
+  border-radius: 4px;
+  padding: 0.4em;
 }
 
 #header {

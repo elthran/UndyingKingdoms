@@ -3,9 +3,9 @@ from undyingkingdoms.models.technologies import Technology
 warlord_technology = [
     Technology(
         name='Tactician',
-        cost=500,
-        max_level=1,
-        description='Each thieves den grants an additional thief.'
+        cost=1250,
+        max_level=3,
+        description='All units gain +1 attack.'
     ),
 ]
 

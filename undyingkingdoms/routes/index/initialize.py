@@ -42,9 +42,7 @@ def initialize():
         background = backgrounds[form.background.data]
         county_name = form.county.data
         leader_name = form.leader.data
-        county = initialize_county(
-            current_user, kingdom, county_name, leader_name, background, race, title
-        )
+        county = initialize_county(current_user, kingdom, county_name, title, leader_name, race, background)
         return redirect(url_for('overview'))
     return render_template(
         "index/initialize.html",

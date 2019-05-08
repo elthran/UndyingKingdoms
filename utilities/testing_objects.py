@@ -11,8 +11,9 @@ def build_testing_objects():
     world = World()
     world.save()
     # Create all the kingdoms
-    for i in range(len(kingdom_names)):
-        kingdom = Kingdom(kingdom_names[i])
+    test_kingdom_names = kingdom_names + ["Empty"]
+    for i in range(len(test_kingdom_names)):
+        kingdom = Kingdom(test_kingdom_names[i])
         kingdom.save()
     # Create Elthran
     kingdom1 = Kingdom.query.get(1)
@@ -20,7 +21,7 @@ def build_testing_objects():
     user.is_admin = True
     user.is_active = True
     user.is_verified = True
-    county = initialize_county(user, kingdom1, "Ulthuan", "Elthran", 'Wizard','Ogre', 'Sir')
+    county = initialize_county(user, kingdom1, "Ulthuan", 'Sir', "Elthran", 'Ogre', 'Wizard')
     county.save()
     county.vote = county.id
     county.buildings['arcane'].total = 5
@@ -38,7 +39,7 @@ def build_testing_objects():
     user.is_admin = True
     user.is_active = True
     user.is_verified = True
-    county = initialize_county(user, kingdom2, "Northern Wastes", "Haldon", 'Merchant', 'Human', 'Sir')
+    county = initialize_county(user, kingdom2, "Northern Wastes", 'Sir', "Haldon", 'Human', 'Merchant')
     county.save()
     county.vote = county.id
     county.buildings['arcane'].total = 5
@@ -52,25 +53,25 @@ def build_testing_objects():
     county.armies['elite'].total = 100
     county.buildings['tavern'].total = 5
     county.population += 500
-    kingdom2.leader = county.id
-    kingdom2.approval_rating = 60
+    # kingdom2.leader = county.id
+    # kingdom2.approval_rating = 60
     # Create AI1 (He is weak and easier to attack for testing)
     user = User("ai1", "1@gmail.com", "star", is_bot=True)
-    county = initialize_county(user, kingdom1, "Robotica1", "Mr. Roboto1", 'Druid', 'Dwarf', 'Lady')
+    county = initialize_county(user, kingdom1, "Robotica1", 'Lady', "Mr. Roboto1", 'Dwarf', 'Druid')
     county.save()
     county.vote = county.id
     county.armies['peasant'].amount = 0
     county.armies['archer'].amount = 0
     # Create AI2 (He is weak and easier to attack for testing)
     user = User("ai2", "2@gmail.com", "star", is_bot=True)
-    county = initialize_county(user, kingdom2, "Robotica2", "Mr. Roboto2", 'Merchant', 'Elf', 'Lady')
+    county = initialize_county(user, kingdom2, "Robotica2", 'Lady', "Mr. Roboto2", 'Elf', 'Merchant')
     county.save()
     county.vote = county.id
     county.armies['peasant'].amount = 0
     county.armies['archer'].amount = 0
     # Create AI3 (He is weak and easier to attack for testing)
     user = User("ai3", "3@gmail.com", "star", is_bot=True)
-    county = initialize_county(user, kingdom2, "Robotica3", "Mr. Roboto3", 'Hierophant', 'Human', 'Lady')
+    county = initialize_county(user, kingdom2, "Robotica3", 'Lady', "Mr. Roboto3", 'Human', 'Hierophant')
     county.save()
     county.vote = county.id
     county.armies['peasant'].amount = 0
