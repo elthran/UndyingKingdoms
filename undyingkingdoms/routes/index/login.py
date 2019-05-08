@@ -26,14 +26,16 @@ def login(template):
             if user.county is None:
                 login_user(user)
                 return redirect(url_for('initialize'))
-            if user.get_last_logout() and user.county.day > 0 and (datetime.utcnow() - user.get_last_logout()).total_seconds() // 3600 > 6:
+            if user.get_last_logout() and user.county.day > 0 and (
+                    datetime.utcnow() - user.get_last_logout()).total_seconds() // 3600 > 6:
                 gold_reward = min((datetime.utcnow() - user.get_last_logout()).seconds // 3600, 48) * randint(5, 7)
                 user.county.gold += gold_reward
-                notification = Notification(user.county.id,
-                                            "Login Reward",
-                                            f"Your people appreciate your trust in letting them run their own affairs. "
-                                            f"They give you {gold_reward} gold as a thank you.",
-                                            user.county.kingdom.world.day)
+                notification = Notification(
+                    user.county,
+                    "Login Reward",
+                    f"Your people appreciate your trust in letting them run their own affairs. "
+                    f"They give you {gold_reward} gold as a thank you.",
+                )
                 notification.save()
             login_user(user)
             if not user.is_verified:
@@ -92,6 +94,5 @@ class LoginAPI(MethodView):
                 message='The data sent is not in an acceptable form.',
                 errors=form.errors
             ), 200
-
 
 # app.add_url_rule('/login', view_func=LoginAPI.as_view('login_api'))

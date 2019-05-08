@@ -17,11 +17,11 @@ def send_decree():
     if message_form.validate_on_submit():
         for county in County.query.filter_by(kingdom_id=county.kingdom_id).all():
             message = Notification(
-                county_id=county.id,
+                county=county,
                 title=f"Royal Decree from {county.title} {county.leader}",
                 content=message_form.content.data,
-                day=county.kingdom.world.day,
-                category="Royal Decree")
+                category="Royal Decree"
+            )
             message.save()
         return redirect(url_for('royal_court'))
     return jsonify(

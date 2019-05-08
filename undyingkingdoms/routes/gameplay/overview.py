@@ -57,7 +57,7 @@ def enemy_overview(template, county_id=0):
     trade_form.offer_iron.choices = [(i * 10, i * 10) for i in range(county.iron // 10 + 1)]
     trade_form.offer_stone.choices = [(i * 10, i * 10) for i in range(county.stone // 10 + 1)]
     trade_form.offer_grain.choices = [(i * 10, i * 10) for i in range(county.grain_stores // 10 + 1)]
-    
+
     trade_form.receive_gold.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_wood.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_iron.choices = [(i * 10, i * 10) for i in range(51)]
@@ -110,7 +110,7 @@ def trade(county_id):
     trade_form.offer_iron.choices = [(i * 10, i * 10) for i in range(county.iron // 10 + 1)]
     trade_form.offer_stone.choices = [(i * 10, i * 10) for i in range(county.stone // 10 + 1)]
     trade_form.offer_grain.choices = [(i * 10, i * 10) for i in range(county.grain_stores // 10 + 1)]
-    
+
     trade_form.receive_gold.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_wood.choices = [(i * 10, i * 10) for i in range(51)]
     trade_form.receive_iron.choices = [(i * 10, i * 10) for i in range(51)]
@@ -144,11 +144,11 @@ def trade(county_id):
         county.stone -= trade_form.offer_stone.data
 
         trade_notice = Notification(
-            target_county.id,
+            target_county,
             "You were offered a trade",
             f"{county.name} has offered you a trade. Visit the trading page.",
-            county.kingdom.world.day,
-            "Trade")
+            "Trade"
+        )
         trade_notice.save()
 
         return redirect(url_for('trading'))

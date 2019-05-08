@@ -44,13 +44,13 @@ def create_bots(n=1):
 
 
 def create_notification(message):
-    world = World.query.first()
     for county in County.query.all():
-        notification = Notification(county.id,
-                                    f"Admin Update from {current_user.county.leader}",
-                                    message,
-                                    world.day,
-                                    "Admin")
+        notification = Notification(
+            county,
+            f"Admin Update from {current_user.county.leader}",
+            message,
+            "Admin"
+        )
         notification.save()
     return jsonify(
         status="success",
@@ -73,6 +73,7 @@ def build_comparison_files():
             status="fail",
             message=f"Player guide update failed due to: {ex}"
         )
+
 
 def run_advance_day():
     try:

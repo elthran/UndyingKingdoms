@@ -94,16 +94,22 @@ class Technology(GameEvent):
         for effect in self.effects:
             effect.activate(county)
 
-        kingdom = county.kingdom
-        world = kingdom.world
-        notice = Notification(county.id, f"Discovered {self.name}", self.description, world.day, category="Research")
+        notice = Notification(
+            county,
+            f"Discovered {self.name}",
+            self.description,
+            category="Research"
+        )
         notice.save()
 
     def deactivate(self, county):
         for effect in self.effects:
             effect.undo(county)
 
-        kingdom = county.kingdom
-        world = kingdom.world
-        notice = Notification(county.id, f"Lost {self.name}", self.description, world.day, category="Research")
+        notice = Notification(
+            county,
+            f"Lost {self.name}",
+            self.description,
+            category="Research"
+        )
         notice.save()

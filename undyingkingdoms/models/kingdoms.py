@@ -178,7 +178,11 @@ class Kingdom(GameState):
                                                       sub_category=county.race.lower()).first()
             if achievement:  # This should be unneeded and SHOULD be throwing errors. But while it's in beta we can leave it in
                 achievement.current_tier += 1
-            notification = Notification(county.id, "Leader", "You have been crowned ruler of this kingdom!", self.world.day)
+            notification = Notification(
+                county,
+                "Leader",
+                "You have been crowned ruler of this kingdom!"
+            )
             notification.save()
 
     @staticmethod
@@ -208,10 +212,10 @@ class Kingdom(GameState):
     def war_won(self, war):
         enemy = war.get_other_kingdom(self)
         for county in self.counties:
-            notice = Notification(county.id, "War", f"We have won the war against {enemy.name}!", self.world.day, "War")
+            notice = Notification(county, "War", f"We have won the war against {enemy.name}!", "War")
             notice.save()
         for county in enemy.counties:
-            notice = Notification(county.id, "War", f"We have lost the war against {self.name}!", self.world.day, "War")
+            notice = Notification(county, "War", f"We have lost the war against {self.name}!", "War")
             notice.save()
         self.wars_won_ta += 1
         self.wars_won_lt += 1

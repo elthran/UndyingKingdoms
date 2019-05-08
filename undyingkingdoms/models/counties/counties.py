@@ -70,7 +70,8 @@ class County(GameState):
         cascade="all, delete, delete-orphan", passive_deletes=True
     )
 
-    preferences = db.relationship("Preferences", back_populates='county', uselist=False, foreign_keys="Preferences.county_id")
+    preferences = db.relationship("Preferences", back_populates='county', uselist=False,
+                                  foreign_keys="Preferences.county_id")
 
     def __init__(self, kingdom_id, name, leader, user, race, title, background):
         self.name = name
@@ -267,7 +268,8 @@ class County(GameState):
 
     # Voting
     def can_vote(self):
-        if self.preferences.last_vote_date and datetime.utcnow() > (self.preferences.last_vote_date - timedelta(hours=24)):
+        if self.preferences.last_vote_date and datetime.utcnow() > (
+                self.preferences.last_vote_date - timedelta(hours=24)):
             return False
         else:
             return True
@@ -299,11 +301,12 @@ class County(GameState):
         for expedition in expeditions:
             expedition.duration -= 1
             if expedition.duration == 0:
-                notification = Notification(self.id,
-                                            "Your army has returned",
-                                            "Error: Report to admin",
-                                            self.kingdom.world.day,
-                                            "Military")
+                notification = Notification(
+                    self,
+                    "Your army has returned",
+                    "Error: Report to admin",
+                    "Military"
+                )
                 notification.save()
                 self.armies['peasant'].traveling -= expedition.peasant
                 self.armies['soldier'].traveling -= expedition.soldier
@@ -332,18 +335,23 @@ class County(GameState):
                 self.stone += trade.stone_to_give
                 self.grain_stores += trade.grain_to_give
                 target_county = County.query.get(trade.target_id)
-                notification = Notification(self.id, "Trade Offer",
-                                            f"Your trade offer to {target_county.name} has expired and your resources have been return", self.kingdom.world.day, "Trade")
+                notification = Notification(
+                    self,
+                    "Trade Offer",
+                    f"Your trade offer to {target_county.name} has expired and your resources have been return",
+                    "Trade"
+                )
                 notification.save()
         infiltrations = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
         for infiltration in infiltrations:
             infiltration.duration -= 1
             if infiltration.duration == 0:
-                notification = Notification(self.id,
-                                            "Your thieves have returned",
-                                            "Error: Report to admin",
-                                            self.kingdom.world.day,
-                                            "Thieves")
+                notification = Notification(
+                    self,
+                    "Your thieves have returned",
+                    "Error: Report to admin",
+                    "Thieves"
+                )
                 notification.save()
                 notification.content = f"Your {infiltration.amount_of_thieves} thieves have returned after their mission to {infiltration.mission}."
 
@@ -351,11 +359,12 @@ class County(GameState):
         for spell in spells:
             spell.duration -= 1
             if spell.duration == 0:
-                notification = Notification(self.id,
-                                            "A spell has ended",
-                                            "Error: Report to admin",
-                                            self.kingdom.world.day,
-                                            "Magic")
+                notification = Notification(
+                    self,
+                    "A spell has ended",
+                    "Error: Report to admin",
+                    "Magic"
+                )
                 notification.save()
                 notification.content = f"{spell.name} has ended and is no longer affecting your county."
 
@@ -364,7 +373,7 @@ class County(GameState):
     def temporary_bot_tweaks(self):
         from undyingkingdoms.models.exports import User
 
-        friendly_counties = County.query.join(User).filter(County.kingdom_id==self.kingdom_id, ~User.is_bot).all()
+        friendly_counties = County.query.join(User).filter(County.kingdom_id == self.kingdom_id, ~User.is_bot).all()
         friendly_counties_ids = [county.id for county in friendly_counties]
         if randint(1, 10) == 10 and self.day > 10:
             self.land += randint(-5, 15)
@@ -384,25 +393,33 @@ class County(GameState):
             self.buildings['pasture'].total += 1
         if randint(1, 12) == 12:
             trading_partner = choice(friendly_counties_ids)
-            trade_notice = Notification(trading_partner,
-                                        "You were offered a trade", f"{self.name} has offered you a trade. Visit the trading page.",
-                                        self.kingdom.world.day, "Trade")
+            trade_notice = Notification(
+                trading_partner,
+                "You were offered a trade",
+                f"{self.name} has offered you a trade. Visit the trading page.",
+                "Trade"
+            )
             trade_notice.save()
             random = randint(1, 5)
             if random == 1:  # Send wood for gold
-                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 40, 0, 0, 0, 60, 0, 0, 0, 0)
+                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 40, 0, 0, 0, 60, 0, 0, 0,
+                                      0)
                 self.wood -= 40
-            if random == 2:  # Send iron for gold
-                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 0, 30, 0, 0, 90, 0, 0, 0, 0)
+            elif random == 2:  # Send iron for gold
+                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 0, 30, 0, 0, 90, 0, 0, 0,
+                                      0)
                 self.iron -= 30
-            if random == 3:  # Send gold for iron and wood
-                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 120, 0, 0, 0, 0, 0, 40, 20, 0, 0)
+            elif random == 3:  # Send gold for iron and wood
+                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 120, 0, 0, 0, 0, 0, 40, 20,
+                                      0, 0)
                 self.gold -= 120
-            if random == 4:  # Send food for wood
-                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 0, 0, 0, 750, 0, 0, 0, 0, 50)
+            elif random == 4:  # Send food for wood
+                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 0, 0, 0, 750, 0, 0, 0, 0,
+                                      50)
                 self.gold -= 120
-            if random == 5:  # Send food for iron
-                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 0, 0, 0, 750, 0, 40, 20, 0, 0)
+            else:  # Send food for iron
+                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 0, 0, 0, 750, 0, 40, 20,
+                                      0, 0)
                 self.gold -= 120
             trade_offered.save()
 
@@ -434,69 +451,78 @@ class County(GameState):
             return
         random_chance = randint(1, 8)
         notification = None
+        amount = 0
         if random_chance == 1 and self.grain_stores > 0:
             amount = int(randint(3, 7) * self.grain_stores / 100)
-            notification = Notification(self.id,
-                                        "Rats have gotten into your grain silos",
-                                        f"Your county lost {amount} of its stored grain.",
-                                        self.kingdom.world.day)
+            notification = Notification(
+                self,
+                "Rats have gotten into your grain silos",
+                f"Your county lost {amount} of its stored grain.",
+            )
             self.grain_stores -= amount
 
         elif random_chance == 2 and self.happiness > 90:
             amount = randint(100, 200)
-            notification = Notification(self.id,
-                                        "Your people celebrate your rule",
-                                        f"Your people hold a feast and offer you {amount} gold as tribute.",
-                                        self.kingdom.world.day)
+            notification = Notification(
+                self,
+                "Your people celebrate your rule",
+                f"Your people hold a feast and offer you {amount} gold as tribute.",
+            )
             self.gold += amount
 
         elif random_chance == 3 and self.buildings['pasture'].total > 0:
             amount = min(randint(2, 4), self.buildings['pasture'].total)
-            notification = Notification(self.id,
-                                        "A disease has affected your cattle",
-                                        f"Your county has lost {amount} of its dairy farms.",
-                                        self.kingdom.world.day)
+            notification = Notification(
+                self.id,
+                "A disease has affected your cattle",
+                f"Your county has lost {amount} of its dairy farms.",
+            )
             self.buildings['pasture'].total -= amount
 
         elif random_chance == 4 and self.buildings['field'].total > 0:
             amount = min(randint(1, 3), self.buildings['field'].total)
-            notification = Notification(self.id,
-                                        "Storms have ravaged your crops",
-                                        f"A massive storm has destroyed {amount} of your fields.",
-                                        self.kingdom.world.day)
+            notification = Notification(
+                self,
+                "Storms have ravaged your crops",
+                f"A massive storm has destroyed {amount} of your fields.",
+            )
             self.buildings['field'].total -= amount
             self.preferences.weather = 'thunderstorm'
 
         elif random_chance == 5 and self.buildings['field'].total > 0:
             amount = self.buildings['field'].total * 15
-            notification = Notification(self.id,
-                                        "Booster crops",
-                                        f"Due to excellent weather this season, your crops produced an addition {amount} grain today.",
-                                        self.kingdom.world.day)
+            notification = Notification(
+                self,
+                "Booster crops",
+                f"Due to excellent weather this season, your crops produced an addition {amount} grain today.",
+            )
             self.grain_stores += amount
             self.preferences.weather = 'lovely'
 
         elif random_chance == 6:
             modifier = ((101 - self.healthiness) // 20 + 3) / 100  # Percent of people who will die (1% -> 5%)
             amount = int(modifier * self.population)
-            notification = Notification(self.id,
-                                        "Black Death",
-                                        f"A plague has swept over our county, killing {amount} of our people.",
-                                        self.kingdom.world.day)
+            notification = Notification(
+                self,
+                "Black Death",
+                f"A plague has swept over our county, killing {amount} of our people.",
+            )
             self.population -= amount
 
         elif random_chance == 7 and self.buildings['house'].total > 0:
             amount = min(randint(2, 4), self.buildings['house'].total)
-            notification = Notification(self.id,
-                                        "Disaster",
-                                        f"A fire has spread in the city burning down {amount} of your {self.buildings['house'].class_name}.",
-                                        self.kingdom.world.day)
-            self.buildings['house'].total -= amount
+            building_name = self.buildings['house'].class_name
+            notification = Notification(
+                self,
+                "Disaster",
+                f"A fire has spread in the city burning down {amount} of your {building_name}.",
+            )
+        self.buildings['house'].total -= amount
 
         if notification:
             notification.category = "Random Event"
-            notification.save()
-            self.preferences.days_since_event = 0
+        notification.save()
+        self.preferences.days_since_event = 0
 
     def get_healthiness_change(self):
         hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
@@ -526,7 +552,8 @@ class County(GameState):
             self.healthiness -= min(healthiness_loss, 5)
 
     def get_produced_grain(self):
-        warnings.warn("`get_produced_grain()` is deprecated, use attribute `produced_grain` instead.", DeprecationWarning)
+        warnings.warn("`get_produced_grain()` is deprecated, use attribute `produced_grain` instead.",
+                      DeprecationWarning)
         return self.grain_produced
 
     def get_produced_dairy(self):
@@ -602,7 +629,8 @@ class County(GameState):
                    birth_rate_modifier.get(self.background, ("", 0))[1]
         modifier += (self.buildings['house'].total ** 0.8) / self.land * self.buildings['house'].output
 
-        modify_birth_rate = Casting.query.filter_by(target_id=self.id, name="modify_birth_rate").filter((Casting.duration > 0) | (Casting.active == True)).all()
+        modify_birth_rate = Casting.query.filter_by(target_id=self.id, name="modify_birth_rate").filter(
+            (Casting.duration > 0) | (Casting.active == True)).all()
         for spell in modify_birth_rate or []:
             modifier += spell.output * self.spell_modifier
 
@@ -673,11 +701,12 @@ class County(GameState):
         difference = int(growth - loss)
         if difference < 0 and self.mana + difference < 0:
             active_spells[0].active = False
-            notice = Notification(self.id,
-                                  "Spell Ended",
-                                  f"You did not have enough mana and {active_spells[0].name} ended.",
-                                  self.kingdom.world.day,
-                                  "Spell End")
+            notice = Notification(
+                self,
+                "Spell Ended",
+                f"You did not have enough mana and {active_spells[0].name} ended.",
+                "Spell End"
+            )
             notice.save()
             return self.get_mana_change()
         return difference
@@ -696,7 +725,7 @@ class County(GameState):
         """
         Returns the amount of excess production you get each turn
         """
-        if self.technologies.get("slavery")  and self.technologies["slavery"].completed:
+        if self.technologies.get("slavery") and self.technologies["slavery"].completed:
             return max(int(self.get_production_modifier() * self.get_available_workers() * 2), 0)
         return max(int(self.get_production_modifier() * self.get_available_workers()), 0)
 
@@ -786,7 +815,8 @@ class County(GameState):
         if self.technologies['steel'].completed:
             modifier += 0.10
 
-        modify_offensive_power = Casting.query.filter_by(target_id=self.id, name="modify_offensive_power").filter((Casting.duration > 0) | (Casting.active == True)).all()
+        modify_offensive_power = Casting.query.filter_by(target_id=self.id, name="modify_offensive_power").filter(
+            (Casting.duration > 0) | (Casting.active == True)).all()
         for spell in modify_offensive_power or []:
             modifier += spell.output * self.spell_modifier
 
@@ -881,7 +911,8 @@ class County(GameState):
         if self.day - enemy.day > 0 and self.land > enemy.land:  # If you are older and larger, we lessen your rewards
             modifier -= (self.day + self.land - enemy.day - enemy.land) ** 0.8 / 100
         enemy_total_value = enemy_resources['gold'][0] + enemy_resources['wood'][0] + enemy_resources['iron'][0]
-        attackers_gain_value = min(enemy_total_value * 0.2 * modifier, 500)  # You can gain a maximum of 500 value from a pillage
+        attackers_gain_value = min(enemy_total_value * 0.2 * modifier,
+                                   500)  # You can gain a maximum of 500 value from a pillage
         gains = {'gold': 0, 'wood': 0, 'iron': 0}
         while attackers_gain_value > 0:
             enemy_resources = {key: value for key, value in enemy_resources.items() if value[0] > 0}
@@ -895,7 +926,8 @@ class County(GameState):
         rewards_modifier = 1.00
         offence_damage = self.get_offensive_strength(army=army, enemy_forts=enemy.buildings["fort"].total)
         defence_damage = enemy.get_defensive_strength()
-        expedition = Expedition(self.id, enemy.id, self.kingdom.world.day, self.day, offence_damage, defence_damage, attack_type)
+        expedition = Expedition(self.id, enemy.id, self.kingdom.world.day, self.day, offence_damage, defence_damage,
+                                attack_type)
         expedition.save()
         for each_war in self.kingdom.wars:
             if each_war.get_other_kingdom(self.kingdom) == enemy.kingdom:  # If this is true, we are at war with them
@@ -935,9 +967,9 @@ class County(GameState):
                 message = "Your army quickly retreated from battle."
 
         buffer_time = datetime.utcnow() - timedelta(hours=12)
-        previous_attacks_on_this_county = Expedition.query.filter_by(target_id=enemy.id)\
-            .filter_by(success=True)\
-            .filter(Expedition.time_created > buffer_time)\
+        previous_attacks_on_this_county = Expedition.query.filter_by(target_id=enemy.id) \
+            .filter_by(success=True) \
+            .filter(Expedition.time_created > buffer_time) \
             .count()
         rewards_modifier -= previous_attacks_on_this_county * 0.15
         rewards_modifier = max(0.05, rewards_modifier)
@@ -951,17 +983,21 @@ class County(GameState):
             if expedition.mission == "Attack":
                 expedition.land_acquired = war_score
                 enemy.land -= war_score
-                notification = Notification(enemy.id, notification_title,
-                                            f"You lost {war_score} acres and {defence_casualties} troops in the battle.",
-                                            self.kingdom.world.day)
+                notification = Notification(
+                    enemy,
+                    notification_title,
+                    f"You lost {war_score} acres and {defence_casualties} troops in the battle.",
+                )
                 message += f" You gained {war_score} acres, but lost {casualties} troops in the battle."
             elif expedition.mission == "Raze":
                 land_razed = int(war_score * 1.50)
                 expedition.land_razed = land_razed
                 enemy.land -= land_razed
-                notification = Notification(enemy.id, notification_title,
-                                            f"The enemy razed {land_razed} acres and {defence_casualties} troops in the battle.",
-                                            self.kingdom.world.day)
+                notification = Notification(
+                    enemy,
+                    notification_title,
+                    f"The enemy razed {land_razed} acres and {defence_casualties} troops in the battle.",
+                )
                 message += f" You razed {land_razed} acres, but lost {casualties} troops in the battle."
             elif expedition.mission == "Pillage":
                 gains = self.get_resources_from_winning_pillage(enemy, rewards_modifier)
@@ -974,30 +1010,38 @@ class County(GameState):
                 enemy.gold -= gains['gold']
                 enemy.wood -= gains['wood']
                 enemy.iron -= gains['iron']
-                notification = Notification(enemy.id, notification_title,
-                                            f"The enemy army stole {gains['gold']} gold, {gains['wood']} wood, and {gains['iron']} iron after the battle.",
-                                            self.kingdom.world.day)
-                message += f" You gained {gains['gold']} gold, {gains['wood']} wood, and {gains['iron']} iron, but lost {casualties} troops in the battle."
+                notification = Notification(
+                    enemy,
+                    notification_title,
+                    f"The enemy army stole {gains['gold']} gold, {gains['wood']} wood, "
+                    f"and {gains['iron']} iron after the battle.",
+                )
+                message += f" You gained {gains['gold']} gold, {gains['wood']} wood, " \
+                    f"and {gains['iron']} iron, but lost {casualties} troops in the battle."
             # Add war clause since it was a successful attack
             if war:
                 if war.kingdom_id == self.kingdom.id:  # We are the attack
                     war.attacker_current += war_score
                 else:
                     war.defender_current += war_score
-                self.kingdom.update_war_status(war, enemy)
-        else:
-            expedition.success = False
-            notification = Notification(enemy.id, notification_title,
-                                        f"You achieved a victory but lost {defence_casualties} troops.",
-                                        self.kingdom.world.day)
-            message += f" You lost {casualties} troops in the battle."
+                    self.kingdom.update_war_status(war, enemy)
+            else:
+                expedition.success = False
+                notification = Notification(
+                    enemy,
+                    notification_title,
+                    f"You achieved a victory but lost {defence_casualties} troops.",
+                )
+        message += f" You lost {casualties} troops in the battle."
         notification.category = "Military"
         notification.save()
+
         return message
 
     @staticmethod
     def destroy_buildings(county, land_destroyed):
-        destroyed = randint(0, county.get_available_land())  # The more available land, the less likely building are destroyed
+        destroyed = randint(0,
+                            county.get_available_land())  # The more available land, the less likely building are destroyed
         need_list = True
         while destroyed < land_destroyed:
             if need_list:
@@ -1018,13 +1062,15 @@ class County(GameState):
         self.user.check_incremental_achievement(name, amount)
 
     def display_news(self):
-        events = Notification.query.filter_by(county_id=self.id, new=True).order_by(Notification.time_created.desc()).all()
+        events = Notification.query.filter_by(county_id=self.id, new=True).order_by(
+            Notification.time_created.desc()).all()
         for event in events:
             event.new = False
         return events
 
     def display_old_news(self):
-        events = Notification.query.filter_by(county_id=self.id, new=False).order_by(Notification.time_created.desc()).all()
+        events = Notification.query.filter_by(county_id=self.id, new=False).order_by(
+            Notification.time_created.desc()).all()
         return events
 
     def get_total_number_of_thieves(self):
@@ -1078,7 +1124,8 @@ class County(GameState):
     def chance_to_disrupt_spell(self):
         chance = 0
 
-        modify_magic_disrupt = Casting.query.filter_by(target_id=self.id, name="modify_magic_disrupt").filter((Casting.duration > 0) | (Casting.active == True)).all()
+        modify_magic_disrupt = Casting.query.filter_by(target_id=self.id, name="modify_magic_disrupt").filter(
+            (Casting.duration > 0) | (Casting.active == True)).all()
         for spell in modify_magic_disrupt or []:
             chance += spell.output * self.spell_modifier
 
@@ -1120,4 +1167,3 @@ class County(GameState):
 
     def __repr__(self):
         return '<County %r (%r)>' % (self.name, self.id)
-

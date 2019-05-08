@@ -55,10 +55,9 @@ class StealGold(InitMixin, Command):
         self.caster.gold += amount
         self.target.gold -= amount
         notification = Notification(
-            self.target.id,
+            self.target,
             "Enemy magic",
             f"Enemy wizards of {self.caster.name} have convinced you to send them {amount} gold.",
-            self.caster.kingdom.world.day,
             "Magic"
         )
         notification.save()
@@ -72,11 +71,10 @@ class ModifyMagicDisrupt(InitMixin, Command):
 class ModifyThiefPrevention(InitMixin, Command):
     def execute(self):
         notification = Notification(
-            self.target.id,
+            self.target,
             "Enemy magic",
             f"Enemy wizards of {self.caster.name} have shrouded your land in darkness, "
             f"making it very difficult to catch enemy thieves.",
-            self.caster.kingdom.world.day,
             "Magic"
         )
         notification.save()
@@ -90,10 +88,9 @@ class ModifyGrainRate(InitMixin, Command):
 class ModifyDeathRate(InitMixin, Command):
     def execute(self):
         notification = Notification(
-            self.target.id,
+            self.target,
             "Enemy magic",
             f"A plague wind has been summoned by the wizards of {self.caster.name}",
-            self.caster.kingdom.world.day,
             "Magic"
         )
         notification.save()
@@ -114,11 +111,10 @@ class PopulationKiller(InitMixin, Command):
         kill_count = int(self.target.population * self.power / 100)
         self.target.population -= kill_count
         notification = Notification(
-            self.target.id,
+            self.target,
             "Enemy magic",
             f"The wizards of {self.caster.name} have cast {self.spell.display_name} on your county,"
             f" killing {kill_count} of your people.",
-            self.caster.kingdom.world.day,
             "Magic"
         )
         notification.save()
@@ -129,11 +125,10 @@ class ArcherKiller(InitMixin, Command):
         kill_count = min(self.target.armies['archer'].total, self.power)
         self.target.armies['archer'].total -= kill_count
         notification = Notification(
-            self.target.id,
+            self.target,
             "Enemy magic",
             f"The wizards of {self.caster.name} have cast {self.spell.display_name} on your county,"
             f" killing {kill_count} of your {self.target.armies['archer'].class_name_plural}.",
-            self.caster.kingdom.world.day,
             "Magic"
         )
         notification.save()
