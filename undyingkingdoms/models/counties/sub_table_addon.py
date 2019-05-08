@@ -4,10 +4,12 @@ from utilities.helpers import strip_leading_underscore
 from ..bases import db
 
 
-def economy_addon(county_cls, economy_cls):
-    """Link Economy and County classes.
+def sub_table_addon(master_cls, slave_cls):
+    """Slave a sub table to the master table.
 
-    Among other things hoist all columns from economy into county:
+    Example:
+        Among other things hoist all columns from economy into county.
+
     class County:
         @property
         def produced_grain(self):
@@ -25,52 +27,59 @@ def economy_addon(county_cls, economy_cls):
         lambda self: getattr(getattr(self, 'economy'), 'grain_produced'))
     setattr(County, 'grain_produced', f)
     """
+    master_table_name = master_cls.__table__.name
+    sub_table_name = slave_cls.__table__.name
+
     cols_to_hoist = set([
         strip_leading_underscore(c.name)
-        for c in economy_cls.__table__.c
+        for c in slave_cls.__table__.c
     ]) - set([
         strip_leading_underscore(c.name)
-        for c in county_cls.__table__.c
+        for c in master_cls.__table__.c
     ])
 
-    sub_table = economy_cls.__table__.name
+
     for name in cols_to_hoist:
         func = hybrid_property(
             lambda self, name=name: getattr(
-                getattr(self, sub_table),
+                getattr(self, sub_table_name),
                 name
             )
         )
         setattr(
-            county_cls,
-            name,  # maybe fix name always being the same?
+            master_cls,
+            name,
             func
         )
         setattr(
-            county_cls,
+            master_cls,
             name,
             func.setter(
                 lambda self, value, name=name: setattr(
-                    getattr(self, sub_table),
+                    getattr(self, sub_table_name),
                     name,
                     value
                 )
             )
         )
 
-    # add relationships linking county and economy
-    economy_cls.county_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
-    economy_cls. county = db.relationship(
-        "County",
-        backref=db.backref('economy', uselist=False)
+    # add relationships linking county and slave table
+    slave_cls.county_id = db.Column(
+        db.Integer,
+        db.ForeignKey(f'{master_table_name}.id'),
+        nullable=False
+    )
+    slave_cls. county = db.relationship(
+        master_cls.__name__,
+        backref=db.backref(sub_table_name, uselist=False)
     )
 
-    # add economy object to county init
-    orig_init = county_cls.__init__
+    # add sub table object to county init
+    orig_init = master_cls.__init__
     # Make copy of original __init__, so we can call it without recursion
 
     def __init__(self, *args, **kws):
         orig_init(self, *args, **kws)  # Call the original __init__
-        self.economy = economy_cls(self)
+        setattr(self, sub_table_name, slave_cls(self))
 
-    county_cls.__init__ = __init__  # Set the class' __init__ to the new one
+    master_cls.__init__ = __init__  # Set the class' __init__ to the new one
