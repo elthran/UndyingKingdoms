@@ -382,8 +382,8 @@ class County(GameState):
         self.gold += randint(1, 6)
         self.wood += randint(1, 3)
         self.iron += 1
-        if randint(1, 24) == 24 and self.kingdom.leader == 0 and friendly_counties_ids:
-            self.cast_vote(choice(friendly_counties_ids))
+        if randint(1, 24) == 24 and self.kingdom.leader == 0 and friendly_counties:
+            self.cast_vote(choice(friendly_counties))
         if randint(1, 10) == 10 and self.get_available_land() >= 5:
             self.buildings['house'].total += 3
             self.buildings['field'].total += 1
