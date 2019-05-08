@@ -12,6 +12,7 @@ class Economy(GameState):
 
     @hybrid_property
     def grain_modifier(self):
+        print("grain modifier ran")
         county = self.county
         grain_modifier_spells = Casting.query.filter_by(
             target_id=county.id, name="modify_grain_rate"
@@ -31,6 +32,7 @@ class Economy(GameState):
     # noinspection PyPropertyAccess
     @hybrid_property
     def grain_produced(self):
+        print("grain produced ran")
         county = self.county
         field = county.buildings['field']
         building_production = field.total * field.output

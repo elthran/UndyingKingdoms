@@ -26,17 +26,41 @@ def economy_addon(county_cls, economy_cls):
         strip_leading_underscore(c.name)
         for c in county_cls.__table__.c
     ])
-    for col in cols_to_hoist:
-        prop = hybrid_property(lambda self: getattr(getattr(self, economy_cls.__table__.name), col))
-        setattr(
-            county_cls,
-            col,
-            prop
+
+    """
+    @hybrid_property
+    def {col}(self):
+        return self.{sub_table}.{col}
+
+    f = hybrid_property(
+        lambda self: getattr(getattr(self, 'economy'), 'grain_produced'))
+    setattr(County, 'grain_produced', f)
+    """
+    sub_table = economy_cls.__table__.name
+    for name in cols_to_hoist:
+        # (lambda name=name: name)()
+        # closure problem? name seem take value from calling scope?
+        func = hybrid_property(
+            lambda self: getattr(
+                getattr(self, sub_table),
+                name
+            )
         )
         setattr(
             county_cls,
-            col,
-            prop.setter(lambda self, value: setattr(getattr(self, economy_cls.__table__.name), col, value))
+            name,  # maybe fix name always being the same?
+            func
+        )
+        setattr(
+            county_cls,
+            name,
+            func.setter(
+                lambda self, value: setattr(
+                    getattr(self, sub_table),
+                    name,
+                    value
+                )
+            )
         )
 
     # add relationships linking county and economy
