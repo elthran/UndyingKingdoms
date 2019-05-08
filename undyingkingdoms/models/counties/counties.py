@@ -374,7 +374,6 @@ class County(GameState):
         from undyingkingdoms.models.exports import User
 
         friendly_counties = County.query.join(User).filter(County.kingdom_id == self.kingdom_id, ~User.is_bot).all()
-        friendly_counties_ids = [county.id for county in friendly_counties]
         if randint(1, 10) == 10 and self.day > 10:
             self.land += randint(-5, 15)
         if randint(1, 10) == 10:
@@ -392,7 +391,7 @@ class County(GameState):
             self.buildings['field'].total += 1
             self.buildings['pasture'].total += 1
         if randint(1, 12) == 12:
-            trading_partner = choice(friendly_counties_ids)
+            trading_partner = choice(friendly_counties)
             trade_notice = Notification(
                 trading_partner,
                 "You were offered a trade",
