@@ -29,7 +29,6 @@ class Technology(GameEvent):
     def completed(self, value):
         """Toggle tech activation when you complete it."""
         if value is True:
-            if self.key == "agriculture": bp()
             self.activate(self.county)
         else:
             self.deactivate(self.county)

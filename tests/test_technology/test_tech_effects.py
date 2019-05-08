@@ -10,5 +10,8 @@ def test_technology_effects(app):
 
         county.technologies['agriculture'].completed = True
 
-        # bp()
         assert county.grain_produced == output * 1.25
+
+        county.technologies['agriculture'].completed = False
+
+        assert county.grain_produced == output
