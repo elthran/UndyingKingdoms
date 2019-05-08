@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField
 
 
+# TODO: generate unit types from list of county armies with attack > 0
 class AttackForm(FlaskForm):
     peasant = SelectField('peasant', coerce=int)
     soldier = SelectField('soldier', coerce=int)

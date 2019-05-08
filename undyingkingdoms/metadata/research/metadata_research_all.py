@@ -23,7 +23,8 @@ generic_technology = [
         name='Steel',
         cost=1000,
         max_level=1,
-        description='+10% Attack Power bonus to all offensive invasions you perform.',
+        description='{offensive_modifier:+0.0%} Attack Power bonus to all offensive invasions you perform.',
+        effects=PlequalsEffect(offensive_modifier=0.1)
     ),
     Technology(
         name='Engineering',
