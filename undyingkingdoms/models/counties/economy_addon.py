@@ -7,7 +7,7 @@ from ..bases import db
 def economy_addon(county_cls, economy_cls):
     """Link Economy and County classes.
 
-    Among other things replicate:
+    Among other things hoist all columns from economy into county:
     class County:
         @property
         def produced_grain(self):
@@ -17,17 +17,6 @@ def economy_addon(county_cls, economy_cls):
         def produced_grain(self, value):
             self.economy.produced_grain = value
 
-    """
-    # hoist all columns from economy into county
-    cols_to_hoist = set([
-        strip_leading_underscore(c.name)
-        for c in economy_cls.__table__.c
-    ]) - set([
-        strip_leading_underscore(c.name)
-        for c in county_cls.__table__.c
-    ])
-
-    """
     @hybrid_property
     def {col}(self):
         return self.{sub_table}.{col}
@@ -36,6 +25,14 @@ def economy_addon(county_cls, economy_cls):
         lambda self: getattr(getattr(self, 'economy'), 'grain_produced'))
     setattr(County, 'grain_produced', f)
     """
+    cols_to_hoist = set([
+        strip_leading_underscore(c.name)
+        for c in economy_cls.__table__.c
+    ]) - set([
+        strip_leading_underscore(c.name)
+        for c in county_cls.__table__.c
+    ])
+
     sub_table = economy_cls.__table__.name
     for name in cols_to_hoist:
         func = hybrid_property(
