@@ -38,10 +38,8 @@ def economy_addon(county_cls, economy_cls):
     """
     sub_table = economy_cls.__table__.name
     for name in cols_to_hoist:
-        # (lambda name=name: name)()
-        # closure problem? name seem take value from calling scope?
         func = hybrid_property(
-            lambda self: getattr(
+            lambda self, name=name: getattr(
                 getattr(self, sub_table),
                 name
             )
@@ -55,7 +53,7 @@ def economy_addon(county_cls, economy_cls):
             county_cls,
             name,
             func.setter(
-                lambda self, value: setattr(
+                lambda self, value, name=name: setattr(
                     getattr(self, sub_table),
                     name,
                     value
