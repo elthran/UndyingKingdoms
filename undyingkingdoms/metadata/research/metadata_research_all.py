@@ -1,7 +1,7 @@
 from copy import deepcopy
 
-from tests import bp
 from undyingkingdoms.models.technologies import Technology
+from undyingkingdoms.models.effects import PlequalsEffect
 from utilities.helpers import romanize
 
 generic_technology = [
@@ -9,14 +9,15 @@ generic_technology = [
         name='Agriculture',
         cost=500,
         max_level=2,
-        description="+{output:0.0%} bonus to all grain production within your county.",
-        output=0.25
+        description="{grain_modifier:+0.0%} bonus to all grain production within your county.",
+        effects=PlequalsEffect(grain_modifier=0.25)
     ),
     Technology(
         name='Animal Husbandry',
         cost=500,
         max_level=1,
-        description='+50% bonus to all dairy production within your county.',
+        description='{dairy_modifier:+0.0%} bonus to all dairy production within your county.',
+        effects=PlequalsEffect(dairy_modifer=0.5)
     ),
     Technology(
         name='Steel',

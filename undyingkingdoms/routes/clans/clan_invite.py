@@ -10,7 +10,6 @@ from undyingkingdoms.models.exports import Clan, Notification
 @login_required
 def clan_invite(user_id, clan_id):
     county = current_user.county
-    kingdom = county.kingdom
     invited_user = User.query.get(user_id)
     clan = Clan.query.get(clan_id)
 
@@ -22,10 +21,11 @@ def clan_invite(user_id, clan_id):
         print("nully")
         invite = Clan(clan.kingdom_id, user_id, status="Invited")
         invite.save()
-    message = Notification(invited_user.county.id,
-                           "Clan Invite",
-                           "You were invited to join a clan",
-                           kingdom.world.day,
-                           "Clan")
+    message = Notification(
+        invited_user.county,
+        "Clan Invite",
+        "You were invited to join a clan",
+        "Clan"
+    )
     message.save()
     return redirect(url_for('generic_clan'))

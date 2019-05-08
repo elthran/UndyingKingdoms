@@ -1,11 +1,28 @@
 from random import choice
 
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm.collections import attribute_mapped_collection
 
-from tests import bp
+from ..bases import db
 
 
-def completed_techs_addon(cls):
+def tech_addon(county_cls, tech_cls):
+    """Establish a 1 to Many relationship between County and Technology."""
+    county_cls.technologies = db.relationship(
+        "Technology",
+        collection_class=attribute_mapped_collection('key'),
+        cascade="all, delete, delete-orphan",
+        passive_deletes=True,
+        order_by="Technology.tier",
+        back_populates="county"
+    )
+
+    tech_cls.county_id = db.Column(db.Integer, db.ForeignKey('county.id', ondelete="CASCADE"), nullable=False)
+    tech_cls.county = db.relationship(
+        "County",
+        back_populates="technologies"
+    )
+
     def get_completed_techs(self):
         """Return generator of completed technologies.
 
@@ -15,10 +32,8 @@ def completed_techs_addon(cls):
             if tech.completed:
                 yield tech
 
-    cls.completed_techs = hybrid_property(get_completed_techs)
+    county_cls.completed_techs = hybrid_property(get_completed_techs)
 
-
-def incomplete_techs_addon(cls):
     def get_incomplete_techs(self):
         """Return generator of not completed technologies.
 
@@ -28,10 +43,8 @@ def incomplete_techs_addon(cls):
             if not tech.completed:
                 yield tech
 
-    cls.incomplete_techs = hybrid_property(get_incomplete_techs)
+    county_cls.incomplete_techs = hybrid_property(get_incomplete_techs)
 
-
-def available_techs_addon(cls):
     def get_available_techs(self):
         """Generate incomplete techs with met requirements.
 
@@ -43,10 +56,8 @@ def available_techs_addon(cls):
             if not (set(tech.requirements) - completed_techs):
                 yield tech
 
-    cls.available_techs = hybrid_property(get_available_techs)
+    county_cls.available_techs = hybrid_property(get_available_techs)
 
-
-def unavailable_techs_addon(cls):
     def get_unavailable_techs(self):
         """Generate techs with unmet requirements.
 
@@ -55,16 +66,14 @@ def unavailable_techs_addon(cls):
 
         return set(self.technologies.values()) - set(self.available_tech)
 
-    cls.unavailable_techs = hybrid_property(get_unavailable_techs)
+    county_cls.unavailable_techs = hybrid_property(get_unavailable_techs)
 
-
-def advance_research_addon(cls):
     def advance_research(self):
-        technology = self.research_choice
-        technology.current += self.research
-        if technology.current >= technology.cost:  # You save left over research
-            self.research = technology.current - technology.cost
-            technology.completed = True
+        tech = self.research_choice
+        tech.current += self.research
+        if tech.current >= tech.cost:  # You save left over research
+            self.research = tech.current - tech.cost
+            tech.completed = True
             available_technologies = list(self.available_techs)
             if available_technologies:
                 self.research_choice = choice(available_technologies)
@@ -73,5 +82,4 @@ def advance_research_addon(cls):
         else:
             self.research = 0
 
-    cls.advance_research = advance_research
-
+    county_cls.advance_research = advance_research

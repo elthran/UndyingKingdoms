@@ -7,5 +7,4 @@ from undyingkingdoms import app
 @app.route('/gameplay/research/', methods=['GET'])
 @login_required
 def research():
-    print(current_user.county.available_techs)
     return redirect(url_for('mobile', path=request.path[1:]))

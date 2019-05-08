@@ -125,3 +125,7 @@ def get_target_relation(county, target):
     # (spell.targets == 'hostile' and target == county)
 
     return target_relation
+
+
+def compute_modifier(metadata, race, background):
+    return metadata.get(race, ('', 0))[1] + metadata.get(background, ('', 0))[1]

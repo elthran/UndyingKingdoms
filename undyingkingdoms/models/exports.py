@@ -1,5 +1,5 @@
 from .users import User
-from .counties.exports import County
+from .counties.exports import County, Economy
 from .buildings import Building
 from .armies import Army
 from .kingdoms import Kingdom

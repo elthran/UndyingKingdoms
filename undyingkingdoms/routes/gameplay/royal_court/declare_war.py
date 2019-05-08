@@ -31,18 +31,20 @@ def declare_war():
             pending_alliance.status = "Cancelled"
 
         for enemy_county in enemy.counties:
-            notice = Notification(enemy_county.id,
-                                  "War",
-                                  f"{county.kingdom.name} has declared war on you",
-                                  enemy.world.day,
-                                  "War")
+            notice = Notification(
+                enemy_county,
+                "War",
+                f"{county.kingdom.name} has declared war on you",
+                "War"
+            )
             notice.save()
         for friendly_county in county.kingdom.counties:
-            notice = Notification(friendly_county.id,
-                                  "War",
-                                  f"We have declared war on {enemy.name}",
-                                  enemy.world.day,
-                                  "War")
+            notice = Notification(
+                friendly_county,
+                "War",
+                f"We have declared war on {enemy.name}",
+                "War"
+            )
             notice.save()
         return redirect(url_for('royal_court'))
     return jsonify(
