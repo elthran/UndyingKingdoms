@@ -1,3 +1,5 @@
+import warnings
+
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 
 from tests import bp
@@ -64,9 +66,19 @@ class Military(GameState):
     def offensive_power(self, value):
         self._offensive_power = value
 
-    def get_offensive_power(self, *args, **kwargs):
-        """Allow access to fget of offensive power hybrid_property."""
-        return Military.__dict__['offensive_power'].fget(self, *args, **kwargs)
+    # noinspection PyUnresolvedReferences
+    @offensive_power.expression
+    def offensive_power(cls):
+        """Allow queries on offensive power.
+
+        Also each class arg being passed to offensive power so I don't
+        need to use `Military.__dict__['offensive_power'].fget(self, *args, **kwargs)`
+
+        I'm not quite sure how I can make it work without this but there is probably a way.
+
+        """
+        warnings.warn("This isn't really properly implemented", UserWarning)
+        return cls._offensive_power
 
     def __init__(self, county):
         self.county = county

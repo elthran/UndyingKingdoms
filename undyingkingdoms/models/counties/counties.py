@@ -814,11 +814,12 @@ class County(GameState):
         """
 
         warnings.warn(
-            "This might be depreciated in favour of offensive_power attribute, or if you want to pass args Military.offensive_power.fget(county.military, someargs, somekwargs) ... if I can ever get that code to work :P",
+            "This might be depreciated in favour of offensive_power attribute, or if you want to pass args Military.offensive_power.fget(county.military, someargs, somekwargs)",
             DeprecationWarning
         )
         military = self.military
-        return military.get_offensive_power(army=army, scoreboard=scoreboard, enemy_forts=enemy_forts)
+        military_cls = military.__class__
+        return military_cls.offensive_power.fget(military, army=army, scoreboard=scoreboard, enemy_forts=enemy_forts)
 
     def get_defensive_strength(self, scoreboard=False):
         # First get base strength of citizens
