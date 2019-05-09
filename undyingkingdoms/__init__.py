@@ -1,10 +1,9 @@
 import os
 import socket
 
-from flask import Flask, render_template, send_from_directory, url_for
+from flask import Flask, send_from_directory
 from flask_sslify import SSLify
 from flask_login import LoginManager
-from werkzeug.utils import redirect
 
 from extensions import flask_db, flask_json, flask_csrf, flask_mobility, flask_mail, flask_cors
 from undyingkingdoms.GeoIP import geo_ip
@@ -35,7 +34,6 @@ flask_mail.init_app(app)
 if app.config['ENV'] != 'production':
     flask_cors.init_app(app)
 
-
 # Register app blueprints
 app.register_blueprint(geo_ip)
 app.register_blueprint(admin_blueprint)
@@ -46,6 +44,7 @@ from undyingkingdoms.models.exports import User
 
 
 def import_routes():
+    import undyingkingdoms.routes.errors
     import undyingkingdoms.routes.index.home
     import undyingkingdoms.routes.index.login
     import undyingkingdoms.routes.index.register
@@ -93,18 +92,6 @@ if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
 @login_manager.user_loader
 def load_user(this_id):
     return User.query.get(this_id)
-
-
-@app.errorhandler(404)
-def not_found(error):
-    print("Error:", error)
-    return render_template('404.html', error=error), 404
-
-
-@app.errorhandler(500)
-def not_found(error):
-    print("Error:", error)
-    return render_template('500.html', error=error), 500
 
 
 @app.route('/favicon.ico')
