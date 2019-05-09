@@ -26,6 +26,7 @@
         />
       </tool-tip>
     </div>
+    <hr>
   </div>
 </template>
 
@@ -105,6 +106,12 @@ export default {
 
 #chatlist :first-child {
   margin-top: 0 !important;
+}
+
+hr {
+  border: dashed 1px;
+  width: 97%;
+  margin-bottom: 0;
 }
 
 .message {
