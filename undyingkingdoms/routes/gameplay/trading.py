@@ -62,7 +62,7 @@ def trading_reply(trade_id):
             status="success",
             message=f"You rejected a trade from {trade_id}"
         )
-    elif "cancel" in request.args:
+    elif "cancel" in request.args and trade.status == "Pending":
         trade.status = "Cancelled"
         county.gold += trade.gold_to_give
         county.wood += trade.wood_to_give
