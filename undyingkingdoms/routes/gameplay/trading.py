@@ -21,27 +21,30 @@ def trading(template):
 @login_required
 def trading_reply(trade_id):
     trade = Trade.query.get(trade_id)
-    county = County.query.get(trade.county_id)
-    target_county = current_user.county  # This will be the current user
-    if "accept" in request.args:
-        if target_county.gold >= trade.gold_to_receive and target_county.wood >= trade.wood_to_receive and target_county.iron >= trade.iron_to_receive and target_county.stone >= trade.stone_to_receive and target_county.grain_stores >= trade.grain_to_receive:
-            target_county.gold += trade.gold_to_give
-            target_county.gold -= trade.gold_to_receive
-            county.gold += trade.gold_to_receive
-            target_county.wood += trade.wood_to_give
-            target_county.wood -= trade.wood_to_receive
-            county.wood += trade.wood_to_receive
-            target_county.iron += trade.iron_to_give
-            target_county.iron -= trade.iron_to_receive
-            county.iron += trade.iron_to_receive
-            target_county.stone += trade.stone_to_give
-            target_county.stone -= trade.stone_to_receive
-            county.stone += trade.stone_to_receive
-            target_county.grain_stores += trade.grain_to_give
-            target_county.grain_stores -= trade.grain_to_receive
-            county.grain_stores += trade.grain_to_receive
+    trade_offerer = County.query.get(trade.county_id)
+    trade_target = County.query.get(trade.target_id)
+    your_county = current_user.county  # This will be the current user
+    if ("accept" in request.args and
+            trade.status == "Pending" and
+            trade_target == your_county):
+        if your_county.gold >= trade.gold_to_receive and your_county.wood >= trade.wood_to_receive and your_county.iron >= trade.iron_to_receive and your_county.stone >= trade.stone_to_receive and your_county.grain_stores >= trade.grain_to_receive:
+            your_county.gold += trade.gold_to_give
+            your_county.gold -= trade.gold_to_receive
+            trade_offerer.gold += trade.gold_to_receive
+            your_county.wood += trade.wood_to_give
+            your_county.wood -= trade.wood_to_receive
+            trade_offerer.wood += trade.wood_to_receive
+            your_county.iron += trade.iron_to_give
+            your_county.iron -= trade.iron_to_receive
+            trade_offerer.iron += trade.iron_to_receive
+            your_county.stone += trade.stone_to_give
+            your_county.stone -= trade.stone_to_receive
+            trade_offerer.stone += trade.stone_to_receive
+            your_county.grain_stores += trade.grain_to_give
+            your_county.grain_stores -= trade.grain_to_receive
+            trade_offerer.grain_stores += trade.grain_to_receive
             trade.status = "Accepted"
-            notice = Notification(county.id, "Trade", f"Your trade was accepted by {current_user.county.name}",
+            notice = Notification(trade_offerer.id, "Trade", f"Your trade was accepted by {current_user.county.name}",
                                   current_user.county.kingdom.world.day, category="Trade")
             notice.save()
             return jsonify(
@@ -53,22 +56,24 @@ def trading_reply(trade_id):
                 status="fail",
                 message=f"You do not have the resources to accept this trade."
             )
-    elif "reject" in request.args:
+    elif "reject" in request.args and trade_target == your_county:
         trade.status = "Rejected"
-        notice = Notification(county.id, "Trade", f"Your trade was rejected by {current_user.county.name}",
+        notice = Notification(trade_offerer.id, "Trade", f"Your trade was rejected by {current_user.county.name}",
                               current_user.county.kingdom.world.day, category="Trade")
         notice.save()
         return jsonify(
             status="success",
             message=f"You rejected a trade from {trade_id}"
         )
-    elif "cancel" in request.args and trade.status == "Pending":
+    elif ("cancel" in request.args and
+          trade.status == "Pending" and
+          trade_offerer == your_county):
         trade.status = "Cancelled"
-        county.gold += trade.gold_to_give
-        county.wood += trade.wood_to_give
-        county.iron += trade.iron_to_give
-        county.stone += trade.stone_to_give
-        county.grain_stores += trade.grain_to_give
+        trade_offerer.gold += trade.gold_to_give
+        trade_offerer.wood += trade.wood_to_give
+        trade_offerer.iron += trade.iron_to_give
+        trade_offerer.stone += trade.stone_to_give
+        trade_offerer.grain_stores += trade.grain_to_give
         return jsonify(
             status="success",
             message=f"You cancelled a trade to {trade_id}"
