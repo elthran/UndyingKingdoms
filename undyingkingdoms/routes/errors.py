@@ -18,6 +18,9 @@ def server_fault(error):
 
     user = User.query.get(1)
 
+    # TODO: Attach tail -n100 /var/log/www.undyingkingdoms.com.error.log
+    # to email!
+
     from_email = "Undying Kingdoms <no-reply@undyingkingdoms.com>"
     subject = 'The server is crashing!!!'
     to_email = f"Admin '{user.username}' <{user.email}>"

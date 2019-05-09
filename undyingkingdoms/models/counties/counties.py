@@ -886,7 +886,8 @@ class County(GameState):
 
     def get_score_from_winning_battle(self, enemy, modifier):
         score = (enemy.land ** 3) / (self.land ** 2) * 0.1
-        modifier -= max((self.day - enemy.day) ** 0.8 / 100, 0)
+        if self.day > enemy.day:
+            modifier -= max((self.day - enemy.day) ** 0.8 / 100, 0)
         score = max(score, 1) * modifier  # Add the current modifier
         score = int(min(score, enemy.land * 0.2))  # Make sure it doesn't exceed 20% of their land
         return score
