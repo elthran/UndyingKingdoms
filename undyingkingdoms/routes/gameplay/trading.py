@@ -28,25 +28,16 @@ def trading_reply(trade_id):
     if ("accept" in request.args and
             trade.status == "Pending" and
             trade_target == your_county):
-        if your_county.gold >= trade.gold_to_receive and your_county.wood >= trade.wood_to_receive and your_county.iron >= trade.iron_to_receive and your_county.stone >= trade.stone_to_receive and your_county.grain_stores >= trade.grain_to_receive:
-            your_county.gold += trade.gold_to_give
-            your_county.gold -= trade.gold_to_receive
-            trade_offerer.gold += trade.gold_to_receive
-            your_county.wood += trade.wood_to_give
-            your_county.wood -= trade.wood_to_receive
-            trade_offerer.wood += trade.wood_to_receive
-            your_county.iron += trade.iron_to_give
-            your_county.iron -= trade.iron_to_receive
-            trade_offerer.iron += trade.iron_to_receive
-            your_county.stone += trade.stone_to_give
-            your_county.stone -= trade.stone_to_receive
-            trade_offerer.stone += trade.stone_to_receive
-            your_county.grain_stores += trade.grain_to_give
-            your_county.grain_stores -= trade.grain_to_receive
-            trade_offerer.grain_stores += trade.grain_to_receive
+        if resources_are_available(trade, trade_target):
+            disburse_trade(trade, trade_offerer, trade_target)
             trade.status = "Accepted"
-            notice = Notification(trade_offerer.id, "Trade", f"Your trade was accepted by {current_user.county.name}",
-                                  current_user.county.kingdom.world.day, category="Trade")
+            notice = Notification(
+                trade_offerer.id,
+                "Trade",
+                f"Your trade was accepted by {current_user.county.name}",
+                current_user.county.kingdom.world.day,
+                category="Trade"
+            )
             notice.save()
             return jsonify(
                 status='success',
@@ -59,8 +50,14 @@ def trading_reply(trade_id):
             )
     elif "reject" in request.args and trade_target == your_county:
         trade.status = "Rejected"
-        notice = Notification(trade_offerer.id, "Trade", f"Your trade was rejected by {current_user.county.name}",
-                              current_user.county.kingdom.world.day, category="Trade")
+        refund_trade(trade, trade_offerer)
+        notice = Notification(
+            trade_offerer.id,
+            "Trade",
+            f"Your trade was rejected by {current_user.county.name}",
+            current_user.county.kingdom.world.day,
+            category="Trade"
+        )
         notice.save()
         return jsonify(
             status="success",
@@ -70,11 +67,7 @@ def trading_reply(trade_id):
           trade.status == "Pending" and
           trade_offerer == your_county):
         trade.status = "Cancelled"
-        trade_offerer.gold += trade.gold_to_give
-        trade_offerer.wood += trade.wood_to_give
-        trade_offerer.iron += trade.iron_to_give
-        trade_offerer.stone += trade.stone_to_give
-        trade_offerer.grain_stores += trade.grain_to_give
+        refund_trade(trade, trade_offerer)
         return jsonify(
             status="success",
             message=f"You cancelled a trade to {trade_id}"
@@ -126,18 +119,15 @@ def trade(county_id):
         )
         trade_offered.save()
 
-        county.gold -= trade_form.offer_gold.data
-        county.wood -= trade_form.offer_wood.data
-        county.iron -= trade_form.offer_iron.data
-        county.stone -= trade_form.offer_stone.data
-        county.grain_stores -= trade_form.offer_grain.data
+        fund_trade(trade_form, county)
 
         trade_notice = Notification(
             target_county.id,
             "You were offered a trade",
             f"{county.name} has offered you a trade. Visit the trading page.",
             county.kingdom.world.day,
-            "Trade")
+            "Trade"
+        )
         trade_notice.save()
 
         return redirect(url_for('trading'))
@@ -146,3 +136,49 @@ def trade(county_id):
         status='fail',
         message="Your trade didn't pass form validation."
     )
+
+
+def fund_trade(trade_form, trade_offerer):
+    """Store resources in a trade."""
+    trade_offerer.gold -= trade_form.offer_gold.data
+    trade_offerer.wood -= trade_form.offer_wood.data
+    trade_offerer.iron -= trade_form.offer_iron.data
+    trade_offerer.stone -= trade_form.offer_stone.data
+    trade_offerer.grain_stores -= trade_form.offer_grain.data
+
+
+def refund_trade(trade, trade_offerer):
+    """Return the resources stored in a trade."""
+    trade_offerer.gold += trade.gold_to_give
+    trade_offerer.wood += trade.wood_to_give
+    trade_offerer.iron += trade.iron_to_give
+    trade_offerer.stone += trade.stone_to_give
+    trade_offerer.grain_stores += trade.grain_to_give
+
+
+def disburse_trade(trade, trade_offerer, trade_traget):
+    """Extract send all trade resources to relevant parties."""
+    trade_traget.gold += trade.gold_to_give
+    trade_traget.gold -= trade.gold_to_receive
+    trade_offerer.gold += trade.gold_to_receive
+    trade_traget.wood += trade.wood_to_give
+    trade_traget.wood -= trade.wood_to_receive
+    trade_offerer.wood += trade.wood_to_receive
+    trade_traget.iron += trade.iron_to_give
+    trade_traget.iron -= trade.iron_to_receive
+    trade_offerer.iron += trade.iron_to_receive
+    trade_traget.stone += trade.stone_to_give
+    trade_traget.stone -= trade.stone_to_receive
+    trade_offerer.stone += trade.stone_to_receive
+    trade_traget.grain_stores += trade.grain_to_give
+    trade_traget.grain_stores -= trade.grain_to_receive
+    trade_offerer.grain_stores += trade.grain_to_receive
+
+
+def resources_are_available(trade, trade_target):
+    """Check if a given target has the resources to accept a trade."""
+    return (trade_target.gold >= trade.gold_to_receive and
+            trade_target.wood >= trade.wood_to_receive and
+            trade_target.iron >= trade.iron_to_receive and
+            trade_target.stone >= trade.stone_to_receive and
+            trade_target.grain_stores >= trade.grain_to_receive)
