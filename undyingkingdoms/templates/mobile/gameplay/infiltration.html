@@ -38,8 +38,8 @@ ul.mission li:first-of-type {
 {% set kingdom = county.kingdom %}
 <div id="content">
   <div id="header">
-    <h2>Thieves available: {{ county.get_number_of_available_thieves() }} / {{ county.buildings['tavern'].total }}</h2>
-    <p>Chance of enemy successfully infiltrating you: {{ county.get_chance_to_be_successfully_infiltrated() }}%<br>(Note: Each available thief helps defend your county from enemy thieves)</p>
+    <h2>Thieves available: {{ county.get_number_of_available_thieves() }} / {{ county.get_total_number_of_thieves() }}</h2>
+    <p>Your current bonus chance of catching enemy thieves: {{ county.get_chance_to_catch_enemy_thieves() }}%</p>
   </div>
   <div id="footer">
     <h2>Active Missions</h2>
