@@ -33,6 +33,7 @@ class Economy(GameState):
     @grain_modifier.expression
     def grain_modifier(cls):
         # I'm not sure how to add in spells at this point ...
+        UserWarning("This function hasn't been implemented yet.")
         return cls._grain_modifier
 
     @hybrid_property

@@ -5,24 +5,23 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models.exports import County
 from undyingkingdoms.models.forms.attack import AttackForm
-from undyingkingdoms.routes.helpers import not_self, not_allies
+from undyingkingdoms.routes.helpers import not_self, neither_allies_nor_armistices
 from undyingkingdoms.metadata.metadata import attack_types
 
 
 @app.route('/gameplay/attack/<int:county_id>/', methods=['GET', 'POST'])
 @mobile_template('{mobile/}gameplay/attack.html')
 @not_self
-@not_allies
+@neither_allies_nor_armistices
 @login_required
 def attack(template, county_id):
     county = current_user.county
+    kingdom = county.kingdom
     enemy = County.query.get(county_id)
+    enemy_kingdom = enemy.kingdom
 
-    war = None  # This war code is just so the HTML knows if you are at war for points....
-    for each_war in county.kingdom.wars:
-        if each_war.get_other_kingdom(county.kingdom) == enemy.kingdom:  # If this is true, we are at war with them
-            war = each_war
-            break
+    # This war code is just so the HTML knows if you are at war for points....
+    war = kingdom.at_war_with(enemy_kingdom)
 
     form = AttackForm(county)
 

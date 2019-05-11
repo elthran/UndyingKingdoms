@@ -5,6 +5,7 @@ from random import choice, randint
 from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
+from tests import bp
 from undyingkingdoms.calculations.distributions import get_int_between_0_to_100
 from ..magic import Casting
 from ..bases import GameState, db
@@ -805,38 +806,20 @@ class County(GameState):
                     break
 
     # Battling
-    def get_offensive_strength(self, army=None, county=None, scoreboard=False, enemy_forts=0):
+    def get_offensive_strength(self, army=None, scoreboard=False, enemy_forts=0):
+        """You can use this if you want strength of an army.
+
+        If you just want the entire county strength use
+        `county.offensive_power` instead.
         """
-        Returns the attack power of your army. If no army is sent in, it checks the full potential of the county.
-        params: scoreboard - Looks at total possible power, even for troops who are unavailable
-        """
-        if army is None and county is None:
-            county = self
-        strength = 0
-        modifier = 1 + offensive_power_modifier.get(self.race, ("", 0))[1] \
-                   + offensive_power_modifier.get(self.background, ("", 0))[1]
 
-        if self.technologies['steel'].completed:
-            modifier += 0.10
-
-        modify_offensive_power = Casting.query.filter_by(target_id=self.id, name="modify_offensive_power").filter(
-            (Casting.duration > 0) | (Casting.active == True)).all()
-        for spell in modify_offensive_power or []:
-            modifier += spell.output * self.spell_modifier
-
-        if army:
-            for unit in self.armies.values():
-                if unit.name != 'archer' and unit.name != 'besieger':
-                    strength += army[unit.name] * unit.attack
-                if unit.name == 'besieger':
-                    strength += army[unit.name] * unit.attack * enemy_forts
-        elif county:
-            for unit in county.armies.values():
-                if scoreboard:
-                    strength += unit.total * unit.attack
-                else:
-                    strength += unit.available * unit.attack
-        return int(strength * modifier)
+        warnings.warn(
+            "This might be depreciated in favour of offensive_power attribute, or if you want to pass args Military.offensive_power.fget(county.military, someargs, somekwargs)",
+            DeprecationWarning
+        )
+        military = self.military
+        military_cls = military.__class__
+        return military_cls.offensive_power.fget(military, army=army, scoreboard=scoreboard, enemy_forts=enemy_forts)
 
     def get_defensive_strength(self, scoreboard=False):
         # First get base strength of citizens
@@ -927,19 +910,19 @@ class County(GameState):
         return gains
 
     def battle_results(self, army, enemy, attack_type):
-        war = None
+        kingdom = self.kingdom
+        enemy_kingdom = enemy.kingdom
         rewards_modifier = 1.00
         offence_damage = self.get_offensive_strength(army=army, enemy_forts=enemy.buildings["fort"].total)
         defence_damage = enemy.get_defensive_strength()
         expedition = Expedition(self.id, enemy.id, self.kingdom.world.day, self.day, offence_damage, defence_damage,
                                 attack_type)
         expedition.save()
-        for each_war in self.kingdom.wars:
-            if each_war.get_other_kingdom(self.kingdom) == enemy.kingdom:  # If this is true, we are at war with them
-                war = each_war
-                expedition.war_id = war.id
-                rewards_modifier += 0.15
-                break
+
+        war = kingdom.at_war_with(enemy_kingdom)
+        if war:  # If this is true, we are at war with them
+            expedition.war_id = war.id
+            rewards_modifier += 0.15
         difference_in_power = abs(offence_damage - defence_damage) / ((offence_damage + defence_damage) / 2) * 100
         if offence_damage > defence_damage:
             win = True
@@ -1024,19 +1007,16 @@ class County(GameState):
                 message += f" You gained {gains['gold']} gold, {gains['wood']} wood, " \
                     f"and {gains['iron']} iron, but lost {casualties} troops in the battle."
             # Add war clause since it was a successful attack
-            if war:
-                if war.kingdom_id == self.kingdom.id:  # We are the attack
-                    war.attacker_current += war_score
-                else:
-                    war.defender_current += war_score
-                    self.kingdom.update_war_status(war, enemy)
-            else:
-                expedition.success = False
-                notification = Notification(
-                    enemy,
-                    notification_title,
-                    f"You achieved a victory but lost {defence_casualties} troops.",
-                )
+            # TODO: defender should gain points as well.
+            kingdom.distribute_war_points(enemy_kingdom, war_score)
+        else:
+            enemy_kingdom.distribute_war_points(kingdom, casualties * 0.01)
+            expedition.success = False
+            notification = Notification(
+                enemy,
+                notification_title,
+                f"You achieved a victory but lost {defence_casualties} troops.",
+            )
         message += f" You lost {casualties} troops in the battle."
         notification.category = "Military"
         notification.save()

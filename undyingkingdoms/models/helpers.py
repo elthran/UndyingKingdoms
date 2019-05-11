@@ -108,10 +108,14 @@ def get_target_relation(county, target):
 
     This will get more complex over time and should be optimized.
     """
+    kingdom = county.kingdom
+    target_kingdom = target.kingdom
     if county == target:
         target_relation = 'self'
-    elif target.kingdom in county.kingdom.allies:
+    elif target_kingdom in kingdom.allies:
         target_relation = 'friendly'
+    elif target_kingdom in kingdom.armistices:
+        target_relation = 'armistice'
     else:
         target_relation = 'hostile'
 

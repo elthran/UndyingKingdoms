@@ -7,7 +7,8 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models.exports import Infiltration, County, Notification
 from undyingkingdoms.models.forms.infiltrate import InfiltrateForm
-from undyingkingdoms.routes.helpers import not_allies, not_self
+from undyingkingdoms.models.helpers import compute_modifier
+from undyingkingdoms.routes.helpers import neither_allies_nor_armistices, not_self
 from undyingkingdoms.metadata.metadata import infiltration_missions, amount_of_thieves_modifier, \
     infiltration_results_modifier
 
@@ -15,47 +16,45 @@ from undyingkingdoms.metadata.metadata import infiltration_missions, amount_of_t
 @app.route('/gameplay/infiltrate/<int:county_id>', methods=['GET', 'POST'])
 @mobile_template('{mobile/}gameplay/infiltrate.html')
 @not_self
-@not_allies
+@neither_allies_nor_armistices
 @login_required
 def infiltrate(template, county_id):
-    if county_id == current_user.county.id:
-        return redirect(url_for('overview'))
-    target = County.query.get(county_id)
     county = current_user.county
+    target = County.query.get(county_id)
+
 
     form = InfiltrateForm()
-    form.county_id.data = current_user.county.id
-    max_thieves = 3 + amount_of_thieves_modifier.get(current_user.county.race, ("", 0))[1] + \
-                  amount_of_thieves_modifier.get(current_user.county.background, ("", 0))[1]
-    thieves = min(current_user.county.get_number_of_available_thieves(), max_thieves)
+    form.county_id.data = county.id
+    max_thieves = 3 + compute_modifier(
+        amount_of_thieves_modifier,
+        county.race,
+        county.background
+    )
+    thieves = min(county.get_number_of_available_thieves(), max_thieves)
     form.amount.choices = [(i + 1, i + 1) for i in range(thieves)]
     form.mission.choices = [(index, name) for index, name in enumerate(infiltration_missions)]
 
     if form.validate_on_submit():
         mission = infiltration_missions[form.mission.data]
-        report = Infiltration(current_user.county.id, target.id, current_user.county.kingdom.world.day,
-                              current_user.county.day, mission, form.amount.data)
+        report = Infiltration(county.id, target.id, county.kingdom.world.day,
+                              county.day, mission, form.amount.data)
         report.save()
 
         chance_of_success = max(min(100 + form.amount.data - target.get_chance_to_catch_enemy_thieves(), 100), 0)
 
-        gain_modifier = 1 + infiltration_results_modifier.get(county.race, ("", 0))[1] + \
-                        infiltration_results_modifier.get(county.background, ("", 0))[1]
+        gain_modifier = 1 + compute_modifier(
+            infiltration_results_modifier,
+            county.race,
+            county.background
+        )
+
+        kingdom = county.kingdom
+        target_kingdom = target.kingdom
 
         if chance_of_success >= randint(1, 100):
             # Add increase to war score
-            war = None
-            kingdom = county.kingdom
-            for each_war in kingdom.wars:
-                if each_war.get_other_kingdom(kingdom) == target.kingdom:  # If this is true, we are at war with them
-                    war = each_war
-                    break
-            if war:
-                if war.kingdom_id == kingdom.id:
-                    war.attacker_current += form.amount.data
-                else:
-                    war.defender_current += form.amount.data
-                kingdom.update_war_status(war, target)
+            kingdom.distribute_war_points(target_kingdom, form.amount.data)
+
             # End of war code
             report.success = True
             if mission == 'pilfer':
@@ -111,9 +110,10 @@ def infiltrate(template, county_id):
                     f"They have stolen {research_stolen} of our research.",
                 )
         else:
+            target_kingdom.distribute_war_points(kingdom, max(1, form.amount.data//2))
             notification = Notification(
                 target,
-                f"You caught enemy thieves from {current_user.county.name}",
+                f"You caught enemy thieves from {county.name}",
                 "You caught them before they could accomplish their task",
             )
             report.duration = randint(16, 18)

@@ -50,7 +50,7 @@ def mobile_on_vue(endpoint, **options):
     return decorator
 
 
-def not_allies(func):
+def neither_allies_nor_armistices(func):
     """Implement diplomatic security of allied kingdoms.
 
     Requires: county_id parameter in kwargs.
@@ -63,7 +63,7 @@ def not_allies(func):
         except KeyError:
             raise KeyError('You need to add a "county_id" field to this route.')
         kingdom = current_user.county.kingdom
-        if target.kingdom in kingdom.allies:
+        if target.kingdom in kingdom.allies + kingdom.armistices:
             return redirect(url_for('overview'))
         return func(*args, **kwargs)
     return wrapper
