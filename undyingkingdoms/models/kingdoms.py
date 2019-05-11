@@ -40,7 +40,7 @@ def armistice_condition(id_join):
         "and_("
         f"{id_join},"
         f"diplomacy.c.status=={Diplomacy.IN_PROGRESS},"
-        f"diplomacy.c.action=={Diplomacy.ARMISTACE}"
+        f"diplomacy.c.action=={Diplomacy.ARMISTICE}"
         ")"
     )
 
@@ -181,7 +181,7 @@ class Kingdom(GameState):
             status=Diplomacy.IN_PROGRESS,
         ).filter(
             (Diplomacy.action==Diplomacy.ALLIANCE) |
-            (Diplomacy.action==Diplomacy.ARMISTACE),
+            (Diplomacy.action == Diplomacy.ARMISTICE),
         ).all()
         for relation in time_limited_relations:
             relation.duration -= 1
@@ -264,9 +264,9 @@ class Kingdom(GameState):
         self.wars_won_ta += 1
         self.wars_won_lt += 1
 
-        armistace = Diplomacy(self, enemy, action=Diplomacy.ARMISTACE, status=Diplomacy.IN_PROGRESS)
-        armistace.duration = 24
-        armistace.save()
+        armistice = Diplomacy(self, enemy, action=Diplomacy.ARMISTICE, status=Diplomacy.IN_PROGRESS)
+        armistice.duration = 24
+        armistice.save()
 
     def at_war_with(self, target):
         """Get war between this kingdom given a target, if it exists.

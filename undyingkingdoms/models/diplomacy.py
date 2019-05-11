@@ -17,7 +17,7 @@ class Diplomacy(GameEvent):
     ALLIANCE = 0
     WAR = 1
     PEACE = 2
-    ARMISTACE = 3
+    ARMISTICE = 3
 
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
     kingdom = db.relationship('Kingdom', foreign_keys=[kingdom_id])

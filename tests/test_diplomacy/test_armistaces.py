@@ -5,7 +5,7 @@ def test_armistice(app):
     with app.app_context():
         faenoth = Kingdom.query.get(1)
         ecthalion = Kingdom.query.get(2)
-        armistice = Diplomacy(faenoth, ecthalion, action=Diplomacy.ARMISTACE, status=Diplomacy.IN_PROGRESS)
+        armistice = Diplomacy(faenoth, ecthalion, action=Diplomacy.ARMISTICE, status=Diplomacy.IN_PROGRESS)
         armistice.save()
 
         assert len(faenoth.armistices) == 1
