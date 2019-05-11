@@ -254,7 +254,7 @@ class Kingdom(GameState):
         if pending_alliance:
             pending_alliance.status = Diplomacy.CANCELLED
 
-    def war_won_against(self, enemy):
+    def _war_won_against(self, enemy):
         for county in self.counties:
             notice = Notification(county, "War", f"We have won the war against {enemy.name}!", "War")
             notice.save()
@@ -282,7 +282,7 @@ class Kingdom(GameState):
         This assumes this kingdom is the aggressor
         """
         if war.war_over:  # This kingdom won.
-            self.war_won_against(target)
+            self._war_won_against(target)
             if self.is_aggressor(war):
                 # the won as aggressor
                 war.status = Diplomacy.AGGRESSOR_WON
@@ -328,4 +328,5 @@ class Kingdom(GameState):
             else:  # if they are the defender.
                 war.defender_current += points
             return self._update_war_status(war, target)
+        war.save()
         return False
