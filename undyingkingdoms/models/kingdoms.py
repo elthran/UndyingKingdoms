@@ -176,15 +176,17 @@ class Kingdom(GameState):
         return '<Kingdom %r (%r)>' % (self.name, self.id)
 
     def advance_day(self):
-        alliances = Diplomacy.query.filter_by(
+        time_limited_relations = Diplomacy.query.filter_by(
             kingomd_id=self.id,
             status=Diplomacy.IN_PROGRESS,
-            action=Diplomacy.ALLIANCE,
+        ).filter(
+            (Diplomacy.action==Diplomacy.ALLIANCE) |
+            (Diplomacy.action==Diplomacy.ARMISTACE),
         ).all()
-        for alliance in alliances:
-            alliance.duration -= 1
-            if alliance.duration == 0:
-                alliance.status = Diplomacy.COMPLETED
+        for relation in time_limited_relations:
+            relation.duration -= 1
+            if relation.duration == 0:
+                relation.status = Diplomacy.COMPLETED
 
     def get_votes_needed(self):
         return max(len(self.counties) // 3, 3)
