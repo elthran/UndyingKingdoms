@@ -55,7 +55,7 @@ def infiltrate(template, county_id):
                     war.attacker_current += form.amount.data
                 else:
                     war.defender_current += form.amount.data
-                kingdom.update_war_status(war, target)
+                kingdom.update_war_status(war, target.kingdom)
             # End of war code
             report.success = True
             if mission == 'pilfer':

@@ -62,13 +62,13 @@ class Casting(GameEvent):
         """Check if war points should be awarded."""
         if self.target_relation == 'hostile':
             kingdom = county.kingdom
-            war = kingdom.get_war(target)
+            war = kingdom.get_war(target.kingdom)
             if war:
                 if war.kingdom_id == kingdom.id:
                     war.attacker_current += spell.mana_cost // 2
                 else:
                     war.defender_current += spell.mana_cost // 2
-                kingdom.update_war_status(war, target)
+                kingdom.update_war_status(war, target.kingdom)
 
     @staticmethod
     def get_active_spells(county):

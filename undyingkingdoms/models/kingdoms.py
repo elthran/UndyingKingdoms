@@ -3,15 +3,14 @@ from .achievements import Achievement
 from .counties.exports import County
 from .diplomacy import Diplomacy
 from .bases import GameState, db
-from undyingkingdoms.metadata.metadata import kingdom_names
 
 
 def active_ally_condition(id_join):
     return (
         f"and_("
         f"{id_join}, "
-        "diplomacy.c.status=='In Progress', "
-        "diplomacy.c.action=='Alliance'"
+        f"diplomacy.c.status=={Diplomacy.IN_PROGRESS}, "
+        f"diplomacy.c.action=={Diplomacy.ALLIANCE}"
         ")"
     )
 
@@ -20,8 +19,8 @@ def pending_ally_condition(id_join):
     return (
         f"and_("
         f"{id_join}, "
-        "diplomacy.c.status=='Pending', "
-        "diplomacy.c.action=='Alliance'"
+        f"diplomacy.c.status=={Diplomacy.PENDING}, "
+        f"diplomacy.c.action=={Diplomacy.ALLIANCE}"
         ")"
     )
 
@@ -30,8 +29,18 @@ def war_condition(id_join):
     return (
         f"and_("
         f"{id_join}, "
-        "diplomacy.c.status=='In Progress', "
-        "diplomacy.c.action=='War'"
+        f"diplomacy.c.status=={Diplomacy.IN_PROGRESS}, "
+        f"diplomacy.c.action=={Diplomacy.WAR}"
+        ")"
+    )
+
+
+def armistice_condition(id_join):
+    return (
+        "and_("
+        f"{id_join},"
+        f"diplomacy.c.status=={Diplomacy.IN_PROGRESS},"
+        f"diplomacy.c.action=={Diplomacy.ARMISTACE}"
         ")"
     )
 
@@ -46,7 +55,7 @@ class Kingdom(GameState):
     wars_total_lt = db.Column(db.Integer)
     wars_won_lt = db.Column(db.Integer)
     wars_total_ta = db.Column(db.Integer)
-    wars_won_ta = db.Column(db.Integer) 
+    wars_won_ta = db.Column(db.Integer)
 
     _kingdoms_you_allied_with = db.relationship(
         'Kingdom',
@@ -102,6 +111,15 @@ class Kingdom(GameState):
         backref="_kingdoms_who_offered_us_alliances"
     )
 
+    # I'm not sure why this can't be much less complex.
+    _armistices_left = db.relationship(
+        "Kingdom",
+        secondary='diplomacy',
+        primaryjoin=armistice_condition("Kingdom.id==diplomacy.c.kingdom_id"),
+        secondaryjoin=armistice_condition("Kingdom.id==diplomacy.c.target_id"),
+        backref="_armistices_right"
+    )
+
     @property
     def pending_alliances(self):
         return self._pending_alliances_you_started + self._pending_alliances_started_with_you
@@ -135,6 +153,10 @@ class Kingdom(GameState):
         return self._kingdoms_who_offered_us_alliances + self._kingdoms_who_we_offered_alliances
 
     @property
+    def armistices(self):
+        return self._armistices_left + self._armistices_right
+
+    @property
     def total_land_of_top_three_counties(self):
         counties = sorted(self.counties, key=lambda x: x.land, reverse=True)
         return sum(county.land for county in counties[:3])
@@ -154,19 +176,22 @@ class Kingdom(GameState):
         return '<Kingdom %r (%r)>' % (self.name, self.id)
 
     def advance_day(self):
-        alliances = Diplomacy.query.filter_by(status="In Progress")\
-            .filter_by(action="Alliance")\
-            .filter(Diplomacy.kingdom_id == self.id).all()
+        alliances = Diplomacy.query.filter_by(
+            kingomd_id=self.id,
+            status=Diplomacy.IN_PROGRESS,
+            action=Diplomacy.ALLIANCE,
+        ).all()
         for alliance in alliances:
             alliance.duration -= 1
             if alliance.duration == 0:
-                alliance.status = "Completed"
+                alliance.status = Diplomacy.COMPLETED
 
     def get_votes_needed(self):
         return max(len(self.counties) // 3, 3)
 
     def get_most_popular_county(self):
-        counties = [(county.preferences.get_votes_for_self(), county) for county in self.counties if not county.user.is_bot]
+        counties = [(county.preferences.get_votes_for_self(), county) for county in self.counties if
+                    not county.user.is_bot]
         return max(counties, key=lambda x: x[0])[1]
 
     def count_votes(self):
@@ -213,8 +238,38 @@ class Kingdom(GameState):
     def get_land_sum(self):
         return sum(county.land for county in self.counties)
 
-    def war_won(self, war):
-        enemy = war.get_other_kingdom(self)
+    def declare_war_against(self, enemy):
+        war = Diplomacy(self, enemy, action=Diplomacy.WAR, status=Diplomacy.IN_PROGRESS)
+        war.attacker_goal = self.get_land_sum() // 10
+        war.defender_goal = enemy.get_land_sum() // 10
+        war.save()
+        self.cancel_alliances(enemy)
+        for enemy_county in enemy.counties:
+            notice = Notification(
+                enemy_county,
+                "War",
+                f"{self.name} has declared war on you",
+                "War"
+            )
+            notice.save()
+        for friendly_county in self.counties:
+            notice = Notification(
+                friendly_county,
+                "War",
+                f"We have declared war on {enemy.name}",
+                "War"
+            )
+            notice.save()
+        return war
+
+    def cancel_alliances(self, enemy):
+        pending_alliance = self.relations_query(enemy).filter_by(
+            status=Diplomacy.PENDING, action=Diplomacy.ALLIANCE
+        ).first()
+        if pending_alliance:
+            pending_alliance.status = Diplomacy.CANCELLED
+
+    def war_won_against(self, enemy):
         for county in self.counties:
             notice = Notification(county, "War", f"We have won the war against {enemy.name}!", "War")
             notice.save()
@@ -224,20 +279,13 @@ class Kingdom(GameState):
         self.wars_won_ta += 1
         self.wars_won_lt += 1
 
-        alliance = Diplomacy(self.id, enemy.id, self.world.day, action="Alliance", status="In Progress")
-        alliance.duration = 24
-        alliance.save()
+        armistace = Diplomacy(self, enemy, action=Diplomacy.ARMISTACE, status=Diplomacy.IN_PROGRESS)
+        armistace.duration = 24
+        armistace.save()
 
     def get_war(self, target):
-        """Get war between this kingdom given a target.
-
-        This should be able to be vastly improved with a query.
-        """
-        war = None
-        for each_war in self.wars:
-            if each_war.get_other_kingdom(self) == target.kingdom:  # If this is true, we are at war with them
-                war = each_war
-                break
+        """Get war between this kingdom given a target, if it exists."""
+        war = self.relations_query(target).filter_by(action=Diplomacy.WAR, status=Diplomacy.IN_PROGRESS).first()
         return war
 
     def update_war_status(self, war, target):
@@ -245,9 +293,23 @@ class Kingdom(GameState):
         # this kingdom is aggressor
         if war.kingdom_id == self.id:
             if war.attacker_current >= war.attacker_goal:
-                self.war_won(war)
-                war.status = "Won"
+                self.war_won_against(target)
+                war.status = Diplomacy.WON
         else:  # this kingdom is defender
             if war.defender_current >= war.defender_goal:
-                target.kingdom.war_won(war)
-                war.status = "Lost"
+                target.war_won_against(self)
+                war.status = Diplomacy.LOST
+
+    def relations_query(self, target):
+        """Get all diplomacy relationships between this and another kingdom.
+
+        You can then filter this for to get an active war via:
+
+        war = self.relations_query(target).filter_by(action=Diplomacy.WAR, status=Diplomacy.IN_PROGRESS).first()
+        """
+        return Diplomacy.query.filter(
+            (Diplomacy.kingdom_id == self.id &
+             Diplomacy.target_id == target.id) |
+            (Diplomacy.kingdom_id == target.id &
+             Diplomacy.target_id == self.id)
+        )

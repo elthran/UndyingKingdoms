@@ -3,16 +3,14 @@ from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 
 import config
-from undyingkingdoms import app as uk_app, flask_db, User
-from undyingkingdoms.models.exports import World, Kingdom, County
-from undyingkingdoms.metadata.metadata import kingdom_names
+from undyingkingdoms import app as udk_app, flask_db
 from utilities.testing_objects import build_testing_objects
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def app():
     """Create and configure a new app instance for each test."""
-    app = uk_app  # fixing naming overlap.
+    app = udk_app  # fixing naming overlap.
     app.config.from_object(config.TestingConfig)  # overwrite dev config.
     test_db = flask_db  # we are now using a test database.
 

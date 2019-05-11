@@ -1012,7 +1012,7 @@ class County(GameState):
                     war.attacker_current += war_score
                 else:
                     war.defender_current += war_score
-                    self.kingdom.update_war_status(war, enemy)
+                    self.kingdom.update_war_status(war, enemy.kingdom)
             else:
                 expedition.success = False
                 notification = Notification(

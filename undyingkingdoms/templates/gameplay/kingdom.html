@@ -100,6 +100,8 @@
                 <p style="color:blue;">You are allied with this kingdom</p>
             {% elif kingdom in my_county.kingdom.enemies %}
                 <p style="color:red;">You are at war with this kingdom</p>
+            {% elif kingdom in my_county.kingdom.armistaces %}
+                <p style="color:green;">You have declared an armistace with this kingdom</p>
             {% endif %}
             {% for county in kingdom.counties %}
                 <li>

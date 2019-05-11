@@ -11,15 +11,16 @@ from undyingkingdoms.routes.gameplay.royal_court.helpers import build_relations_
 @login_required
 def offer_alliance():
     county = current_user.county
-    if county.id != county.kingdom.leader:
+    kingdom = county.kingdom
+    if county.id != kingdom.leader:
         return redirect(url_for('overview'))
 
-    relations_form = build_relations_form(county.kingdom)
+    relations_form = build_relations_form(kingdom)
 
     if relations_form.validate_on_submit():
         kingdom_id = relations_form.target_id.data
         ally = Kingdom.query.get(kingdom_id)
-        alliance = Diplomacy(county.kingdom_id, ally.id, ally.world.day, action="Alliance")
+        alliance = Diplomacy(kingdom, ally, action=Diplomacy.ALLIANCE)
         alliance.save()
         return redirect(url_for('royal_court'))
     return jsonify(
