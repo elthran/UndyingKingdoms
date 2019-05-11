@@ -20,7 +20,7 @@ from undyingkingdoms.models.exports import World, County
 def test_advance_age(client):
     with client:
         rv_login = login(client, 'haldon@gmail.com', 'brunner')
-        assert "Calendar" in rv_login.data.decode()
+        assert "Undying Kingdoms" in rv_login.data.decode()
         assert rv_login.status_code == 200
 
         rv_token = client.get('/game_clock/token')
@@ -46,4 +46,4 @@ def test_advance_age(client):
         world2 = World.query.first()
         assert County.query.all() == []
         assert world2.age == age + 1
-        assert world2.day == 0
+        assert world2.day <= 0

@@ -1,5 +1,6 @@
 import json
 
+from tests import bp
 from tests.helpers import login
 from undyingkingdoms.models.exports import DAU
 
@@ -7,7 +8,7 @@ from undyingkingdoms.models.exports import DAU
 def test_advance_analytics(client):
     with client:
         rv_login = login(client, 'haldon@gmail.com', 'brunner')
-        assert "Calendar" in rv_login.data.decode()
+        assert "Undying Kingdoms" in rv_login.data.decode()
         assert rv_login.status_code == 200
 
         rv_token = client.get('/game_clock/token')

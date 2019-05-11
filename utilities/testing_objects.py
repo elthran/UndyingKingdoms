@@ -1,8 +1,7 @@
 from private_config import JACOB_TEMPORARY_EMAIL, JACOB_TEMPORARY_ACCOUNT_PASSWORD, MARLEN_TEMPORARY_EMAIL, \
     MARLEN_TEMPORARY_ACCOUNT_PASSWORD
-from undyingkingdoms import User
 from undyingkingdoms.controler.initialize import initialize_county
-from undyingkingdoms.models.exports import World, Kingdom
+from undyingkingdoms.models.exports import World, Kingdom, User
 from undyingkingdoms.models.forum import Forum, Thread
 from undyingkingdoms.metadata.metadata import kingdom_names
 

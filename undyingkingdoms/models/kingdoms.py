@@ -1,3 +1,4 @@
+from tests import bp
 from .notifications import Notification
 from .achievements import Achievement
 from .counties.exports import County
@@ -177,7 +178,7 @@ class Kingdom(GameState):
 
     def advance_day(self):
         time_limited_relations = Diplomacy.query.filter_by(
-            kingomd_id=self.id,
+            kingdom_id=self.id,
             status=Diplomacy.IN_PROGRESS,
         ).filter(
             (Diplomacy.action==Diplomacy.ALLIANCE) |
@@ -318,7 +319,7 @@ class Kingdom(GameState):
         If these points cause the war to be won, appropriate action
         should be taken.
         """
-        if self.id != target.id:
+        if self.id == target.id:
             return False  # Wars can only be between kingdoms
 
         war = self.at_war_with(target)

@@ -51,5 +51,3 @@ def test_available_techs(app):
         assert list(county.technologies) != []
         assert list(county.available_techs) != []
         assert set(county.technologies.values()) != set(county.available_techs)
-        # bp()
-        assert len(county.technologies.values()) == len(list(county.available_techs)) + level_1s

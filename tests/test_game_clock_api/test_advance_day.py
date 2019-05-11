@@ -4,10 +4,10 @@ from tests.helpers import login
 from undyingkingdoms.models.exports import World
 
 
-def test_advance_day(client):
+def test_advance_day(client, build):
     with client:
         rv_login = login(client, 'haldon@gmail.com', 'brunner')
-        assert "Calendar" in rv_login.data.decode()
+        assert "Undying Kingdoms" in rv_login.data.decode()
         assert rv_login.status_code == 200
 
         rv_token = client.get('/game_clock/token')
