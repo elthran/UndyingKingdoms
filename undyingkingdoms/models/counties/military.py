@@ -1,8 +1,5 @@
-import warnings
+from sqlalchemy.ext.hybrid import hybrid_property
 
-from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
-
-from tests import bp
 from undyingkingdoms.metadata.metadata import offensive_power_modifier
 from ..magic import Casting
 from ..helpers import compute_modifier
@@ -12,6 +9,8 @@ from ..bases import GameState, db
 class Military(GameState):
     _offensive_modifier = db.Column(db.Float)
     _offensive_power = db.Column(db.Integer)
+    _speed_modifier = db.Column(db.Float)
+    speed = db.Column(db.Integer)
 
     @hybrid_property
     def offensive_modifier(self):
@@ -77,7 +76,34 @@ class Military(GameState):
         # warnings.warn("undyingkingdoms.models.counties.military.Military#offensive_power: querying isn't really implemented.", UserWarning)
         return cls._offensive_power
 
+    @hybrid_property
+    def speed_modifier(self):
+        county = self.county
+        speed_modifier = self._speed_modifier
+        speed_modifier += (county.buildings['stables'].total ** 0.9) * 100 * county.buildings['stables'].output / county.land
+        return speed_modifier
+
+    @speed_modifier.setter
+    def speed_modifier(self, value):
+        self._speed_modifier = value
+
+    # noinspection PyUnresolvedReferences
+    @speed_modifier.expression
+    def speed_modifier(self):
+        return self._speed_modifier
+
+    def get_expedition_duration(self, attack_type, successful):
+        base_duration = {'Attack': 18, 'Pillage': 12, 'Raze': 8}
+        # noinspection PyPropertyAccess
+        duration = base_duration[attack_type] * 100 / self.speed_modifier
+        duration -= self.speed
+        if not successful:
+            duration *= 0.5
+        return round(max(duration, 3))
+
     def __init__(self, county):
         self.county = county
         self._offensive_modifier = 1 + compute_modifier(offensive_power_modifier, county.race, county.background)
         self._offensive_power = 0
+        self.speed_modifier = 100
+        self.speed = 0

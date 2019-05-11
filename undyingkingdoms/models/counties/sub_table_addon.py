@@ -69,7 +69,7 @@ def sub_table_addon(master_cls, slave_cls):
         db.ForeignKey(f'{master_table_name}.id'),
         nullable=False
     )
-    slave_cls. county = db.relationship(
+    slave_cls.county = db.relationship(
         master_cls.__name__,
         backref=db.backref(sub_table_name, uselist=False)
     )

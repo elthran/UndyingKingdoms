@@ -765,21 +765,11 @@ class County(GameState):
         if self.production_choice == 3:
             pass  # Already handled in self.get_happiness_change()
 
-    def get_number_of_buildings_produced_per_day(self):
-        amount = 3
-
-        amount += sum(tech.output for tech in self.completed_techs if 'engineering' in tech.key)
-
-        amount += buildings_produced_per_day.get(self.race, ("", 0))[1] \
-                  + buildings_produced_per_day.get(self.background, ("", 0))[1]
-
-        return int(amount)
-
     def produce_pending_buildings(self):
         """
         Gets a list of all buildings which can be built today. Builds it. Then recalls function.
         """
-        buildings_to_be_built = self.get_number_of_buildings_produced_per_day()
+        buildings_to_be_built = self.build_slots
         while buildings_to_be_built > 0:
             buildings_to_be_built -= 1
             queue = [building for building in self.buildings.values() if building.pending > 0]
@@ -835,17 +825,6 @@ class County(GameState):
         # Lastly, multiply by the defensive building modifier
         strength *= (self.buildings['fort'].output * self.buildings['fort'].total) / 100 + 1
         return int(strength)
-
-    def get_army_duration(self, win, attack_type):
-        base_duration = {'Attack': 18, 'Pillage': 12, 'Raze': 8}
-        speed_reduction = 100
-        speed_reduction += (self.buildings['stables'].total ** 0.9) * 100 * self.buildings['stables'].output / self.land
-        duration = base_duration[attack_type] * 100 / speed_reduction
-        if self.technologies["logistics"].completed:
-            duration -= 1
-        if win is False:
-            duration *= 0.5
-        return int(max(duration, 3))
 
     def remove_casualties_after_attacking(self, attack_power, army, expedition_id):
         casualties = 0
@@ -912,6 +891,7 @@ class County(GameState):
     def battle_results(self, army, enemy, attack_type):
         kingdom = self.kingdom
         enemy_kingdom = enemy.kingdom
+        military = self.military
         rewards_modifier = 1.00
         offence_damage = self.get_offensive_strength(army=army, enemy_forts=enemy.buildings["fort"].total)
         defence_damage = enemy.get_defensive_strength()
@@ -964,7 +944,7 @@ class County(GameState):
 
         casualties = self.remove_casualties_after_attacking(defence_damage, army, expedition.id)
         defence_casualties = enemy.remove_casualties_after_being_attacked(attack_power=offence_damage)
-        expedition.duration = self.get_army_duration(win, attack_type)
+        expedition.duration = military.get_expedition_duration(attack_type, win)
         if win:
             expedition.success = True
             war_score = self.get_score_from_winning_battle(enemy, rewards_modifier)

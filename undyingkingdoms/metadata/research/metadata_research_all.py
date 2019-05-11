@@ -30,14 +30,15 @@ generic_technology = [
         name='Engineering',
         cost=250,
         max_level=3,
-        description='+{output:.0f} building can be built each day for each level.',
-        output=1
+        description='+{build_slots} building can be built each day for each level.',
+        effects=PlequalsEffect(build_slots=1)
     ),
     Technology(
         name='Logistics',
         cost=500,
         max_level=1,
-        description='Your armies return from battle one day sooner.',
+        description='Your armies return from battle {speed} day sooner.',
+        effects=PlequalsEffect(speed=1)
     ),
     Technology(
         name='Public Works',
