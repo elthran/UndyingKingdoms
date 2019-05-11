@@ -48,12 +48,11 @@ def infiltrate(template, county_id):
             county.background
         )
 
+        kingdom = county.kingdom
+        target_kingdom = target.kingdom
+
         if chance_of_success >= randint(1, 100):
             # Add increase to war score
-            war = None
-            kingdom = county.kingdom
-            target_kingdom = target.kingdom
-
             kingdom.distribute_war_points(target_kingdom, form.amount.data)
 
             # End of war code
@@ -111,6 +110,7 @@ def infiltrate(template, county_id):
                     f"They have stolen {research_stolen} of our research.",
                 )
         else:
+            target_kingdom.distribute_war_points(kingdom, max(1, form.amount.data//2))
             notification = Notification(
                 target,
                 f"You caught enemy thieves from {county.name}",

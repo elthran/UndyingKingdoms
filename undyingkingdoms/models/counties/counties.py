@@ -1010,11 +1010,12 @@ class County(GameState):
             # TODO: defender should gain points as well.
             kingdom.distribute_war_points(enemy_kingdom, war_score)
         else:
+            enemy_kingdom.distribute_war_points(kingdom, casualties * 0.01)
             expedition.success = False
             notification = Notification(
                 enemy,
                 notification_title,
-                f"You failed to achieve victory and lost {defence_casualties} troops.",
+                f"You achieved a victory but lost {defence_casualties} troops.",
             )
         message += f" You lost {casualties} troops in the battle."
         notification.category = "Military"
