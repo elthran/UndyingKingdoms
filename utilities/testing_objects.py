@@ -93,3 +93,5 @@ def build_testing_objects():
     thread.save()
     thread = Thread(forum.id, "Monthly Feature Vote", 1)
     thread.save()
+
+    return locals()

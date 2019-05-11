@@ -45,11 +45,11 @@ class Military(GameState):
         county = self.county
         strength = 0
         if army:
-            for unit in army.values():
+            for unit in county.armies.values():
                 if unit.name == 'besieger':
-                    strength += unit.name * enemy_forts * max(unit.attack, 1)
+                    strength += army[unit.name] * enemy_forts * max(unit.attack, 1)
                 elif unit.attack > 0:
-                    strength += unit.name * unit.attack
+                    strength += army[unit.name] * unit.attack
         else:
             for unit in county.armies.values():
                 if scoreboard:
@@ -71,13 +71,10 @@ class Military(GameState):
     def offensive_power(cls):
         """Allow queries on offensive power.
 
-        Also each class arg being passed to offensive power so I don't
-        need to use `Military.__dict__['offensive_power'].fget(self, *args, **kwargs)`
-
-        I'm not quite sure how I can make it work without this but there is probably a way.
-
+        if no "prop.expression" exists you need to use
+        `Military.__dict__['offensive_power'].fget(self, *args, **kwargs)`
         """
-        warnings.warn("This isn't really properly implemented", UserWarning)
+        # warnings.warn("undyingkingdoms.models.counties.military.Military#offensive_power: querying isn't really implemented.", UserWarning)
         return cls._offensive_power
 
     def __init__(self, county):

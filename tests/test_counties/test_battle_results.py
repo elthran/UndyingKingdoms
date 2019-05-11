@@ -1,26 +1,16 @@
 from undyingkingdoms.metadata.metadata import attack_types
-
-if __name__ == "__main__":
-    """Allow running just this test.
-    
-    Usage: python tests/some_folder/somefile.py
-    """
-
-    import os
-    os.system(f"python3 -m pytest -vv {__file__}")
-    exit(1)  # prevents code from trying to run file afterwards.
-
 from undyingkingdoms.models.exports import County
 from undyingkingdoms.models.exports import User
 
 
-def test_battle_results(app, client):
+def test_battle_results(app):
     with app.app_context():
         user1 = User('user1', 'user1@gmail.com', 'password')
         user1.save()
-        county1 = County(1, "County1", "Leader1", user1, "Human", "Sir", "Merchant")
-        county1.save()
-        army1 = dict(
+        county = County(1, "County1", "Leader1", user1, "Human", "Sir", "Merchant")
+        county.save()
+
+        army = dict(
             peasant=50,
             soldier=100,
             archer=0,
@@ -37,5 +27,5 @@ def test_battle_results(app, client):
         # create user 1
         # create user 2
         # simulate attack.
-        result = county1.battle_results(army1, county2, attack_types[0])
-        assert isinstance(result, str) and len(result) > 0
+        result = county.battle_results(army, county2, attack_types[0])
+        assert result  # is non null

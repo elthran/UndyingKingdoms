@@ -318,7 +318,8 @@ class Kingdom(GameState):
         If these points cause the war to be won, appropriate action
         should be taken.
         """
-        assert self.id != target.id, "You can't fight yourself"
+        if self.id != target.id:
+            return False  # Wars can only be between kingdoms
 
         war = self.at_war_with(target)
         if war:
@@ -327,6 +328,7 @@ class Kingdom(GameState):
                 war.aggressor_current += points
             else:  # if they are the defender.
                 war.defender_current += points
-            return self._update_war_status(war, target)
-        war.save()
+            status = self._update_war_status(war, target)
+            war.save()
+            return status
         return False
