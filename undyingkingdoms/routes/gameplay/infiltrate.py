@@ -8,7 +8,7 @@ from undyingkingdoms import app
 from undyingkingdoms.models.exports import Infiltration, County, Notification
 from undyingkingdoms.models.forms.infiltrate import InfiltrateForm
 from undyingkingdoms.models.helpers import compute_modifier
-from undyingkingdoms.routes.helpers import not_allies, not_self
+from undyingkingdoms.routes.helpers import neither_allies_nor_armistices, not_self
 from undyingkingdoms.metadata.metadata import infiltration_missions, amount_of_thieves_modifier, \
     infiltration_results_modifier
 
@@ -16,7 +16,7 @@ from undyingkingdoms.metadata.metadata import infiltration_missions, amount_of_t
 @app.route('/gameplay/infiltrate/<int:county_id>', methods=['GET', 'POST'])
 @mobile_template('{mobile/}gameplay/infiltrate.html')
 @not_self
-@not_allies
+@neither_allies_nor_armistices
 @login_required
 def infiltrate(template, county_id):
     county = current_user.county
