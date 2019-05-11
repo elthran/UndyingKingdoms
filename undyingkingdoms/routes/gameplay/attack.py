@@ -16,13 +16,12 @@ from undyingkingdoms.metadata.metadata import attack_types
 @login_required
 def attack(template, county_id):
     county = current_user.county
+    kingdom = county.kingdom
     enemy = County.query.get(county_id)
+    enemy_kingdom = enemy.kingdom
 
-    war = None  # This war code is just so the HTML knows if you are at war for points....
-    for each_war in county.kingdom.wars:
-        if each_war.get_other_kingdom(county.kingdom) == enemy.kingdom:  # If this is true, we are at war with them
-            war = each_war
-            break
+    # This war code is just so the HTML knows if you are at war for points....
+    war = kingdom.at_war_with(enemy_kingdom)
 
     form = AttackForm(county)
 

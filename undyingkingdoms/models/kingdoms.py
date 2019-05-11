@@ -240,7 +240,7 @@ class Kingdom(GameState):
 
     def declare_war_against(self, enemy):
         war = Diplomacy(self, enemy, action=Diplomacy.WAR, status=Diplomacy.IN_PROGRESS)
-        war.attacker_goal = self.get_land_sum() // 10
+        war.aggressor_goal = self.get_land_sum() // 10
         war.defender_goal = enemy.get_land_sum() // 10
         war.save()
         self.cancel_alliances(enemy)
@@ -283,22 +283,29 @@ class Kingdom(GameState):
         armistace.duration = 24
         armistace.save()
 
-    def get_war(self, target):
-        """Get war between this kingdom given a target, if it exists."""
+    def at_war_with(self, target):
+        """Get war between this kingdom given a target, if it exists.
+
+        If not at war returns None.
+        """
         war = self.relations_query(target).filter_by(action=Diplomacy.WAR, status=Diplomacy.IN_PROGRESS).first()
         return war
 
-    def update_war_status(self, war, target):
-        """Check whether a war is won and if so update status."""
-        # this kingdom is aggressor
-        if war.kingdom_id == self.id:
-            if war.attacker_current >= war.attacker_goal:
-                self.war_won_against(target)
-                war.status = Diplomacy.WON
-        else:  # this kingdom is defender
-            if war.defender_current >= war.defender_goal:
-                target.war_won_against(self)
-                war.status = Diplomacy.LOST
+    def _update_war_status(self, war, target):
+        """Check whether a war is won and if so update its status.
+
+        This assumes this kingdom is the aggressor
+        """
+        if war.war_over:  # This kingdom won.
+            self.war_won_against(target)
+            if self.is_aggressor(war):
+                # the won as aggressor
+                war.status = Diplomacy.AGGRESSOR_WON
+            else:
+                # they won as the defender
+                war.status = Diplomacy.DEFENDER_WON
+            return True
+        return False
 
     def relations_query(self, target):
         """Get all diplomacy relationships between this and another kingdom.
@@ -307,9 +314,33 @@ class Kingdom(GameState):
 
         war = self.relations_query(target).filter_by(action=Diplomacy.WAR, status=Diplomacy.IN_PROGRESS).first()
         """
+        # bp()
         return Diplomacy.query.filter(
-            (Diplomacy.kingdom_id == self.id &
-             Diplomacy.target_id == target.id) |
-            (Diplomacy.kingdom_id == target.id &
-             Diplomacy.target_id == self.id)
+            ((Diplomacy.kingdom_id==self.id) &
+             (Diplomacy.target_id==target.id)) |
+            ((Diplomacy.kingdom_id==target.id) &
+             (Diplomacy.target_id == self.id))
         )
+
+    def is_aggressor(self, war):
+        return war.kingdom_id == self.id
+
+    def distribute_war_points(self, target, points):
+        """Distribute these points to the calling kingdom.
+
+        This only will occur if the two kingdoms are at war.
+        The appropriate war side is assigned the points.
+        If these points cause the war to be won, appropriate action
+        should be taken.
+        """
+        assert self.id != target.id, "You can't fight yourself"
+
+        war = self.at_war_with(target)
+        if war:
+            # if this kingdom is the aggressor
+            if self.is_aggressor(war):
+                war.aggressor_current += points
+            else:  # if they are the defender.
+                war.defender_current += points
+            return self._update_war_status(war, target)
+        return False

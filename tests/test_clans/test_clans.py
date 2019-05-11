@@ -73,7 +73,6 @@ def test_clan_validators(app):
         clan2.save()
         # test ownership validator
         with pytest.raises(AttributeError, match='This clan already as an owner*') as ex:
-            print(ex)
             clan2.is_owner = True
 
         # test status validator

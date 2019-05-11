@@ -910,19 +910,19 @@ class County(GameState):
         return gains
 
     def battle_results(self, army, enemy, attack_type):
-        war = None
+        kingdom = self.kingdom
+        enemy_kingdom = enemy.kingdom
         rewards_modifier = 1.00
         offence_damage = self.get_offensive_strength(army=army, enemy_forts=enemy.buildings["fort"].total)
         defence_damage = enemy.get_defensive_strength()
         expedition = Expedition(self.id, enemy.id, self.kingdom.world.day, self.day, offence_damage, defence_damage,
                                 attack_type)
         expedition.save()
-        for each_war in self.kingdom.wars:
-            if each_war.get_other_kingdom(self.kingdom) == enemy.kingdom:  # If this is true, we are at war with them
-                war = each_war
-                expedition.war_id = war.id
-                rewards_modifier += 0.15
-                break
+
+        war = kingdom.at_war_with(enemy_kingdom)
+        if war:  # If this is true, we are at war with them
+            expedition.war_id = war.id
+            rewards_modifier += 0.15
         difference_in_power = abs(offence_damage - defence_damage) / ((offence_damage + defence_damage) / 2) * 100
         if offence_damage > defence_damage:
             win = True
@@ -1007,19 +1007,15 @@ class County(GameState):
                 message += f" You gained {gains['gold']} gold, {gains['wood']} wood, " \
                     f"and {gains['iron']} iron, but lost {casualties} troops in the battle."
             # Add war clause since it was a successful attack
-            if war:
-                if war.kingdom_id == self.kingdom.id:  # We are the attack
-                    war.attacker_current += war_score
-                else:
-                    war.defender_current += war_score
-                    self.kingdom.update_war_status(war, enemy.kingdom)
-            else:
-                expedition.success = False
-                notification = Notification(
-                    enemy,
-                    notification_title,
-                    f"You achieved a victory but lost {defence_casualties} troops.",
-                )
+            # TODO: defender should gain points as well.
+            kingdom.distribute_war_points(enemy_kingdom, war_score)
+        else:
+            expedition.success = False
+            notification = Notification(
+                enemy,
+                notification_title,
+                f"You failed to achieve victory and lost {defence_casualties} troops.",
+            )
         message += f" You lost {casualties} troops in the battle."
         notification.category = "Military"
         notification.save()

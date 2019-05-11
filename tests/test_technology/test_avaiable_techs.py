@@ -44,7 +44,7 @@ def test_available_techs(app):
         county = initialize_account()
         level_1s = 4
         requirements = fake.requirements(county.technologies.keys(), level_1s=level_1s)
-        pp(requirements)
+        # pp(requirements)
         Technology.establish_requirements(county.technologies, requirements)
         county.save()
 

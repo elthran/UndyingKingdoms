@@ -42,7 +42,8 @@ class Casting(GameEvent):
 
     def activate(self, spell, county, target):
         """Attempt to cast the spell."""
-
+        kingdom = county.kingdom
+        target_kingdom = target.kingdom
         # spell should still cost event if not successful?
         effect = Effect(spell, self, county, target)
 
@@ -54,21 +55,9 @@ class Casting(GameEvent):
             return False  # casting failure
 
         effect.execute()
-
-        self.handle_war(county, spell, target)
+        kingdom.distribute_war_points(target_kingdom, spell.mana_cost // 2)
         return True  # casting successful
 
-    def handle_war(self, county, spell, target):
-        """Check if war points should be awarded."""
-        if self.target_relation == 'hostile':
-            kingdom = county.kingdom
-            war = kingdom.get_war(target.kingdom)
-            if war:
-                if war.kingdom_id == kingdom.id:
-                    war.attacker_current += spell.mana_cost // 2
-                else:
-                    war.defender_current += spell.mana_cost // 2
-                kingdom.update_war_status(war, target.kingdom)
 
     @staticmethod
     def get_active_spells(county):

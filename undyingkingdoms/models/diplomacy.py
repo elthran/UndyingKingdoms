@@ -1,3 +1,5 @@
+from sqlalchemy.ext.hybrid import hybrid_property
+
 from .bases import GameEvent, db
 
 
@@ -7,8 +9,8 @@ class Diplomacy(GameEvent):
     IN_PROGRESS = 1
     PENDING = 2
     COMPLETED = 3
-    WON = 4
-    LOST = 5
+    AGGRESSOR_WON = 4
+    DEFENDER_WON = 5
 
     # actions
     UNKNOWN = -1
@@ -28,10 +30,22 @@ class Diplomacy(GameEvent):
     action = db.Column(db.Integer)
 
     # War
-    attacker_current = db.Column(db.Integer)
+    aggressor_current = db.Column(db.Integer)
     defender_current = db.Column(db.Integer)
-    attacker_goal = db.Column(db.Integer)
+    aggressor_goal = db.Column(db.Integer)
     defender_goal = db.Column(db.Integer)
+
+    @property
+    def aggressor(self):
+        if self.action == Diplomacy.WAR:
+            return self.kingdom
+        return None
+
+    @property
+    def defender(self):
+        if self.action == Diplomacy.WAR:
+            return self.target_kingdom
+        return None
 
     def __init__(self, kingdom, target, duration=None, action=UNKNOWN, status=PENDING):
         world = kingdom.world
@@ -44,11 +58,17 @@ class Diplomacy(GameEvent):
         self.action = action
         self.status = status
 
-        self.attacker_current = 0
+        self.aggressor_current = 0
         self.defender_current = 0
-        self.attacker_goal = 0
+        self.aggressor_goal = 0
         self.defender_goal = 0
 
     def get_other_kingdom(self, kingdom):
         """Return the other kingdom involved in this relationship."""
-        return self.target_kingdom if self.kingdom_id == kingdom.id else self.kingdom
+        return self.target_kingdom \
+            if self.kingdom_id == kingdom.id \
+            else self.kingdom
+
+    @hybrid_property
+    def war_over(self):
+        return self.aggressor_current >= self.aggressor_goal or self.defender_current >= self.defender_goal
