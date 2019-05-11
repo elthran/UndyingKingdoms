@@ -218,23 +218,6 @@ class Kingdom(GameState):
     def get_leader_name(county_id):
         return County.query.get(county_id).name
 
-    def kingdom_button(self, direction, current_id):
-        all_kingdoms = Kingdom.query.all()
-        eligible_kingdoms = [kingdom for kingdom in all_kingdoms if len(kingdom.counties) > 0]
-        eligible_kingdoms = sorted(eligible_kingdoms, key=lambda x: x.id)
-        currently_viewing = Kingdom.query.get(current_id)
-        current_index = eligible_kingdoms.index(currently_viewing)
-        if len(eligible_kingdoms) == 1:
-            return eligible_kingdoms[0].id
-        if direction == 'left':
-            if current_index == 0:
-                return eligible_kingdoms[-1].id
-            return eligible_kingdoms[current_index - 1].id
-        elif direction == 'right':
-            if current_index == len(eligible_kingdoms) - 1:
-                return eligible_kingdoms[0].id
-            return eligible_kingdoms[current_index + 1].id
-
     def get_land_sum(self):
         return sum(county.land for county in self.counties)
 

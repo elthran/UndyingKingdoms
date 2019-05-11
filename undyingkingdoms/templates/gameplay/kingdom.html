@@ -56,8 +56,8 @@
 
     {% set user = current_user %}
     {% set my_county = current_user.county %}
-    {% set left_button = kingdom.kingdom_button('left', kingdom.id) %}
-    {% set right_button = kingdom.kingdom_button('right', kingdom.id) %}
+    {% set left_button = kingdom_navigation('left', kingdom.id) %}
+    {% set right_button = kingdom_navigation('right', kingdom.id) %}
 
     <div class="header">
         <a href="{{ url_for('kingdom', kingdom_id=left_button) }}">
