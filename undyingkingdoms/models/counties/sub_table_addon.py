@@ -38,7 +38,6 @@ def sub_table_addon(master_cls, slave_cls):
         for c in master_cls.__table__.c
     ])
 
-
     for name in cols_to_hoist:
         func = hybrid_property(
             lambda self, name=name: getattr(
@@ -75,8 +74,8 @@ def sub_table_addon(master_cls, slave_cls):
     )
 
     # add sub table object to county init
-    orig_init = master_cls.__init__
     # Make copy of original __init__, so we can call it without recursion
+    orig_init = master_cls.__init__
 
     def __init__(self, *args, **kws):
         orig_init(self, *args, **kws)  # Call the original __init__

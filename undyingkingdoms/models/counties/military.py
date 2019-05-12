@@ -7,6 +7,8 @@ from ..bases import GameState, db
 
 
 class Military(GameState):
+    BASE_DURATION = {'Attack': 18, 'Pillage': 12, 'Raze': 8}
+
     _offensive_modifier = db.Column(db.Float)
     _offensive_power = db.Column(db.Integer)
     _speed_modifier = db.Column(db.Float)
@@ -93,9 +95,8 @@ class Military(GameState):
         return self._speed_modifier
 
     def get_expedition_duration(self, attack_type, successful):
-        base_duration = {'Attack': 18, 'Pillage': 12, 'Raze': 8}
         # noinspection PyPropertyAccess
-        duration = base_duration[attack_type] * 100 / self.speed_modifier
+        duration = self.BASE_DURATION[attack_type] * 100 / self.speed_modifier
         duration -= self.speed
         if not successful:
             duration *= 0.5
@@ -103,7 +104,7 @@ class Military(GameState):
 
     def __init__(self, county):
         self.county = county
-        self._offensive_modifier = 1 + compute_modifier(offensive_power_modifier, county.race, county.background)
-        self._offensive_power = 0
+        self.offensive_modifier = 1 + compute_modifier(offensive_power_modifier, county.race, county.background)
+        self.offensive_power = 0
         self.speed_modifier = 100
         self.speed = 0

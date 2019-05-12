@@ -1,6 +1,6 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from undyingkingdoms.metadata.metadata import food_produced_modifier, buildings_produced_per_day
+from undyingkingdoms.metadata.metadata import food_produced_modifier, buildings_produced_per_day, happiness_modifier
 from undyingkingdoms.models.magic import Casting
 from ..helpers import compute_modifier
 from ..bases import GameState, db
@@ -12,6 +12,7 @@ class Economy(GameState):
     _dairy_modifier = db.Column(db.Float)
     _dairy_produced = db.Column(db.Integer)
     build_slots = db.Column(db.Integer)
+    happiness_change = db.Column(db.Integer)
 
     @hybrid_property
     def grain_modifier(self):
@@ -75,7 +76,6 @@ class Economy(GameState):
     def dairy_produced(self, value):
         self._dairy_produced = value
 
-
     def __init__(self, county):
         self.county = county
         self.grain_modifier = 1 + compute_modifier(
@@ -87,3 +87,4 @@ class Economy(GameState):
         )
         self.dairy_produced = 0
         self.build_slots = 3 + compute_modifier(buildings_produced_per_day, county.race, county.background)
+        self.happiness_change = 7 + compute_modifier(happiness_modifier, county.race, county.background)

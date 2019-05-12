@@ -53,7 +53,7 @@ class Preferences(GameState):
         self.user = user
         self.tax_rate = 8
         self.rations = 1
-        self.production_choice = 0
+        self.production_choice = county.GOLD
         self.research_choice = choice(list(county.available_techs))
         self.vote = county
         self.last_vote_date = None

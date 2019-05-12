@@ -19,6 +19,11 @@ from .all_metadata_imports import *
 
 
 class County(GameState):
+    GOLD = 0
+    LAND = 1
+    FOOD = 2
+    HAPPINESS = 3
+
     name = db.Column(db.String(128), nullable=False)
     leader = db.Column(db.String(128))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -226,6 +231,11 @@ class County(GameState):
 
     @tax_rate.setter
     def tax_rate(self, value):
+        """Set tax rate.
+
+        Tax rate has a flat reduction to happiness change.
+        """
+        self.happiness_change += self.tax_rate - value
         self.preferences.tax_rate = value
 
     @property
@@ -242,6 +252,16 @@ class County(GameState):
 
     @production_choice.setter
     def production_choice(self, value):
+        """Set the current production type.
+
+        Production choice can modify happiness change.
+        """
+        # changing to happiness
+        if self.production_choice != self.HAPPINESS == value:
+            self.happiness_change += self.get_excess_production_value(self.HAPPINESS)
+        # changing from happiness
+        elif self.production_choice == self.HAPPINESS != value:
+            self.happiness_change -= self.get_excess_production_value(self.HAPPINESS)
         self.preferences.production_choice = value
 
     @property
@@ -251,13 +271,6 @@ class County(GameState):
     @research_choice.setter
     def research_choice(self, value):
         self.preferences.research_choice = value
-
-    @property
-    def max_mana(self):
-        base = 20
-        # TODO: this should be generate from tech list
-        base += sum(tech.output for tech in self.completed_techs if 'arcane knowledge' in tech.key)
-        return int(base)
 
     @property
     def spell_modifier(self):
@@ -430,16 +443,7 @@ class County(GameState):
         self.stone += self.get_stone_income()
         self.mana += self.get_mana_change()
         self.research += self.get_research_change()
-        self.happiness += self.get_happiness_change()
-
-    def get_happiness_change(self):
-        change = 7 - self.tax_rate
-        if self.production_choice == 3:
-            change += self.get_excess_production_value(self.production_choice)
-        modifier = happiness_modifier.get(self.race, ("", 0))[1] + happiness_modifier.get(self.background, ("", 0))[1]
-        if self.technologies['public works'].completed:
-            modifier += 1
-        return change + modifier
+        self.happiness += self.happiness_change
 
     def update_weather(self):
         self.preferences.weather = choice(self.preferences.weather_choices)
@@ -738,18 +742,21 @@ class County(GameState):
         """
         Users the excess production towards completing a task
         """
+
         if value == -1:
             excess_worker_choice = self.production_choice
         else:
             excess_worker_choice = value
-        if excess_worker_choice == 0:  # Gold
+
+        if excess_worker_choice == self.GOLD:
             return self.get_excess_production() // 10
-        if excess_worker_choice == 1:  # Land
+        elif excess_worker_choice == self.LAND:
             return self.get_excess_production()
-        if excess_worker_choice == 2:  # Food
+        elif excess_worker_choice == self.FOOD:
             return self.get_excess_production()
-        if excess_worker_choice == 3:  # Happiness
+        elif excess_worker_choice == self.HAPPINESS:
             return 2
+
 
     def apply_excess_production_value(self):
         if self.production_choice == 0:

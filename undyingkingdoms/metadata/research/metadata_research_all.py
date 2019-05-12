@@ -44,14 +44,15 @@ generic_technology = [
         name='Public Works',
         cost=1000,
         max_level=1,
-        description='Your county generates an additional 1 happiness each day.',
+        description='Your county generates an additional +{happiness_change} happiness each day.',
+        effects=PlequalsEffect(happiness_change=1)
     ),
     Technology(
         name='Arcane Knowledge',
         cost=500,
         max_level=5,
-        description='Each level raises your maximum mana by {output:.0f}.',
-        output=20,
+        description='Each level raises your maximum mana by {max_mana}.',
+        effects=PlequalsEffect(max_mana=20)
     ),
     Technology(
         name='Winds of Magic',
