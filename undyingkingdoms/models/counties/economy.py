@@ -1,6 +1,7 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from undyingkingdoms.metadata.metadata import food_produced_modifier, buildings_produced_per_day, happiness_modifier
+from undyingkingdoms.metadata.metadata import food_produced_modifier, buildings_produced_per_day, happiness_modifier, \
+    income_modifier
 from undyingkingdoms.models.magic import Casting
 from ..helpers import compute_modifier
 from ..bases import GameState, db
@@ -15,6 +16,8 @@ class Economy(GameState):
     happiness_change = db.Column(db.Integer)
     _iron_income = db.Column(db.Integer)
     iron_multiplier = db.Column(db.Integer)
+    gold_modifier = db.Column(db.Float)
+    _gold_income = db.Column(db.Integer)
 
     @hybrid_property
     def grain_modifier(self):
@@ -93,6 +96,27 @@ class Economy(GameState):
     def iron_income(self):
         return self._iron_income
 
+    @hybrid_property
+    def gold_income(self):
+        county = self.county
+        excess_worker_income = (
+            county.get_excess_production_value()
+            if county.production_choice == county.GOLD
+            else 0
+        )
+        revenue = self._gold_income
+        revenue += (county.get_tax_income() + county.get_bank_income() + excess_worker_income) * self.gold_modifier
+        expenses = county.get_upkeep_costs()
+        return round(revenue - expenses)  # net income/net loss ;)
+
+    @gold_income.setter
+    def gold_income(self, value):
+        self._gold_income = value
+
+    @gold_income.expression
+    def gold_income(self):
+        return self._gold_income
+
     def __init__(self, county):
         self.county = county
         self.grain_modifier = 1 + compute_modifier(
@@ -107,3 +131,5 @@ class Economy(GameState):
         self.happiness_change = 7 + compute_modifier(happiness_modifier, county.race, county.background)
         self.iron_income = 0
         self.iron_multiplier = 0
+        self.gold_modifier = 1 + compute_modifier(income_modifier, county.race, county.background)
+        self.gold_income = 0

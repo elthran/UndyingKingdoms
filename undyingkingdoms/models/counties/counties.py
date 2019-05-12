@@ -251,18 +251,22 @@ class County(GameState):
         return self.preferences.production_choice or 0
 
     @production_choice.setter
-    def production_choice(self, value):
+    def production_choice(self, choice):
         """Set the current production type.
 
         Production choice can modify happiness change.
+        This works be happiness production is fixed.
+        It won't work for gold because that might change between calls.
         """
-        # changing to happiness
-        if self.production_choice != self.HAPPINESS == value:
-            self.happiness_change += self.get_excess_production_value(self.HAPPINESS)
-        # changing from happiness
-        elif self.production_choice == self.HAPPINESS != value:
-            self.happiness_change -= self.get_excess_production_value(self.HAPPINESS)
-        self.preferences.production_choice = value
+        change = self.get_excess_production_value(choice)
+        if self.production_choice != choice:
+            # changing from happiness
+            if self.production_choice == self.HAPPINESS:
+                self.happiness_change -= change
+            # changing to happiness
+            if choice == self.HAPPINESS:
+                self.happiness_change += change
+        self.preferences.production_choice = choice
 
     @property
     def research_choice(self):
@@ -437,7 +441,7 @@ class County(GameState):
             trade_offered.save()
 
     def update_daily_resources(self):
-        self.gold += self.get_gold_change()
+        self.gold += self.gold_income
         self.wood += self.get_wood_income()
         self.iron += self.iron_income
         self.stone += self.get_stone_income()
@@ -672,21 +676,6 @@ class County(GameState):
 
     def get_upkeep_costs(self):
         return sum(unit.upkeep * unit.total for unit in self.armies.values()) // 24
-
-    def get_gold_change(self):
-        modifier = 1 + income_modifier.get(self.race, ("", 0))[1] \
-                   + income_modifier.get(self.background, ("", 0))[1]
-
-        modifier += sum(tech.output for tech in self.completed_techs if 'economics' in tech.key)
-        modifier += sum(tech.output for tech in self.completed_techs if 'mercantilism' in tech.key)
-        modifier += sum(tech.output for tech in self.completed_techs if 'bartering' in tech.key)
-        if self.production_choice == 0:
-            excess_worker_income = self.get_excess_production_value(self.production_choice)
-        else:
-            excess_worker_income = 0
-        income = (self.get_tax_income() + self.get_bank_income() + excess_worker_income) * modifier
-        revenue = self.get_upkeep_costs()
-        return int(income - revenue)
 
     def get_wood_income(self):
         return self.buildings['mill'].total * self.buildings['mill'].output

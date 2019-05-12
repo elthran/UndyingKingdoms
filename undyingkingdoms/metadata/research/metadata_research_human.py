@@ -1,3 +1,4 @@
+from undyingkingdoms.models.effects import Times
 from undyingkingdoms.models.technologies import Technology
 
 human_technology = {
@@ -11,8 +12,8 @@ human_technology = {
         name='Economics',
         cost=750,
         max_level=1,
-        description='Increases all gold income by 15%.',
-        output=0.15
+        description='Increases all gold income by {gold_modifier:+0.0%}.',
+        effects=Times('economy', gold_modifier=0.15),
     ),
     Technology(
         name='Knights Templar',

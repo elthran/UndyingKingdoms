@@ -34,8 +34,8 @@ class Add(EffectInit, EffectInterface):
             )
 
     def undo(self, obj):
-        neffect = Minus(self.attr, **self.kwargs)
-        neffect.activate(obj)
+        minus = Minus(self.attr, **self.kwargs)
+        minus.activate(obj)
 
 
 class Minus(EffectInit, EffectInterface):
@@ -53,8 +53,8 @@ class Minus(EffectInit, EffectInterface):
             )
 
     def undo(self, obj):
-        peffect = Add(self.attr, **self.kwargs)
-        peffect.activate(obj)
+        add = Add(self.attr, **self.kwargs)
+        add.activate(obj)
 
 
 class Times(EffectInit, EffectInterface):
@@ -72,8 +72,8 @@ class Times(EffectInit, EffectInterface):
             )
 
     def undo(self, obj):
-        deffect = Divide(self.attr, **self.kwargs)
-        deffect.activate(obj)
+        divide = Divide(self.attr, **self.kwargs)
+        divide.activate(obj)
 
 
 class Divide(EffectInit, EffectInterface):
@@ -92,5 +92,5 @@ class Divide(EffectInit, EffectInterface):
             )
 
     def undo(self, obj):
-        meffect = Times(self.attr, **self.kwargs)
-        meffect.activate(obj)
+        times = Times(self.attr, **self.kwargs)
+        times.activate(obj)

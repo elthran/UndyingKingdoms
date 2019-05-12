@@ -327,7 +327,7 @@ th {
         </tr>
     </table>
     <!-- <div class="invisible">
-      <span id="goldChange">{{ county.get_gold_change() }}</span>
+      <span id="goldChange">{{ county.gold_income }}</span>
     </div> -->
 </form>
 {% endblock %}
@@ -340,7 +340,7 @@ th {
 <script>
 // ugly Jinja hacked in variables.
 var TAX = {{ county.tax_rate }};
-var GOLD_CHANGE = {{ county.get_gold_change() }};
+var GOLD_CHANGE = {{ county.gold_income }};
 var TAX_INCOME = {{ county.get_tax_income() }};
 var HAPPINESS = {{ county.happiness }};
 var HAPPINESS_CHANGE = {{ county.happiness_change }};

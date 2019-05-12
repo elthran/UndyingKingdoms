@@ -22,7 +22,7 @@ class GoldAPI(MethodView):
             tax=county.tax_rate,
             gold=county.gold,
             rations=county.rations,
-            goldChange=county.get_gold_change(),
+            goldChange=county.gold_income,
             form=vue_safe_form(form),
             income_mod=vue_safe_metadata_mod(income_modifier, county),
             race=county.race,

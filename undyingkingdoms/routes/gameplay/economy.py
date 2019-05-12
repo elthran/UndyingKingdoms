@@ -58,7 +58,7 @@ def update_economy():
             food_consumed_modifier=food_consumed_modifier,
             happiness=county.happiness,
             happiness_modifier=happiness_modifier,
-            goldChange=county.get_gold_change(),
+            goldChange=county.gold_income,
             taxIncome=county.get_tax_income(),
             happinessChange=county.happiness_change,
             grainStorageChange=county.grain_storage_change(),

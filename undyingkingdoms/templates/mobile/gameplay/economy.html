@@ -145,10 +145,10 @@ th {
         </tr>
         <tr>
           <td>Projected Change</td>
-          {% if county.get_gold_change() >= 0 %}
-            <td style="color:green;">+{{ county.get_gold_change() }}
+          {% if county.gold_income >= 0 %}
+            <td style="color:green;">+{{ county.gold_income }}
           {% else %}
-            <td style="color:red;">{{ county.get_gold_change() }}
+            <td style="color:red;">{{ county.gold_income }}
           {% endif %}
             <img class="resource_icons" src="/static/images/gold_icon.jpg"></td>
         </tr>
