@@ -8,7 +8,7 @@ class WoodAPI(MethodView):
     def get(self):
         county = current_user.county
 
-        # happinessChange=county.get_happiness_change(),
+        # happinessChange=county.happiness_change,
         # nourishmentChange=county.get_nourishment_change(),
 
         return jsonify(

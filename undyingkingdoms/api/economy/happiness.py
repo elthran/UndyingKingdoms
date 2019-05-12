@@ -15,7 +15,7 @@ class HappinessAPI(MethodView):
             status='success',
             debugMessage='You called the happiness api.',
             happiness=county.happiness,
-            happinessChange=county.get_happiness_change(),
+            happinessChange=county.happiness_change,
             areRelaxing=county.production_choice == 3,
             excessProduction=county.get_excess_production_value(3),
             happinessMod=vue_safe_metadata_mod(happiness_modifier, county, is_percent=False),

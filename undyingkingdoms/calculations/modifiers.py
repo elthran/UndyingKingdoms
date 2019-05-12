@@ -90,8 +90,6 @@ def get_modifiers(county, mod_type, filter_key):
                 mod_sum += 1
         if county.technologies.get('sacrifice') and county.technologies['sacrifice'].completed:
             mod_sum -= 1
-        if county.technologies.get('blessings') and county.technologies['blessings'].completed:
-            mod_sum += 1
 
     if mod_type == 'unit_upkeep':
         if county.technologies.get('civic duty') and county.technologies['civic duty'].completed:

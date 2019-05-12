@@ -345,12 +345,12 @@ th {
         </tr>
         <tr>
           <td>Projected Change</td>
-          {% if county.get_happiness_change() >= 0 %}
+          {% if county.happiness_change >= 0 %}
             <td style="color:green;">+
           {% else %}
             <td style="color:red;">
           {% endif %}
-            {{ county.get_happiness_change() }} <img class="resource_icons" src="/static/images/happiness_icon.jpg"></td>
+            {{ county.happiness_change }} <img class="resource_icons" src="/static/images/happiness_icon.jpg"></td>
         </tr>
         <tr>
           <td>Modifiers</td>

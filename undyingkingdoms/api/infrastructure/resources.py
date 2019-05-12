@@ -18,5 +18,5 @@ class ResourcesAPI(MethodView):
             gold=county.gold,
             wood=county.wood,
             stone=county.stone,
-            buildSlots=county.get_number_of_buildings_produced_per_day()
+            buildSlots=county.build_slots
         )

@@ -738,7 +738,7 @@ class County(GameState):
         if self.production_choice == 2:
             self.grain_stores += self.get_excess_production_value()
         if self.production_choice == 3:
-            pass  # Already handled in self.get_happiness_change()
+            pass  # Already handled in self.happiness_change
 
     def produce_pending_buildings(self):
         """

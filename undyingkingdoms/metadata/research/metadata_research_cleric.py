@@ -1,3 +1,4 @@
+from undyingkingdoms.models.effects import Plequals
 from undyingkingdoms.models.technologies import Technology
 
 cleric_technology = {
@@ -5,7 +6,8 @@ cleric_technology = {
         name='Blessings',
         cost=750,
         max_level=3,
-        description='Grant +1 health to all units.'
+        description='Grant +{unit_health} health to all units.',
+        effects=Plequals("military", unit_health=1)
     ),
 }
 
