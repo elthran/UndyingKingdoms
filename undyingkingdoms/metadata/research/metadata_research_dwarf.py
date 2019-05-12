@@ -1,3 +1,4 @@
+from undyingkingdoms.models.effects import Plequals
 from undyingkingdoms.models.technologies import Technology
 
 dwarf_technology = {
@@ -23,7 +24,8 @@ dwarf_technology = {
         name='Smelting',
         cost=750,
         max_level=1,
-        description='Your iron mines produce 1 additional iron ore each day.'
+        description='Your iron mines produce {iron_multiplier} additional iron ore each day.',
+        effects=Plequals(iron_multiplier=1),
     )
 }
 

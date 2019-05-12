@@ -1,7 +1,7 @@
 from .interfaces import EffectInterface
 
 
-class PlequalsEffect(EffectInterface):
+class Plequals(EffectInterface):
     def __init__(self, **kwargs):
         self.kwargs = kwargs
 
@@ -14,11 +14,11 @@ class PlequalsEffect(EffectInterface):
             )
 
     def undo(self, obj):
-        neffect = NequalsEffect(**self.kwargs)
+        neffect = Nequals(**self.kwargs)
         neffect.activate(obj)
 
 
-class NequalsEffect(EffectInterface):
+class Nequals(EffectInterface):
     def __init__(self, **kwargs):
         self.kwargs = kwargs
 
@@ -31,11 +31,11 @@ class NequalsEffect(EffectInterface):
             )
 
     def undo(self, obj):
-        peffect = PlequalsEffect(**self.kwargs)
+        peffect = Plequals(**self.kwargs)
         peffect.activate(obj)
 
 
-class MequalsEffect(EffectInterface):
+class Mequals(EffectInterface):
     def __init__(self, **kwargs):
         """Increase a obj value by a give percent.
 
@@ -55,11 +55,11 @@ class MequalsEffect(EffectInterface):
             )
 
     def undo(self, obj):
-        deffect = DequalsEffect(**self.kwargs)
+        deffect = Dequals(**self.kwargs)
         deffect.activate(obj)
 
 
-class DequalsEffect(EffectInterface):
+class Dequals(EffectInterface):
     def __init__(self, **kwargs):
         """Decrease a obj value by a give percent.
 
@@ -79,5 +79,5 @@ class DequalsEffect(EffectInterface):
             )
 
     def undo(self, obj):
-        meffect = MequalsEffect(**self.kwargs)
+        meffect = Mequals(**self.kwargs)
         meffect.activate(obj)

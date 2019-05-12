@@ -12,6 +12,6 @@ class IronAPI(MethodView):
             status='success',
             debugMessage='You called the iron api.',
             iron=county.iron,
-            ironIncome=county.get_iron_income(),
+            ironIncome=county.iron_income,
             mines=county.buildings['mine'].class_name_plural.title(),
         )

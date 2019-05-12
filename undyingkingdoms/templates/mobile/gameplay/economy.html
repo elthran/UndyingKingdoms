@@ -311,12 +311,12 @@ th {
         </tr>
         <tr>
           <td>Projected Change</td>
-          {% if county.get_iron_income() >= 0 %}
+          {% if county.iron_income >= 0 %}
             <td style="color:green;">+
           {% else %}
             <td style="color:red;">
           {% endif %}
-            {{ county.get_iron_income() }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></td>
+            {{ county.iron_income }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></td>
         </tr>
         <tr>
           <td>Modifiers</td>
@@ -325,7 +325,7 @@ th {
         <tr>
           <td>Projected Growth</td>
           <td>
-            {{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.get_iron_income() }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
+            {{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.iron_income }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
           </td>
         </tr>
         <tr>

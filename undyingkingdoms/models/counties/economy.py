@@ -13,6 +13,8 @@ class Economy(GameState):
     _dairy_produced = db.Column(db.Integer)
     build_slots = db.Column(db.Integer)
     happiness_change = db.Column(db.Integer)
+    _iron_income = db.Column(db.Integer)
+    iron_multiplier = db.Column(db.Integer)
 
     @hybrid_property
     def grain_modifier(self):
@@ -76,6 +78,21 @@ class Economy(GameState):
     def dairy_produced(self, value):
         self._dairy_produced = value
 
+    @hybrid_property
+    def iron_income(self):
+        county = self.county
+
+        building_production = county.buildings['mine'].total * (county.buildings['mine'].output + self.iron_multiplier)
+        return building_production + self._iron_income
+
+    @iron_income.setter
+    def iron_income(self, value):
+        self._iron_income = value
+
+    @iron_income.expression
+    def iron_income(self):
+        return self._iron_income
+
     def __init__(self, county):
         self.county = county
         self.grain_modifier = 1 + compute_modifier(
@@ -88,3 +105,5 @@ class Economy(GameState):
         self.dairy_produced = 0
         self.build_slots = 3 + compute_modifier(buildings_produced_per_day, county.race, county.background)
         self.happiness_change = 7 + compute_modifier(happiness_modifier, county.race, county.background)
+        self.iron_income = 0
+        self.iron_multiplier = 0

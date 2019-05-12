@@ -439,7 +439,7 @@ class County(GameState):
     def update_daily_resources(self):
         self.gold += self.get_gold_change()
         self.wood += self.get_wood_income()
-        self.iron += self.get_iron_income()
+        self.iron += self.iron_income
         self.stone += self.get_stone_income()
         self.mana += self.mana_change
         self.research += self.research_change
@@ -690,12 +690,6 @@ class County(GameState):
 
     def get_wood_income(self):
         return self.buildings['mill'].total * self.buildings['mill'].output
-
-    def get_iron_income(self):
-        bonus = int(sum(tech.output for tech in self.completed_techs if 'mining' in tech.key))
-        if self.technologies.get("smelting") and self.technologies["smelting"].completed:
-            return self.buildings['mine'].total * (self.buildings['mine'].output + 1) + bonus
-        return self.buildings['mine'].total * self.buildings['mine'].output + bonus
 
     def get_stone_income(self):
         return self.buildings['quarry'].total * self.buildings['quarry'].output

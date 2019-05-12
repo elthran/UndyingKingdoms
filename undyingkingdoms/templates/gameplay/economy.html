@@ -228,17 +228,17 @@ th {
         <tr>
             <td>Iron</td>
             <td>{{ county.iron }}</td>
-            {% if county.get_iron_income() >= 0 %}
+            {% if county.iron_income >= 0 %}
             <td style="color:green;">+
                 {% else %}
             <td style="color:red;">
                 {% endif %}
-                {{ county.get_iron_income() }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
+                {{ county.iron_income }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
             </td>
             <td>-</td>
             <td>
                 <ul>
-                    <li>{{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.get_iron_income() }} <img
+                    <li>{{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.iron_income }} <img
                             class="resource_icons" src="/static/images/iron_icon.jpg">
                     </li>
                 </ul>

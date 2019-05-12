@@ -1,4 +1,4 @@
-from undyingkingdoms.models.effects import PlequalsEffect
+from undyingkingdoms.models.effects import Plequals
 from undyingkingdoms.models.technologies import Technology
 
 alchemist_technology = {
@@ -7,7 +7,7 @@ alchemist_technology = {
         cost=500,
         max_level=3,
         description='Generate an additional +{research_change} research each day.',
-        effects=PlequalsEffect(research_change=5)
+        effects=Plequals(research_change=5)
     ),
 }
 
