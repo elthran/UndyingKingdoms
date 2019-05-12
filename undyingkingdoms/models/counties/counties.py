@@ -441,8 +441,8 @@ class County(GameState):
         self.wood += self.get_wood_income()
         self.iron += self.get_iron_income()
         self.stone += self.get_stone_income()
-        self.mana += self.get_mana_change()
-        self.research += self.get_research_change()
+        self.mana += self.mana_change
+        self.research += self.research_change
         self.happiness += self.happiness_change
 
     def update_weather(self):
@@ -700,31 +700,6 @@ class County(GameState):
     def get_stone_income(self):
         return self.buildings['quarry'].total * self.buildings['quarry'].output
 
-    def get_mana_change(self):
-        growth = 2
-        growth += sum(tech.output for tech in self.completed_techs if 'winds of magic' in tech.key)
-        growth += sum(tech.output for tech in self.completed_techs if 'spell crafting' in tech.key)
-        active_spells = Casting.query.filter_by(county_id=self.id).filter_by(active=True).all()
-        loss = sum(spell.mana_sustain for spell in active_spells)
-        difference = int(growth - loss)
-        if difference < 0 and self.mana + difference < 0:
-            active_spells[0].active = False
-            notice = Notification(
-                self,
-                "Spell Ended",
-                f"You did not have enough mana and {active_spells[0].name} ended.",
-                "Spell End"
-            )
-            notice.save()
-            return self.get_mana_change()
-        return difference
-
-    def get_research_change(self):
-        bonus = int(sum(tech.output for tech in self.completed_techs if 'alchemy' in tech.key))
-        if self.technologies.get("arcane knowledge") and self.technologies["arcane knowledge"].completed:
-            return self.buildings['lab'].total * (self.buildings['lab'].output + 1) + bonus
-        return self.buildings['lab'].total * self.buildings['lab'].output + bonus
-
     # Building
     def get_production_modifier(self):  # Modifiers your excess production
         return 1 + production_per_worker_modifier.get(self.race, ("", 0))[1] \
@@ -756,7 +731,6 @@ class County(GameState):
             return self.get_excess_production()
         elif excess_worker_choice == self.HAPPINESS:
             return 2
-
 
     def apply_excess_production_value(self):
         if self.production_choice == 0:

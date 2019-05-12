@@ -10,7 +10,7 @@
 
 <br>Current Mana <img class="resource_icons" src="/static/images/mana_icon.jpg">: {{ county.mana }} / {{ county.max_mana }}
 <br>Expected mana growth:
-{% if county.get_mana_change() < 0 %}{% else %}+{% endif %}{{ county.get_mana_change() }}
+{% if county.mana_change < 0 %}{% else %}+{% endif %}{{ county.mana_change }}
 <img class="resource_icons" src="/static/images/mana_icon.jpg">
 <br><br>
 <p>Chance to successfully disrupt enemy spells against your county: {{ county.chance_to_disrupt_spell() }}%</p>

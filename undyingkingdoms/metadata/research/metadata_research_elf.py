@@ -1,3 +1,4 @@
+from undyingkingdoms.models.effects import PlequalsEffect
 from undyingkingdoms.models.technologies import Technology
 
 elf_technology = {
@@ -5,7 +6,8 @@ elf_technology = {
         name='Knowledge of the Ancients',
         cost=300,
         max_level=1,
-        description='Each laboratory generates one additional research point per day.'
+        description='Each laboratory generates {research_multiplier} additional research point per day.',
+        effects=PlequalsEffect(research_multiplier=1)
     ),
     Technology(
         name='Ranger Training',

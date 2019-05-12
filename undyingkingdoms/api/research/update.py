@@ -39,7 +39,7 @@ class UpdateAPI(MethodView):
             county=county_data,
             knownTechnologies=known_technologies,
             availableTechnologies=available_technologies,
-            researchChange=county.get_research_change(),
+            researchChange=county.research_change,
             currentTech=current_tech.name,
             description=current_tech.description,
             selectedResearch=current_tech.id,
@@ -63,7 +63,7 @@ class UpdateAPI(MethodView):
             county.research_choice = tech
             return jsonify(
                 debugMessage='You have updated your current research choice.',
-                researchChange=county.get_research_change(),
+                researchChange=county.research_change,
                 description=tech.description,
                 progressCurrent=tech.current,
                 progressRequired=tech.cost,

@@ -3,7 +3,7 @@ from datetime import datetime
 
 from pandas import DataFrame
 
-from . import helpers
+from undyingkingdoms.utilities import table_mixers
 from .exports import User
 from .exports import DAU
 from .exports import County
@@ -91,7 +91,7 @@ class World(GameState):
         tables = ['DAU', 'army', 'building', 'casting', 'chatroom', 'diplomacy', 'notification', 'expedition',
                   'infiltration', 'magic', 'message', 'preferences', 'session', 'trade', 'transaction', 'technology',
                   'county']
-        helpers.drop_then_rebuild_tables(db, tables)
+        table_mixers.drop_then_rebuild_tables(db, tables)
         self.age += 1
         self.day = -12
 

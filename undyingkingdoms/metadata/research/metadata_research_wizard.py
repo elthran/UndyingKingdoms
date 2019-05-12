@@ -1,3 +1,4 @@
+from undyingkingdoms.models.effects import PlequalsEffect
 from undyingkingdoms.models.technologies import Technology
 
 wizard_technology = [
@@ -6,7 +7,8 @@ wizard_technology = [
         cost=500,
         max_level=1,
         description='Generate an additional mana each day.',
-        output=1)
+        effects=PlequalsEffect(mana_change=1)
+    )
 ]
 
 wizard_technology = {

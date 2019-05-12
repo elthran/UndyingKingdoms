@@ -12,5 +12,5 @@ class ManaAPI(MethodView):
             status='success',
             debugMessage='You called the mana api.',
             manaAmount=county.mana,
-            manaIncome=county.get_mana_change(),
+            manaIncome=county.mana_change,
         )
