@@ -1,6 +1,6 @@
 from undyingkingdoms.models.technologies.helpers import generate_tech_levels
 from undyingkingdoms.models.technologies import Technology
-from undyingkingdoms.models.effects import Plequals
+from undyingkingdoms.models.effects import Add
 
 generic_technology = [
     Technology(
@@ -8,56 +8,56 @@ generic_technology = [
         cost=500,
         max_level=2,
         description="{grain_modifier:+0.0%} bonus to all grain production within your county.",
-        effects=Plequals(grain_modifier=0.25)
+        effects=Add(grain_modifier=0.25)
     ),
     Technology(
         name='Animal Husbandry',
         cost=500,
         max_level=1,
         description='{dairy_modifier:+0.0%} bonus to all dairy production within your county.',
-        effects=Plequals(dairy_modifier=0.5)
+        effects=Add(dairy_modifier=0.5)
     ),
     Technology(
         name='Steel',
         cost=1000,
         max_level=1,
         description='{offensive_modifier:+0.0%} Attack Power bonus to all offensive invasions you perform.',
-        effects=Plequals(offensive_modifier=0.1)
+        effects=Add(offensive_modifier=0.1)
     ),
     Technology(
         name='Engineering',
         cost=250,
         max_level=3,
         description='+{build_slots} building can be built each day for each level.',
-        effects=Plequals(build_slots=1)
+        effects=Add(build_slots=1)
     ),
     Technology(
         name='Logistics',
         cost=500,
         max_level=1,
         description='Your armies return from battle {speed} day sooner.',
-        effects=Plequals(speed=1)
+        effects=Add(speed=1)
     ),
     Technology(
         name='Public Works',
         cost=1000,
         max_level=1,
         description='Your county generates an additional +{happiness_change} happiness each day.',
-        effects=Plequals(happiness_change=1)
+        effects=Add(happiness_change=1)
     ),
     Technology(
         name='Arcane Knowledge',
         cost=500,
         max_level=5,
         description='Each level raises your maximum mana by {max_mana}.',
-        effects=Plequals(max_mana=20)
+        effects=Add(max_mana=20)
     ),
     Technology(
         name='Winds of Magic',
         cost=1250,
         max_level=2,
         description='Each level raises your mana generation per day by {mana_change}.',
-        effects=Plequals(mana_change=1),
+        effects=Add(mana_change=1),
     ),
 ]
 

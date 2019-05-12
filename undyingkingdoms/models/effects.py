@@ -19,7 +19,7 @@ class EffectInit:
         self.kwargs = kwargs
 
 
-class Plequals(EffectInit, EffectInterface):
+class Add(EffectInit, EffectInterface):
     """Increase an obj value by a given amount.
 
     Does  obj.x += y
@@ -34,11 +34,11 @@ class Plequals(EffectInit, EffectInterface):
             )
 
     def undo(self, obj):
-        neffect = Nequals(self.attr, **self.kwargs)
+        neffect = Minus(self.attr, **self.kwargs)
         neffect.activate(obj)
 
 
-class Nequals(EffectInit, EffectInterface):
+class Minus(EffectInit, EffectInterface):
     """Decrease an obj value by a given amount.
 
     Does  obj.x -= y
@@ -53,11 +53,11 @@ class Nequals(EffectInit, EffectInterface):
             )
 
     def undo(self, obj):
-        peffect = Plequals(self.attr, **self.kwargs)
+        peffect = Add(self.attr, **self.kwargs)
         peffect.activate(obj)
 
 
-class Mequals(EffectInit, EffectInterface):
+class Times(EffectInit, EffectInterface):
     """Increase an obj value by a given percent.
 
     Does  obj.x *= 1 + y
@@ -72,11 +72,11 @@ class Mequals(EffectInit, EffectInterface):
             )
 
     def undo(self, obj):
-        deffect = Dequals(self.attr, **self.kwargs)
+        deffect = Divide(self.attr, **self.kwargs)
         deffect.activate(obj)
 
 
-class Dequals(EffectInit, EffectInterface):
+class Divide(EffectInit, EffectInterface):
     """Decrease an obj value by a given percent.
 
     Does  obj.x /= 1 + y
@@ -92,5 +92,5 @@ class Dequals(EffectInit, EffectInterface):
             )
 
     def undo(self, obj):
-        meffect = Mequals(self.attr, **self.kwargs)
+        meffect = Times(self.attr, **self.kwargs)
         meffect.activate(obj)

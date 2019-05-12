@@ -1,4 +1,4 @@
-from undyingkingdoms.models.effects import Plequals
+from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
 
 artificer_technology = {
@@ -8,7 +8,7 @@ artificer_technology = {
         max_level=2,
         description='You generate +{iron_produced} additional iron ore each day per level.',
         output=5,
-        effects=Plequals(iron_produced=5)
+        effects=Add(iron_produced=5)
     ),
 }
 
