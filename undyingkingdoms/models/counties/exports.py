@@ -4,6 +4,7 @@ from ..technologies import Technology
 from .counties import County
 from .economy import Economy
 from .wizardry import Wizardry
+from .scientist import Scientist
 
 from .sub_table_addon import sub_table_addon
 from .tech_addon import tech_addon
@@ -15,3 +16,4 @@ tech_addon(County, Technology)
 sub_table_addon(County, Economy)
 sub_table_addon(County, Military)
 sub_table_addon(County, Wizardry)
+sub_table_addon(County, Scientist)

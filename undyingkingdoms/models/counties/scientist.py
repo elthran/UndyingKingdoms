@@ -9,13 +9,15 @@ class Scientist(GameEvent):
 
     @hybrid_property
     def research_change(self):
-        building_production = self.buildings['lab'].total * (self.buildings['lab'].output + self.research_multiplier)
+        county = self.county
+        building_production = county.buildings['lab'].total * (county.buildings['lab'].output + self.research_multiplier)
         return building_production + self._research_change
 
     @research_change.setter
     def research_change(self, value):
         self._research_change = value
 
+    # noinspection PyUnresolvedReferences
     @research_change.expression
     def research_change(self):
         return self._research_change
