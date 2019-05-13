@@ -15,7 +15,7 @@ def generate_tech_levels(techs, requirements):
     and have no extra tech generated.
     """
     all_techs = []
-    all_reqs= {}
+    all_reqs = requirements
     for tech in techs:
         all_techs.append(tech)
         for level in range(tech.tier, tech.max_level):

@@ -1,7 +1,15 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
+from tests import bp
 from undyingkingdoms.models.notifications import Notification
 from ..bases import GameEvent, db
+
+tech_to_tech = db.Table(
+    "tech_to_tech", db.metadata,
+    # don't really understand enough to name these properly
+    db.Column("left_node_id", db.Integer, db.ForeignKey("technology.id"), primary_key=True),
+    db.Column("right_node_id", db.Integer, db.ForeignKey("technology.id"), primary_key=True)
+)
 
 
 class Technology(GameEvent):
@@ -19,8 +27,13 @@ class Technology(GameEvent):
     _description = db.Column(db.String(128))
     effects = db.Column(db.PickleType)
 
-    requirement_id = db.Column(db.Integer, db.ForeignKey('technology.id'))
-    requirements = db.relationship("Technology")
+    requirements = db.relationship(
+        "Technology",
+        secondary="tech_to_tech",
+        primaryjoin="Technology.id==tech_to_tech.c.left_node_id",
+        secondaryjoin="Technology.id==tech_to_tech.c.right_node_id",
+        backref="requirees"
+    )
 
     @hybrid_property
     def completed(self):
@@ -86,6 +99,7 @@ class Technology(GameEvent):
         to the user.
         """
         for key in metadata:
+            tech = techs[key]
             for requirement in metadata[key]:
                 try:
                     techs[key].requirements.append(techs[requirement])
