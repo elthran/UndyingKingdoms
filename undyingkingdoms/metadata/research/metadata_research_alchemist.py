@@ -20,6 +20,11 @@ alchemist_technology = {
     )
 }
 
+# it must be a list or it will fail
+custom_requirements = {
+    "advanced alchemy": ["basic alchemy v"],
+}
+
 alchemist_technology = {
     tech.key: tech
     for tech in alchemist_technology

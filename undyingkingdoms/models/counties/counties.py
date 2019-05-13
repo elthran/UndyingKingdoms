@@ -5,8 +5,8 @@ from random import choice, randint
 from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
-from tests import bp
 from undyingkingdoms.calculations.distributions import get_int_between_0_to_100
+from undyingkingdoms.metadata.armies.metadata_armies_updater import update_armies
 from ..magic import Casting
 from ..bases import GameState, db
 from .specifics import add_racial_data, add_background_data
@@ -15,7 +15,7 @@ from ..notifications import Notification
 from ..expeditions import Expedition
 from ..infiltrations import Infiltration
 from ..trades import Trade
-from .all_metadata_imports import *
+from .all_metadata_imports import all_metadata_imports as md
 
 
 class County(GameState):
@@ -576,6 +576,7 @@ class County(GameState):
             return 0
 
     def get_food_to_be_eaten(self):
+        food_consumed_modifier = md['food_consumed_modifier']
         modifier = 1 + food_consumed_modifier.get(self.race, ("", 0))[1] + \
                    food_consumed_modifier.get(self.background, ("", 0))[1]
         return int((self.population - self.get_unavailable_army_size()) * self.rations * modifier)
@@ -620,6 +621,7 @@ class County(GameState):
         return max(self.population - self.get_employed_workers() - self.get_army_size(), 0)
 
     def get_death_rate(self):
+        death_rate_modifier = md['death_rate_modifier']
         modifier = 1 + death_rate_modifier.get(self.race, ("", 0))[1] + \
                    death_rate_modifier.get(self.background, ("", 0))[1]
 
@@ -633,6 +635,7 @@ class County(GameState):
         return int(death_rate * self.population)
 
     def get_birth_rate(self):
+        birth_rate_modifier = md['birth_rate_modifier']
         modifier = 1 + birth_rate_modifier.get(self.race, ("", 0))[1] + \
                    birth_rate_modifier.get(self.background, ("", 0))[1]
         modifier += (self.buildings['house'].total ** 0.8) / self.land * self.buildings['house'].output
@@ -685,6 +688,7 @@ class County(GameState):
 
     # Building
     def get_production_modifier(self):  # Modifiers your excess production
+        production_per_worker_modifier = md['production_per_worker_modifier']
         return 1 + production_per_worker_modifier.get(self.race, ("", 0))[1] \
                + production_per_worker_modifier.get(self.background, ("", 0))[1]
 
@@ -777,6 +781,7 @@ class County(GameState):
 
     def get_defensive_strength(self, scoreboard=False):
         # First get base strength of citizens
+        defense_per_citizen_modifier = md['defense_per_citizen_modifier']
         modifier = 1 + defense_per_citizen_modifier.get(self.race, ("", 0))[1] \
                    + defense_per_citizen_modifier.get(self.background, ("", 0))[1]
         strength = (self.population // 20) * modifier

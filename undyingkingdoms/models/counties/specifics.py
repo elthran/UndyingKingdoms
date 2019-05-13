@@ -1,14 +1,38 @@
 from copy import deepcopy
 
+from tests import bp
 from undyingkingdoms.metadata.magic.metadata_magic_all import generic_spells
-from undyingkingdoms.metadata.research.metadata_research_all import generic_technology
-from . import all_metadata_imports as md
+from undyingkingdoms.metadata.research.metadata_research_all import generic_technology, generic_requirements
+from utilities.helpers import combine_dicts
+from .all_metadata_imports import all_metadata_imports as md
+
+
+def add_racial_data(self):
+    # Buildings and Armies extracted from metadata
+    race = self.race.lower()
+    building_mod = md[f'metadata_buildings_{race}']
+    armies_mod = md[f'metadata_armies_{race}']
+    magic_mod = md[f'metadata_magic_{race}']
+    research_mod = md[f'metadata_research_{race}']
+
+    race_buildings = getattr(building_mod, f'{race}_buildings')
+    race_armies = getattr(armies_mod, f'{race}_armies')
+    race_spells = getattr(magic_mod, f'{race}_spells')
+    race_technology = getattr(research_mod, f'{race}_technology')
+
+    self.buildings = deepcopy(race_buildings)
+    self.armies = deepcopy(race_armies)
+    self.magic = {**deepcopy(generic_spells), **deepcopy(race_spells)}
+    self.technologies = {**deepcopy(generic_technology), **deepcopy(race_technology)}
 
 
 def add_background_data(self):
     background = self.background.lower()
-    background_spells = getattr(md, f'{background}_spells')
-    background_technology = getattr(md, f'{background}_technology')
+    magic_mod = md[f'metadata_magic_{background}']
+    research_mod = md[f'metadata_research_{background}']
+
+    background_spells = getattr(magic_mod, f'{background}_spells')
+    background_technology = getattr(research_mod, f'{background}_technology')
 
     # Make sure tech names don't overlap.
     # This should probably be part of some fancy test suite ...
@@ -22,15 +46,25 @@ def add_background_data(self):
         self.buildings["lab"].output *= 2
 
 
-def add_racial_data(self):
-    # Buildings and Armies extracted from metadata
-    race = self.race.lower()
-    race_buildings = getattr(md, f'{race}_buildings')
-    race_armies = getattr(md, f'{race}_armies')
-    race_spells = getattr(md, f'{race}_spells')
-    race_technology = getattr(md, f'{race}_technology')
+def merge_tech_requirements(race, background):
+    race = race.lower()
+    background = background.lower()
 
-    self.buildings = deepcopy(race_buildings)
-    self.armies = deepcopy(race_armies)
-    self.magic = {**deepcopy(generic_spells), **deepcopy(race_spells)}
-    self.technologies = {**deepcopy(generic_technology), **deepcopy(race_technology)}
+    race_mod = md[f'metadata_research_{race}']
+    background_mod = md[f'metadata_research_{background}']
+
+    race_reqs = {}
+    background_reqs = {}
+    try:
+        race_reqs = getattr(race_mod, 'custom_requirements')
+    except AttributeError:
+        pass
+
+    try:
+        background_reqs = getattr(background_mod, 'custom_requirements')
+    except AttributeError:
+        pass
+
+    all_requirements = combine_dicts(generic_requirements, race_reqs)
+    all_requirements = combine_dicts(all_requirements, background_reqs)
+    return all_requirements

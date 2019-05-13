@@ -1,49 +1,15 @@
 # metadata aggregates file.
 # could be in the metadata folder?
+import os
+from importlib import import_module
 
-from undyingkingdoms.metadata.armies.metadata_armies_updater import update_armies
-from undyingkingdoms.metadata.magic.metadata_magic_artificer import artificer_spells
-from undyingkingdoms.metadata.magic.metadata_magic_cleric import cleric_spells
-from undyingkingdoms.metadata.magic.metadata_magic_diplomat import diplomat_spells
-from undyingkingdoms.metadata.magic.metadata_magic_druid import druid_spells
-from undyingkingdoms.metadata.magic.metadata_magic_hierophant import hierophant_spells
-from undyingkingdoms.metadata.metadata import birth_rate_modifier, food_consumed_modifier, death_rate_modifier, \
-    income_modifier, production_per_worker_modifier, offensive_power_modifier, defense_per_citizen_modifier, \
-    happiness_modifier, buildings_produced_per_day, food_produced_modifier
-from undyingkingdoms.metadata.armies.metadata_armies_dwarf import dwarf_armies
-from undyingkingdoms.metadata.armies.metadata_armies_elf import elf_armies
-from undyingkingdoms.metadata.armies.metadata_armies_goblin import goblin_armies
-from undyingkingdoms.metadata.armies.metadata_armies_human import human_armies
-from undyingkingdoms.metadata.armies.metadata_armies_ogre import ogre_armies
-from undyingkingdoms.metadata.buildings.metadata_buildings_dwarf import dwarf_buildings
-from undyingkingdoms.metadata.buildings.metadata_buildings_elf import elf_buildings
-from undyingkingdoms.metadata.buildings.metadata_buildings_goblin import goblin_buildings
-from undyingkingdoms.metadata.buildings.metadata_buildings_human import human_buildings
-from undyingkingdoms.metadata.buildings.metadata_buildings_ogre import ogre_buildings
-from undyingkingdoms.metadata.magic.metadata_magic_alchemist import alchemist_spells
-from undyingkingdoms.metadata.magic.metadata_magic_all import generic_spells
-from undyingkingdoms.metadata.magic.metadata_magic_dwarf import dwarf_spells
-from undyingkingdoms.metadata.magic.metadata_magic_elf import elf_spells
-from undyingkingdoms.metadata.magic.metadata_magic_goblin import goblin_spells
-from undyingkingdoms.metadata.magic.metadata_magic_human import human_spells
-from undyingkingdoms.metadata.magic.metadata_magic_merchant import merchant_spells
-from undyingkingdoms.metadata.magic.metadata_magic_ogre import ogre_spells
-from undyingkingdoms.metadata.magic.metadata_magic_rogue import rogue_spells
-from undyingkingdoms.metadata.magic.metadata_magic_warlord import warlord_spells
-from undyingkingdoms.metadata.magic.metadata_magic_wizard import wizard_spells
-from undyingkingdoms.metadata.research.metadata_research_alchemist import alchemist_technology
-from undyingkingdoms.metadata.research.metadata_research_all import generic_technology
-from undyingkingdoms.metadata.research.metadata_research_artificer import artificer_technology
-from undyingkingdoms.metadata.research.metadata_research_cleric import cleric_technology
-from undyingkingdoms.metadata.research.metadata_research_diplomat import diplomat_technology
-from undyingkingdoms.metadata.research.metadata_research_druid import druid_technology
-from undyingkingdoms.metadata.research.metadata_research_dwarf import dwarf_technology
-from undyingkingdoms.metadata.research.metadata_research_elf import elf_technology
-from undyingkingdoms.metadata.research.metadata_research_goblin import goblin_technology
-from undyingkingdoms.metadata.research.metadata_research_hierophant import hierophant_technology
-from undyingkingdoms.metadata.research.metadata_research_human import human_technology
-from undyingkingdoms.metadata.research.metadata_research_merchant import merchant_technology
-from undyingkingdoms.metadata.research.metadata_research_ogre import ogre_technology
-from undyingkingdoms.metadata.research.metadata_research_rogue import rogue_technology
-from undyingkingdoms.metadata.research.metadata_research_warlord import warlord_technology
-from undyingkingdoms.metadata.research.metadata_research_wizard import wizard_technology
+from tests import bp
+
+all_metadata_imports = {}
+
+for root, dirs, files in os.walk("undyingkingdoms/metadata"):
+    for name in files:
+        if name.endswith(".py"):
+            mod_name = name.split('.')[0]
+            mod_path = '.'.join(root.split(os.path.sep) + [mod_name])
+            all_metadata_imports[mod_name] = import_module(mod_path)

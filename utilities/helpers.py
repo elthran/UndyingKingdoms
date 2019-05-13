@@ -1,4 +1,8 @@
+import operator
+
 import roman
+
+from tests import bp
 
 
 def to_class_name(name):
@@ -23,3 +27,10 @@ def romanize(word, n):
 
 def strip_leading_underscore(s):
     return s[1:] if s[0] == '_' else s
+
+
+def combine_dicts(a, b, op=operator.add):
+    return dict(
+        tuple(a.items()) + tuple(b.items()) +
+        tuple((k, op(a[k], b[k])) for k in set(b) & set(a))
+    )

@@ -99,7 +99,7 @@ class Technology(GameEvent):
         to the user.
         """
         for key in metadata:
-            tech = techs[key]
+            assert type(metadata[key]) != str
             for requirement in metadata[key]:
                 try:
                     techs[key].requirements.append(techs[requirement])
