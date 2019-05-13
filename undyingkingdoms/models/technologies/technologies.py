@@ -50,7 +50,9 @@ class Technology(GameEvent):
 
     @db.validates('effects')
     def validate_effects(self, key, effects):
-        if effects.__class__ != list:
+        try:
+            _ = (e for e in effects)
+        except TypeError:
             return [effects]
         return effects
 

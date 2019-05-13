@@ -58,12 +58,12 @@ def get_modifiers(county, mod_type, filter_key):
 
     mod_sum = 0
 
-    mod_types = dict(
+    mod_funcs = dict(
         unit_health=unit_health_mods,
     )
 
     try:
-        mod_sum = mod_types[mod_type](county, filter_key)
+        mod_sum = mod_funcs[mod_type](county, filter_key)
     except KeyError:
         pass
 
