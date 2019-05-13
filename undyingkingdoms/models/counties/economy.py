@@ -1,7 +1,7 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from undyingkingdoms.metadata.metadata import food_produced_modifier, buildings_produced_per_day, happiness_modifier, \
-    income_modifier
+    income_modifier, birth_rate_modifier
 from undyingkingdoms.models.magic import Casting
 from ..helpers import compute_modifier
 from ..bases import GameState, db
@@ -18,6 +18,8 @@ class Economy(GameState):
     iron_multiplier = db.Column(db.Integer)
     gold_modifier = db.Column(db.Float)
     _gold_income = db.Column(db.Integer)
+    _birth_rate_modifier = db.Column(db.Float)
+    _birth_rate = db.Column(db.Integer)
 
     @hybrid_property
     def grain_modifier(self):
@@ -37,6 +39,7 @@ class Economy(GameState):
     def grain_modifier(self, value):
         self._grain_modifier = value
 
+    # noinspection PyUnresolvedReferences,PyMethodParameters
     @grain_modifier.expression
     def grain_modifier(cls):
         # I'm not sure how to add in spells at this point ...
@@ -92,9 +95,10 @@ class Economy(GameState):
     def iron_income(self, value):
         self._iron_income = value
 
+    # noinspection PyUnresolvedReferences,PyMethodParameters
     @iron_income.expression
-    def iron_income(self):
-        return self._iron_income
+    def iron_income(cls):
+        return cls._iron_income
 
     @hybrid_property
     def gold_income(self):
@@ -113,9 +117,47 @@ class Economy(GameState):
     def gold_income(self, value):
         self._gold_income = value
 
+    # noinspection PyUnresolvedReferences,PyMethodParameters
     @gold_income.expression
-    def gold_income(self):
-        return self._gold_income
+    def gold_income(cls):
+        return cls._gold_income
+
+    @hybrid_property
+    def birth_rate_modifier(self):
+        county = self.county
+        modifier = self._birth_rate_modifier
+        modifier += (county.buildings['house'].total ** 0.75) / county.land * county.buildings['house'].output
+
+        modify_birth_rate = Casting.query.filter_by(target_id=county.id, name="modify_birth_rate").filter(
+            (Casting.duration > 0) | Casting.active).all()
+        for spell in modify_birth_rate or []:
+            modifier += spell.output * county.spell_modifier
+        return modifier
+
+    @birth_rate_modifier.setter
+    def birth_rate_modifier(self, value):
+        self._birth_rate_modifier = value
+
+    # noinspection PyUnresolvedReferences,PyMethodParameters
+    @birth_rate_modifier.expression
+    def birth_rate_modifier(cls):
+        return cls._birth_rate_modifier
+
+    @hybrid_property
+    def birth_rate(self):
+        county = self.county
+        raw_rate = (county.happiness / 100) * (county.land / 5)  # 5% times your happiness rating
+        # noinspection PyPropertyAccess
+        return round(raw_rate * self.birth_rate_modifier)
+
+    @birth_rate.setter
+    def birth_rate(self, value):
+        self._birth_rate = value
+
+    # noinspection PyUnresolvedReferences,PyMethodParameters
+    @birth_rate.expression
+    def birth_rate(cls):
+        return cls._birth_rate
 
     def __init__(self, county):
         self.county = county
@@ -133,3 +175,5 @@ class Economy(GameState):
         self.iron_multiplier = 0
         self.gold_modifier = 1 + compute_modifier(income_modifier, county.race, county.background)
         self.gold_income = 0
+        self.birth_rate_modifier = 1 + compute_modifier(birth_rate_modifier, county.race, county.background)
+        self.birth_rate = 0

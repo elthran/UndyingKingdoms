@@ -18,7 +18,7 @@ class PopulationAPI(MethodView):
             population_projection=county.get_population_change(),
             race=county.race,
             background=county.background,
-            birth_rate=county.get_birth_rate(),
+            birth_rate=county.birth_rate,
             immigration_rate=county.get_immigration_rate(),
             death_rate=county.get_death_rate(),
             emigration_rate=county.get_emigration_rate(),

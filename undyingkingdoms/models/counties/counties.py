@@ -641,23 +641,6 @@ class County(GameState):
 
         return int(death_rate * self.population)
 
-    def get_birth_rate(self):
-        local_md = md['metadata']
-        modifier = 1 + compute_modifier(
-            local_md.birth_rate_modifier,
-            self.race,
-            self.background
-        )
-        modifier += (self.buildings['house'].total ** 0.75) / self.land * self.buildings['house'].output
-
-        modify_birth_rate = Casting.query.filter_by(target_id=self.id, name="modify_birth_rate").filter(
-            (Casting.duration > 0) | (Casting.active == True)).all()
-        for spell in modify_birth_rate or []:
-            modifier += spell.output * self.spell_modifier
-
-        raw_rate = (self.happiness / 100) * (self.land / 5)  # 5% times your happiness rating
-        return int(raw_rate * modifier)
-
     def get_immigration_rate(self):
         random_hash = (self.kingdom.world.day ** 2) % 10
         return 25 + random_hash
@@ -667,7 +650,7 @@ class County(GameState):
 
     @cached_random
     def get_population_change(self):
-        growth = self.get_birth_rate() + self.get_immigration_rate()
+        growth = self.birth_rate + self.get_immigration_rate()
         decay = self.get_death_rate() + self.get_emigration_rate()
         if growth < decay:  # Can't decay more than 3% of population an hour
             return int(max(growth - decay, -0.03 * self.population))
@@ -676,7 +659,7 @@ class County(GameState):
     def update_population(self):
         deaths = self.get_death_rate()
         emigration = self.get_emigration_rate()
-        births = self.get_birth_rate()
+        births = self.birth_rate
         immigration = self.get_immigration_rate()
         self.population += (births + immigration) - (deaths + emigration)
 
