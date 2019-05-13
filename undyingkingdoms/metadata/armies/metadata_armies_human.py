@@ -9,7 +9,7 @@ human_armies['peasant'].class_name, human_armies['peasant'].class_name_plural, h
 human_armies['soldier'].class_name, human_armies['soldier'].class_name_plural, human_armies[
     'soldier'].description = 'footman', 'footmen', 'Footmen are strong attackers.'
 human_armies['archer'].class_name, human_armies['archer'].class_name_plural, human_armies[
-    'archer'].description = 'musketeer', 'musketeers', 'Crossbowmen are excellent at defending.'
+    'archer'].description = 'musketeer', 'musketeers', 'Musketeers are excellent at defending.'
 human_armies['besieger'].class_name, human_armies['besieger'].class_name_plural, human_armies[
     'besieger'].description = 'trebuchet', 'trebuchets', 'Trebuchets are incredibly effective against fortified counties.'
 human_armies['elite'].class_name, human_armies['elite'].class_name_plural, human_armies[

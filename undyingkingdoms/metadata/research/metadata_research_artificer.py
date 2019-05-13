@@ -3,12 +3,22 @@ from undyingkingdoms.models.technologies import Technology
 
 artificer_technology = {
     Technology(
-        name='Mining',
-        cost=750,
-        max_level=2,
-        description='You generate +{iron_produced} additional iron ore each day per level.',
+        name='Advanced Engineering',
+        cost=500,
+        max_level=3,
+        description="All buildings are 10% cheaper.",
+        output=0.10,
+        effects=None,
+        source="Artificer"
+    ),
+    Technology(
+        name='Masonry',
+        cost=1000,
+        max_level=1,
+        description="You generate +{stone_produced} additional stone each day per quarry.",
         output=5,
-        effects=Add(iron_produced=5)
+        effects=Add(stone_produced=1),
+        source="Artificer"
     ),
 }
 

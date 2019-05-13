@@ -3,9 +3,20 @@ from undyingkingdoms.models.technologies import Technology
 hierophant_technology = {
     Technology(
         name='Sacrifice',
-        cost=500,
+        cost=5,
         max_level=1,
-        description='All units gain +2 attack and -1 health.'),
+        description='...',
+        effects=None,
+        source="Hierophant"
+    ),
+    Technology(
+        name='Sacrifice 2',
+        cost=5,
+        max_level=1,
+        description='...',
+        effects=None,
+        source="Hierophant"
+    )
 }
 
 hierophant_technology = {

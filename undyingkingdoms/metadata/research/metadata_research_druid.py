@@ -1,12 +1,23 @@
+from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
 
 druid_technology = {
     Technology(
-        name='Nature',
+        name='Advanced Agriculture',
         cost=500,
         max_level=1,
-        description='Each thieves den grants an additional thief.'
+        description="{grain_modifier:+0.0%} grain produced from each field",
+        effects=Add(grain_modifier=0.50),
+        source="Druid"
     ),
+    Technology(
+        name="Nature's Blessing",
+        cost=1500,
+        max_level=1,
+        description='Your people are immune to sickness.',
+        effects=None,
+        source="Druid"
+    )
 }
 
 druid_technology = {

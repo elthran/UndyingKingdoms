@@ -8,6 +8,7 @@ class Technology(GameEvent):
     world_day = db.Column(db.Integer)  # Day you started to research
     county_day = db.Column(db.Integer)
     name = db.Column(db.String(64))
+    source = db.Column(db.String(32))
     current = db.Column(db.Integer)
     tier = db.Column(db.Integer)
     output = db.Column(db.Float)
@@ -55,7 +56,8 @@ class Technology(GameEvent):
             all_kwargs.update(effect.kwargs)
         return self._description.format(**all_kwargs)
 
-    def __init__(self, name, cost, max_level, description, requirements=None, tier=1, output=None, effects=None):
+    def __init__(self, name, cost, max_level, description, requirements=None,
+                 tier=1, output=None, effects=None, source="Generic"):
         if requirements is None:
             requirements = []
         if effects is None:
@@ -64,6 +66,7 @@ class Technology(GameEvent):
         self.world_day = None
         self.county_day = None
         self.name = name
+        self.source = source
         self.current = 0
         self.cost = cost
         self.level = 0

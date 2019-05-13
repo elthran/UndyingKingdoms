@@ -3,12 +3,21 @@ from undyingkingdoms.models.technologies import Technology
 
 alchemist_technology = {
     Technology(
-        name='Alchemy',
+        name='Advanced Alchemy',
         cost=500,
         max_level=3,
         description='Generate an additional +{research_change} research each day.',
-        effects=Add(research_change=5)
+        effects=Add(research_change=30),
+        source="Alchemist"
     ),
+    Technology(
+        name='Elixir of Life',
+        cost=1000,
+        max_level=1,
+        description='All non-siege units have +2 health',
+        effects=None,
+        source="Alchemist"
+    )
 }
 
 alchemist_technology = {

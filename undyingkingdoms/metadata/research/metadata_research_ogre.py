@@ -5,7 +5,8 @@ ogre_technology = {
         name='Sharpened Sticks',
         cost=500,
         max_level=1,
-        description='Ogre brutes have an additional offense.'
+        description='Ogre brutes have an additional offense.',
+        source="Ogre"
     )
 }
 

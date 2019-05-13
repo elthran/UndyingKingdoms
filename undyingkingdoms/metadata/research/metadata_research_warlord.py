@@ -1,11 +1,22 @@
+from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
 
 warlord_technology = [
     Technology(
-        name='Tactician',
-        cost=1250,
-        max_level=3,
-        description='All units gain +1 attack.'
+        name='Advanced Logistics',
+        cost=500,
+        max_level=1,
+        description='Your armies return from battle {speed} days sooner.',
+        effects=Add(speed=1),
+        source="Warlord"
+    ),
+    Technology(
+        name='Battle Tactics',
+        cost=1000,
+        max_level=1,
+        description='{offensive_modifier:+0.0%} Attack Power bonus to all offensive invasions you perform.',
+        effects=Add(offensive_modifier=0.15),
+        source="Warlord"
     ),
 ]
 

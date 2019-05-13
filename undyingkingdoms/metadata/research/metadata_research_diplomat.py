@@ -3,12 +3,21 @@ from undyingkingdoms.models.technologies import Technology
 
 diplomat_technology = {
     Technology(
-        name='Bartering',
-        cost=500,
+        name='diplo',
+        cost=5,
         max_level=1,
-        description='Increases all gold income by {gold_modifier:+0.0%}.',
-        effects=Times('economy', gold_modifier=0.15),
+        description='...',
+        effects=None,
+        source="Diplomat"
     ),
+    Technology(
+        name='diplo2',
+        cost=5,
+        max_level=1,
+        description='...',
+        effects=None,
+        source="Diplomat"
+    )
 }
 
 diplomat_technology = {
