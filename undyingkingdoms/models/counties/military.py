@@ -14,6 +14,7 @@ class Military(GameState):
     _speed_modifier = db.Column(db.Float)
     speed = db.Column(db.Integer)
     unit_health = db.Column(db.Integer)
+    non_siege_health = db.Column(db.Integer)
 
     @hybrid_property
     def offensive_modifier(self):
@@ -110,3 +111,4 @@ class Military(GameState):
         self.speed_modifier = 100
         self.speed = 0
         self.unit_health = 0
+        self.non_siege_health = 0

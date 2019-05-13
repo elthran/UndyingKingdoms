@@ -32,7 +32,7 @@ def test_completed_techs(app):
         assert list(county.completed_techs) == []
         assert set(county.technologies.values()) == set(county.incomplete_techs)
 
-        tech = county.technologies['agriculture']
+        tech = county.technologies['basic agriculture']
         tech.completed = True
 
         assert list(county.completed_techs) == [tech]

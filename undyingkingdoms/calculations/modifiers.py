@@ -21,6 +21,23 @@ all_mods = dict(
 )
 
 
+def unit_health_mods(county, filter_key):
+    mod_sum = 0
+    if county.technologies.get('mithril armour') and county.technologies['mithril armour'].completed:
+        if filter_key != 'monster' and filter_key != 'besieger':
+            mod_sum += 1
+    if county.technologies.get('sacrifice') and county.technologies['sacrifice'].completed:
+        mod_sum -= 1
+
+    # all non-siege units.
+    # I haven't figured out how to programmatically update unit health.
+    if filter_key != "besieger":
+        military = county.military
+        mod_sum += military.non_siege_health
+
+    return mod_sum
+
+
 def get_modifiers(county, mod_type, filter_key):
     """Get any and all modifiers of a particular type.
 
@@ -40,6 +57,15 @@ def get_modifiers(county, mod_type, filter_key):
     """
 
     mod_sum = 0
+
+    mod_funcs = dict(
+        unit_health=unit_health_mods,
+    )
+
+    try:
+        mod_sum = mod_funcs[mod_type](county, filter_key)
+    except KeyError:
+        pass
 
     # This is absolutely the wrong way to do it. :P
     # But I'm too lazy to build a table of all modifiers right now.
@@ -83,13 +109,6 @@ def get_modifiers(county, mod_type, filter_key):
         if county.technologies.get('throwing axes') and county.technologies['throwing axes'].completed:
             if filter_key == 'soldier':
                 mod_sum += 2
-
-    if mod_type == 'unit_health':
-        if county.technologies.get('mithril armour') and county.technologies['mithril armour'].completed:
-            if filter_key != 'monster' and filter_key != 'besieger':
-                mod_sum += 1
-        if county.technologies.get('sacrifice') and county.technologies['sacrifice'].completed:
-            mod_sum -= 1
 
     if mod_type == 'unit_upkeep':
         if county.technologies.get('civic duty') and county.technologies['civic duty'].completed:

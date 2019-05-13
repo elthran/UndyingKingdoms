@@ -42,8 +42,8 @@ generic_technology = [
         name='Fertility',
         cost=1000,
         max_level=1,
-        description='Your county has +15% to its birth rate',
-        effects=None
+        description='Your county has {birth_rate_modifier:+0.0%} to its birth rate',
+        effects=Add(birth_rate_modifier=15)  # ?? +15%
     ),
     Technology(
         name='basic diplomacy',
