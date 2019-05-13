@@ -9,8 +9,7 @@ from undyingkingdoms.models.exports import Infiltration, County, Notification
 from undyingkingdoms.models.forms.infiltrate import InfiltrateForm
 from undyingkingdoms.models.helpers import compute_modifier
 from undyingkingdoms.routes.helpers import neither_allies_nor_armistices, not_self
-from undyingkingdoms.metadata.metadata import infiltration_missions, amount_of_thieves_modifier, \
-    infiltration_results_modifier
+from undyingkingdoms.metadata.metadata import infiltration_missions, infiltration_results_modifier
 
 
 @app.route('/gameplay/infiltrate/<int:county_id>', methods=['GET', 'POST'])
@@ -20,17 +19,13 @@ from undyingkingdoms.metadata.metadata import infiltration_missions, amount_of_t
 @login_required
 def infiltrate(template, county_id):
     county = current_user.county
+    espionage = county.espionage
     target = County.query.get(county_id)
-
 
     form = InfiltrateForm()
     form.county_id.data = county.id
-    max_thieves = 3 + compute_modifier(
-        amount_of_thieves_modifier,
-        county.race,
-        county.background
-    )
-    thieves = min(county.get_number_of_available_thieves(), max_thieves)
+
+    thieves = min(county.get_number_of_available_thieves(), espionage.thieves_per_mission)
     form.amount.choices = [(i + 1, i + 1) for i in range(thieves)]
     form.mission.choices = [(index, name) for index, name in enumerate(infiltration_missions)]
 
@@ -110,7 +105,7 @@ def infiltrate(template, county_id):
                     f"They have stolen {research_stolen} of our research.",
                 )
         else:
-            target_kingdom.distribute_war_points(kingdom, max(1, form.amount.data//2))
+            target_kingdom.distribute_war_points(kingdom, max(1, form.amount.data // 2))
             notification = Notification(
                 target,
                 f"You caught enemy thieves from {county.name}",

@@ -106,14 +106,14 @@ generic_technology = [
         cost=250,
         max_level=5,
         description="An additional thief can be sent on each mission",
-        effects=Add('espionage', thief_slot_multiplier=1)
+        effects=Add('espionage', thieves_per_mission=1)
     ),
     Technology(
         name='Infiltration',
         cost=750,
         max_level=1,
         description='Each tavern can train an additional thief.',
-        effects=None
+        effects=Add('espionage', thief_slot_multiplier=1)
     ),
     Technology(
         name='Basic Logistics',

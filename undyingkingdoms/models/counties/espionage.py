@@ -1,11 +1,14 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
+from undyingkingdoms.metadata.metadata import amount_of_thieves_modifier
+from undyingkingdoms.models.helpers import compute_modifier
 from ..bases import GameState, db
 
 
 class Espionage(GameState):
     _thief_slots = db.Column(db.Integer)
     thief_slot_multiplier = db.Column(db.Integer)
+    thieves_per_mission = db.Column(db.Integer)
 
     @hybrid_property
     def thief_slots(self):
@@ -23,9 +26,11 @@ class Espionage(GameState):
     def thief_slots(cls):
         return cls._thief_slots
 
-    def get_total_number_of_thieves(self):
-        pass
-
     def __init__(self, county):
         self.thief_slots = 0
         self.thief_slot_multiplier = 0
+        self.thieves_per_mission = 1 + compute_modifier(
+            amount_of_thieves_modifier,
+            county.race,
+            county.background
+        )
