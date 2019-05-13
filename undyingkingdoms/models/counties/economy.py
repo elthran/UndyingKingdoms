@@ -6,6 +6,12 @@ from undyingkingdoms.models.magic import Casting
 from ..helpers import compute_modifier
 from ..bases import GameState, db
 
+"""
+Anything that seems economic is being migrate here.
+Not that some of these values have no leading underscore and
+no mess of @methods. Once I fully convert the code I won't need
+all the extra methods. It is just faster to do it in stages.
+"""
 
 class Economy(GameState):
     _grain_modifier = db.Column(db.Float)
@@ -15,9 +21,11 @@ class Economy(GameState):
     build_slots = db.Column(db.Integer)
     happiness_change = db.Column(db.Integer)
     _iron_income = db.Column(db.Integer)
-    iron_multiplier = db.Column(db.Integer)
+    iron_multiplier = db.Column(db.Integer)  # consider renaming to mine_multiplier
     gold_modifier = db.Column(db.Float)
     _gold_income = db.Column(db.Integer)
+    _band_income = db.Column(db.Integer)
+    bank_multiplier = db.Column(db.Integer)
     _birth_rate_modifier = db.Column(db.Float)
     _birth_rate = db.Column(db.Integer)
 
@@ -108,10 +116,25 @@ class Economy(GameState):
             if county.production_choice == county.GOLD
             else 0
         )
-        revenue = self._gold_income
-        revenue += (county.get_tax_income() + county.get_bank_income() + excess_worker_income) * self.gold_modifier
+        # noinspection PyPropertyAccess
+        revenue = (self._gold_income + county.get_tax_income() + self.bank_income + excess_worker_income) * self.gold_modifier
         expenses = county.get_upkeep_costs()
         return round(revenue - expenses)  # net income/net loss ;)
+
+    @hybrid_property
+    def bank_income(self):
+        county = self.county
+        building_income = county.buildings['bank'].total * (county.buildings['bank'].output + self.bank_multiplier)
+        return building_income
+
+    @bank_income.setter
+    def bank_income(self, value):
+        self._band_income = value
+
+    # noinspection PyMethodParameters,PyUnresolvedReferences
+    @bank_income.expression
+    def bank_income(cls):
+        return cls._band_income
 
     @gold_income.setter
     def gold_income(self, value):

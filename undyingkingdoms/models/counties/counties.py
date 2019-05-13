@@ -667,9 +667,6 @@ class County(GameState):
     def get_tax_income(self):
         return int(self.population * (self.tax_rate / 100))
 
-    def get_bank_income(self):
-        return self.buildings['bank'].total * self.buildings['bank'].output
-
     def get_upkeep_costs(self):
         return sum(unit.upkeep * unit.total for unit in self.armies.values()) // 24
 
@@ -1007,22 +1004,11 @@ class County(GameState):
             Notification.time_created.desc()).all()
         return events
 
-    def get_total_number_of_thieves(self):
-        base = self.buildings['tavern'].total
-        modifier = self.buildings['tavern'].output
-        if "espionage i" in self.technologies and self.technologies["espionage i"].completed:
-            modifier += 1
-        if "espionage ii" in self.technologies and self.technologies["espionage ii"].completed:
-            modifier += 1
-        if "espionage iii" in self.technologies and self.technologies["espionage iii"].completed:
-            modifier += 1
-        return base * modifier
-
     # Infiltrations
     def get_number_of_available_thieves(self):
         all_current_missions = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
         unavailable_thieves = sum(mission.amount_of_thieves for mission in all_current_missions)
-        return self.get_total_number_of_thieves() - unavailable_thieves
+        return self.thief_slots - unavailable_thieves
 
     def get_thief_report_military(self, target_id):
         current_report = Infiltration.query.filter_by(county_id=self.id, target_id=target_id, success=True,

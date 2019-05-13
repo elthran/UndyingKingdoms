@@ -185,7 +185,7 @@ th {
             <ul>
               <li>Taxes: {{ county.get_tax_income() }}</li>
               {% if county.buildings['bank'].total > 0 %}
-                <li>Banks: {{ county.get_bank_income() }}</li>
+                <li>Banks: {{ county.bank_income }}</li>
               {% endif %}
               {% if county.production_choice == 0 %}
                 <li>Overworking: + {{ county.get_excess_production_value(0) }}</li>
