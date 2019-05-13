@@ -49,7 +49,7 @@
         v-for="technology in knownTechnologies"
         :key="technology.id"
       >
-        {{ technology.name }}: {{ technology.description }}
+        {{ technology.name }} ({{ technology.source }}): {{ technology.description }}
       </li>
     </ul>
     <p v-else>
@@ -63,13 +63,29 @@
         v-for="tech in availableTechnologies"
         :key="tech.id"
       >
-        {{ tech.name }}: {{ tech.description }} ({{ tech.current }} / {{ tech.cost }}
+        {{ tech.name }} ({{ tech.source }}): {{ tech.description }} ({{ tech.current }} / {{ tech.cost }}
         <img
           class="resource_icons"
           src="/static/dist/images/research_icon.jpg"
         >)
       </li>
     </ul>
+    <h2 class="top-spacer-dot-6 bottom-spacer-dot-3">
+      Locked Technologies
+    </h2>
+    <ul class="tab-1">
+      <li
+        v-for="tech in lockedTechnologies"
+        :key="tech.id"
+      >
+        {{ tech.name }} ({{ tech.source }}): {{ tech.description }} ({{ tech.current }} / {{ tech.cost }}
+        <img
+          class="resource_icons"
+          src="/static/dist/images/research_icon.jpg"
+        >)
+      </li>
+    </ul>
+    <br style="margin-bottom: 2em">
   </div>
 </template>
 
@@ -102,6 +118,7 @@ export default {
       progressRequired: -1,
       knownTechnologies: [],
       availableTechnologies: [],
+      lockedTechnologies: [],
     }
   },
   mounted () {

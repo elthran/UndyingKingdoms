@@ -13,12 +13,17 @@ class UpdateAPI(MethodView):
         county = current_user.county
 
         known_technologies = [
-            generic_vue_safe(tech, ['name', 'description'])
+            generic_vue_safe(tech, ['name', 'description', 'source'])
             for tech in county.completed_techs
         ]
         available_technologies = [
-            generic_vue_safe(tech, ['name', 'description', 'tier', 'current', 'cost'])
+            generic_vue_safe(tech, ['name', 'description', 'tier', 'current', 'cost', 'source'])
             for tech in county.available_techs
+        ]
+
+        locked_technologies = [
+            generic_vue_safe(tech, ['name', 'description', 'tier', 'current', 'cost', 'source'])
+            for tech in county.unavailable_techs
         ]
 
         form = TechnologyForm()
@@ -44,6 +49,7 @@ class UpdateAPI(MethodView):
             selectedResearch=current_tech.id,
             progressCurrent=current_tech.current,
             progressRequired=current_tech.cost,
+            lockedTechnologies=locked_technologies,
         )
 
     @login_required

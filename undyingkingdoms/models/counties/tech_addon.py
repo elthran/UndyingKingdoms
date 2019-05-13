@@ -64,7 +64,7 @@ def tech_addon(county_cls, tech_cls):
         Note: returns a set.
         """
 
-        return set(self.technologies.values()) - set(self.available_tech)
+        return set(self.technologies.values()) - set(self.available_techs)
 
     county_cls.unavailable_techs = hybrid_property(get_unavailable_techs)
 
