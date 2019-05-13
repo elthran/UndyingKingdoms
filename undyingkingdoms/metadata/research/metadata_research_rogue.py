@@ -19,6 +19,12 @@ rogue_technology = {
     )
 }
 
+# it must be a list or it will fail
+custom_requirements = {
+    "advanced espionage": ["basic espionage v"],
+    "trade routes": ["advanced espionage iii"]
+}
+
 rogue_technology = {
     tech.key: tech
     for tech in rogue_technology

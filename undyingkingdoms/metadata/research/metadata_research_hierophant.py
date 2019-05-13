@@ -19,6 +19,11 @@ hierophant_technology = {
     )
 }
 
+
+# it must be a list or it will fail
+custom_requirements = {
+}
+
 hierophant_technology = {
     tech.key: tech
     for tech in hierophant_technology

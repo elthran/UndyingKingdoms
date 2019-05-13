@@ -5,7 +5,7 @@
 {% block content2 %}
 
 <br><br>
-<h1 style="text-align:center;">Current Age</h1>
+<h1 style="text-align:center;">Current Age (top players will receive gems)</h1>
 <br>
 <h2>(Kingdom) Most Wars Won:</h2>
 <ul>
@@ -41,7 +41,7 @@
 <h2>(Kingdom) Most Wars Won:</h2>
 <ul>
 {% for kingdom in kingdoms|sort(attribute='wars_won_lt', reverse=True) %}
-    <li {% if kingdom == current_user.county.kingdom %}style="font-weight:bold;"{% endif %}><a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">{{ kingdom.name }}</a>: {{ kingdom.wars_won_ta }}</li>
+    <li {% if kingdom == current_user.county.kingdom %}style="font-weight:bold;"{% endif %}><a href="{{ url_for('kingdom', kingdom_id=kingdom.id) }}">{{ kingdom.name }}</a>: {{ kingdom.wars_won_lt }}</li>
 {% endfor %}
 </ul>
 <br>

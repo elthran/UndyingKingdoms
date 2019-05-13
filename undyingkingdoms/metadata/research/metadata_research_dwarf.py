@@ -39,11 +39,11 @@ dwarf_technology = {
         source="Dwarf"
     ),
     Technology(
-        name='Hoarders',
+        name='Battle hardened',
         cost=250,
         max_level=1,
-        description='Your iron mines produce {iron_multiplier} additional iron ore each day.',
-        effects=Add(gold_multiplier=0.25),
+        description='{offensive_modifier:+0.0%} Attack Power bonus to all offensive invasions you perform.',
+        effects=Add(offensive_modifier=0.05),
         source="Dwarf"
     )
 }

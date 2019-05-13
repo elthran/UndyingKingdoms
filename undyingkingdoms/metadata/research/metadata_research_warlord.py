@@ -1,7 +1,7 @@
 from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
 
-warlord_technology = [
+warlord_technology = {
     Technology(
         name='Advanced Logistics',
         cost=500,
@@ -17,8 +17,15 @@ warlord_technology = [
         description='{offensive_modifier:+0.0%} Attack Power bonus to all offensive invasions you perform.',
         effects=Add(offensive_modifier=0.15),
         source="Warlord"
-    ),
-]
+    )
+}
+
+
+# it must be a list or it will fail
+custom_requirements = {
+    "advanced logistics": ["basic logistics iii"],
+    "trade routes": ["advanced logistics"]
+}
 
 warlord_technology = {
     tech.key: tech

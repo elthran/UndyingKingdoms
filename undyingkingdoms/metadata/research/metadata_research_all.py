@@ -126,7 +126,7 @@ generic_technology = [
         name='Military Training',
         cost=750,
         max_level=1,
-        description='All your units have -1 upkeep',
+        description='All your units have -5 upkeep',
         effects=None
     ),
     Technology(

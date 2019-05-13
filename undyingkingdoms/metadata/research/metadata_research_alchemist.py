@@ -23,6 +23,7 @@ alchemist_technology = {
 # it must be a list or it will fail
 custom_requirements = {
     "advanced alchemy": ["basic alchemy v"],
+    "elixir of life": ["advanced alchemy iii"]
 }
 
 alchemist_technology = {

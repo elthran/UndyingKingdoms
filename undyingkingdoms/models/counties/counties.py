@@ -636,9 +636,8 @@ class County(GameState):
 
     def get_birth_rate(self):
         birth_rate_modifier = md['birth_rate_modifier']
-        modifier = 1 + birth_rate_modifier.get(self.race, ("", 0))[1] + \
-                   birth_rate_modifier.get(self.background, ("", 0))[1]
-        modifier += (self.buildings['house'].total ** 0.8) / self.land * self.buildings['house'].output
+        modifier = 1 + birth_rate_modifier.get(self.race, ("", 0))[1] + birth_rate_modifier.get(self.background, ("", 0))[1]
+        modifier += (self.buildings['house'].total ** 0.75) / self.land * self.buildings['house'].output
 
         modify_birth_rate = Casting.query.filter_by(target_id=self.id, name="modify_birth_rate").filter(
             (Casting.duration > 0) | (Casting.active == True)).all()
@@ -653,7 +652,7 @@ class County(GameState):
         return 25 + random_hash
 
     def get_emigration_rate(self):
-        return int((self.preferences.tax_rate * 3) + self.kingdom.world.age + (0.005 * self.population))
+        return int(self.preferences.tax_rate + self.kingdom.world.age + (0.005 * self.population))
 
     @cached_random
     def get_population_change(self):

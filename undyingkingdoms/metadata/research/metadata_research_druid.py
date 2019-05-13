@@ -20,6 +20,12 @@ druid_technology = {
     )
 }
 
+# it must be a list or it will fail
+custom_requirements = {
+    "advanced agriculture": ["basic agriculture iii"],
+    "nature's blessing": ["advanced agriculture"]
+}
+
 druid_technology = {
     tech.key: tech
     for tech in druid_technology

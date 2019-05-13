@@ -15,11 +15,17 @@ artificer_technology = {
         name='Masonry',
         cost=1000,
         max_level=1,
-        description="You generate +{stone_produced} additional stone each day per quarry.",
+        description="Your forts are twice as effective",
         output=5,
-        effects=Add(stone_produced=1),
+        effects=None,
         source="Artificer"
-    ),
+    )
+}
+
+# it must be a list or it will fail
+custom_requirements = {
+    "advanced engineering": ["basic engineering v"],
+    "masonry": ["advanced engineering iii"]
 }
 
 artificer_technology = {

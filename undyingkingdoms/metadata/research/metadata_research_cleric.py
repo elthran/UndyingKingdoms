@@ -20,6 +20,12 @@ cleric_technology = {
     )
 }
 
+# it must be a list or it will fail
+custom_requirements = {
+    "missionaries": ["philosophy iii"],
+    "heaven's blessing": ["missionaries"]
+}
+
 cleric_technology = {
     tech.key: tech
     for tech in cleric_technology

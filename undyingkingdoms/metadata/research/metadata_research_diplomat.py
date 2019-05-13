@@ -20,6 +20,10 @@ diplomat_technology = {
     )
 }
 
+# it must be a list or it will fail
+custom_requirements = {
+}
+
 diplomat_technology = {
     tech.key: tech
     for tech in diplomat_technology

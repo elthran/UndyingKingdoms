@@ -20,6 +20,13 @@ wizard_technology = [
     )
 ]
 
+
+# it must be a list or it will fail
+custom_requirements = {
+    "advanced channelling": ["basic channelling v"],
+    "nature's blessing": ["advanced channelling iii"]
+}
+
 wizard_technology = {
     tech.key: tech
     for tech in wizard_technology

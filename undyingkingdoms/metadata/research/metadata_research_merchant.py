@@ -20,6 +20,13 @@ merchant_technology = {
     )
 }
 
+
+# it must be a list or it will fail
+custom_requirements = {
+    "advanced economics": ["basic economics v"],
+    "trade routes": ["advanced economics iii"]
+}
+
 merchant_technology = {
     tech.key: tech
     for tech in merchant_technology
