@@ -19,7 +19,7 @@ class PopulationAPI(MethodView):
             race=county.race,
             background=county.background,
             birth_rate=county.birth_rate,
-            immigration_rate=county.get_immigration_rate(),
+            immigration_rate=county.immigration_rate,
             death_rate=county.get_death_rate(),
             emigration_rate=county.get_emigration_rate(),
             birth_rate_mod=vue_safe_metadata_mod(birth_rate_modifier, county),

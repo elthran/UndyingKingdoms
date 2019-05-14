@@ -28,6 +28,8 @@ class Economy(GameState):
     bank_multiplier = db.Column(db.Integer)
     _birth_rate_modifier = db.Column(db.Float)
     _birth_rate = db.Column(db.Integer)
+    immigration_modifier = db.Column(db.Float)
+    _immigration_rate = db.Column(db.Float)
 
     @hybrid_property
     def grain_modifier(self):
@@ -182,6 +184,26 @@ class Economy(GameState):
     def birth_rate(cls):
         return cls._birth_rate
 
+    @hybrid_property
+    def immigration_rate(self):
+        county = self.county
+        kingdom = county.kingdom
+        world = kingdom.world
+        rate = (self._immigration_rate or 0)
+        modifier = 1 + (self.immigration_modifier or 0)
+        random_hash = (world.day ** 2) % 10
+        return (25 + random_hash + rate) * modifier
+
+    @immigration_rate.setter
+    def immigration_rate(self, value):
+        self._immigration_rate = value
+
+    # noinspection PyUnresolvedReferences,PyMethodParameters
+    @immigration_rate.expression
+    def immigration_rate(cls):
+        return cls._immigration_rate
+
+
     def __init__(self, county):
         self.county = county
         self.grain_modifier = 1 + compute_modifier(
@@ -200,3 +222,5 @@ class Economy(GameState):
         self.gold_income = 0
         self.birth_rate_modifier = 1 + compute_modifier(birth_rate_modifier, county.race, county.background)
         self.birth_rate = 0
+        self.immigration_modifier = 0
+        self.immigration_rate = 0

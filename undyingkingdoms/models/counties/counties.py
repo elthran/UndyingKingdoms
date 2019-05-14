@@ -641,16 +641,12 @@ class County(GameState):
 
         return int(death_rate * self.population)
 
-    def get_immigration_rate(self):
-        random_hash = (self.kingdom.world.day ** 2) % 10
-        return 25 + random_hash
-
     def get_emigration_rate(self):
         return int(self.preferences.tax_rate + self.kingdom.world.age + (0.005 * self.population))
 
     @cached_random
     def get_population_change(self):
-        growth = self.birth_rate + self.get_immigration_rate()
+        growth = self.birth_rate + self.immigration_rate
         decay = self.get_death_rate() + self.get_emigration_rate()
         if growth < decay:  # Can't decay more than 3% of population an hour
             return int(max(growth - decay, -0.03 * self.population))
@@ -660,7 +656,7 @@ class County(GameState):
         deaths = self.get_death_rate()
         emigration = self.get_emigration_rate()
         births = self.birth_rate
-        immigration = self.get_immigration_rate()
+        immigration = self.immigration_rate
         self.population += (births + immigration) - (deaths + emigration)
 
     # Resources
