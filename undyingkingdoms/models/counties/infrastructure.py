@@ -33,7 +33,7 @@ class Infrastructure(GameState):
                 building.stone_cost *
                 (1 - value - (self.cost_modifier or 0))
             )
-            self._cost_modifier = value
+        self._cost_modifier = value
 
     @hybrid_property
     def fort_multiplier(self):
