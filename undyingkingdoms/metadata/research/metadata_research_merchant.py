@@ -1,4 +1,4 @@
-from undyingkingdoms.models.effects import Times
+from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
 
 merchant_technology = {
@@ -7,7 +7,7 @@ merchant_technology = {
         cost=500,
         max_level=3,
         description='Increases all gold income by {gold_modifier:+0.0%}.',
-        effects=Times('economy', gold_modifier=0.1),
+        effects=Add('economy', gold_modifier=0.1),
         source="Merchant"
     ),
     Technology(

@@ -1,3 +1,4 @@
+from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
 
 ogre_technology = {
@@ -6,7 +7,8 @@ ogre_technology = {
         cost=500,
         max_level=1,
         description='Ogre brutes have an additional offense.',
-        source="Ogre"
+        source="Ogre",
+        effects=Add('military', peasant_attack=1)
     )
 }
 
