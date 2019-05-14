@@ -6,8 +6,9 @@ dwarf_technology = {
         name='Dwarven Muskets',
         cost=1000,
         max_level=1,
-        description='Riflemen get +1 defence.',
-        source="Dwarf"
+        description='Riflemen get {archer_defence:+} defence.',
+        source="Dwarf",
+        effects=Add('military', archer_defence=1)
     ),
     Technology(
         name='Throwing Axes',

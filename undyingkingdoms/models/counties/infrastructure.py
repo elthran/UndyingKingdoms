@@ -10,7 +10,7 @@ class Infrastructure(GameState):
 
     @hybrid_property
     def cost_modifier(self):
-        return self._cost_modifier
+        return (self._cost_modifier or 0)
 
     # noinspection PyPropertyAccess
     @cost_modifier.setter
@@ -23,21 +23,21 @@ class Infrastructure(GameState):
         for building in county.buildings.values():
             building.gold_cost = round(
                 building.gold_cost *
-                (1 - value - (self.cost_modifier or 0))
+                (1 - value - self.cost_modifier)
             )
             building.wood_cost = round(
                 building.wood_cost *
-                (1 - value - (self.cost_modifier or 0))
+                (1 - value - self.cost_modifier)
             )
             building.stone_cost = round(
                 building.stone_cost *
-                (1 - value - (self.cost_modifier or 0))
+                (1 - value - self.cost_modifier)
             )
         self._cost_modifier = value
 
     @hybrid_property
     def fort_multiplier(self):
-        return self._fort_multiplier
+        return (self._fort_multiplier or 0)
 
     @fort_multiplier.setter
     def fort_multiplier(self, value):
@@ -58,7 +58,7 @@ class Infrastructure(GameState):
         # noinspection PyPropertyAccess
         fort.output = round(
             fort.output *
-            (value - (self.fort_multiplier or 0))
+            (value - self.fort_multiplier)
         )
         self._fort_multiplier = value
 

@@ -94,9 +94,6 @@ def get_modifiers(county, mod_type, filter_key):
                 mod_sum += 1
 
     if mod_type == 'unit_defence':
-        if county.technologies.get('dwarven muskets') and county.technologies['dwarven muskets'].completed:
-            if filter_key == 'archer':
-                mod_sum += 1
         if county.technologies.get('barbed arrows') and county.technologies['barbed arrows'].completed:
             if filter_key == 'archer':
                 mod_sum += 1
