@@ -29,12 +29,6 @@ def unit_health_mods(county, filter_key):
     if county.technologies.get('sacrifice') and county.technologies['sacrifice'].completed:
         mod_sum -= 1
 
-    # all non-siege units.
-    # I haven't figured out how to programmatically update unit health.
-    if filter_key != "besieger":
-        military = county.military
-        mod_sum += military.non_siege_health
-
     return mod_sum
 
 

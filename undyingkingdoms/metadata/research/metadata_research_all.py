@@ -120,28 +120,28 @@ generic_technology = [
         cost=250,
         max_level=3,
         description='Your armies return from battle {speed} day sooner.',
-        effects=Add(speed=1)
+        effects=Add('military', speed=1)
     ),
     Technology(
         name='Military Training',
         cost=750,
         max_level=1,
-        description='All your units have -5 upkeep',
-        effects=None
+        description='All your units have {unit_upkeep:+} upkeep',
+        effects=Add('military', unit_upkeep=-5)
     ),
     Technology(
         name='Basic Channelling',
         cost=250,
         max_level=5,
         description='Each level raises your maximum mana by {max_mana}.',
-        effects=Add(max_mana=10)
+        effects=Add('wizardry', max_mana=10)
     ),
     Technology(
         name='Attunement',
         cost=1000,
         max_level=1,
         description='Each level raises your mana generation per day by {mana_change}.',
-        effects=Add(mana_change=1),
+        effects=Add('wizardry', mana_change=1),
     )
 ]
 

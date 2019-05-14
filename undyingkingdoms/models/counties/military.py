@@ -13,8 +13,9 @@ class Military(GameState):
     _offensive_power = db.Column(db.Integer)
     _speed_modifier = db.Column(db.Float)
     speed = db.Column(db.Integer)
-    unit_health = db.Column(db.Integer)
-    non_siege_health = db.Column(db.Integer)
+    _unit_health = db.Column(db.Integer)
+    _non_siege_health = db.Column(db.Integer)
+    _unit_upkeep = db.Column(db.Integer)
 
     @hybrid_property
     def offensive_modifier(self):
@@ -96,6 +97,44 @@ class Military(GameState):
     def speed_modifier(self):
         return self._speed_modifier
 
+    @hybrid_property
+    def unit_health(self):
+        return self._unit_health
+
+    @unit_health.setter
+    def unit_health(self, value):
+        county = self.county
+        for unit in county.armies.values():
+            # noinspection PyPropertyAccess
+            unit.health += value - (self.unit_health or 0)
+        self._unit_health = value
+
+    @hybrid_property
+    def non_siege_health(self):
+        return self._non_siege_health
+
+    @non_siege_health.setter
+    def non_siege_health(self, value):
+        county = self.county
+        for name, unit in county.armies.items():
+            # all non-siege units.
+            if name != "besieger":
+                # noinspection PyPropertyAccess
+                unit.health += value - (self.non_siege_health or 0)
+        self._non_siege_health = value
+
+    @hybrid_property
+    def unit_upkeep(self):
+        return self._unit_upkeep
+
+    @unit_upkeep.setter
+    def unit_upkeep(self, value):
+        county = self.county
+        for unit in county.armies.values():
+            # noinspection PyPropertyAccess
+            unit.upkeep += value - (self.unit_upkeep or 0)
+        self._unit_upkeep = value
+
     def get_expedition_duration(self, attack_type, successful):
         # noinspection PyPropertyAccess
         duration = self.BASE_DURATION[attack_type] * 100 / self.speed_modifier
@@ -112,3 +151,4 @@ class Military(GameState):
         self.speed = 0
         self.unit_health = 0
         self.non_siege_health = 0
+        self.unit_upkeep = 0
