@@ -5,7 +5,7 @@ from undyingkingdoms.calculations.filters import check_filter_match
 from undyingkingdoms.metadata.metadata import offensive_power_modifier
 from undyingkingdoms.models.armies import Army
 from ..magic import Casting
-from ..helpers import compute_modifier
+from ..helpers import extract_modifiers
 from ..bases import GameState, db
 
 
@@ -68,7 +68,7 @@ class Military(GameState):
         # noinspection PyPropertyAccess
         return round(
             (strength + self._offensive_power)
-            * self.offensive_modifier
+            * (1 + self.offensive_modifier)
         )
 
     @offensive_power.setter
@@ -148,13 +148,18 @@ class Military(GameState):
 
     def __init__(self, county):
         self.county = county
-        self.offensive_modifier = 1 + compute_modifier(offensive_power_modifier, county.race, county.background)
+        self.offensive_modifier = extract_modifiers(offensive_power_modifier, county.race, county.background)
         self.offensive_power = 0
         self.speed_modifier = 100
         self.speed = 0
 
 
 def allow_modify_army_attr_addon(cls):
+    """Add columns from the product of FILTERS AND MODIFIABLES.
+
+    These columns allow convenient mutation most army/unit attributes.
+    using simple filters + the attribute to modify.
+    """
     cls.FILTER_MODS = {f'{x}_{y}' for x in cls.FILTERS for y in cls.MODIFIABLES}
     for filter_mod in cls.FILTER_MODS:
         setattr(cls, filter_mod, db.Column(db.Integer))

@@ -72,5 +72,5 @@ def get_target_relation(county, target):
     return target_relation
 
 
-def compute_modifier(metadata, race, background):
+def extract_modifiers(metadata, race, background):
     return metadata.get(race, ('', 0))[1] + metadata.get(background, ('', 0))[1]

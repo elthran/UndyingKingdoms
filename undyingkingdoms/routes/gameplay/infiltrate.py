@@ -7,7 +7,7 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models.exports import Infiltration, County, Notification
 from undyingkingdoms.models.forms.infiltrate import InfiltrateForm
-from undyingkingdoms.models.helpers import compute_modifier
+from undyingkingdoms.models.helpers import extract_modifiers
 from undyingkingdoms.routes.helpers import neither_allies_nor_armistices, not_self
 from undyingkingdoms.metadata.metadata import infiltration_missions, infiltration_results_modifier
 
@@ -37,7 +37,7 @@ def infiltrate(template, county_id):
 
         chance_of_success = max(min(100 + form.amount.data - target.get_chance_to_catch_enemy_thieves(), 100), 0)
 
-        gain_modifier = 1 + compute_modifier(
+        gain_modifier = 1 + extract_modifiers(
             infiltration_results_modifier,
             county.race,
             county.background

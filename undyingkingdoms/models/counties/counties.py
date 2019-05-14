@@ -11,7 +11,7 @@ from undyingkingdoms.metadata.armies.metadata_armies_updater import update_armie
 from ..magic import Casting
 from ..bases import GameState, db
 from .specifics import add_racial_data, add_background_data
-from ..helpers import cached_random, compute_modifier
+from ..helpers import cached_random, extract_modifiers
 from ..notifications import Notification
 from ..expeditions import Expedition
 from ..infiltrations import Infiltration
@@ -578,7 +578,7 @@ class County(GameState):
 
     def get_food_to_be_eaten(self):
         local_md = md['metadata']
-        modifier = 1 + compute_modifier(
+        modifier = 1 + extract_modifiers(
             local_md.food_consumed_modifier,
             self.race,
             self.background
@@ -626,7 +626,7 @@ class County(GameState):
 
     def get_death_rate(self):
         local_md = md['metadata']
-        modifier = 1 + compute_modifier(
+        modifier = 1 + extract_modifiers(
             local_md.death_rate_modifier,
             self.race,
             self.background
@@ -754,7 +754,7 @@ class County(GameState):
     def get_defensive_strength(self, scoreboard=False):
         # First get base strength of citizens
         local_md = md['metadata']
-        modifier = 1 + compute_modifier(
+        modifier = 1 + extract_modifiers(
             local_md.defense_per_citizen_modifier,
             self.race,
             self.background
