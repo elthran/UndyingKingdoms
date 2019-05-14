@@ -74,18 +74,12 @@ def get_modifiers(county, mod_type, filter_key):
         if county.technologies.get('cross-breeding') and county.technologies['cross-breeding'].completed:
             if filter_key == 'elite':
                 mod_sum += 3
-        if county.technologies.get('dragon-fire') and county.technologies['dragon-fire'].completed:
-            if filter_key == 'elite':
-                mod_sum += 3
         if county.technologies.get('knights templar') and county.technologies['knights templar'].completed:
             if filter_key == 'elite':
                 mod_sum += 3
         if county.technologies.get('deathwish') and county.technologies['deathwish'].completed:
             if filter_key == 'soldier':
                 mod_sum += 1
-        if county.technologies.get('ranger training') and county.technologies['ranger training'].completed:
-            if filter_key == 'soldier':
-                mod_sum += 2
         if county.technologies.get('sharpened sticks') and county.technologies['sharpened sticks'].completed:
             if filter_key == 'peasant':
                 mod_sum += 1

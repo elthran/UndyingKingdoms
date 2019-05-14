@@ -4,13 +4,12 @@ from undyingkingdoms.metadata.research.metadata_research_cleric import cleric_te
 from undyingkingdoms.models.exports import County
 
 
-def test_cleric_missionaries(app):
-    with app.app_context():
-        county = County.query.filter_by(leader="Haldon").one()
-        economy = county.economy
-        county.technologies.update(deepcopy(cleric_technology))
+def test_cleric_missionaries(ctx):
+    county = County.query.filter_by(leader="Haldon").one()
+    economy = county.economy
+    county.technologies.update(deepcopy(cleric_technology))
 
-        initial_rate = county.immigration_rate
-        county.technologies['missionaries'].completed = True
+    initial_rate = county.immigration_rate
+    county.technologies['missionaries'].completed = True
 
-        assert county.immigration_rate == initial_rate * (1 + economy.immigration_modifier)
+    assert county.immigration_rate == initial_rate * (1 + economy.immigration_modifier)

@@ -51,7 +51,8 @@ def ctx(app):
 @pytest.fixture
 def client(app):
     """A test client for the app."""
-    return app.test_client()
+    with app.test_client() as client:
+        yield client
 
 # @pytest.fixture
 # def logger():
