@@ -13,4 +13,4 @@ def test_cleric_missionaries(app):
         initial_rate = county.immigration_rate
         county.technologies['missionaries'].completed = True
 
-        assert county.immigration_rate == initial_rate * (1 + economy.immigration_rate)
+        assert county.immigration_rate == initial_rate * (1 + economy.immigration_modifier)
