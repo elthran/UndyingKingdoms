@@ -14,15 +14,17 @@ dwarf_technology = {
         name='Throwing Axes',
         cost=750,
         max_level=1,
-        description='Axemen get +2 defence.',
-        source="Dwarf"
+        description='Axemen get {soldier_defence:+) defence.',
+        source="Dwarf",
+        effects=Add('military', soldier_defence=2)
     ),
     Technology(
         name='Mithril Armour',
         cost=1500,
         max_level=1,
-        description='All non-monster and non-siege units get an additional 2 health point.',
-        source="Dwarf"
+        description='All non-monster and non-siege units get an additional {non_monster_non_siege_health:+} health point.',
+        source="Dwarf",
+        effects=Add('military', non_monster_non_siege_health=2)
     ),
     Technology(
         name='Hellfire Cannons',

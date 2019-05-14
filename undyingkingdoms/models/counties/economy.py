@@ -126,7 +126,7 @@ class Economy(GameState):
     @hybrid_property
     def bank_income(self):
         county = self.county
-        building_income = county.buildings['bank'].total * (county.buildings['bank'].output + self.bank_multiplier)
+        building_income = county.buildings['bank'].total * (county.buildings['bank'].output + (self.bank_multiplier or 0))
         return building_income
 
     @bank_income.setter

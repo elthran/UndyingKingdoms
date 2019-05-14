@@ -1,6 +1,7 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from tests import bp
+from undyingkingdoms.calculations.filters import check_filter_match
 from undyingkingdoms.metadata.metadata import offensive_power_modifier
 from undyingkingdoms.models.armies import Army
 from ..magic import Casting
@@ -10,16 +11,16 @@ from ..bases import GameState, db
 
 class Military(GameState):
     BASE_DURATION = {'Attack': 18, 'Pillage': 12, 'Raze': 8}
-    FILTERS = set(Army.TYPES.keys()) | {"unit", 'non_siege'}
+    FILTERS = set(Army.TYPES.keys()) | {"unit", 'non_siege', 'non_monster_non_siege'}
+    MODIFIABLES = {'health', 'upkeep', 'defence'}
 
     _offensive_modifier = db.Column(db.Float)
     _offensive_power = db.Column(db.Integer)
     _speed_modifier = db.Column(db.Float)
     speed = db.Column(db.Integer)
-    unit_health = db.Column(db.Integer)
-    non_siege_health = db.Column(db.Integer)
-    unit_upkeep = db.Column(db.Integer)
-    archer_defence = db.Column(db.Integer)
+
+    # NOTE a bunch of columns are generated from the product of
+    # FILTERS and MODIFIABLES. See allow_modify_army_attr_addon().
 
     @hybrid_property
     def offensive_modifier(self):
@@ -89,7 +90,10 @@ class Military(GameState):
     def speed_modifier(self):
         county = self.county
         speed_modifier = self._speed_modifier
-        speed_modifier += (county.buildings['stables'].total ** 0.9) * 100 * county.buildings['stables'].output / county.land
+        speed_modifier += (
+                (county.buildings['stables'].total ** 0.9) * 100 *
+                county.buildings['stables'].output / county.land
+        )
         return speed_modifier
 
     @speed_modifier.setter
@@ -119,12 +123,9 @@ class Military(GameState):
             # I probably can make this one if ... but I was having
             # some boolean logic trouble making non_siege short circuiting.
             for unit in county.armies.values():
-                if filter in 'unit':
-                    self.set_unit_attribute(unit, key, unit_attr, value)
-                elif filter == 'non_siege':
-                    if unit.type != unit.BESIEGER:
-                        self.set_unit_attribute(unit, key, unit_attr, value)
-                elif  unit.type == unit.TYPES[filter]:
+                valid_target = check_filter_match(filter, unit)
+                # Matched a filter key so update this unit.
+                if valid_target:
                     self.set_unit_attribute(unit, key, unit_attr, value)
         super().__setattr__(key, value)
 
@@ -151,7 +152,23 @@ class Military(GameState):
         self.offensive_power = 0
         self.speed_modifier = 100
         self.speed = 0
-        self.unit_health = 0
-        self.non_siege_health = 0
-        self.unit_upkeep = 0
-        self.archer_defence = 0
+
+
+def allow_modify_army_attr_addon(cls):
+    cls.FILTER_MODS = {f'{x}_{y}' for x in cls.FILTERS for y in cls.MODIFIABLES}
+    for filter_mod in cls.FILTER_MODS:
+        setattr(cls, filter_mod, db.Column(db.Integer))
+
+    old_init = cls.__init__
+
+    def __init__(self, *args, **kwargs):
+        old_init(self, *args, **kwargs)
+        for filter_mod in cls.FILTER_MODS:
+            setattr(self, filter_mod, 0)
+
+    cls.__init__ = __init__
+    return cls  # not totally sure if I need this.
+
+
+# noinspection PyTypeChecker
+Military = allow_modify_army_attr_addon(Military)
