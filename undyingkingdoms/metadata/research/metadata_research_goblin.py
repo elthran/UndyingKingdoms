@@ -6,9 +6,9 @@ goblin_technology = {
         name='Slavery',
         cost=1000,
         max_level=1,
-        description='Your slaves are {abs(peasant_gold)} gold, {abs(peasant_wood)} wood, and {abs(peasant_iron)} iron cheaper.',
+        description='Your slaves are {abs(peasant_gold)} gold, {abs(peasant_wood)} wood, and {abs(peasant_iron)} iron cheaper. Also increases your excess production by a factor of {excess_production_multiplier}.',
         source="Goblin",
-        effects=Add('military', peasant_gold=-5, peasant_wood=-1, peasant_iron=-1)
+        effects=Add('military', peasant_gold=-5, peasant_wood=-1, peasant_iron=-1, excess_production_multiplier=2)
     ),
     Technology(
         name='Deathwish',

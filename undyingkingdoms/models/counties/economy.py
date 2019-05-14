@@ -1,7 +1,7 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from undyingkingdoms.metadata.metadata import food_produced_modifier, buildings_produced_per_day, happiness_modifier, \
-    income_modifier, birth_rate_modifier
+    income_modifier, birth_rate_modifier, production_per_worker_modifier
 from undyingkingdoms.models.magic import Casting
 from ..helpers import compute_modifier
 from ..bases import GameState, db
@@ -30,6 +30,9 @@ class Economy(GameState):
     _birth_rate = db.Column(db.Integer)
     immigration_modifier = db.Column(db.Float)
     _immigration_rate = db.Column(db.Float)
+    _excess_production = db.Column(db.Integer)
+    excess_production_multiplier = db.Column(db.Float)
+    production_modifier = db.Column(db.Float)
 
     @hybrid_property
     def grain_modifier(self):
@@ -62,7 +65,7 @@ class Economy(GameState):
         field = county.buildings['field']
         building_production = field.total * field.output
         # noinspection PyPropertyAccess
-        return round((self._grain_produced + building_production) * self.grain_modifier)
+        return round((self._grain_produced + building_production) * (1 + self.grain_modifier))
 
     @grain_produced.setter
     def grain_produced(self, value):
@@ -88,7 +91,7 @@ class Economy(GameState):
         building = county.buildings['pasture']
         building_production = building.total * building.output
         # noinspection PyPropertyAccess
-        return round(building_production * self.dairy_modifier)
+        return round(building_production * (1 + self.dairy_modifier))
 
     @dairy_produced.setter
     def dairy_produced(self, value):
@@ -119,7 +122,7 @@ class Economy(GameState):
             else 0
         )
         # noinspection PyPropertyAccess
-        revenue = (self._gold_income + county.get_tax_income() + self.bank_income + excess_worker_income) * self.gold_modifier
+        revenue = (self._gold_income + county.get_tax_income() + self.bank_income + excess_worker_income) * (1 + self.gold_modifier)
         expenses = county.get_upkeep_costs()
         return round(revenue - expenses)  # net income/net loss ;)
 
@@ -173,7 +176,7 @@ class Economy(GameState):
         county = self.county
         raw_rate = (county.happiness / 100) * (county.land / 5)  # 5% times your happiness rating
         # noinspection PyPropertyAccess
-        return round(raw_rate * self.birth_rate_modifier)
+        return round(raw_rate * (1 + self.birth_rate_modifier))
 
     @birth_rate.setter
     def birth_rate(self, value):
@@ -203,14 +206,34 @@ class Economy(GameState):
     def immigration_rate(cls):
         return cls._immigration_rate
 
+    @hybrid_property
+    def excess_production(self):
+        """
+        Returns the amount of excess production you get each turn
+        """
+        county = self.county
+        return max(round(
+            county.get_available_workers() *
+            (1 + self.production_modifier) *
+            self.excess_production_multiplier
+        ), 0)
+
+    @excess_production.setter
+    def excess_production(self, value):
+        self._excess_production = value
+
+    # noinspection PyUnresolvedReferences,PyMethodParameters
+    @excess_production.expression
+    def excess_production(cls):
+        return cls._excess_production
 
     def __init__(self, county):
         self.county = county
-        self.grain_modifier = 1 + compute_modifier(
+        self.grain_modifier = compute_modifier(
             food_produced_modifier, county.race, county.background
         )
         self.grain_produced = 0
-        self.dairy_modifier = 1 + compute_modifier(
+        self.dairy_modifier = compute_modifier(
             food_produced_modifier, county.race, county.background
         )
         self.dairy_produced = 0
@@ -218,9 +241,12 @@ class Economy(GameState):
         self.happiness_change = 7 + compute_modifier(happiness_modifier, county.race, county.background)
         self.iron_income = 0
         self.iron_multiplier = 0
-        self.gold_modifier = 1 + compute_modifier(income_modifier, county.race, county.background)
+        self.gold_modifier = compute_modifier(income_modifier, county.race, county.background)
         self.gold_income = 0
-        self.birth_rate_modifier = 1 + compute_modifier(birth_rate_modifier, county.race, county.background)
+        self.birth_rate_modifier = compute_modifier(birth_rate_modifier, county.race, county.background)
         self.birth_rate = 0
         self.immigration_modifier = 0
         self.immigration_rate = 0
+        self.excess_production = 0
+        self.excess_production_multiplier = 1
+        self.production_modifier = compute_modifier(production_per_worker_modifier, county.race, county.background)

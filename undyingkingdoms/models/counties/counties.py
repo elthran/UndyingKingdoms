@@ -672,40 +672,22 @@ class County(GameState):
     def get_stone_income(self):
         return self.buildings['quarry'].total * self.buildings['quarry'].output
 
-    # Building
-    def get_production_modifier(self):  # Modifiers your excess production
-
-        local_md = md['metadata']
-        return 1 + compute_modifier(
-            local_md.production_per_worker_modifier,
-            self.race,
-            self.background
-        )
-
-    def get_excess_production(self):
-        """
-        Returns the amount of excess production you get each turn
-        """
-        if self.technologies.get("slavery") and self.technologies["slavery"].completed:
-            return max(int(self.get_production_modifier() * self.get_available_workers() * 2), 0)
-        return max(int(self.get_production_modifier() * self.get_available_workers()), 0)
-
     def get_excess_production_value(self, value=-1):
         """
         Users the excess production towards completing a task
         """
-
+        economy = self.economy
         if value == -1:
             excess_worker_choice = self.production_choice
         else:
             excess_worker_choice = value
 
         if excess_worker_choice == self.GOLD:
-            return self.get_excess_production() // 10
+            return economy.excess_production // 10
         elif excess_worker_choice == self.LAND:
-            return self.get_excess_production()
+            return economy.excess_production
         elif excess_worker_choice == self.FOOD:
-            return self.get_excess_production()
+            return economy.excess_production
         elif excess_worker_choice == self.HAPPINESS:
             return 2
 

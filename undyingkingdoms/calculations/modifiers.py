@@ -16,18 +16,6 @@ from undyingkingdoms.models.technologies import Technology
 #     buildings=buildings_built_per_day_modifier
 # )
 
-all_mods = dict(
-    defence=[]
-)
-
-
-def unit_health_mods(county, filter_key):
-    mod_sum = 0
-    if county.technologies.get('sacrifice') and county.technologies['sacrifice'].completed:
-        mod_sum -= 1
-
-    return mod_sum
-
 
 def get_modifiers(county, mod_type, filter_key):
     """Get any and all modifiers of a particular type.
@@ -49,15 +37,6 @@ def get_modifiers(county, mod_type, filter_key):
 
     mod_sum = 0
 
-    mod_funcs = dict(
-        unit_health=unit_health_mods,
-    )
-
-    try:
-        mod_sum = mod_funcs[mod_type](county, filter_key)
-    except KeyError:
-        pass
-
     # This is absolutely the wrong way to do it. :P
     # But I'm too lazy to build a table of all modifiers right now.
     # If you built one in would need to be queryable on at least
@@ -65,6 +44,10 @@ def get_modifiers(county, mod_type, filter_key):
     # e.g. Modifiers.query.filter_by(race, background, type, type2).all()
     # Then you could run a simple for loop and sum all the values.
     # We should have a master modifier table listing all modifiers.
+
+    if mod_type == 'unit_health':
+        if county.technologies.get('sacrifice') and county.technologies['sacrifice'].completed:
+            mod_sum -= 1
 
     if mod_type == 'unit_attack':
         if county.technologies.get('tactician') and county.technologies['tactician'].completed:
@@ -95,22 +78,9 @@ def get_modifiers(county, mod_type, filter_key):
                 mod_sum -= 10
 
     if mod_type == 'unit_gold':
-        if county.technologies.get('slavery') and county.technologies['slavery'].completed:
-            if filter_key == 'peasant':
-                mod_sum -= 5
         if county.technologies.get('trading') and county.technologies['trading'].completed:
             if filter_key == 'peasant' or filter_key == 'soldier' or filter_key == 'archer' \
                     or filter_key == 'elite' or filter_key == 'monster':
                 mod_sum -= 5
-
-    if mod_type == 'unit_wood':
-        if county.technologies.get('slavery') and county.technologies['slavery'].completed:
-            if filter_key == 'peasant':
-                mod_sum -= -1
-
-    if mod_type == 'unit_iron':
-        if county.technologies.get('slavery') and county.technologies['slavery'].completed:
-            if filter_key == 'peasant':
-                mod_sum = -1
 
     return mod_sum
