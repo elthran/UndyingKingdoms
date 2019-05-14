@@ -14,22 +14,25 @@ goblin_technology = {
         name='Deathwish',
         cost=1000,
         max_level=1,
-        description='Your berserkers have +1 attack.',
-        source="Goblin"
+        description='Your berserkers have {soldier_attack:+} attack.',
+        source="Goblin",
+        effects=Add('military', soldier_attack=1)
     ),
     Technology(
         name='Barbed Arrows',
         cost=1000,
         max_level=1,
-        description='Your bowmen get +1 defence.',
-        source="Goblin"
+        description='Your bowmen get {archer_defence:+} defence.',
+        source="Goblin",
+        effects=Add('military', archer_defence=1)
     ),
     Technology(
         name='Cross-breeding',
         cost=1000,
         max_level=1,
-        description='Wolf riders get +3 attack.',
-        source="Goblin"
+        description='Wolf riders get {elite_attack:+} attack.',
+        source="Goblin",
+        effects=Add('military', elite_attack=3)
     )
 }
 

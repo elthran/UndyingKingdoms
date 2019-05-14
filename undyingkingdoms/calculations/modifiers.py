@@ -54,22 +54,11 @@ def get_modifiers(county, mod_type, filter_key):
             mod_sum += 1
         if county.technologies.get('sacrifice') and county.technologies['sacrifice'].completed:
             mod_sum += 2
-        if county.technologies.get('cross-breeding') and county.technologies['cross-breeding'].completed:
-            if filter_key == 'elite':
-                mod_sum += 3
         if county.technologies.get('knights templar') and county.technologies['knights templar'].completed:
             if filter_key == 'elite':
                 mod_sum += 3
-        if county.technologies.get('deathwish') and county.technologies['deathwish'].completed:
-            if filter_key == 'soldier':
-                mod_sum += 1
         if county.technologies.get('sharpened sticks') and county.technologies['sharpened sticks'].completed:
             if filter_key == 'peasant':
-                mod_sum += 1
-
-    if mod_type == 'unit_defence':
-        if county.technologies.get('barbed arrows') and county.technologies['barbed arrows'].completed:
-            if filter_key == 'archer':
                 mod_sum += 1
 
     if mod_type == 'unit_upkeep':
