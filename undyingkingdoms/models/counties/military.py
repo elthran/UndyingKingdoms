@@ -50,7 +50,7 @@ class Military(GameState):
         strength = 0
         if army:
             for unit in county.armies.values():
-                if unit.name == 'besieger':
+                if unit.type == unit.BESIEGER:
                     strength += army[unit.name] * enemy_forts * max(unit.attack, 1)
                 elif unit.attack > 0:
                     strength += army[unit.name] * unit.attack
@@ -116,9 +116,9 @@ class Military(GameState):
     @non_siege_health.setter
     def non_siege_health(self, value):
         county = self.county
-        for name, unit in county.armies.items():
+        for unit in county.armies.values():
             # all non-siege units.
-            if name != "besieger":
+            if unit.type != unit.BESIEGER:
                 # noinspection PyPropertyAccess
                 unit.health += value - (self.non_siege_health or 0)
         self._non_siege_health = value

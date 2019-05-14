@@ -4,6 +4,16 @@ from .bases import GameState
 
 
 class Army(GameState):
+    # These would work better as integers but I'd have to modify a lot of code.
+    PEASANT = 0
+    SOLDIER = 1
+    ARCHER = 2
+    BESIEGER = 3
+    ELITE = 4
+    MONSTER = 5
+    SUMMON = 6
+    TYPES = dict(peasant=PEASANT, soldier=SOLDIER, archer=ARCHER, besieger=BESIEGER, elite=ELITE, monster=MONSTER, summon=SUMMON)
+
     county_id = db.Column(db.Integer, db.ForeignKey('county.id', ondelete="CASCADE"), nullable=False)
     name = db.Column(db.String(64))
     class_name = db.Column(db.String(64))
@@ -22,6 +32,18 @@ class Army(GameState):
     _health = db.Column(db.Integer)
     armour_type = db.Column(db.String(32))
     description = db.Column(db.String(128))
+
+    @property
+    def type(self):
+        """Return an int representing the unit type.
+
+        This will later allow comparison with constants such as:
+        if unit.type == unit.BESIEGER:
+           do_something_to_siege_units()
+
+        This helps prevent typos.
+        """
+        return self.TYPES[self.name]
 
     def __init__(self, name, class_name, class_name_plural, total, trainable_per_day, gold, wood, iron, upkeep,
                  category, attack, defence, health, armour_type, description):
