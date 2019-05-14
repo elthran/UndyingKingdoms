@@ -12,7 +12,7 @@ from ..bases import GameState, db
 class Military(GameState):
     BASE_DURATION = {'Attack': 18, 'Pillage': 12, 'Raze': 8}
     FILTERS = set(Army.TYPES.keys()) | {"unit", 'non_siege', 'non_monster_non_siege'}
-    MODIFIABLES = {'health', 'upkeep', 'defence', 'attack'}
+    MODIFIABLES = {'health', 'upkeep', 'defence', 'attack', 'gold', 'wood', 'iron'}
 
     _offensive_modifier = db.Column(db.Float)
     _offensive_power = db.Column(db.Integer)

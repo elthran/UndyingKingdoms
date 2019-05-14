@@ -46,7 +46,7 @@ dwarf_technology = {
         cost=250,
         max_level=1,
         description='{offensive_modifier:+0.0%} Attack Power bonus to all offensive invasions you perform.',
-        effects=Add(offensive_modifier=0.05),
+        effects=Add('military', offensive_modifier=0.05),
         source="Dwarf"
     )
 }

@@ -15,7 +15,7 @@ from .casting_addon import casting_addon
 casting_addon(County)
 tech_addon(County, Technology)
 sub_table_addon(County, Economy)
-sub_table_addon(County, Military)
+sub_table_addon(County, Military, hoist=False)
 sub_table_addon(County, Wizardry)
 sub_table_addon(County, Scientist)
 sub_table_addon(County, Espionage)

@@ -4,7 +4,7 @@ from utilities.helpers import strip_leading_underscore
 from ..bases import db
 
 
-def sub_table_addon(master_cls, slave_cls):
+def sub_table_addon(master_cls, slave_cls, hoist=True):
     """Slave a sub table to the master table.
 
     Example:
@@ -30,37 +30,38 @@ def sub_table_addon(master_cls, slave_cls):
     master_table_name = master_cls.__table__.name
     sub_table_name = slave_cls.__table__.name
 
-    cols_to_hoist = set([
-        strip_leading_underscore(c.name)
-        for c in slave_cls.__table__.c
-    ]) - set([
-        strip_leading_underscore(c.name)
-        for c in master_cls.__table__.c
-    ])
+    if hoist:
+        cols_to_hoist = set([
+            strip_leading_underscore(c.name)
+            for c in slave_cls.__table__.c
+        ]) - set([
+            strip_leading_underscore(c.name)
+            for c in master_cls.__table__.c
+        ])
 
-    for name in cols_to_hoist:
-        func = hybrid_property(
-            lambda self, name=name: getattr(
-                getattr(self, sub_table_name),
-                name
-            )
-        )
-        setattr(
-            master_cls,
-            name,
-            func
-        )
-        setattr(
-            master_cls,
-            name,
-            func.setter(
-                lambda self, value, name=name: setattr(
+        for name in cols_to_hoist:
+            func = hybrid_property(
+                lambda self, name=name: getattr(
                     getattr(self, sub_table_name),
-                    name,
-                    value
+                    name
                 )
             )
-        )
+            setattr(
+                master_cls,
+                name,
+                func
+            )
+            setattr(
+                master_cls,
+                name,
+                func.setter(
+                    lambda self, value, name=name: setattr(
+                        getattr(self, sub_table_name),
+                        name,
+                        value
+                    )
+                )
+            )
 
     # add relationships linking county and slave table
     slave_cls.county_id = db.Column(

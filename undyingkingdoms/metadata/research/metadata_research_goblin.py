@@ -1,3 +1,4 @@
+from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
 
 goblin_technology = {
@@ -5,8 +6,9 @@ goblin_technology = {
         name='Slavery',
         cost=1000,
         max_level=1,
-        description='Your slaves are 5 gold, 1 wood, and 1 iron cheaper.',
-        source="Goblin"
+        description='Your slaves are {abs(peasant_gold)} gold, {abs(peasant_wood)} wood, and {abs(peasant_iron)} iron cheaper.',
+        source="Goblin",
+        effects=Add('military', peasant_gold=-5, peasant_wood=-1, peasant_iron=-1)
     ),
     Technology(
         name='Deathwish',
