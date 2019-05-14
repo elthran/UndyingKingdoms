@@ -45,31 +45,11 @@ def get_modifiers(county, mod_type, filter_key):
     # Then you could run a simple for loop and sum all the values.
     # We should have a master modifier table listing all modifiers.
 
-    if mod_type == 'unit_health':
-        if county.technologies.get('sacrifice') and county.technologies['sacrifice'].completed:
-            mod_sum -= 1
-
     if mod_type == 'unit_attack':
         if county.technologies.get('tactician') and county.technologies['tactician'].completed:
             mod_sum += 1
-        if county.technologies.get('sacrifice') and county.technologies['sacrifice'].completed:
-            mod_sum += 2
-        if county.technologies.get('knights templar') and county.technologies['knights templar'].completed:
-            if filter_key == 'elite':
-                mod_sum += 3
         if county.technologies.get('sharpened sticks') and county.technologies['sharpened sticks'].completed:
             if filter_key == 'peasant':
                 mod_sum += 1
-
-    if mod_type == 'unit_upkeep':
-        if county.technologies.get('civic duty') and county.technologies['civic duty'].completed:
-            if filter_key == 'peasant':
-                mod_sum -= 10
-
-    if mod_type == 'unit_gold':
-        if county.technologies.get('trading') and county.technologies['trading'].completed:
-            if filter_key == 'peasant' or filter_key == 'soldier' or filter_key == 'archer' \
-                    or filter_key == 'elite' or filter_key == 'monster':
-                mod_sum -= 5
 
     return mod_sum

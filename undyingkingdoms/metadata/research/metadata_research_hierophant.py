@@ -1,3 +1,4 @@
+from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
 
 hierophant_technology = {
@@ -6,7 +7,7 @@ hierophant_technology = {
         cost=5,
         max_level=1,
         description='...',
-        effects=None,
+        effects=Add('military', unit_health=-1, unit_attack=2),
         source="Hierophant"
     ),
     Technology(
@@ -14,13 +15,13 @@ hierophant_technology = {
         cost=5,
         max_level=1,
         description='...',
-        effects=None,
+        effects=Add('military', unit_health=-2, unit_attack=3),
         source="Hierophant"
     )
 }
 
 
-# it must be a list or it will fail
+# it must be a list or set it will fail
 custom_requirements = {
 }
 
