@@ -1,22 +1,7 @@
 from copy import deepcopy
 
-from tests import bp
 from undyingkingdoms.metadata.research.metadata_research_alchemist import alchemist_technology
-from undyingkingdoms.models.exports import County
-
-
-def test_technology_effects(app):
-    with app.app_context():
-        county = County.query.filter_by(leader="Haldon").one()
-        output = county.grain_produced
-
-        county.technologies['basic agriculture'].completed = True
-
-        assert output < county.grain_produced
-
-        county.technologies['basic agriculture'].completed = False
-
-        assert county.grain_produced == output
+from undyingkingdoms.models.counties.counties import County
 
 
 def test_health_tech(app):
@@ -42,22 +27,3 @@ def test_health_tech(app):
 
         assert non_besieger_health == county.armies['archer'].health
         assert besieger_health == county.armies['besieger'].health
-
-
-def test_fort_multiplier(app):
-    with app.app_context():
-        county = County.query.filter_by(leader="Haldon").one()
-        infrastructure = county.infrastructure
-
-        fort_output = county.buildings['fort'].output
-        infrastructure.fort_multiplier = 2
-
-        assert county.buildings['fort'].output == fort_output * 2
-
-        infrastructure.fort_multiplier = 1.6
-
-        assert county.buildings['fort'].output == fort_output * 1.6
-
-        infrastructure.fort_multiplier = 0.2
-
-        assert county.buildings['fort'].output == fort_output * 0.2

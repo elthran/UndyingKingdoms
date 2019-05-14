@@ -1,5 +1,6 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
+from tests import bp
 from ..bases import GameState, db
 
 
@@ -14,12 +15,26 @@ class Infrastructure(GameState):
     # noinspection PyPropertyAccess
     @cost_modifier.setter
     def cost_modifier(self, value):
+        """Reduce building cost by a given percent.
+
+        Passing in 0.2 would produce a 20% reduction in cost.
+        """
         county = self.county
         for building in county.buildings.values():
-            building.gold_cost *= value - (self.cost_modifier or 0)
-            building.wood_cost *= value - (self.cost_modifier or 0)
-            building.stone_cost *= value - (self.cost_modifier or 0)
-        self._cost_modifier = value
+            if value != 0:bp()
+            building.gold_cost = round(
+                building.gold_cost /
+                (1 + value - (self.cost_modifier or 0))
+            )
+            building.wood_cost = round(
+                building.wood_cost /
+                (1 + value - (self.cost_modifier or 0))
+            )
+            building.stone_cost = round(
+                building.stone_cost /
+                (1 + value - (self.cost_modifier or 0))
+            )
+            self._cost_modifier = value
 
     @hybrid_property
     def fort_multiplier(self):
@@ -42,10 +57,13 @@ class Infrastructure(GameState):
         county = self.county
         fort = county.buildings['fort']
         # noinspection PyPropertyAccess
-        fort.output *= value - (self.fort_multiplier or 0)
+        fort.output = round(
+            fort.output *
+            (value - (self.fort_multiplier or 0))
+        )
         self._fort_multiplier = value
 
     def __init__(self, county):
         self.county = county
         self.cost_modifier = 0
-        self.fort_multiplier = 1
+        self.fort_multiplier = 0
