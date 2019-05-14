@@ -21,18 +21,17 @@ class Infrastructure(GameState):
         """
         county = self.county
         for building in county.buildings.values():
-            if value != 0:bp()
             building.gold_cost = round(
-                building.gold_cost /
-                (1 + value - (self.cost_modifier or 0))
+                building.gold_cost *
+                (1 - value - (self.cost_modifier or 0))
             )
             building.wood_cost = round(
-                building.wood_cost /
-                (1 + value - (self.cost_modifier or 0))
+                building.wood_cost *
+                (1 - value - (self.cost_modifier or 0))
             )
             building.stone_cost = round(
-                building.stone_cost /
-                (1 + value - (self.cost_modifier or 0))
+                building.stone_cost *
+                (1 - value - (self.cost_modifier or 0))
             )
             self._cost_modifier = value
 
