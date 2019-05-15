@@ -1,7 +1,7 @@
 from random import choice
 from uuid import uuid4
 
-from flask import jsonify
+from flask import jsonify, current_app
 from flask_login import current_user
 
 from tests import bp
@@ -93,6 +93,8 @@ def run_advance_day():
             message='You successfully advanced the game world one day.'
         )
     except Exception as ex:
+        if current_app.config['ENV'] != 'production':
+            raise ex
         return jsonify(
             status='fail',
             message=f'Advance day failed due to: {ex}'

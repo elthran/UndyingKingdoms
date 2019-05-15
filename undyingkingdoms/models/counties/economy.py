@@ -155,7 +155,6 @@ class Economy(GameState):
         county = self.county
         modifier = self._birth_rate_modifier
         modifier += (county.buildings['house'].total ** 0.75) / county.land * county.buildings['house'].output
-
         modify_birth_rate = Casting.query.filter_by(target_id=county.id, name="modify_birth_rate").filter(
             (Casting.duration > 0) | Casting.active).all()
         for spell in modify_birth_rate or []:
