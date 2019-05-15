@@ -7,9 +7,8 @@ from flask_mobility.decorators import mobile_template
 from undyingkingdoms import app
 from undyingkingdoms.models.exports import Infiltration, County, Notification
 from undyingkingdoms.models.forms.infiltrate import InfiltrateForm
-from undyingkingdoms.models.helpers import extract_modifiers
 from undyingkingdoms.routes.helpers import neither_allies_nor_armistices, not_self
-from undyingkingdoms.metadata.metadata import infiltration_missions, infiltration_results_modifier
+from undyingkingdoms.metadata.metadata import infiltration_missions
 
 
 @app.route('/gameplay/infiltrate/<int:county_id>', methods=['GET', 'POST'])
@@ -29,6 +28,8 @@ def infiltrate(template, county_id):
     form.amount.choices = [(i + 1, i + 1) for i in range(thieves)]
     form.mission.choices = [(index, name) for index, name in enumerate(infiltration_missions)]
 
+    duration_multiplier = espionage.duration_multiplier
+
     if form.validate_on_submit():
         mission = infiltration_missions[form.mission.data]
         report = Infiltration(county.id, target.id, county.kingdom.world.day,
@@ -37,11 +38,7 @@ def infiltrate(template, county_id):
 
         chance_of_success = max(min(100 + form.amount.data - target.get_chance_to_catch_enemy_thieves(), 100), 0)
 
-        gain_modifier = 1 + extract_modifiers(
-            infiltration_results_modifier,
-            county.race,
-            county.background
-        )
+        gain_modifier = 1 + espionage.gain_modifer
 
         kingdom = county.kingdom
         target_kingdom = target.kingdom
@@ -58,7 +55,7 @@ def infiltrate(template, county_id):
                 target.gold -= gold_stolen
                 county.gold += gold_stolen
                 report.pilfer_amount = gold_stolen
-                report.duration = randint(8, 10)
+                report.duration = randint(8, 10) * duration_multiplier
                 notification = Notification(
                     target,
                     "Thieves raided our lands",
@@ -68,7 +65,7 @@ def infiltrate(template, county_id):
                 crops_burned = min(target.buildings['field'].total, form.amount.data * gain_modifier)
                 target.buildings['field'].total -= crops_burned
                 report.crops_burned = crops_burned
-                report.duration = randint(14, 16)
+                report.duration = randint(14, 16) * duration_multiplier
                 notification = Notification(
                     target,
                     "Thieves raided our lands",
@@ -78,7 +75,7 @@ def infiltrate(template, county_id):
                 happiness_lost = min(target.happiness, form.amount.data * 3 * gain_modifier)
                 target.happiness -= happiness_lost
                 report.distrust = happiness_lost
-                report.duration = randint(12, 14)
+                report.duration = randint(12, 14) * duration_multiplier
                 notification = Notification(
                     target,
                     "Thieves raided our lands",
@@ -86,7 +83,7 @@ def infiltrate(template, county_id):
                 )
             elif mission == 'scout military':
                 report.get_troop_report(county, target, form.amount.data)
-                report.duration = 3
+                report.duration = 3 * duration_multiplier
                 notification = Notification(
                     target,
                     "Thieves raided our lands",
@@ -98,12 +95,14 @@ def infiltrate(template, county_id):
                 current_technology.current -= research_stolen
                 county.research += research_stolen
                 report.research_stolen = research_stolen
-                report.duration = randint(6, 8)
+                report.duration = randint(6, 8) * duration_multiplier
                 notification = Notification(
                     target,
                     "Thieves raided our lands",
                     f"They have stolen {research_stolen} of our research.",
                 )
+            else:
+                raise KeyError("You tried to execute a mission that doesn't exits.")
         else:
             target_kingdom.distribute_war_points(kingdom, max(1, form.amount.data // 2))
             notification = Notification(
@@ -111,7 +110,7 @@ def infiltrate(template, county_id):
                 f"You caught enemy thieves from {county.name}",
                 "You caught them before they could accomplish their task",
             )
-            report.duration = randint(16, 18)
+            report.duration = randint(16, 18) * duration_multiplier
             report.success = False
         notification.category = "Infiltration"
         notification.save()

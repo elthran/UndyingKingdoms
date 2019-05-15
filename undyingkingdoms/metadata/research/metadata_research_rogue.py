@@ -1,3 +1,4 @@
+from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
 
 rogue_technology = {
@@ -5,8 +6,8 @@ rogue_technology = {
         name='Advanced Espionage',
         cost=500,
         max_level=3,
-        description='All thief missions are +20% more effective.',
-        effects=None,
+        description='All thief missions are {gain_modifer:+0.0%} more effective.',
+        effects=Add('espionage', gain_modifer=0.2),
         source="Rogue"
     ),
     Technology(
@@ -14,7 +15,7 @@ rogue_technology = {
         cost=500,
         max_level=3,
         description='When your thieves are captured, you can retrain new oes twice as quickly.',
-        effects=None,
+        effects=Add('espionage', duration_multiplier=0.5),
         source="Rogue"
     )
 }

@@ -7,7 +7,7 @@ warlord_technology = {
         cost=500,
         max_level=1,
         description='Your armies return from battle {speed} days sooner.',
-        effects=Add(speed=1),
+        effects=Add('military', speed=1),
         source="Warlord"
     ),
     Technology(
