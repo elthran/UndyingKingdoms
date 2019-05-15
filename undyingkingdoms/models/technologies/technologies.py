@@ -69,7 +69,10 @@ class Technology(GameEvent):
         all_kwargs = dict(output=self.output)
         for effect in self.effects:
             all_kwargs.update(effect.kwargs)
-        return self._description.format(**all_kwargs)
+        # There's probably a better way(TM).
+        # as far as I can tell str.format should work but it doesn't
+        # handle "... {abs(x)} ..." where fstrings do just fine.
+        return eval('f' + repr(self._description), all_kwargs)
 
     def __init__(self, name, cost, max_level, description, requirements=None,
                  tier=1, output=None, effects=None, source="Generic"):
