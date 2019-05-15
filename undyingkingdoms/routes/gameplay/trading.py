@@ -100,8 +100,8 @@ def trade(county_id):
     if trade_form.validate_on_submit() and county != target_county:
         # Consider just passing in the form object.
         trade_offered = Trade(
-            county.id,
-            target_county.id,
+            county,
+            target_county,
             current_user.county.kingdom.world.day,
             trade_form.duration.data,
             trade_form.offer_gold.data,
@@ -123,7 +123,6 @@ def trade(county_id):
             target_county.id,
             "You were offered a trade",
             f"{county.name} has offered you a trade. Visit the trading page.",
-            county.kingdom.world.day,
             "Trade"
         )
         trade_notice.save()

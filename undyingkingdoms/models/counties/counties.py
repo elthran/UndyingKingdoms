@@ -420,23 +420,23 @@ class County(GameState):
             trade_notice.save()
             random = randint(1, 5)
             if random == 1:  # Send wood for gold
-                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 40, 0, 0, 0, 60, 0, 0, 0,
+                trade_offered = Trade(self, trading_partner, self.kingdom.world.day, 24, 0, 40, 0, 0, 0, 60, 0, 0, 0,
                                       0)
                 self.wood -= 40
             elif random == 2:  # Send iron for gold
-                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 0, 30, 0, 0, 90, 0, 0, 0,
+                trade_offered = Trade(self, trading_partner, self.kingdom.world.day, 24, 0, 0, 30, 0, 0, 90, 0, 0, 0,
                                       0)
                 self.iron -= 30
             elif random == 3:  # Send gold for iron and wood
-                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 120, 0, 0, 0, 0, 0, 40, 20,
+                trade_offered = Trade(self, trading_partner, self.kingdom.world.day, 24, 120, 0, 0, 0, 0, 0, 40, 20,
                                       0, 0)
                 self.gold -= 120
             elif random == 4:  # Send food for wood
-                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 0, 0, 0, 750, 0, 0, 0, 0,
+                trade_offered = Trade(self, trading_partner, self.kingdom.world.day, 24, 0, 0, 0, 0, 750, 0, 0, 0, 0,
                                       50)
                 self.gold -= 120
             else:  # Send food for iron
-                trade_offered = Trade(self.id, trading_partner, self.kingdom.world.day, 24, 0, 0, 0, 0, 750, 0, 40, 20,
+                trade_offered = Trade(self, trading_partner, self.kingdom.world.day, 24, 0, 0, 0, 0, 750, 0, 40, 20,
                                       0, 0)
                 self.gold -= 120
             trade_offered.save()

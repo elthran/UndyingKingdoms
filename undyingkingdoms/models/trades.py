@@ -21,11 +21,11 @@ class Trade(GameEvent):
     stone_to_receive = db.Column(db.Integer)
     grain_to_receive = db.Column(db.Integer)
 
-    def __init__(self, county_id, target_id, world_day, duration, gold_to_give=0, wood_to_give=0, iron_to_give=0, stone_to_give=0, grain_to_give=0,
+    def __init__(self, county, target, world_day, duration, gold_to_give=0, wood_to_give=0, iron_to_give=0, stone_to_give=0, grain_to_give=0,
                  gold_to_receive=0, wood_to_receive=0, iron_to_receive=0, stone_to_receive=0, grain_to_receive=0):
 
-        self.county_id = county_id
-        self.target_id = target_id
+        self.county = county
+        self.target = target
         self.world_day = world_day
         self.duration = duration
         self.status = "Pending"
