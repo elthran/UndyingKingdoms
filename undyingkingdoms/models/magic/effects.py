@@ -19,6 +19,10 @@ class Effect(Command):
         if self.spell.category == 'aura':
             self.casting.active = True
 
+    def recoup_cost(self):
+        wizardry = self.caster.wizardry
+        self.caster.mana += self.spell.mana_cost * wizardry.recoup_factor
+
     def get_specifics(self):
         """Initialize an object from a casting name."""
         return globals()[to_class_name(self.casting.name)](self)

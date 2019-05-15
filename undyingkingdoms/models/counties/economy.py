@@ -1,11 +1,17 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from undyingkingdoms.metadata.metadata import food_produced_modifier, buildings_produced_per_day, happiness_modifier, \
-    income_modifier, birth_rate_modifier
+    income_modifier, birth_rate_modifier, production_per_worker_modifier
 from undyingkingdoms.models.magic import Casting
-from ..helpers import compute_modifier
+from ..helpers import extract_modifiers
 from ..bases import GameState, db
 
+"""
+Anything that seems economic is being migrate here.
+Not that some of these values have no leading underscore and
+no mess of @methods. Once I fully convert the code I won't need
+all the extra methods. It is just faster to do it in stages.
+"""
 
 class Economy(GameState):
     _grain_modifier = db.Column(db.Float)
@@ -15,11 +21,18 @@ class Economy(GameState):
     build_slots = db.Column(db.Integer)
     happiness_change = db.Column(db.Integer)
     _iron_income = db.Column(db.Integer)
-    iron_multiplier = db.Column(db.Integer)
+    iron_multiplier = db.Column(db.Integer)  # consider renaming to mine_multiplier
     gold_modifier = db.Column(db.Float)
     _gold_income = db.Column(db.Integer)
+    _band_income = db.Column(db.Integer)
+    bank_multiplier = db.Column(db.Integer)
     _birth_rate_modifier = db.Column(db.Float)
     _birth_rate = db.Column(db.Integer)
+    immigration_modifier = db.Column(db.Float)
+    _immigration_rate = db.Column(db.Float)
+    _excess_production = db.Column(db.Integer)
+    excess_production_multiplier = db.Column(db.Float)
+    production_modifier = db.Column(db.Float)
 
     @hybrid_property
     def grain_modifier(self):
@@ -52,7 +65,7 @@ class Economy(GameState):
         field = county.buildings['field']
         building_production = field.total * field.output
         # noinspection PyPropertyAccess
-        return round((self._grain_produced + building_production) * self.grain_modifier)
+        return round((self._grain_produced + building_production) * (1 + self.grain_modifier))
 
     @grain_produced.setter
     def grain_produced(self, value):
@@ -78,7 +91,7 @@ class Economy(GameState):
         building = county.buildings['pasture']
         building_production = building.total * building.output
         # noinspection PyPropertyAccess
-        return round(building_production * self.dairy_modifier)
+        return round(building_production * (1 + self.dairy_modifier))
 
     @dairy_produced.setter
     def dairy_produced(self, value):
@@ -108,10 +121,25 @@ class Economy(GameState):
             if county.production_choice == county.GOLD
             else 0
         )
-        revenue = self._gold_income
-        revenue += (county.get_tax_income() + county.get_bank_income() + excess_worker_income) * self.gold_modifier
+        # noinspection PyPropertyAccess
+        revenue = (self._gold_income + county.get_tax_income() + self.bank_income + excess_worker_income) * (1 + self.gold_modifier)
         expenses = county.get_upkeep_costs()
         return round(revenue - expenses)  # net income/net loss ;)
+
+    @hybrid_property
+    def bank_income(self):
+        county = self.county
+        building_income = county.buildings['bank'].total * (county.buildings['bank'].output + (self.bank_multiplier or 0))
+        return building_income
+
+    @bank_income.setter
+    def bank_income(self, value):
+        self._band_income = value
+
+    # noinspection PyMethodParameters,PyUnresolvedReferences
+    @bank_income.expression
+    def bank_income(cls):
+        return cls._band_income
 
     @gold_income.setter
     def gold_income(self, value):
@@ -148,7 +176,7 @@ class Economy(GameState):
         county = self.county
         raw_rate = (county.happiness / 100) * (county.land / 5)  # 5% times your happiness rating
         # noinspection PyPropertyAccess
-        return round(raw_rate * self.birth_rate_modifier)
+        return round(raw_rate * (1 + self.birth_rate_modifier))
 
     @birth_rate.setter
     def birth_rate(self, value):
@@ -159,21 +187,66 @@ class Economy(GameState):
     def birth_rate(cls):
         return cls._birth_rate
 
+    @hybrid_property
+    def immigration_rate(self):
+        county = self.county
+        kingdom = county.kingdom
+        world = kingdom.world
+        rate = (self._immigration_rate or 0)
+        modifier = 1 + (self.immigration_modifier or 0)
+        random_hash = (world.day ** 2) % 10
+        return (25 + random_hash + rate) * modifier
+
+    @immigration_rate.setter
+    def immigration_rate(self, value):
+        self._immigration_rate = value
+
+    # noinspection PyUnresolvedReferences,PyMethodParameters
+    @immigration_rate.expression
+    def immigration_rate(cls):
+        return cls._immigration_rate
+
+    @hybrid_property
+    def excess_production(self):
+        """
+        Returns the amount of excess production you get each turn
+        """
+        county = self.county
+        return max(round(
+            county.get_available_workers() *
+            (1 + self.production_modifier) *
+            self.excess_production_multiplier
+        ), 0)
+
+    @excess_production.setter
+    def excess_production(self, value):
+        self._excess_production = value
+
+    # noinspection PyUnresolvedReferences,PyMethodParameters
+    @excess_production.expression
+    def excess_production(cls):
+        return cls._excess_production
+
     def __init__(self, county):
         self.county = county
-        self.grain_modifier = 1 + compute_modifier(
+        self.grain_modifier = extract_modifiers(
             food_produced_modifier, county.race, county.background
         )
         self.grain_produced = 0
-        self.dairy_modifier = 1 + compute_modifier(
+        self.dairy_modifier = extract_modifiers(
             food_produced_modifier, county.race, county.background
         )
         self.dairy_produced = 0
-        self.build_slots = 3 + compute_modifier(buildings_produced_per_day, county.race, county.background)
-        self.happiness_change = 7 + compute_modifier(happiness_modifier, county.race, county.background)
+        self.build_slots = 3 + extract_modifiers(buildings_produced_per_day, county.race, county.background)
+        self.happiness_change = 7 + extract_modifiers(happiness_modifier, county.race, county.background)
         self.iron_income = 0
         self.iron_multiplier = 0
-        self.gold_modifier = 1 + compute_modifier(income_modifier, county.race, county.background)
+        self.gold_modifier = extract_modifiers(income_modifier, county.race, county.background)
         self.gold_income = 0
-        self.birth_rate_modifier = 1 + compute_modifier(birth_rate_modifier, county.race, county.background)
+        self.birth_rate_modifier = extract_modifiers(birth_rate_modifier, county.race, county.background)
         self.birth_rate = 0
+        self.immigration_modifier = 0
+        self.immigration_rate = 0
+        self.excess_production = 0
+        self.excess_production_multiplier = 1
+        self.production_modifier = extract_modifiers(production_per_worker_modifier, county.race, county.background)

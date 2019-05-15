@@ -14,22 +14,25 @@ elf_technology = {
         name='Ranger Training',
         cost=1000,
         max_level=1,
-        description='Your rangers have +1 attack.',
-        source="Elf"
+        description='Your rangers have {soldier_attack:+} attack.',
+        source="Elf",
+        effects=Add('military', soldier_attack=1)
     ),
     Technology(
         name='Mithril Armour',
         cost=1500,
         max_level=1,
-        description='All non-monster and non-siege units get an additional 1 health point.',
-        source="Elf"
+        description='All non-monster and non-siege units get an additional {non_monster_non_siege_health:+} health point.',
+        source="Elf",
+        effects=Add('military', non_monster_non_siege_health=1)
     ),
     Technology(
         name='Dragon-fire',
         cost=1000,
         max_level=1,
-        description='Dragonhelms have +3 attack.',
-        source="Elf"
+        description='Dragonhelms have {elite_attack:+} attack.',
+        source="Elf",
+        effects=Add('military', elite_attack=3)
     )
 }
 

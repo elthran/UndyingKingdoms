@@ -6,22 +6,25 @@ dwarf_technology = {
         name='Dwarven Muskets',
         cost=1000,
         max_level=1,
-        description='Riflemen get +1 defence.',
-        source="Dwarf"
+        description='Riflemen get {archer_defence:+} defence.',
+        source="Dwarf",
+        effects=Add('military', archer_defence=1)
     ),
     Technology(
         name='Throwing Axes',
         cost=750,
         max_level=1,
-        description='Axemen get +2 defence.',
-        source="Dwarf"
+        description='Axemen get {soldier_defence:+) defence.',
+        source="Dwarf",
+        effects=Add('military', soldier_defence=2)
     ),
     Technology(
         name='Mithril Armour',
         cost=1500,
         max_level=1,
-        description='All non-monster and non-siege units get an additional 2 health point.',
-        source="Dwarf"
+        description='All non-monster and non-siege units get an additional {non_monster_non_siege_health:+} health point.',
+        source="Dwarf",
+        effects=Add('military', non_monster_non_siege_health=2)
     ),
     Technology(
         name='Hellfire Cannons',
@@ -43,7 +46,7 @@ dwarf_technology = {
         cost=250,
         max_level=1,
         description='{offensive_modifier:+0.0%} Attack Power bonus to all offensive invasions you perform.',
-        effects=Add(offensive_modifier=0.05),
+        effects=Add('military', offensive_modifier=0.05),
         source="Dwarf"
     )
 }

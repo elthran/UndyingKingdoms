@@ -6,8 +6,8 @@ cleric_technology = {
         name='Missionaries',
         cost=750,
         max_level=1,
-        description='Your county has +20% immigration rate.',
-        effects=None,
+        description='Your county has {immigration_modifier:+0.0%} immigration rate.',
+        effects=Add('economy', immigration_modifier=0.2),
         source="Cleric"
     ),
     Technology(

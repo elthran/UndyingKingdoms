@@ -11,7 +11,7 @@ from undyingkingdoms.metadata.armies.metadata_armies_updater import update_armie
 from ..magic import Casting
 from ..bases import GameState, db
 from .specifics import add_racial_data, add_background_data
-from ..helpers import cached_random, compute_modifier
+from ..helpers import cached_random, extract_modifiers
 from ..notifications import Notification
 from ..expeditions import Expedition
 from ..infiltrations import Infiltration
@@ -578,7 +578,7 @@ class County(GameState):
 
     def get_food_to_be_eaten(self):
         local_md = md['metadata']
-        modifier = 1 + compute_modifier(
+        modifier = 1 + extract_modifiers(
             local_md.food_consumed_modifier,
             self.race,
             self.background
@@ -626,7 +626,7 @@ class County(GameState):
 
     def get_death_rate(self):
         local_md = md['metadata']
-        modifier = 1 + compute_modifier(
+        modifier = 1 + extract_modifiers(
             local_md.death_rate_modifier,
             self.race,
             self.background
@@ -641,16 +641,12 @@ class County(GameState):
 
         return int(death_rate * self.population)
 
-    def get_immigration_rate(self):
-        random_hash = (self.kingdom.world.day ** 2) % 10
-        return 25 + random_hash
-
     def get_emigration_rate(self):
         return int(self.preferences.tax_rate + self.kingdom.world.age + (0.005 * self.population))
 
     @cached_random
     def get_population_change(self):
-        growth = self.birth_rate + self.get_immigration_rate()
+        growth = self.birth_rate + self.immigration_rate
         decay = self.get_death_rate() + self.get_emigration_rate()
         if growth < decay:  # Can't decay more than 3% of population an hour
             return int(max(growth - decay, -0.03 * self.population))
@@ -660,15 +656,12 @@ class County(GameState):
         deaths = self.get_death_rate()
         emigration = self.get_emigration_rate()
         births = self.birth_rate
-        immigration = self.get_immigration_rate()
+        immigration = self.immigration_rate
         self.population += (births + immigration) - (deaths + emigration)
 
     # Resources
     def get_tax_income(self):
         return int(self.population * (self.tax_rate / 100))
-
-    def get_bank_income(self):
-        return self.buildings['bank'].total * self.buildings['bank'].output
 
     def get_upkeep_costs(self):
         return sum(unit.upkeep * unit.total for unit in self.armies.values()) // 24
@@ -679,40 +672,22 @@ class County(GameState):
     def get_stone_income(self):
         return self.buildings['quarry'].total * self.buildings['quarry'].output
 
-    # Building
-    def get_production_modifier(self):  # Modifiers your excess production
-
-        local_md = md['metadata']
-        return 1 + compute_modifier(
-            local_md.production_per_worker_modifier,
-            self.race,
-            self.background
-        )
-
-    def get_excess_production(self):
-        """
-        Returns the amount of excess production you get each turn
-        """
-        if self.technologies.get("slavery") and self.technologies["slavery"].completed:
-            return max(int(self.get_production_modifier() * self.get_available_workers() * 2), 0)
-        return max(int(self.get_production_modifier() * self.get_available_workers()), 0)
-
     def get_excess_production_value(self, value=-1):
         """
         Users the excess production towards completing a task
         """
-
+        economy = self.economy
         if value == -1:
             excess_worker_choice = self.production_choice
         else:
             excess_worker_choice = value
 
         if excess_worker_choice == self.GOLD:
-            return self.get_excess_production() // 10
+            return economy.excess_production // 10
         elif excess_worker_choice == self.LAND:
-            return self.get_excess_production()
+            return economy.excess_production
         elif excess_worker_choice == self.FOOD:
-            return self.get_excess_production()
+            return economy.excess_production
         elif excess_worker_choice == self.HAPPINESS:
             return 2
 
@@ -779,7 +754,7 @@ class County(GameState):
     def get_defensive_strength(self, scoreboard=False):
         # First get base strength of citizens
         local_md = md['metadata']
-        modifier = 1 + compute_modifier(
+        modifier = 1 + extract_modifiers(
             local_md.defense_per_citizen_modifier,
             self.race,
             self.background
@@ -1007,22 +982,11 @@ class County(GameState):
             Notification.time_created.desc()).all()
         return events
 
-    def get_total_number_of_thieves(self):
-        base = self.buildings['tavern'].total
-        modifier = self.buildings['tavern'].output
-        if "espionage i" in self.technologies and self.technologies["espionage i"].completed:
-            modifier += 1
-        if "espionage ii" in self.technologies and self.technologies["espionage ii"].completed:
-            modifier += 1
-        if "espionage iii" in self.technologies and self.technologies["espionage iii"].completed:
-            modifier += 1
-        return base * modifier
-
     # Infiltrations
     def get_number_of_available_thieves(self):
         all_current_missions = Infiltration.query.filter_by(county_id=self.id).filter(Infiltration.duration > 0).all()
         unavailable_thieves = sum(mission.amount_of_thieves for mission in all_current_missions)
-        return self.get_total_number_of_thieves() - unavailable_thieves
+        return self.thief_slots - unavailable_thieves
 
     def get_thief_report_military(self, target_id):
         current_report = Infiltration.query.filter_by(county_id=self.id, target_id=target_id, success=True,

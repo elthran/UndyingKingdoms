@@ -17,7 +17,7 @@ ul.mission li:first-of-type {
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
-<h2>Thieves available: {{ county.get_number_of_available_thieves() }} / {{ county.get_total_number_of_thieves() }}</h2>
+<h2>Thieves available: {{ county.get_number_of_available_thieves() }} / {{ county.thief_slots }}</h2>
 <h3>Your current bonus chance of catching enemy thieves: {{ county.get_chance_to_catch_enemy_thieves() }}%</h3>
 <br><br>
 <h2>Active Missions</h2>

@@ -1,4 +1,4 @@
-from undyingkingdoms.models.effects import Times
+from undyingkingdoms.models.effects import Times, Add
 from undyingkingdoms.models.technologies import Technology
 
 human_technology = {
@@ -6,30 +6,33 @@ human_technology = {
         name='Civic Duty',
         cost=500,
         max_level=1,
-        description='Reduces upkeep cost of men-at-arms by 10 gold each.',
-        source="Human"
+        description='Reduces upkeep cost of men-at-arms by {abs(peasant_upkeep)} gold each.',
+        source="Human",
+        effects=Add('military', peasant_upkeep=-10)
     ),
     Technology(
         name='Economics',
         cost=750,
         max_level=1,
         description='Increases all gold income by {gold_modifier:+0.0%}.',
-        effects=Times('economy', gold_modifier=0.15),
+        effects=Add('economy', gold_modifier=0.15),
         source="Human"
     ),
     Technology(
         name='Knights Templar',
         cost=1000,
         max_level=1,
-        description='All knights get +3 attack.',
-        source="Human"
+        description='All knights get {elite_attack:+} attack.',
+        source="Human",
+        effects=Add('military', elite_attack=3)
     ),
     Technology(
         name='Trading',
         cost=750,
         max_level=1,
-        description='All military units cost 5 less gold to train.',
-        source="Human"
+        description='All military units cost {abs(unit_gold)} less gold to train.',
+        source="Human",
+        effects=Add('military', unit_gold=-5)
     )
 }
 

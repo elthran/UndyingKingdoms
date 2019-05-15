@@ -7,7 +7,7 @@ wizard_technology = [
         cost=500,
         max_level=1,
         description='Generate an additional mana each day.',
-        effects=Add(mana_change=1),
+        effects=Add('wizardry', mana_change=1),
         source="Wizard"
     ),
     Technology(
@@ -15,7 +15,7 @@ wizard_technology = [
         cost=500,
         max_level=1,
         description='When your spells are disrupted, you are able to recover half of the spent mana.',
-        effects=None,
+        effects=Add('wizardry', recoup_factor=0.5),
         source="Wizard"
     )
 ]

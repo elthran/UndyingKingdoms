@@ -1,8 +1,9 @@
-from tests import bp
-from .military import Military
-from ..technologies import Technology
 from .counties import County
+from ..technologies import Technology
 from .economy import Economy
+from .infrastructure import Infrastructure
+from .espionage import Espionage
+from .military import Military
 from .wizardry import Wizardry
 from .scientist import Scientist
 
@@ -14,6 +15,8 @@ from .casting_addon import casting_addon
 casting_addon(County)
 tech_addon(County, Technology)
 sub_table_addon(County, Economy)
-sub_table_addon(County, Military)
+sub_table_addon(County, Military, hoist=False)
 sub_table_addon(County, Wizardry)
 sub_table_addon(County, Scientist)
+sub_table_addon(County, Espionage)
+sub_table_addon(County, Infrastructure)
