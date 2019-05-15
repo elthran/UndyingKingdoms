@@ -4,7 +4,18 @@ from .bases import GameEvent, db
 class Trade(GameEvent):
 
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
-    target_id = db.Column(db.Integer)
+    county = db.relationship(
+        "County",
+        backref="trades_offered",
+        foreign_keys="[Trade.county_id]"
+    )
+    target_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
+    target = db.relationship(
+        "County",
+        backref="trades_received",
+        foreign_keys="[Trade.target_id]"
+    )
+
     world_day = db.Column(db.Integer)
     duration = db.Column(db.Integer)
     status = db.Column(db.String(16))

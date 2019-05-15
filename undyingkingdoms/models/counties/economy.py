@@ -24,7 +24,7 @@ class Economy(GameState):
     iron_multiplier = db.Column(db.Integer)  # consider renaming to mine_multiplier
     gold_modifier = db.Column(db.Float)
     _gold_income = db.Column(db.Integer)
-    _band_income = db.Column(db.Integer)
+    _bank_income = db.Column(db.Integer)
     bank_multiplier = db.Column(db.Integer)
     _birth_rate_modifier = db.Column(db.Float)
     _birth_rate = db.Column(db.Integer)
@@ -134,12 +134,12 @@ class Economy(GameState):
 
     @bank_income.setter
     def bank_income(self, value):
-        self._band_income = value
+        self._bank_income = value
 
     # noinspection PyMethodParameters,PyUnresolvedReferences
     @bank_income.expression
     def bank_income(cls):
-        return cls._band_income
+        return cls._bank_income
 
     @gold_income.setter
     def gold_income(self, value):
@@ -243,6 +243,7 @@ class Economy(GameState):
         self.iron_multiplier = 0
         self.gold_modifier = extract_modifiers(income_modifier, county.race, county.background)
         self.gold_income = 0
+        self.bank_multiplier = 0
         self.birth_rate_modifier = extract_modifiers(birth_rate_modifier, county.race, county.background)
         self.birth_rate = 0
         self.immigration_modifier = 0

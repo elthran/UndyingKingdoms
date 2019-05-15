@@ -353,7 +353,7 @@ class County(GameState):
                 self.iron += trade.iron_to_give
                 self.stone += trade.stone_to_give
                 self.grain_stores += trade.grain_to_give
-                target_county = County.query.get(trade.target_id)
+                target_county = trade.target
                 notification = Notification(
                     self,
                     "Trade Offer",
@@ -526,8 +526,7 @@ class County(GameState):
                 "Disaster",
                 f"A fire has spread in the city burning down {amount} of your {building_name}.",
             )
-        self.buildings['house'].total -= amount
-
+            self.buildings['house'].total -= amount
         if notification:
             notification.category = "Random Event"
         notification.save()
