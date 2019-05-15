@@ -52,6 +52,7 @@ class Casting(GameEvent):
             self.success = False
             self.duration = 0
             self.active = False
+            effect.recoup_cost()
             target_kingdom.distribute_war_points(kingdom, spell.mana_cost // 7)
             return False  # casting failure
 

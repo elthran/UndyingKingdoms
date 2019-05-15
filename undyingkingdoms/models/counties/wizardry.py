@@ -10,6 +10,7 @@ from ..bases import GameState, db
 class Wizardry(GameState):
     max_mana = db.Column(db.Integer)
     _mana_change = db.Column(db.Integer)
+    recoup_factor = db.Column(db.Integer)
 
     @hybrid_property
     def mana_change(self):
@@ -47,3 +48,4 @@ class Wizardry(GameState):
         self.county = county
         self.max_mana = 20
         self.mana_change = 2
+        self.recoup_factor = 0
