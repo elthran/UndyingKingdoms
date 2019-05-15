@@ -1,5 +1,6 @@
 from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
+from undyingkingdoms.models.technologies.helpers import generate_tech_levels
 
 dwarf_technology = {
     Technology(
@@ -51,7 +52,8 @@ dwarf_technology = {
     )
 }
 
-dwarf_technology = {
-    tech.key: tech
-    for tech in dwarf_technology
+custom_requirements = {
+
 }
+
+dwarf_technology, dwarf_requirements = generate_tech_levels(dwarf_technology, custom_requirements)

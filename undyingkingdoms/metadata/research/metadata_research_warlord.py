@@ -1,5 +1,6 @@
 from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
+from undyingkingdoms.models.technologies.helpers import generate_tech_levels
 
 warlord_technology = {
     Technology(
@@ -27,7 +28,4 @@ custom_requirements = {
     "trade routes": ["advanced logistics"]
 }
 
-warlord_technology = {
-    tech.key: tech
-    for tech in warlord_technology
-}
+warlord_technology, warlord_requirements = generate_tech_levels(warlord_technology, custom_requirements)

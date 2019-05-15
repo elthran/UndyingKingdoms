@@ -1,5 +1,6 @@
 from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
+from undyingkingdoms.models.technologies.helpers import generate_tech_levels
 
 alchemist_technology = {
     Technology(
@@ -26,7 +27,4 @@ custom_requirements = {
     "elixir of life": ["advanced alchemy iii"]
 }
 
-alchemist_technology = {
-    tech.key: tech
-    for tech in alchemist_technology
-}
+alchemist_technology, alchemist_requirements = generate_tech_levels(alchemist_technology, custom_requirements)

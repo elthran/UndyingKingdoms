@@ -1,5 +1,6 @@
 from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
+from undyingkingdoms.models.technologies.helpers import generate_tech_levels
 
 rogue_technology = {
     Technology(
@@ -26,7 +27,4 @@ custom_requirements = {
     "trade routes": ["advanced espionage iii"]
 }
 
-rogue_technology = {
-    tech.key: tech
-    for tech in rogue_technology
-}
+rogue_technology, rogue_requirements = generate_tech_levels(rogue_technology, custom_requirements)

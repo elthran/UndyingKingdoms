@@ -1,5 +1,6 @@
 from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
+from undyingkingdoms.models.technologies.helpers import generate_tech_levels
 
 goblin_technology = {
     Technology(
@@ -36,8 +37,6 @@ goblin_technology = {
     )
 }
 
+custom_requirements = {}
 
-goblin_technology = {
-    tech.key: tech
-    for tech in goblin_technology
-}
+goblin_technology, goblin_requirements = generate_tech_levels(goblin_technology, custom_requirements)

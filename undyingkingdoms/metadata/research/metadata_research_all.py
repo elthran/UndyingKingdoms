@@ -45,20 +45,20 @@ generic_technology = [
         description='Your county has {birth_rate_modifier:+0.0%} to its birth rate',
         effects=Add('economy', birth_rate_modifier=0.15)
     ),
-    # Technology(
-    #     name='basic diplomacy',
-    #     cost=5,
-    #     max_level=1,
-    #     description='???',
-    #     effects=None
-    # ),
-    # Technology(
-    #     name='advanced diplomacy',
-    #     cost=5,
-    #     max_level=1,
-    #     description='???',
-    #     effects=None
-    # ),
+    Technology(
+        name='basic diplomacy',
+        cost=5,
+        max_level=1,
+        description='???',
+        effects=None
+    ),
+    Technology(
+        name='advanced diplomacy',
+        cost=5,
+        max_level=1,
+        description='???',
+        effects=None
+    ),
     Technology(
         name='Basic Agriculture',
         cost=250,
@@ -73,20 +73,20 @@ generic_technology = [
         description='{dairy_modifier:+0.0%} bonus to all dairy production within your county.',
         effects=Add('economy', dairy_modifier=0.50)
     ),
-    # Technology(
-    #     name='basic hierophant',
-    #     cost=5,
-    #     max_level=1,
-    #     description='???.',
-    #     effects=None
-    # ),
-    # Technology(
-    #     name='advanced hierophant',
-    #     cost=5,
-    #     max_level=1,
-    #     description='???',
-    #     effects=None
-    # ),
+    Technology(
+        name='basic hierophant',
+        cost=5,
+        max_level=1,
+        description='???.',
+        effects=None
+    ),
+    Technology(
+        name='advanced hierophant',
+        cost=5,
+        max_level=1,
+        description='???',
+        effects=None
+    ),
     Technology(
         name='Basic Economics',
         cost=250,

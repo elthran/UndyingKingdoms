@@ -1,5 +1,6 @@
 from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
+from undyingkingdoms.models.technologies.helpers import generate_tech_levels
 
 ogre_technology = {
     Technology(
@@ -12,7 +13,7 @@ ogre_technology = {
     )
 }
 
-ogre_technology = {
-    tech.key: tech
-    for tech in ogre_technology
+custom_requirements = {
 }
+
+ogre_technology, ogre_requirements = generate_tech_levels(ogre_technology, custom_requirements)

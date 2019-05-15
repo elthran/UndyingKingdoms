@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='undyingkingdoms',
-    version='0.0.04',
+    version='0.1.00',
     packages=['undyingkingdoms'],
     include_package_data=True,
     install_requires=[
@@ -36,6 +36,7 @@ setup(
         'Faker',
         'factory_boy',
         'roman',
+        'ipdb',
     ],
 )
 

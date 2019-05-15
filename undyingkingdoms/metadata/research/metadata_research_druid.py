@@ -1,5 +1,6 @@
 from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
+from undyingkingdoms.models.technologies.helpers import generate_tech_levels
 
 druid_technology = {
     Technology(
@@ -26,7 +27,4 @@ custom_requirements = {
     "nature's blessing": ["advanced agriculture"]
 }
 
-druid_technology = {
-    tech.key: tech
-    for tech in druid_technology
-}
+druid_technology, druid_requirements = generate_tech_levels(druid_technology, custom_requirements)

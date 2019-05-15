@@ -1,5 +1,6 @@
 from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
+from undyingkingdoms.models.technologies.helpers import generate_tech_levels
 
 cleric_technology = {
     Technology(
@@ -26,7 +27,4 @@ custom_requirements = {
     "heaven's blessing": ["missionaries"]
 }
 
-cleric_technology = {
-    tech.key: tech
-    for tech in cleric_technology
-}
+cleric_technology, cleric_requirements = generate_tech_levels(cleric_technology, custom_requirements)

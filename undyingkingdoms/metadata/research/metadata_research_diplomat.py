@@ -1,5 +1,6 @@
 from undyingkingdoms.models.effects import Times
 from undyingkingdoms.models.technologies import Technology
+from undyingkingdoms.models.technologies.helpers import generate_tech_levels
 
 diplomat_technology = {
     Technology(
@@ -24,7 +25,4 @@ diplomat_technology = {
 custom_requirements = {
 }
 
-diplomat_technology = {
-    tech.key: tech
-    for tech in diplomat_technology
-}
+diplomat_technology, diplomat_requirements = generate_tech_levels(diplomat_technology, custom_requirements)

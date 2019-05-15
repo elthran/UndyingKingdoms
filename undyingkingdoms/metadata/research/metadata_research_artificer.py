@@ -1,5 +1,6 @@
 from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
+from undyingkingdoms.models.technologies.helpers import generate_tech_levels
 
 artificer_technology = {
     Technology(
@@ -26,7 +27,4 @@ custom_requirements = {
     "masonry": ["advanced engineering iii"]
 }
 
-artificer_technology = {
-    tech.key: tech
-    for tech in artificer_technology
-}
+artificer_technology, artificer_requirements = generate_tech_levels(artificer_technology, custom_requirements)

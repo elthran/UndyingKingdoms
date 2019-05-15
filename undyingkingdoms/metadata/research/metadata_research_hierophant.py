@@ -1,5 +1,6 @@
 from undyingkingdoms.models.effects import Add
 from undyingkingdoms.models.technologies import Technology
+from undyingkingdoms.models.technologies.helpers import generate_tech_levels
 
 hierophant_technology = {
     Technology(
@@ -25,7 +26,4 @@ hierophant_technology = {
 custom_requirements = {
 }
 
-hierophant_technology = {
-    tech.key: tech
-    for tech in hierophant_technology
-}
+hierophant_technology, hierophant_requirements = generate_tech_levels(hierophant_technology, custom_requirements)

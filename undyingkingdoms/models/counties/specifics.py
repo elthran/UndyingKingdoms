@@ -56,12 +56,12 @@ def merge_tech_requirements(race, background):
     race_reqs = {}
     background_reqs = {}
     try:
-        race_reqs = getattr(race_mod, 'custom_requirements')
+        race_reqs = getattr(race_mod, f'{race}_requirements')
     except AttributeError:
         pass
 
     try:
-        background_reqs = getattr(background_mod, 'custom_requirements')
+        background_reqs = getattr(background_mod, f'{background}_requirements')
     except AttributeError:
         pass
 

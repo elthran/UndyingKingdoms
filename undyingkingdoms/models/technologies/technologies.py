@@ -1,3 +1,5 @@
+import warnings
+
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from tests import bp
@@ -119,6 +121,8 @@ class Technology(GameEvent):
                 try:
                     techs[key].requirements.append(techs[requirement])
                 except KeyError:
+                    message = f'Tech "{key}" -> "{requirement} relationship is failing.'
+                    warnings.warn(message, RuntimeWarning)
                     pass  # add new tech to techs
 
     def activate(self, county):

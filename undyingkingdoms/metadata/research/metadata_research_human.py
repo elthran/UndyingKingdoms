@@ -1,5 +1,6 @@
 from undyingkingdoms.models.effects import Times, Add
 from undyingkingdoms.models.technologies import Technology
+from undyingkingdoms.models.technologies.helpers import generate_tech_levels
 
 human_technology = {
     Technology(
@@ -36,7 +37,7 @@ human_technology = {
     )
 }
 
-human_technology = {
-    tech.key: tech
-    for tech in human_technology
+custom_requirements = {
 }
+
+human_technology, human_requirements = generate_tech_levels(human_technology, custom_requirements)
