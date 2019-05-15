@@ -66,13 +66,23 @@ class Technology(GameEvent):
 
         Note that output is included as well.
         """
+
         all_kwargs = dict(output=self.output)
         for effect in self.effects:
             all_kwargs.update(effect.kwargs)
-        # There's probably a better way(TM).
-        # as far as I can tell str.format should work but it doesn't
-        # handle "... {abs(x)} ..." where fstrings do just fine.
-        return eval('f' + repr(self._description), all_kwargs)
+        code = compile(self._description, '<string>', 'eval')
+        return eval(code, all_kwargs)
+
+    @description.setter
+    def description(self, value):
+        """Compile description into a format string.
+
+        This has the added bonus of validating all format code.
+        """
+        # validate format code, but otherwise do nothing.
+        # I haven't worked out how to store code objects yet.
+        compile('f' + repr(value), '<string>', 'eval')
+        self._description = 'f' + repr(value)
 
     def __init__(self, name, cost, max_level, description, requirements=None,
                  tier=1, output=None, effects=None, source="Generic"):
@@ -92,7 +102,7 @@ class Technology(GameEvent):
         self.output = output
         self.max_level = max_level
         self._completed = False
-        self._description = description
+        self.description = description
         self.requirements = requirements
         self.effects = effects
 

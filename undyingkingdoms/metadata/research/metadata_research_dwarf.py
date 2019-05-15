@@ -14,7 +14,7 @@ dwarf_technology = {
         name='Throwing Axes',
         cost=750,
         max_level=1,
-        description='Axemen get {soldier_defence:+) defence.',
+        description='Axemen get {soldier_defence:+} defence.',
         source="Dwarf",
         effects=Add('military', soldier_defence=2)
     ),
