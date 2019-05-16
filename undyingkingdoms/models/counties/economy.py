@@ -13,7 +13,11 @@ no mess of @methods. Once I fully convert the code I won't need
 all the extra methods. It is just faster to do it in stages.
 """
 
+
 class Economy(GameState):
+    BASE_BUILD_SLOTS = 3
+    BASE_HAPPINESS = 7
+
     _grain_modifier = db.Column(db.Float)
     _grain_produced = db.Column(db.Integer)
     _dairy_modifier = db.Column(db.Float)
@@ -236,8 +240,12 @@ class Economy(GameState):
             food_produced_modifier, county.race, county.background
         )
         self.dairy_produced = 0
-        self.build_slots = 3 + extract_modifiers(buildings_produced_per_day, county.race, county.background)
-        self.happiness_change = 7 + extract_modifiers(happiness_modifier, county.race, county.background)
+        self.build_slots = self.BASE_BUILD_SLOTS + extract_modifiers(
+            buildings_produced_per_day, county.race, county.background
+        )
+        self.happiness_change = self.BASE_HAPPINESS + extract_modifiers(
+            happiness_modifier, county.race, county.background
+        )
         self.iron_income = 0
         self.iron_multiplier = 0
         self.gold_modifier = extract_modifiers(income_modifier, county.race, county.background)

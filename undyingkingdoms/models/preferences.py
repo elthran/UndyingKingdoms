@@ -8,13 +8,14 @@ from .bases import GameState, db
 
 
 class Preferences(GameState):
+    BASE_TAX_RATE = 8
 
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship("User", back_populates='preferences')
 
     global_chat_on = db.Column(db.Boolean, default=False)
-    tax_rate = db.Column(db.Integer)
+    _tax_rate = db.Column(db.Integer)
     rations = db.Column(db.Float)
     production_choice = db.Column(db.Integer)
     research_choice_id = db.Column(db.Integer, db.ForeignKey('technology.id'))
@@ -28,6 +29,20 @@ class Preferences(GameState):
     last_checked_townhall = db.Column(db.DateTime, default=datetime.utcnow)
 
     weather_choices = ["clear skies", "stormy", "sunny", "cloudy", "light rain", "overcast"]
+
+    @property
+    def tax_rate(self):
+        return self._tax_rate or 0
+
+    @tax_rate.setter
+    def tax_rate(self, value):
+        """Set tax rate.
+
+        Tax rate has a flat reduction to happiness change.
+        """
+        county = self.county
+        county.happiness_change -= (value - self.tax_rate)
+        self._tax_rate = value
 
     def all_messages_query(self):
         return Chatroom.query.filter(Chatroom.is_global | (Chatroom.kingdom_id == self.county.kingdom_id))
@@ -51,7 +66,7 @@ class Preferences(GameState):
     def __init__(self, county, user):
         self.county = county
         self.user = user
-        self.tax_rate = 8
+        self.tax_rate = self.BASE_TAX_RATE
         self.rations = 1
         self.production_choice = county.GOLD
         self.research_choice = choice(list(county.available_techs))

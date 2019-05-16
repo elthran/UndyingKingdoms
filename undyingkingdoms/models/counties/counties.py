@@ -16,7 +16,7 @@ from ..notifications import Notification
 from ..expeditions import Expedition
 from ..infiltrations import Infiltration
 from ..trades import Trade
-from .all_metadata_imports import all_metadata_imports as md
+from undyingkingdoms.virtual_classes.all_metadata_imports import all_metadata_imports as md
 
 
 class County(GameState):
@@ -236,7 +236,6 @@ class County(GameState):
 
         Tax rate has a flat reduction to happiness change.
         """
-        self.happiness_change += self.tax_rate - value
         self.preferences.tax_rate = value
 
     @property

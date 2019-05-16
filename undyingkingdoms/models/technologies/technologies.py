@@ -2,7 +2,6 @@ import warnings
 
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from tests import bp
 from undyingkingdoms.models.notifications import Notification
 from ..bases import GameEvent, db
 
