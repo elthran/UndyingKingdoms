@@ -1,3 +1,4 @@
+from tests import bp
 from .interfaces import EffectInterface
 
 def relative_lookup(obj, attr):

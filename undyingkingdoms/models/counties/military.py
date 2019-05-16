@@ -1,7 +1,7 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from tests import bp
-from undyingkingdoms.calculations.filters import check_filter_match
+from undyingkingdoms.calculations.filters import check_filter_match, check_for_filter
 from undyingkingdoms.metadata.metadata import offensive_power_modifier
 from undyingkingdoms.models.armies import Army
 from ..magic import Casting
@@ -12,12 +12,13 @@ from ..bases import GameState, db
 class Military(GameState):
     BASE_DURATION = {'Attack': 18, 'Pillage': 12, 'Raze': 8}
     FILTERS = set(Army.TYPES.keys()) | {"unit", 'non_siege', 'non_monster_non_siege'}
-    MODIFIABLES = {'health', 'upkeep', 'defence', 'attack', 'gold', 'wood', 'iron'}
+    MODIFIABLES = {'health', 'upkeep', 'defence', 'attack', 'gold', 'wood', 'iron', 'trainable_per_day'}
 
     _offensive_modifier = db.Column(db.Float)
     _offensive_power = db.Column(db.Integer)
     _speed_modifier = db.Column(db.Float)
     speed = db.Column(db.Integer)
+    _trainable_per_day_modifier = db.Column(db.Float)
 
     # NOTE a bunch of columns are generated from the product of
     # FILTERS and MODIFIABLES. See allow_modify_army_attr_addon().
@@ -105,6 +106,20 @@ class Military(GameState):
     def speed_modifier(self):
         return self._speed_modifier
 
+    @hybrid_property
+    def trainable_per_day_modifier(self):
+        return (self._trainable_per_day_modifier or 0)
+
+    @trainable_per_day_modifier.setter
+    def trainable_per_day_modifier(self, value):
+        county = self.county
+        for unit in county.armies.values():
+            # if value != 0: bp()
+            # noinspection PyPropertyAccess
+            unit.trainable_per_day /= (1 + self.trainable_per_day_modifier)
+            unit.trainable_per_day *= (1 + value)
+        self._trainable_per_day_modifier = value
+
     def __setattr__(self, key, value):
         """Implement custom quick set to unit attribute.
 
@@ -113,17 +128,17 @@ class Military(GameState):
         get_modifiers() code.
         """
         try:
-            filter, unit_attr = key.rsplit('_', maxsplit=1)
-        except ValueError:
-            filter = None
+            filter_, unit_attr = check_for_filter(tuple(self.FILTERS), key)
+        except TypeError as ex:
+            filter_ = None
             unit_attr = None
         # I might need to check if there is a custom setter as well?
-        if filter in self.FILTERS:
+        if filter_ in self.FILTERS:
             county = self.county
             # I probably can make this one if ... but I was having
             # some boolean logic trouble making non_siege short circuiting.
             for unit in county.armies.values():
-                valid_target = check_filter_match(filter, unit)
+                valid_target = check_filter_match(filter_, unit)
                 # Matched a filter key so update this unit.
                 if valid_target:
                     self.set_unit_attribute(unit, key, unit_attr, value)
