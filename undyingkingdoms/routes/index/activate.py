@@ -9,6 +9,10 @@ from undyingkingdoms.models.forms.activate import EmailVerificationForm
 
 @app.route('/activate/', methods=['GET', 'POST'])
 def activate():
+    if app.config['ENV'] == 'development':
+        current_user.is_verified = True
+        return redirect(url_for('initialize'))
+
     form = EmailVerificationForm()
     user = current_user
     #TODO: make this only send once unless user request resend.
