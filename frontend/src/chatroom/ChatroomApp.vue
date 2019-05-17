@@ -27,6 +27,7 @@
       class="form-control"
       name="content"
       placeholder="Public to your kingdom"
+      :maxlength="maxLength"
       required
       autofocus
       @keyup.enter.exact="sendMessage"
@@ -59,6 +60,7 @@ export default {
   data () {
     return {
       CSRFToken: '',
+      maxLength: null,
       globalChatOn: true,
       messages: [],
       message: '',

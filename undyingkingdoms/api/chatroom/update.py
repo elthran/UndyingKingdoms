@@ -23,6 +23,7 @@ class UpdateAPI(MethodView):
         preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
         return jsonify(
             debugMessage=f"You called on {__name__}",
+            maxLength=form.CONTENT_SIZE,
             CSRFToken=form.csrf_token.current_token,
             messages=[vue_safe_message(m) for m in messages],
             globalChatOn=preferences.global_chat_on,
