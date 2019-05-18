@@ -3,22 +3,22 @@ from undyingkingdoms.models.counties.counties import County
 
 def test_alchemy_technology_effects(ctx):
     county = County.query.filter_by(leader="Elthran").one()
+    scientist = county.scientist
 
     # A county with no labs should get 0 research a turn
     county.buildings['lab'].total = 0
-    assert county.scientist.research_change == 0
+    assert scientist.research_change == 0
 
     # A county with one lab should get the lab output of research a turn
     county.buildings['lab'].total = 1
-    assert county.scientist.research_change == county.buildings['lab'].output
+    assert scientist.research_change == county.buildings['lab'].output
 
-    scientist = county.scientist
     research_change = scientist.research_change
 
     # Now that the county has alchemy, it should add the alchemy value
     tech = county.technologies['basic alchemy']
     tech.completed = True
-    expected_change = 0
+    expected_change = 0  # this should be refactored into the Effect class?
     for effect in tech.effects:
         expected_change += effect.kwargs.get('research_change', 0)
 
