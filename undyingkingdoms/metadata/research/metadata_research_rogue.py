@@ -7,8 +7,8 @@ rogue_technology = {
         name='Advanced Espionage',
         cost=500,
         max_level=3,
-        description='All thief missions are {gain_modifer:+0.0%} more effective.',
-        effects=Add('espionage', gain_modifer=0.2),
+        description='All thief missions are {gain_modifier:+0.0%} more effective.',
+        effects=Add('espionage', gain_modifier=0.2),
         source="Rogue"
     ),
     Technology(
