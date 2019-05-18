@@ -28,10 +28,14 @@ class Add(EffectInit, EffectInterface):
     def activate(self, obj):
         obj = relative_lookup(obj, self.attr)
         for key in self.kwargs:
+            try:
+                initial_val = getattr(obj, '_' + key)
+            except AttributeError:
+                initial_val = getattr(obj, key)
             setattr(
                 obj,
                 key,
-                getattr(obj, key) + self.kwargs[key]
+                initial_val + self.kwargs[key]
             )
 
     def undo(self, obj):
