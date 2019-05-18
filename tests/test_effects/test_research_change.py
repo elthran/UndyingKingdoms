@@ -4,14 +4,15 @@ from undyingkingdoms.models.counties.counties import County
 def test_alchemy_technology_effects(ctx):
     county = County.query.filter_by(leader="Elthran").one()
     scientist = county.scientist
+    lab = county.buildings['lab']
 
     # A county with no labs should get 0 research a turn
-    county.buildings['lab'].total = 0
+    lab.total = 0
     assert scientist.research_change == 0
 
     # A county with one lab should get the lab output of research a turn
-    county.buildings['lab'].total = 1
-    assert scientist.research_change == county.buildings['lab'].output
+    lab.total = 1
+    assert scientist.research_change == lab.output
 
     research_change = scientist.research_change
 
