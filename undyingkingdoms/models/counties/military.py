@@ -153,7 +153,7 @@ class Military(GameState):
             unit_val + value - (getattr(self, key) or 0)
         )
 
-    def get_expedition_duration(self, attack_type, successful):
+    def get_expedition_duration(self, attack_type, successful=True):
         # noinspection PyPropertyAccess
         duration = self.BASE_DURATION[attack_type] * 100 / self.speed_modifier
         duration -= self.speed
