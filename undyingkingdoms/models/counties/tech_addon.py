@@ -73,6 +73,7 @@ def tech_addon(county_cls, tech_cls):
         tech.current += self.research
         if tech.current >= tech.cost:  # You save left over research
             self.research = tech.current - tech.cost
+            tech.current = tech.cost  # Remove the excess research as it looks off and is useless
             tech.completed = True
             available_technologies = list(self.available_techs)
             if available_technologies:

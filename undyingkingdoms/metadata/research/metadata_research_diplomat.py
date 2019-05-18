@@ -15,7 +15,7 @@ diplomat_technology = {
         name='diplo2',
         cost=5,
         max_level=1,
-        description='...',
+        description='b...',
         effects=None,
         source="Diplomat"
     )

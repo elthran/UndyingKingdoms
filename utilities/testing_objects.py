@@ -23,11 +23,7 @@ def build_testing_objects():
     county = initialize_county(user, kingdom1, "Ulthuan", 'Sir', "Elthran", 'Ogre', 'Alchemist')
     county.save()
     county.vote = county.id
-    county.buildings['arcane'].total = 5
-    county.buildings['lab'].total = 100
-    county.technologies['basic agriculture'].completed = True
-    # county.technologies['basic agriculture II'].completed = True
-    # county.technologies['basic agriculture III'].completed = True
+    county.buildings['lab'].total = 10
     county.mana = 500
     county.happiness = 80
     kingdom1.leader = county.id

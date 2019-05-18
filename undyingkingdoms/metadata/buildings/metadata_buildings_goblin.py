@@ -17,9 +17,3 @@ goblin_buildings['tavern'].class_name, goblin_buildings['tavern'].class_name_plu
 goblin_buildings['lab'].class_name, goblin_buildings['lab'].class_name_plural = 'foundry', 'foundries'
 goblin_buildings['arcane'].class_name, goblin_buildings['arcane'].class_name_plural = 'witch hut', 'witch huts'
 goblin_buildings['lair'].class_name, goblin_buildings['lair'].class_name_plural = 'wyvern lair', 'wyvern lairs'
-# Goblins:
-goblin_buildings['tavern'].output += 1
-goblin_buildings['tavern'].stone_cost *= 2
-goblin_buildings['tavern'].description = 'Each thieves tavern gives you 2 additional spies to send on missions.'
-
-

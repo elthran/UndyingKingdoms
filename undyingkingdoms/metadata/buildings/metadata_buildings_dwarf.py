@@ -17,10 +17,3 @@ dwarf_buildings['tavern'].class_name, dwarf_buildings['tavern'].class_name_plura
 dwarf_buildings['lab'].class_name, dwarf_buildings['lab'].class_name_plural = 'alchemist lab', 'alchemist labs'
 dwarf_buildings['arcane'].class_name, dwarf_buildings['arcane'].class_name_plural = 'rune forge', 'rune forges'
 dwarf_buildings['lair'].class_name, dwarf_buildings['lair'].class_name_plural = 'manticore lair', 'manticore lairs'
-# Dwarves:
-dwarf_buildings['fort'].output += 2
-dwarf_buildings['fort'].stone_cost += 5
-dwarf_buildings['fort'].description = 'Each stronghold adds +9% to your county\'s defence value.'
-
-dwarf_buildings['mine'].output += 1
-dwarf_buildings['mine'].description = 'Each iron mine produces 3 iron a day.'
