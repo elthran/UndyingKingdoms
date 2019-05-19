@@ -18,3 +18,9 @@ From https://linuxconfig.org/how-to-install-docker-on-ubuntu-18-04-bionic-beaver
     > $ docker --version
     
     > Docker version 17.03.2-ce, build f5ec1e2
+
+From https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04
+
+3. If you want to avoid typing sudo whenever you run the docker command, add your username to the docker group:
+
+    > sudo usermod -aG docker ${USER}
