@@ -33,6 +33,8 @@ From https://docker-curriculum.com/
 
 4. `docker run -d -p 8888:5000 --name undykingkingdoms klondikemarlen/undykingkindoms`
 
-Useful docker commands.
+Useful docker commands:
+
 Docker cleanup: $`docker container prune`
+
 Run interactive terminal: $`docker run -it <container-name> sh`
