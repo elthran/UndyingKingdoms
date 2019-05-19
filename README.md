@@ -33,6 +33,10 @@ From https://docker-curriculum.com/
 
 4. `docker run -p 127.0.0.1:5000:5000 --name undyingkingdoms klondikemarlen/undyingkingdoms python manage.py serve -h 0.0.0.0`
 
+This will then lie and tell you it is running on 0.0.0.0:5000, it isn't it is running on 127.0.0.1:5000 (this is more secure).
+
+5. Set up a docker mysql server image! and work out how to chain them together?
+
 Useful docker commands:
 
 Docker cleanup: $`docker container prune`
