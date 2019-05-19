@@ -131,9 +131,7 @@ th {
         <th>Description</th>
       </tr>
       {% for army in county.armies.values() %}
-        <!-- {{ [county.gold divided by army.gold,
-        county.wood divided by army.wood,
-        county.iron divided by army.iron] }} -->
+        <!--  [county.gold // army.gold, county.wood // army.wood, county.iron // army.iron]  -->
         <!--(list | sort)[0] replicates min()-->
         {% set slider_size = max_trainable_by_cost(county, army) %}
       <tr>
