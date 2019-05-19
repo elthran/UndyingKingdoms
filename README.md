@@ -37,6 +37,12 @@ This will then lie and tell you it is running on 0.0.0.0:5000, it isn't it is ru
 
 5. Set up a docker mysql server image! and work out how to chain them together?
 
+#### Alternate manual version (in progress)
+
+1. https://github.com/PyMySQL/mysqlclient-python
+
+
+
 Useful docker commands:
 
 Docker cleanup: $`docker container prune`
