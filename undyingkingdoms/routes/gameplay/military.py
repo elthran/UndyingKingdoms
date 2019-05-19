@@ -15,11 +15,14 @@ def monsters_buildable(county):
 
 
 def max_trainable_by_cost(county, army):
-    max_size = min(
-        county.gold // army.gold,
-        county.wood // army.wood,
-        county.iron // army.iron
-    )
+    try:
+        max_size = min(
+            county.gold // army.gold,
+            county.wood // army.wood,
+            county.iron // army.iron
+        )
+    except ZeroDivisionError:
+        max_size = 50
     if army.name == 'monster':
         return min(
             max_size,
