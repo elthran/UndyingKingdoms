@@ -27,4 +27,4 @@ From https://www.digitalocean.com/community/tutorials/how-to-install-and-use-doc
 
 From https://docker-curriculum.com/
 
-4. More useful information ...
+4. Docker cleanup: $`docker rm $(docker ps -a -q -f status=exited)`
