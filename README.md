@@ -2,7 +2,7 @@ A fun game.
 
 #### Development Setup Instructions 
 
-**NOTE: THESE WILL NOT WORK YET, as I'm having some trouble installing all the correct python packages in my container and my internet is to slow to upload the images :P**
+**NOTE: THESE WILL NOT WORK YET, as I need to work out how to add in a mysql container.**
 
 I am going to be adding to this through the next few days.
 
