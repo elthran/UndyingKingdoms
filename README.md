@@ -27,7 +27,7 @@ From https://www.digitalocean.com/community/tutorials/how-to-install-and-use-doc
 
 From https://docker-curriculum.com/
 
-4. `docker pull my-not-yet-existing-undykingkindoms-docker-file`
+4. `docker run -d -P --name undykingkingdoms klondikemarlen/my-not-yet-existing-undykingkindoms-docker-file`
 
 Useful docker commands.
-Docker cleanup: $`docker rm $(docker ps -a -q -f status=exited)`
+Docker cleanup: $`docker container prune`
