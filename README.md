@@ -31,7 +31,7 @@ From https://www.digitalocean.com/community/tutorials/how-to-install-and-use-doc
 
 From https://docker-curriculum.com/
 
-4. `docker run -d -p 8888:5000 --name undyingkingdoms klondikemarlen/undyingkingdoms`
+4. `docker run -p 127.0.0.1:5000:5000 --name undyingkingdoms klondikemarlen/undyingkingdoms python manage.py serve -h 0.0.0.0`
 
 Useful docker commands:
 
