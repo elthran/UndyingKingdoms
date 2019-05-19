@@ -24,3 +24,7 @@ From https://www.digitalocean.com/community/tutorials/how-to-install-and-use-doc
 3. If you want to avoid typing sudo whenever you run the docker command, add your username to the docker group:
 
     > sudo usermod -aG docker ${USER}
+
+From https://docker-curriculum.com/
+
+4. More useful information ...
