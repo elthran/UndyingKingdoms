@@ -23,11 +23,11 @@ def build_testing_objects():
     county = initialize_county(user, kingdom1, "Ulthuan", 'Sir', "Elthran", 'Human', 'Alchemist')
     county.save()
     county.vote = county.id
-    county.buildings['lab'].total = 10
+    county.buildings['fort'].total = 10
     county.mana = 500
     county.happiness = 80
     kingdom1.leader = county.id
-    county.technologies['trading'].completed = True
+    county.technologies['elixir of life'].completed = True
     kingdom1.approval_rating = 60
     # Create Haldon
     kingdom2 = Kingdom.query.get(2)
