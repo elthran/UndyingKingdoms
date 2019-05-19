@@ -1,6 +1,8 @@
 A fun game.
 
-#### Development Setup Instructions
+#### Development Setup Instructions 
+
+**NOTE: THESE WILL NOT WORK YET, as I'm having some trouble installing all the correct python packages in my container and my internet is to slow to upload the images :P**
 
 I am going to be adding to this through the next few days.
 
