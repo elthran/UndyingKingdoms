@@ -35,3 +35,4 @@ From https://docker-curriculum.com/
 
 Useful docker commands.
 Docker cleanup: $`docker container prune`
+Run interactive terminal: $`docker run -it <container-name> sh`
