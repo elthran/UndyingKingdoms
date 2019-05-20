@@ -14,7 +14,7 @@ I am going to be adding to this through the next few days.
 
 3. `bin/install.sh`
 
-4. `bin/activate`
+4. `source bin/activate` or `. bin/activate`
 
 5. `python manage.py serve`
 
