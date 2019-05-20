@@ -1,8 +1,6 @@
 A fun game.
 
-#### Development Setup Instructions 
-
-**NOTE: THESE WILL NOT WORK YET.**
+#### Development Setup Instructions
 
 I am going to be adding to this through the next few days.
 
@@ -15,6 +13,8 @@ I am going to be adding to this through the next few days.
 3. `bin/install.sh`
 
 4. `source bin/activate` or `. bin/activate`
+
+5. `python manage.py reset_db` which incidentally creates the database if it doesn't exist.
 
 5. `python manage.py serve`
 
