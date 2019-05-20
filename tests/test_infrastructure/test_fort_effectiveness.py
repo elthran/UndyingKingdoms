@@ -19,5 +19,3 @@ def test_forts_add_defence(ctx):
     assert low_defense < medium_defense
     assert medium_defense < high_defense
 
-    print(low_defense, medium_defense, high_defense)
-

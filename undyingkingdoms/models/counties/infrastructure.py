@@ -56,10 +56,7 @@ class Infrastructure(GameState):
         county = self.county
         fort = county.buildings['fort']
         # noinspection PyPropertyAccess
-        fort.output = round(
-            fort.output *
-            (1 + value - self.fort_multiplier)
-        )
+        fort.output = round(fort.output * (1 + value - self.fort_multiplier))
 
         self._fort_multiplier = value
 
