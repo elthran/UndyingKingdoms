@@ -21,3 +21,17 @@ I am going to be adding to this through the next few days.
 This install script uses information from:
 From https://github.com/PyMySQL/mysqlclient-python
 
+#### Front-end Development instructions.
+
+1. `sudo npm install`
+
+2. `sudo npm install --global vue-cli`
+
+3. (optional) If Node.js version is incompatible with npm version
+  a. `sudo npm install -g n`
+
+3. `cd frontend` (if inside udk folder)
+
+4. `npm install`
+
+This uses information from https://stackoverflow.com/q/41159264
