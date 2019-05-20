@@ -9,7 +9,6 @@ DB_PASSWORD = private_config.DB_PASSWORD
 HOST = "localhost"
 OPTIONS = "charset=utf8"
 
-
 class BaseConfig:
     """Base configuration."""
     ENV = 'base'
@@ -33,15 +32,6 @@ class BaseConfig:
     ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 
-    MAIL_USE_TLS = True
-    MAIL_USE_SSL = True
-    MAIL_SERVER='smtp.gmail.com',
-    MAIL_PORT=587,
-    MAIL_USERNAME=private_config.MAIL_USERNAME,
-    MAIL_PASSWORD=private_config.MAIL_PASSWORD,
-    MAIL_DEFAULT_SENDER='This seems to do nothing'
-
-
 class ProductionConfig(BaseConfig):
     ENV = 'production'
     DEBUG = False
@@ -55,6 +45,8 @@ class DevelopmentConfig(BaseConfig):
     DEBUG = True
     if DEBUG:
         SSLIFY_DISABLE = True
+    SQLALCHEMY_DATABASE_URI = MYSQL_BASE.format(
+        user=USER, passwd=DB_PASSWORD, host=HOST, dbname=DATABASE_NAME, options=OPTIONS)
 
 
 class TestingConfig:
