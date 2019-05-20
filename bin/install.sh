@@ -4,6 +4,7 @@
 # This script uses sudo only where absolutely necessary.
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path/.."  # make sure you are in the udk directory
+randpw() { < /dev/urandom tr -dc "[:alnum:]" | head -c${1:-${1-32}};echo; }
 
 # install modules
 sudo apt-get update
@@ -54,9 +55,23 @@ password = $mysql_passwd
 chmod 400 $mysql_cnf
 udk_user="elthran"
 udk_db="undyingkingdoms"
-mysql --defaults-file=$mysql_cnf -e "CREATE USER '$udk_user'@'localhost'IDENTIFIED BY '$mysql_passwd';"
+udk_mysql_passwd=$(randpw 16)
+mysql --defaults-file=$mysql_cnf -e "CREATE USER '$udk_user'@'localhost'IDENTIFIED BY '$udk_mysql_passwd';"
 mysql --defaults-file=$mysql_cnf -e "GRANT ALL ON $udk_db.* TO '$udk_user'@'localhost' WITH GRANT OPTION;"
 mysql --defaults-file=$mysql_cnf -e "GRANT ALL ON ${udk_db}_test.* TO '$udk_user'@'localhost' WITH GRANT OPTION;"
 chmod 600 $mysql_cnf
 sed -i 's/root/'${udk_user}'/g' $mysql_cnf
+sed -i 's/password/c\password = '${udk_mysq_passwd} $mysql_cnf
 chmod 400 $mysql_cnf
+
+config=private_config.py
+config_bak=private_config.py.bak
+template_config=template_private_config.py
+if [[ -e $config && ! -e $config_bak ]]; then
+  mv $config $config_bak
+fi
+yes | cp -rf $template_config $config
+sed -i 's/db_passwd/'$udk_mysql_passwd'/g' $config
+sed -i 's/complex_pass/'$(randpw 64)'/g' $config
+sed -i 's/complex_pass2/'$(randpw 64)'/g' $config
+sed -i 's/complex_pass3/'$(randpw 64)'/g' $config

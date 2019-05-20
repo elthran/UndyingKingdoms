@@ -13,7 +13,7 @@ def app():
     app = udk_app  # fixing naming overlap.
     app.config.from_object(config.TestingConfig)  # overwrite dev config.
 
-    engine = create_engine(config.TestingConfig.SQLALCHEMY_DATABASE_URI)
+    engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
     if not database_exists(engine.url):
         create_database(engine.url)
 
