@@ -65,9 +65,7 @@ def reset_db():
     from sqlalchemy import create_engine
     from sqlalchemy_utils import database_exists, create_database
 
-    import private_config
-
-    engine = create_engine(private_config.SQLALCHEMY_DATABASE_URI)
+    engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
     if not database_exists(engine.url):
         create_database(engine.url)
     drop_db()
