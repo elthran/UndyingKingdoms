@@ -154,8 +154,18 @@ class Kingdom(GameState):
         return self._kingdoms_who_offered_us_alliances + self._kingdoms_who_we_offered_alliances
 
     @property
-    def armistices(self):
+    def kingdoms_in_armistice(self):
         return self._armistices_left + self._armistices_right
+
+    @property
+    def armistices(self):
+        armistices = []
+        for kingdom in self.kingdoms_in_armistice:
+            armistice = Diplomacy.query.filter_by(status=1).filter(
+                (Diplomacy.kingdom_id == kingdom.id) | (Diplomacy.target_id == kingdom.id)).first()
+            if armistice:
+                armistices.append(armistice)
+        return armistices
 
     @property
     def total_land_of_top_three_counties(self):

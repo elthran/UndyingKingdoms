@@ -12,7 +12,7 @@ def build_relations_form(kingdom):
     kingdoms_at_war = kingdom.enemies
     kingdoms_at_peace = kingdom.allies + \
                         kingdom.kingdoms_with_pending_alliances + \
-                        kingdom.armistices
+                        kingdom.kingdoms_in_armistice
 
     eligible_kingdoms = set(all_kingdoms) - set(kingdoms_at_war) - set(kingdoms_at_peace)
 
