@@ -14,6 +14,10 @@ I am going to be adding to this through the next few days.
 
 3. `bin/install.sh`
 
+4. `bin/activate`
+
+5. `python manage.py serve`
+
 This install script uses information from:
 From https://github.com/PyMySQL/mysqlclient-python
 
