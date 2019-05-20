@@ -1,40 +1,23 @@
 A fun game.
 
-#### Development Setup Instructions 
-
-**NOTE: THESE WILL NOT WORK YET, as I'm having some trouble installing all the correct python packages in my container and my internet is to slow to upload the images :P**
+#### Development Setup Instructions
 
 I am going to be adding to this through the next few days.
 
-1. Install docker with `sudo apt install docker.io`
+1. `git clone https://github.com/elthran/UndyingKingdoms.git udk`
 
-From https://linuxconfig.org/how-to-install-docker-on-ubuntu-18-04-bionic-beaver
+3. `cd udk`
 
-2. The following linux commands will start Docker and ensure that starts after the reboot:
-    > $ sudo systemctl start docker
-    
-    > $ sudo systemctl enable docker
+2. `chmod +x bin/install.sh`
 
-    All done.
+3. `bin/install.sh`
 
-    > $ docker --version
-    
-    > Docker version 17.03.2-ce, build f5ec1e2
+4. `source bin/activate` or `. bin/activate`
 
-From https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04
+5. `python manage.py reset_db` which incidentally creates the database if it doesn't exist.
 
-3. If you want to avoid typing sudo whenever you run the docker command, add your username to the docker group:
+5. `python manage.py serve`
 
-    > sudo usermod -aG docker ${USER}
-    
-    Then restart your computer.
+This install script uses information from:
+From https://github.com/PyMySQL/mysqlclient-python
 
-From https://docker-curriculum.com/
-
-4. `docker run -d -p 8888:5000 --name undykingkingdoms klondikemarlen/undykingkindoms`
-
-Useful docker commands:
-
-Docker cleanup: $`docker container prune`
-
-Run interactive terminal: $`docker run -it <container-name> sh`
