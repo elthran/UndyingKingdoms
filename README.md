@@ -14,9 +14,11 @@ I am going to be adding to this through the next few days.
 
 4. `source bin/activate` or `. bin/activate`
 
-5. `python manage.py reset_db` which incidentally creates the database if it doesn't exist.
+5. Edit the template_private_config.py and rename it private_config.py
 
-5. `python manage.py serve`
+6. `python manage.py reset_db` which incidentally creates the database if it doesn't exist.
+
+7. `python manage.py serve`
 
 This install script uses information from:
 From https://github.com/PyMySQL/mysqlclient-python
