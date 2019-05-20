@@ -159,7 +159,7 @@ class Kingdom(GameState):
 
     @property
     def armistices(self):
-        return Diplomacy.query.filter_by(status=1, action=3).filter(
+        return Diplomacy.query.filter_by(status=Diplomacy.IN_PROGRESS, action=Diplomacy.ARMISTICE).filter(
             (Diplomacy.kingdom_id == self.id) | (Diplomacy.target_id == self.id)).all()
 
     @property
