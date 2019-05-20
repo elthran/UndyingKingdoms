@@ -9,6 +9,12 @@ DB_PASSWORD = private_config.DB_PASSWORD
 HOST = "localhost"
 OPTIONS = "charset=utf8"
 
+# dummy account info
+JACOB_TEMPORARY_EMAIL = "elthran@gmail.com"
+JACOB_TEMPORARY_ACCOUNT_PASSWORD = "star"
+MARLEN_TEMPORARY_EMAIL = "haldon@gmail.com"
+MARLEN_TEMPORARY_ACCOUNT_PASSWORD = "brunner"
+
 class BaseConfig:
     """Base configuration."""
     ENV = 'base'

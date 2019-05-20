@@ -12,9 +12,3 @@ CLOCK_KEY = 'complex_pass2'
 # Enable protection against *Cross-site Request Forgery (CSRF)*
 CSRF_SESSION_KEY = 'complex_pass3'
 SENDGRID_API_KEY = "api_key_that_you_can't_have"
-
-# dummy account info - refactor to config.py?
-JACOB_TEMPORARY_EMAIL = "elthran@gmail.com"
-JACOB_TEMPORARY_ACCOUNT_PASSWORD = "star"
-MARLEN_TEMPORARY_EMAIL = "haldon@gmail.com"
-MARLEN_TEMPORARY_ACCOUNT_PASSWORD = "brunner"
