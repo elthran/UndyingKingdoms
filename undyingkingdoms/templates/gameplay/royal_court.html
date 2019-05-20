@@ -36,6 +36,10 @@ We are not at war with anyone.
 {% else %}
 We are not at allied with anyone.
 {% endfor %}
+{% for armistice in kingdom.armistices %}
+  {% set ally = armistice.get_other_kingdom(kingdom) %}
+  <p style="color:green">Temporary armistice with <a href="{{ url_for('kingdom', kingdom_id=ally.id) }}">{{ ally.name }}</a> for {{ armistice.duration }} more days.</p>
+{% endfor %}
 
 <h2>Pending Alliance Offers:</h2>
 {% for ally in offers_from_us %}
