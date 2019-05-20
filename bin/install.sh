@@ -19,7 +19,7 @@ ln -s ~/virtual_envs/udk_env/bin/activate bin/activate
 # allow activate script to auto start mysql
 echo "
 # Inject mysql startup into environment activation
-sudo service mysql start
+sudo /etc/init.d/mysql start
 sudo -k
 " >> bin/activate
 . bin/activate
