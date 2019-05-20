@@ -128,6 +128,11 @@ h2 {
 <div id="content">
   <h2>Available Land: {{ county.get_available_land() }} / {{ county.land }}</h2>
   <h2>Unemployed Citizens : {{ county.get_available_workers() }} / {{ county.population }}</h2>
+  {% if county.get_workers_needed_to_be_efficient() %}
+      <h2 style="color:red;">You need {{ county.get_workers_needed_to_be_efficient() }} more citizens to fully utilize your infrastructure.<br>
+  {% else %}
+      <h2 style="color:green;">{% endif %}
+        Your buildings are currently {{ (county.building_efficiencies() * 100)|int }}% efficient.</h2>
   <p class="bottom-spacer-dot-3">You may assign a task to your idle population. </p>
   <form id="goal-form" action="{{ url_for('api.infrastructure_allocate_api') }}" method="POST" accept-charset="UTF-8">
     {{ excess_worker_form.csrf_token(id="allocate-form-csrf-token") }}

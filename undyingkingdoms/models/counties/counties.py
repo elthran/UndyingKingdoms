@@ -598,6 +598,14 @@ class County(GameState):
         return max(self.land - sum(building.total + building.pending for building in self.buildings.values()), 0)
 
     # Workers / Population / Soldiers
+    def get_workers_needed_to_be_efficient(self):
+        if self.get_non_military_citizens() < self.get_employed_workers():
+            return self.get_employed_workers() - self.get_non_military_citizens()
+        return 0
+
+    def building_efficiencies(self):
+        return round((self.population - self.get_workers_needed_to_be_efficient()) / self.population, 2)
+
     def get_army_size(self):
         return sum(army.total + army.currently_training for army in self.armies.values())
 
@@ -609,6 +617,9 @@ class County(GameState):
 
     def get_unavailable_army_size(self):
         return sum(army.traveling for army in self.armies.values())
+
+    def get_non_military_citizens(self):
+        return self.population - self.get_army_size()
 
     def get_employed_workers(self):
         """
