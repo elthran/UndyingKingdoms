@@ -14,7 +14,7 @@ I am going to be adding to this through the next few days.
 
 4. `source bin/activate` or `. bin/activate`
 
-5. Edit the template_private_config.py and rename it private_config.py
+5. Make the appropriate edits to `template_private_config.py` and rename it `private_config.py`
 
 6. `python manage.py reset_db` which incidentally creates the database if it doesn't exist.
 
