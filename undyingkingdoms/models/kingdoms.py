@@ -159,13 +159,8 @@ class Kingdom(GameState):
 
     @property
     def armistices(self):
-        armistices = []
-        for kingdom in self.kingdoms_in_armistice:
-            armistice = Diplomacy.query.filter_by(status=1).filter(
-                (Diplomacy.kingdom_id == kingdom.id) | (Diplomacy.target_id == kingdom.id)).first()
-            if armistice:
-                armistices.append(armistice)
-        return armistices
+        return Diplomacy.query.filter_by(status=1, action=3).filter(
+            (Diplomacy.kingdom_id == self.id) | (Diplomacy.target_id == self.id)).all()
 
     @property
     def total_land_of_top_three_counties(self):
