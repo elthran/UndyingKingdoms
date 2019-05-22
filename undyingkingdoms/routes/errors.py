@@ -1,4 +1,5 @@
 import subprocess
+from random import randint
 
 from flask import render_template
 from flask_login import current_user
@@ -16,8 +17,24 @@ def not_found(error):
 
 @app.errorhandler(500)
 def server_fault(error):
-    county = current_user.county
-    admin = User.query.get(1)
+    try:
+        county = current_user.county
+        county_name = county.name
+    except AttributeError:
+        county = None
+        county_name = None
+
+    if current_user.is_authenticated:
+        user_name = current_user.username
+        user_email = current_user.email
+        user_info = f'{user_name} <{user_email}>'
+    else:
+        user_info = "AnonymousUser"
+
+    admin_id_to_message = randint(1, 2)
+    admin = User.query.get(admin_id_to_message)
+    admin_name = admin.username
+    admin_email = admin.email
 
     # If this code is slow update it.
     log_file = "/var/log/www.undyingkingdoms.com.error.log"
@@ -26,11 +43,11 @@ def server_fault(error):
     for line in f.stdout.readlines():
         error_log += line.decode('utf-8').replace('\n', "<br />")
 
-    county_info = f' of {county.name} county' if county else ''
+    county_info = f' of {county_name} county' if county and county_name else ''
 
     from_email = "Undying Kingdoms <no-reply@undyingkingdoms.com>"
     subject = 'The server is crashing!!!'
-    to_email = f"Admin '{admin.username}' <{admin.email}>"
+    to_email = f"Admin '{admin_name}' <{admin_email}>"
     content = f"""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml">
          <head>
@@ -41,10 +58,11 @@ def server_fault(error):
         <body style="margin: 0; padding: 0;">
          <table border="0" cellpadding="0" cellspacing="0" width="100%">
           <tr>
-           <td>
-            <p>Hi Admin '{admin.username}',</p>
+           <td>.user
+            <p>Hi Admin '{admin_name}',</p>
             <p>The server is currently crashing with error: {error}</p>
-            <p>This error was found/caused by '{current_user.username}' <{current_user.email}>{county_info}, you should probably thank them for bringing this to our attention.
+            <p>This error was found/caused by {user_info}{county_info},
+                you should probably thank them for bringing this to our attention.
             <p>The debug log is as follows.</p>
             <p>{error_log}</p>
            </td>
@@ -79,7 +97,7 @@ def server_fault(error):
     try:
         sg = SendGridAPIClient(api_key=private_config.SENDGRID_API_KEY)
         # noinspection PyUnresolvedReferences
-        response = sg.send(data)
+        sg.send(data)
     except Exception as e:
         print(e, data)
-    return render_template('500.html', error=error, admin=admin.username), 500
+    return render_template('500.html', error=error, admin=admin_name), 500
