@@ -39,14 +39,3 @@ def in_active_session():
             finally:
                 return None
     return None
-
-
-@app.before_request
-def check_for_county():
-    """Implement in_active_session for every request."""
-
-    if current_user.is_authenticated:
-        # print(request.endpoint)
-        if current_user.county is None:
-            return redirect(url_for('initialize'))
-    return None
