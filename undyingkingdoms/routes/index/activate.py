@@ -22,7 +22,7 @@ def activate():
 
     from_email = "Undying Kingdoms <no-reply@undyingkingdoms.com>"
     subject = 'Welcome to Undying Kingdoms'
-    to_email = f"Owner of account '{user_name}' <{user_email}>"
+    to_email = f"Owner of account {user_name} <{user_email}>"
     content = render_template(
         'email/activate_body.html',
         user_name=user_name,
