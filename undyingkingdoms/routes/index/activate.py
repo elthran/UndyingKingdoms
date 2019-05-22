@@ -32,7 +32,7 @@ def activate():
 
     message = Mail(
         from_email=from_email,
-        to_email=to_email,
+        to_emails=to_email,
         subject=subject,
         html_content=content
     )
