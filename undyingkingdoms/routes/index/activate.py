@@ -1,6 +1,7 @@
 from flask import url_for, redirect, render_template
 from flask_login import current_user, login_required
 from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 import private_config
 from undyingkingdoms import app
@@ -12,8 +13,8 @@ from undyingkingdoms.models.forms.activate import EmailVerificationForm
 def activate():
     form = EmailVerificationForm()
     user = current_user
-    #TODO: make this only send once unless user request resend.
-    #TODO: hash should be different every time.
+    # TODO: make this only send once unless user request resend.
+    # TODO: hash should be different every time.
 
     email_hash = user.generate_verification_hash()
 
@@ -29,34 +30,21 @@ def activate():
         email_hash=email_hash,
     )
 
-    data = {
-      "personalizations": [
-        {
-          "to": [
-            {
-              "email": to_email
-            }
-          ],
-          "subject": subject
-        }
-      ],
-      "from": {
-        "email": from_email
-      },
-      "content": [
-        {
-          "type": "text/html",
-          "value": content
-        }
-      ]
-    }
+    message = Mail(
+        from_email=from_email,
+        to_email=to_email,
+        subject=subject,
+        html_content=content
+    )
+
+    print(message)
 
     try:
         sg = SendGridAPIClient(api_key=private_config.SENDGRID_API_KEY)
         # noinspection PyUnresolvedReferences
-        sg.send(data)
+        sg.send(message)
     except Exception as e:
-        print(e, data)
+        print(e, message)
 
     if form.validate_on_submit():
         if user.verify_verification_hash(form.code.data):
