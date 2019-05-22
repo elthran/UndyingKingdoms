@@ -19,7 +19,8 @@ def activate():
             if user.verify_verification_hash(form.code.data.strip()):
                 user.is_verified = True
                 user.save()
-        return redirect(url_for('initialize'))
+                return redirect(url_for('initialize'))
+        return redirect(url_for('activate'))
 
     # TODO: make this only send once unless user request resend.
     # TODO: hash should be different every time.
