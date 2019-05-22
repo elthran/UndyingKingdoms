@@ -47,7 +47,6 @@ def check_for_county():
 
     if current_user.is_authenticated:
         # print(request.endpoint)
-        if current_user.county is None and \
-                request.endpoint not in ('initialize', 'static', 'api.routing_api', 'login', 'activate', 'logout'):
+        if current_user.county is None:
             return redirect(url_for('initialize'))
     return None
