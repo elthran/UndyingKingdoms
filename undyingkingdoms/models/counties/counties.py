@@ -943,7 +943,7 @@ class County(GameState):
             # TODO: defender should gain points as well.
             kingdom.distribute_war_points(enemy_kingdom, war_score)
         else:
-            enemy_kingdom.distribute_war_points(kingdom, casualties * 0.01)
+            enemy_kingdom.distribute_war_points(kingdom, casualties // 10)
             expedition.success = False
             notification = Notification(
                 enemy,
