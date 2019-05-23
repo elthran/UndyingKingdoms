@@ -2,6 +2,7 @@ import operator
 
 from .interfaces import EffectInterface
 
+
 def relative_lookup(obj, attr):
     """Look up a sub-table on this object.
 

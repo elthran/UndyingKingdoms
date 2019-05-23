@@ -108,7 +108,7 @@ class Military(GameState):
 
     @hybrid_property
     def trainable_per_day_modifier(self):
-        return (self._trainable_per_day_modifier or 0)
+        return self._trainable_per_day_modifier or 0
 
     @trainable_per_day_modifier.setter
     def trainable_per_day_modifier(self, value):
@@ -167,6 +167,7 @@ class Military(GameState):
         self.offensive_power = 0
         self.speed_modifier = 100
         self.speed = 0
+        self.trainable_per_day_modifier = 0
 
 
 def allow_modify_army_attr_addon(cls):
