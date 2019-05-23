@@ -15,6 +15,7 @@ JACOB_TEMPORARY_ACCOUNT_PASSWORD = "star"
 MARLEN_TEMPORARY_EMAIL = "haldon@gmail.com"
 MARLEN_TEMPORARY_ACCOUNT_PASSWORD = "brunner"
 
+
 class BaseConfig:
     """Base configuration."""
     ENV = 'base'
@@ -37,6 +38,7 @@ class BaseConfig:
     UPLOAD_FOLDER = 'undyingkingdoms/static/uploads/'
     ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+
 
 class ProductionConfig(BaseConfig):
     ENV = 'production'

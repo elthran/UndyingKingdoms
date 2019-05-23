@@ -1,12 +1,16 @@
+import hashlib
 import subprocess
 from random import randint
 
 from flask import render_template
 from flask_login import current_user
 from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 import private_config
 from undyingkingdoms import app, User
+
+error_log_cache = {}
 
 
 @app.errorhandler(404)
@@ -17,6 +21,14 @@ def not_found(error):
 
 @app.errorhandler(500)
 def server_fault(error):
+    error_log = get_error_log()
+
+    # TODO hash error log an only send once per error!
+    # log_hash = hashlib.md5(error_log)
+    # if log_hash not in error_log_cache:
+    #     error_log_cache[log_hash] = error_log
+
+
     try:
         county = current_user.county
         county_name = county.name
@@ -35,69 +47,42 @@ def server_fault(error):
     admin = User.query.get(admin_id_to_message)
     admin_name = admin.username
     admin_email = admin.email
+    county_info = f' of {county_name} county' if county and county_name else ''
 
+    from_email = "Undying Kingdoms <no-reply@undyingkingdoms.com>"
+    subject = 'The server is crashing!!!'
+    to_email = f"Admin '{admin_name}' <{admin_email}>"
+    content = render_template(
+        'email/error_body.html',
+        admin_name=admin_name,
+        error=error,
+        user_info=user_info,
+        county_info=county_info,
+        error_log=error_log,
+    )
+
+    message = Mail(
+        from_email=from_email,
+        to_emails=to_email,
+        subject=subject,
+        html_content=content
+    )
+
+    try:
+        sg = SendGridAPIClient(api_key=private_config.SENDGRID_API_KEY)
+        # noinspection PyUnresolvedReferences
+        response = sg.send(message)
+        assert response.status_code == 202
+    except Exception as e:
+        print(e, message)
+    return render_template('500.html', error=error, admin=admin_name), 500
+
+
+def get_error_log():
     # If this code is slow update it.
     log_file = "/var/log/www.undyingkingdoms.com.error.log"
     error_log = ""
     f = subprocess.Popen(['tail', '-n100', log_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     for line in f.stdout.readlines():
         error_log += line.decode('utf-8').replace('\n', "<br />")
-
-    county_info = f' of {county_name} county' if county and county_name else ''
-
-    from_email = "Undying Kingdoms <no-reply@undyingkingdoms.com>"
-    subject = 'The server is crashing!!!'
-    to_email = f"Admin '{admin_name}' <{admin_email}>"
-    content = f"""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-        <html xmlns="http://www.w3.org/1999/xhtml">
-         <head>
-          <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-          <title>Reset Password Email</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        </head>
-        <body style="margin: 0; padding: 0;">
-         <table border="0" cellpadding="0" cellspacing="0" width="100%">
-          <tr>
-           <td>.user
-            <p>Hi Admin '{admin_name}',</p>
-            <p>The server is currently crashing with error: {error}</p>
-            <p>This error was found/caused by {user_info}{county_info},
-                you should probably thank them for bringing this to our attention.
-            <p>The debug log is as follows.</p>
-            <p>{error_log}</p>
-           </td>
-          </tr>
-         </table>
-        </body>
-        </html>
-        """
-
-    data = {
-        "personalizations": [
-            {
-                "to": [
-                    {
-                        "email": to_email
-                    }
-                ],
-                "subject": subject
-            }
-        ],
-        "from": {
-            "email": from_email
-        },
-        "content": [
-            {
-                "type": "text/html",
-                "value": content
-            }
-        ]
-    }
-
-    try:
-        sg = SendGridAPIClient(api_key=private_config.SENDGRID_API_KEY)
-        # noinspection PyUnresolvedReferences
-        sg.send(data)
-    except Exception as e:
-        print(e, data)
-    return render_template('500.html', error=error, admin=admin_name), 500
+    return error_log

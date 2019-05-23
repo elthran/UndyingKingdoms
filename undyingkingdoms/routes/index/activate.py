@@ -4,7 +4,6 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
 import private_config
-from tests import bp
 from undyingkingdoms import app
 from undyingkingdoms.models.forms.activate import EmailVerificationForm
 
@@ -45,8 +44,6 @@ def activate():
         subject=subject,
         html_content=content
     )
-
-    print(message)
 
     try:
         sg = SendGridAPIClient(api_key=private_config.SENDGRID_API_KEY)
