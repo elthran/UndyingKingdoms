@@ -63,7 +63,7 @@ def neither_allies_nor_armistices(func):
         except KeyError:
             raise KeyError('You need to add a "county_id" field to this route.')
         kingdom = current_user.county.kingdom
-        if target.kingdom in kingdom.allies + kingdom.armistices:
+        if target.kingdom in kingdom.allies + kingdom.kingdoms_in_armistice:
             return redirect(url_for('overview'))
         return func(*args, **kwargs)
     return wrapper
