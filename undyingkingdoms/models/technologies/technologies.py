@@ -126,7 +126,17 @@ class Technology(GameEvent):
 
     def activate(self, county):
         for effect in self.effects:
-            effect.activate(county)
+            try:
+                effect.activate(county)
+            except TypeError as ex:
+                tech_name = self.name
+                effect_info = repr(effect.kwargs)
+                description = self.description
+                county_name = county.name
+                raise TypeError(
+                    f"Tech: {tech_name} of {description} was crashed "
+                    f"by {effect_info} in county {county_name}"
+                )
 
         notice = Notification(
             county,
