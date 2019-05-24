@@ -1,3 +1,4 @@
+from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from utilities.helpers import strip_leading_underscore, to_var_name
@@ -90,3 +91,11 @@ def compose_into_init(primary_cls, component_cls, component_name=None):
         setattr(self, component_name, component_cls(self))
 
     primary_cls.__init__ = __init__  # Set the class' __init__ to the new one
+
+
+def compose_into_reconstructor(primary_cls, component_cls, component_name=None):
+    component_name = component_name or to_var_name(component_cls.__name__)
+
+    @listens_for(primary_cls, 'load')
+    def receive_load(target, context):
+        setattr(target, component_name, component_cls(target))
