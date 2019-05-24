@@ -306,6 +306,7 @@ class County(GameState):
         """
         Add a WORLD. Tracks day. Has game clock.
         """
+        event = self.event
         self.update_daily_resources()
         self.advance_research()
         self.produce_pending_buildings()
@@ -314,7 +315,7 @@ class County(GameState):
         self.update_food()
         self.update_population()
         self.update_weather()  # Is before random events because they can affect weather
-        self.get_random_daily_events()
+        event.build_random_daily_events(Notification)
         expeditions = Expedition.query.filter_by(county_id=self.id).filter(Expedition.duration > 0).all()
         for expedition in expeditions:
             expedition.duration -= 1
@@ -451,84 +452,6 @@ class County(GameState):
 
     def update_weather(self):
         self.preferences.weather = choice(self.preferences.weather_choices)
-
-    def get_random_daily_events(self):
-        self.preferences.days_since_event += 1
-        random_chance = randint(0, self.preferences.days_since_event)
-        if random_chance < 15:
-            return
-        random_chance = randint(1, 8)
-        notification = None
-        if random_chance == 1 and self.grain_stores > 0:
-            amount = int(randint(3, 7) * self.grain_stores / 100)
-            notification = Notification(
-                self,
-                "Rats have gotten into your grain silos",
-                f"Your county lost {amount} of its stored grain.",
-            )
-            self.grain_stores -= amount
-
-        elif random_chance == 2 and self.happiness > 90:
-            amount = randint(100, 200)
-            notification = Notification(
-                self,
-                "Your people celebrate your rule",
-                f"Your people hold a feast and offer you {amount} gold as tribute.",
-            )
-            self.gold += amount
-
-        elif random_chance == 3 and self.buildings['pasture'].total > 0:
-            amount = min(randint(2, 4), self.buildings['pasture'].total)
-            notification = Notification(
-                self.id,
-                "A disease has affected your cattle",
-                f"Your county has lost {amount} of its dairy farms.",
-            )
-            self.buildings['pasture'].total -= amount
-
-        elif random_chance == 4 and self.buildings['field'].total > 0:
-            amount = min(randint(1, 3), self.buildings['field'].total)
-            notification = Notification(
-                self,
-                "Storms have ravaged your crops",
-                f"A massive storm has destroyed {amount} of your fields.",
-            )
-            self.buildings['field'].total -= amount
-            self.preferences.weather = 'thunderstorm'
-
-        elif random_chance == 5 and self.buildings['field'].total > 0:
-            amount = self.buildings['field'].total * 15
-            notification = Notification(
-                self,
-                "Booster crops",
-                f"Due to excellent weather this season, your crops produced an addition {amount} grain today.",
-            )
-            self.grain_stores += amount
-            self.preferences.weather = 'lovely'
-
-        elif random_chance == 6:
-            modifier = ((101 - self.healthiness) // 20 + 3) / 100  # Percent of people who will die (1% -> 5%)
-            amount = int(modifier * self.population)
-            notification = Notification(
-                self,
-                "Black Death",
-                f"A plague has swept over our county, killing {amount} of our people.",
-            )
-            self.population -= amount
-
-        elif random_chance == 7 and self.buildings['house'].total > 0:
-            amount = min(randint(2, 4), self.buildings['house'].total)
-            building_name = self.buildings['house'].class_name
-            notification = Notification(
-                self,
-                "Disaster",
-                f"A fire has spread in the city burning down {amount} of your {building_name}.",
-            )
-            self.buildings['house'].total -= amount
-        if notification:
-            notification.category = "Random Event"
-            notification.save()
-            self.preferences.days_since_event = 0
 
     def get_healthiness_change(self):
         hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
