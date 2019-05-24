@@ -459,7 +459,6 @@ class County(GameState):
             return
         random_chance = randint(1, 8)
         notification = None
-        amount = 0
         if random_chance == 1 and self.grain_stores > 0:
             amount = int(randint(3, 7) * self.grain_stores / 100)
             notification = Notification(
@@ -528,8 +527,8 @@ class County(GameState):
             self.buildings['house'].total -= amount
         if notification:
             notification.category = "Random Event"
-        notification.save()
-        self.preferences.days_since_event = 0
+            notification.save()
+            self.preferences.days_since_event = 0
 
     def get_healthiness_change(self):
         hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
