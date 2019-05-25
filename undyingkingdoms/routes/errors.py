@@ -50,7 +50,7 @@ def server_fault(error, admin_id=None):
     county_info = f' of {county_name} county' if county and county_name else ''
 
     from_email = "Undying Kingdoms <no-reply@undyingkingdoms.com>"
-    subject = 'The server is crashing!!!'
+    subject = 'UDK 500 Error: ' + error
     to_email = f"Admin '{admin_name}' <{admin_email}>"
     content = render_template(
         'email/error_body.html',
@@ -87,5 +87,5 @@ def get_error_log():
     error_log = ""
     f = subprocess.Popen(['tail', '-n100', log_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     for line in f.stdout.readlines():
-        error_log += line.decode('utf-8').replace('\n', "<br>")
+        error_log += line.decode('utf-8')
     return error_log
