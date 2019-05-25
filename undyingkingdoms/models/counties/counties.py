@@ -603,7 +603,7 @@ class County(GameState):
         return 0
 
     def building_efficiencies(self):
-        return max(round((self.population - self.get_workers_needed_to_be_efficient()) / self.population, 2), 25)
+        return max(round((self.population - self.get_workers_needed_to_be_efficient()) / self.population, 2), 0.25)
 
     def get_army_size(self):
         return sum(army.total + army.currently_training for army in self.armies.values())
