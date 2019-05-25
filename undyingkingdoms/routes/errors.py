@@ -65,7 +65,7 @@ def server_fault(error, admin_id=None):
         from_email=from_email,
         to_emails=to_email,
         subject=subject,
-        html_content=content
+        plain_text_content=content
     )
 
     try:
@@ -74,7 +74,10 @@ def server_fault(error, admin_id=None):
         response = sg.send(message)
         assert response.status_code == 202
     except Exception as e:
-        print(e, message)
+        print("Error: ", e)
+        print("While trying to send message:")
+        print(message)
+        print("Status code was: ", response.status_code)
     return render_template('500.html', error=error, admin=admin_name), 500
 
 
@@ -84,5 +87,5 @@ def get_error_log():
     error_log = ""
     f = subprocess.Popen(['tail', '-n100', log_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     for line in f.stdout.readlines():
-        error_log += line.decode('utf-8').replace('\n', "</p><p>")
+        error_log += line.decode('utf-8').replace('\n', "<br>")
     return error_log
