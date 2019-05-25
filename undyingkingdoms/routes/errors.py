@@ -20,7 +20,7 @@ def not_found(error):
 
 
 @app.errorhandler(500)
-def server_fault(error):
+def server_fault(error, admin_id=None):
     error_log = get_error_log()
 
     # TODO hash error log an only send once per error!
@@ -43,7 +43,7 @@ def server_fault(error):
     else:
         user_info = "AnonymousUser"
 
-    admin_id_to_message = randint(1, 2)
+    admin_id_to_message = admin_id or randint(1, 2)
     admin = User.query.get(admin_id_to_message)
     admin_name = admin.username
     admin_email = admin.email
