@@ -84,5 +84,5 @@ def get_error_log():
     error_log = ""
     f = subprocess.Popen(['tail', '-n100', log_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     for line in f.stdout.readlines():
-        error_log += line.decode('utf-8')
+        error_log += line.decode('utf-8').replace('\n', "</p><p>")
     return error_log
