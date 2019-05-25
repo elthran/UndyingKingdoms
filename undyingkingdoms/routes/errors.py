@@ -65,7 +65,7 @@ def server_fault(error, admin_id=None):
         from_email=from_email,
         to_emails=to_email,
         subject=subject,
-        plain_text_content=content
+        html_content=content
     )
 
     try:
