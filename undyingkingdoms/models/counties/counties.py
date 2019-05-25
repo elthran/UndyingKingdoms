@@ -6,7 +6,7 @@ from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
 from tests import bp
-from undyingkingdoms.calculations.distributions import get_int_between_0_to_100
+from undyingkingdoms.calculations.distributions import get_int_between_0_and_100, get_int_between_n_and_m
 from undyingkingdoms.metadata.armies.metadata_armies_updater import update_armies
 from ..magic import Casting
 from ..bases import GameState, db
@@ -216,7 +216,7 @@ class County(GameState):
 
     @happiness.setter
     def happiness(self, value):
-        self._happiness = get_int_between_0_to_100(value)
+        self._happiness = get_int_between_n_and_m(value)
 
     @property
     def healthiness(self):
@@ -224,7 +224,7 @@ class County(GameState):
 
     @healthiness.setter
     def healthiness(self, value):
-        self._healthiness = get_int_between_0_to_100(value)
+        self._healthiness = get_int_between_n_and_m(value)
 
     @property
     def tax_rate(self):
@@ -1025,7 +1025,7 @@ class County(GameState):
         for spell in modify_thief_prevention or []:
             chance += spell.output * self.spell_modifier
 
-        return get_int_between_0_to_100(chance)
+        return get_int_between_0_and_100(chance)
 
     def chance_to_disrupt_spell(self):
         chance = 0
@@ -1038,7 +1038,7 @@ class County(GameState):
         if self.race == "Dwarf":
             chance += 15
 
-        return get_int_between_0_to_100(chance)
+        return get_int_between_0_and_100(chance)
 
     # Terminology
     @property
