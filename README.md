@@ -3,7 +3,7 @@ A fun game.
 #### Development Setup Instructions
 
 I am going to be adding to this through the next few days.
-NOTE: If you are debugging this, copy/paste each command separately as they only work consecutively in the script.
+> NOTE: If you are debugging this, copy/paste each command separately as they only work consecutively in the script.
 
 1. `git clone https://github.com/elthran/UndyingKingdoms.git udk`
 
