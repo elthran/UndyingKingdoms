@@ -34,34 +34,32 @@ deactivate
 
 # Install mysql stuff
 # Add new user with access to UDK tables.
-read -s -p "Enter a new (or your old) mysql root password: " mysql_passwd
-echo "
-This next bit is a bit confusing:
-1. Enter _your_ root password to gain access up mysql.
-2. Then enter you current mysql root password
-  (or leave it blank if you haven't set one).
-  The previous mysql password doesn't count.
-"
-sudo mysql -u root -p -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$mysql_passwd';"
-sudo -k
+echo "Enter your mysql root password"
+read -s -p "(or a new password if you are just setting up mysql): " mysql_passwd
+
 mysql_cnf=~/.udk_mysql_config.cnf
 rm -rf $mysql_cnf
 echo "
 [client]
 user = root
 password = $mysql_passwd
-# Before use set file to read-only with \$ chmod 400 $mysql_cnf'
+# Before use set file to read-only with \$ chmod 400 $mysql_cnf
 " > $mysql_cnf
 chmod 400 $mysql_cnf
+echo "Enter your sudo password to gain access up mysql."
+sudo mysql --defaults-file=$mysql_cnf -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$mysql_passwd';"
+sudo -k
+
 udk_user="elthran"
 udk_db="undyingkingdoms"
 udk_mysql_passwd=$(randpw 16)
-mysql --defaults-file=$mysql_cnf -e "CREATE USER '$udk_user'@'localhost'IDENTIFIED BY '$udk_mysql_passwd';"
+mysql --defaults-file=$mysql_cnf -e "CREATE USER '$udk_user'@'localhost'IDENTIFIED BY '$udk_mysql_passwd';" \
+    || mysql --defaults-file=$mysql_cnf -e "ALTER USER '$udk_user'@'localhost'IDENTIFIED BY '$udk_mysql_passwd';"
 mysql --defaults-file=$mysql_cnf -e "GRANT ALL ON $udk_db.* TO '$udk_user'@'localhost' WITH GRANT OPTION;"
 mysql --defaults-file=$mysql_cnf -e "GRANT ALL ON ${udk_db}_test.* TO '$udk_user'@'localhost' WITH GRANT OPTION;"
 chmod 600 $mysql_cnf
 sed -i 's/root/'${udk_user}'/g' $mysql_cnf
-sed -i 's/password/c\password = '${udk_mysq_passwd} $mysql_cnf
+sed -i '/password/ c\password = '${udk_mysql_passwd} $mysql_cnf
 chmod 400 $mysql_cnf
 
 config=private_config.py
