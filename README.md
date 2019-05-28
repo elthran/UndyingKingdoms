@@ -10,7 +10,7 @@ I am going to be adding to this through the next few days.
 3. `cd udk`
 
 2. `chmod +x bin/install.sh`
-> Please review if curious [install.sh](https://github.com/elthran/UndyingKingdoms/blob/master/bin/install.sh)
+> Please review [install.sh](https://github.com/elthran/UndyingKingdoms/blob/master/bin/install.sh) if curious.
 
 3. `bin/install.sh`
 
