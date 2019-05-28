@@ -10,12 +10,15 @@ I am going to be adding to this through the next few days.
 3. `cd udk`
 
 2. `chmod +x bin/install.sh`
+> Please review if curious [install.sh](https://github.com/elthran/UndyingKingdoms/blob/master/bin/install.sh)
 
 3. `bin/install.sh`
 
-4. `source bin/activate` or `. bin/activate`
+4. `source bin/activate`
+> or `. bin/activate`
 
-5. `python manage.py reset_db` which incidentally creates the database if it doesn't exist.
+5. `python manage.py reset_db`
+> which incidentally creates the database if it doesn't exist.
 
 6. `python manage.py serve`
 
@@ -72,10 +75,14 @@ If Node.js version is incompatible with npm version
 
 4. `npm install -g @vue/cli`
 
-3. `cd frontend` (if inside udk folder)
+3. `cd frontend`
+> (if inside udk folder)
 
 4. `npm install`
 
-5. `npm run serve` should serve your app. `npm run build` builds it.
+5. `npm run serve`
+> should serve your app. 
+6. `npm run build`
+> builds it.
 
 This uses information from https://stackoverflow.com/q/41159264
