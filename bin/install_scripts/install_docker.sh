@@ -1,22 +1,11 @@
 #!/usr/bin/env bash
 
-echo "Installing docker ..."
-sudo apt-get update
-sudo apt-get install \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg-agent \
-    software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+# Give all install scripts execute permissions.
+# run this in bin/install.sh
+#chmod +x bin/install_scripts/*.sh
+#bin/install_scripts/install_docker.sh
+#exit 1
 
-# I need to test this programmatically.
-sudo apt-key fingerprint 0EBFCD88
-
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable"
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
 exit 1
