@@ -25,7 +25,7 @@ fi
 # setup virtual environment
 rm -rf ~/virtual_envs/udk_env
 python3 -m venv ~/virtual_envs/udk_env
-rm -f activate
+rm -f bin/activate
 ln -s ~/virtual_envs/udk_env/bin/activate bin/activate
 # allow activate script to auto start mysql
 echo "
@@ -40,7 +40,7 @@ echo "Pip activated\n: $( pip --version )"
 # install app
 pip install .
 deactivate
-
+exit 1
 # Install mysql stuff
 # Add new user with access to UDK tables.
 echo "Enter your mysql root password"
