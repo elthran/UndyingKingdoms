@@ -7,9 +7,9 @@ cd "$parent_path/.."  # make sure you are in the udk directory
 randpw() { < /dev/urandom tr -dc "[:alnum:]" | head -c${1:-${1-32}};echo; }
 
 # Give all install scripts execute permissions.
-chmod +x bin/install_scripts/*.sh
-bin/install_scripts/install_docker.sh
-exit 1
+#chmod +x bin/install_scripts/*.sh
+#bin/install_scripts/install_docker.sh
+#exit 1
 
 # install modules
 echo "Installing requisite apt modules ..."
@@ -20,8 +20,8 @@ sudo -k
 # assert python3 version >=3.6
 echo "Checking python3 version ..."
 version=$(python3 -V 2>&1 | grep -Po '(?<=Python )(.+)')
-parsedVersion=$(echo "0.${version//./}")
-if (( $(echo "$parsedVersion < 0.36" | bc -l) )); then
+parsedVersion=$(expr ${version//./} \* 10)
+if (( $parsedVersion < 3600 )); then
     echo "Requires python>=3.6"; exit 1
 else
   echo "Python3 version is new enough."
