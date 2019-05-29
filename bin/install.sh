@@ -6,6 +6,11 @@ parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path/.."  # make sure you are in the udk directory
 randpw() { < /dev/urandom tr -dc "[:alnum:]" | head -c${1:-${1-32}};echo; }
 
+# Give all install scripts execute permissions.
+chmod +x bin/install_scripts/*.sh
+bin/install_scripts/install_docker.sh
+exit 1
+
 # install modules
 echo "Installing requisite apt modules ..."
 sudo apt-get update
