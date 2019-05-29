@@ -40,7 +40,7 @@ echo "Pip activated\n: $( pip --version )"
 # install app
 pip install .
 deactivate
-exit 1
+
 # Install mysql stuff
 # Add new user with access to UDK tables.
 echo "Enter your mysql root password"
