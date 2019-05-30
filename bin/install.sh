@@ -39,7 +39,6 @@ echo "Pip activated\n: $( pip --version )"
 
 # install app
 pip install .
-deactivate
 
 # Install mysql stuff
 # Add new user with access to UDK tables.
@@ -62,8 +61,7 @@ sudo -k
 udk_user="elthran"
 udk_db="undyingkingdoms"
 udk_mysql_passwd=$(randpw 16)
-mysql --defaults-file=$mysql_cnf -e "CREATE USER '$udk_user'@'localhost'IDENTIFIED BY '$udk_mysql_passwd';" \
-    || mysql --defaults-file=$mysql_cnf -e "ALTER USER '$udk_user'@'localhost'IDENTIFIED BY '$udk_mysql_passwd';"
+# This will create the user if they don't exist.
 mysql --defaults-file=$mysql_cnf -e "GRANT ALL ON $udk_db.* TO '$udk_user'@'localhost' WITH GRANT OPTION;"
 mysql --defaults-file=$mysql_cnf -e "GRANT ALL ON ${udk_db}_test.* TO '$udk_user'@'localhost' WITH GRANT OPTION;"
 chmod 600 $mysql_cnf

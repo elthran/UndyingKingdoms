@@ -17,7 +17,7 @@ frontend/node_modules
 package-lock.json
 export/dump.sql
 bin/activate
+.vagrant
 
 # Log files
-npm-debug.log*
-
+*.log
