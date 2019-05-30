@@ -13,7 +13,7 @@ I am going to be adding to this through the next few days.
     > Please review [install.sh](bin/install.sh) if curious.
 
 3. `bin/install.sh`
-    > This installs docker as seen here https://docs.docker.com/install/linux/docker-ce/ubuntu/
+    > This installs docker as seen here https://docs.docker.com/install/linux/docker-ce/ubuntu/ (At some point, it doesn't right now.)
 
 4. `source bin/activate`
 > or `. bin/activate`
