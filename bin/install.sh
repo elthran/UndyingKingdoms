@@ -9,14 +9,14 @@ randpw() { < /dev/urandom tr -dc "[:alnum:]" | head -c${1:-${1-32}};echo; }
 # install modules
 echo "Installing requisite apt modules ..."
 sudo apt-get update
-sudo apt install python3 python3-venv python3-dev libmysqlclient-dev mysql-server
+sudo apt install python3 python3-venv python3-dev libmysqlclient-dev mysql-server build-essential
 sudo -k
 
 # assert python3 version >=3.6
 echo "Checking python3 version ..."
 version=$(python3 -V 2>&1 | grep -Po '(?<=Python )(.+)')
-parsedVersion=$(echo "0.${version//./}")
-if (( $(echo "$parsedVersion < 0.36" | bc -l) )); then
+parsedVersion=$(expr ${version//./} \* 10)
+if (( $parsedVersion < 3600 )); then
     echo "Requires python>=3.6"; exit 1
 else
   echo "Python3 version is new enough."
@@ -25,7 +25,7 @@ fi
 # setup virtual environment
 rm -rf ~/virtual_envs/udk_env
 python3 -m venv ~/virtual_envs/udk_env
-rm -f activate
+rm -f bin/activate
 ln -s ~/virtual_envs/udk_env/bin/activate bin/activate
 # allow activate script to auto start mysql
 echo "
@@ -39,9 +39,6 @@ echo "Pip activated\n: $( pip --version )"
 
 # install app
 pip install .
-echo "Downgrading Werkzeg ..."
-pip install Werkzeug==0.14.1
-deactivate
 
 # Install mysql stuff
 # Add new user with access to UDK tables.
@@ -64,8 +61,7 @@ sudo -k
 udk_user="elthran"
 udk_db="undyingkingdoms"
 udk_mysql_passwd=$(randpw 16)
-mysql --defaults-file=$mysql_cnf -e "CREATE USER '$udk_user'@'localhost'IDENTIFIED BY '$udk_mysql_passwd';" \
-    || mysql --defaults-file=$mysql_cnf -e "ALTER USER '$udk_user'@'localhost'IDENTIFIED BY '$udk_mysql_passwd';"
+# This will create the user if they don't exist.
 mysql --defaults-file=$mysql_cnf -e "GRANT ALL ON $udk_db.* TO '$udk_user'@'localhost' WITH GRANT OPTION;"
 mysql --defaults-file=$mysql_cnf -e "GRANT ALL ON ${udk_db}_test.* TO '$udk_user'@'localhost' WITH GRANT OPTION;"
 chmod 600 $mysql_cnf
@@ -84,3 +80,10 @@ sed -i 's/db_passwd/'$udk_mysql_passwd'/g' $config
 sed -i 's/complex_pass/'$(randpw 64)'/g' $config
 sed -i 's/complex_pass2/'$(randpw 64)'/g' $config
 sed -i 's/complex_pass3/'$(randpw 64)'/g' $config
+
+# NOTE: to server app from inside vagrant I need to use
+# python manage.py serve -h 0.0.0.0
+# NOTE: I need to update the dist files!
+# chmod +x bin/dist_from_remote.sh
+# bin/dist_from_remote.sh
+# But this is bad! as it requires access to the pythonanywhere server :P
