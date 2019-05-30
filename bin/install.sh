@@ -82,3 +82,10 @@ sed -i 's/db_passwd/'$udk_mysql_passwd'/g' $config
 sed -i 's/complex_pass/'$(randpw 64)'/g' $config
 sed -i 's/complex_pass2/'$(randpw 64)'/g' $config
 sed -i 's/complex_pass3/'$(randpw 64)'/g' $config
+
+# NOTE: to server app from inside vagrant I need to use
+# python manage.py serve -h 0.0.0.0
+# NOTE: I need to update the dist files!
+# chmod +x bin/dist_from_remote.sh
+# bin/dist_from_remote.sh
+# But this is bad! as it requires access to the pythonanywhere server :P
