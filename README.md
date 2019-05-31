@@ -5,6 +5,8 @@ A fun game.
 I am going to be adding to this through the next few days.
 > NOTE: If you are debugging this, copy/paste each command separately as they only work consecutively in the script.
 
+**These instructions only work on Ubuntu 18.04.**
+
 1. `git clone https://github.com/elthran/UndyingKingdoms.git udk`
 
 2. `cd udk`
