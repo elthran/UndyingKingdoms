@@ -94,11 +94,10 @@ get_set_mysql_root_password() {
 	done
 	sudo mysql --defaults-file=$mysql_cnf -e \
 	    "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$mysql_passwd';"
-	echo "MYSQL credentials estabished, continuing ..."
 	sudo -k
+	echo "MYSQL credentials estabished, continuing ..."
 }
 
-# Add new user with access to UDK tables.
 set_udk_user_grants() {
 	udk_user="elthran"
 	udk_db="undyingkingdoms"
@@ -110,6 +109,7 @@ set_udk_user_grants() {
 	mysql --defaults-file=$mysql_cnf -e "GRANT ALL ON ${udk_db}_test.* TO '$udk_user'@'localhost' WITH GRANT OPTION;"
 	build_mysql_config "$udk_mysql_passwd" "$udk_user"
 	chmod 400 $mysql_cnf
+	echo "Added new user with access to UDK tables."
 }
 
 generate_private_config() {
@@ -124,6 +124,7 @@ generate_private_config() {
 	sed -i 's/complex_pass/'$(randpw 64)'/g' $config
 	sed -i 's/complex_pass2/'$(randpw 64)'/g' $config
 	sed -i 's/complex_pass3/'$(randpw 64)'/g' $config
+	echo "Private app config generated."
 }
 
 # NOTE: to server app from inside vagrant I need to use
@@ -143,6 +144,7 @@ install() {
 	get_set_mysql_root_password
 	set_udk_user_grants
 	generate_private_config
+	echo "Undyking Kingdoms back-end development environment installed."
 }
 
 # run the actual install script
