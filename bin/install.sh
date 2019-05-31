@@ -66,9 +66,7 @@ setup_virtual_environment() {
 }
 
 install_app_into_virtual_environment() {
-	# Old: install from setup.py
-	# pip install .
-	pip install -r requirements.txt
+	pip install .
 }
 
 build_mysql_config() {
