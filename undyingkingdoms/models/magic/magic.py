@@ -37,8 +37,10 @@ class Magic(GameEvent):
         eligible_targets = [self.targets]
         if 'friendly' in eligible_targets:
             eligible_targets.append('self')
-
         target_relation = get_target_relation(county, target)
+        if target_relation == 'armistice':
+            # For magic, counties in armistice are identical to allies for targeting
+            target_relation = 'friendly'
         valid_target = (target_relation in eligible_targets)
         return valid_target, target_relation
 
