@@ -20,7 +20,7 @@ Flask-SSLify==0.1.5
 Flask-WTF==0.14.2
 fuzzywuzzy==0.17.0
 idna==2.8
-importlib-metadata==0.16
+importlib-metadata==0.17
 ipdb==0.12
 ipython==7.5.0
 ipython-genutils==0.2.0
