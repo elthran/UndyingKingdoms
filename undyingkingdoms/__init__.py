@@ -54,6 +54,7 @@ def import_routes():
 
     import undyingkingdoms.routes.gameplay.overview
     import undyingkingdoms.routes.gameplay.economy
+    import undyingkingdoms.routes.gameplay.merchant
     import undyingkingdoms.routes.gameplay.infrastructure
     import undyingkingdoms.routes.gameplay.military
     import undyingkingdoms.routes.gameplay.infiltration
