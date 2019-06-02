@@ -44,6 +44,14 @@ class Magic(GameEvent):
         valid_target = (target_relation in eligible_targets)
         return valid_target, target_relation
 
+    def check_if_active(self, county, target, active):
+        """Checks active spells. If the same spell is active against the same target,
+        return True"""
+        for spell in active:
+            if spell.target_id == target.id and self.name == spell.name:
+                return True
+        return False
+
     @staticmethod
     def get_know_spells(county):
         return Magic.query.filter_by(county_id=county.id, known=True).all()
