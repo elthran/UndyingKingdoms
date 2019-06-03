@@ -1,6 +1,5 @@
 from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
-from flask_mobility.decorators import mobile_template
 
 from undyingkingdoms import app
 from undyingkingdoms.models.forms.merchant import MerchantForm
@@ -8,7 +7,7 @@ from undyingkingdoms.models.forms.merchant import MerchantForm
 
 @app.route('/gameplay/merchant', methods=['GET', 'POST'])
 @login_required
-def merchant(template):
+def merchant():
 
     county = current_user.county
 
@@ -41,4 +40,4 @@ def merchant(template):
 
         return redirect(url_for('merchant'))
 
-    return render_template(template, form=form)
+    return render_template('gameplay/merchant.html', form=form)
