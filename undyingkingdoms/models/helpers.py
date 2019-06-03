@@ -55,7 +55,7 @@ def get_target_relation(county, target):
         target_relation = 'self'
     elif target_kingdom in kingdom.allies:
         target_relation = 'friendly'
-    elif target_kingdom in kingdom.armistices:
+    elif target_kingdom in kingdom.kingdoms_in_armistice:
         target_relation = 'armistice'
     else:
         target_relation = 'hostile'

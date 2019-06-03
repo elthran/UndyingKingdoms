@@ -120,7 +120,7 @@ def trade(county_id):
         fund_trade(trade_form, county)
 
         trade_notice = Notification(
-            target_county.id,
+            target_county,
             "You were offered a trade",
             f"{county.name} has offered you a trade. Visit the trading page.",
             "Trade"

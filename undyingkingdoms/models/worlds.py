@@ -88,8 +88,9 @@ class World(GameState):
                 county.user.gems += 1
         winning_county.user.gems += 1
 
-        tables = ['DAU', 'army', 'building', 'casting', 'chatroom', 'diplomacy', 'notification', 'expedition',
-                  'infiltration', 'magic', 'message', 'preferences', 'session', 'trade', 'transaction', 'technology',
+        tables = ['DAU', 'army', 'building', 'casting', 'chatroom', 'diplomacy', 'economy', 'espionage', 'expedition',
+                  'infiltration', 'infrastructure', 'magic', 'message', 'military', 'notification', 'preferences',
+                  'scientist', 'session', 'tech_to_tech', 'technology', 'trade', 'transaction', 'wizardry',
                   'county']
         table_mixers.drop_then_rebuild_tables(db, tables)
         self.age += 1

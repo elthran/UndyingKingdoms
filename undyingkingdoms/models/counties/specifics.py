@@ -41,9 +41,6 @@ def add_background_data(self):
     self.magic = {**self.magic, **deepcopy(background_spells)}
     self.technologies = {**self.technologies, **deepcopy(background_technology)}
 
-    if self.background == "Alchemist":
-        self.buildings["lab"].output *= 2
-
 
 def merge_tech_requirements(race, background):
     race = race.lower()

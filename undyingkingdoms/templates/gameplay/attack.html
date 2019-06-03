@@ -7,6 +7,7 @@
 {% set user = current_user %}
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
+{% set military = county.military %}
 
 <form method="POST" accept-charset="UTF-8" role="form">
     {{ form.csrf_token }}
@@ -25,9 +26,9 @@
     <ul>
         {% if war %}{% set modifier = 1.15 %}{% else %}{% set modifier = 1.0 %}{% endif %}
         <li>Current Army has <span id="calculatedAttack">0</span> attack power {% if war %}and would gain {{ county.get_score_from_winning_battle(enemy, modifier) }} war points if victorious</li>{% endif %}<br>
-        <li>Attack: Duration {{ county.get_army_duration(True, 'Attack') }} days, gains {{ county.get_score_from_winning_battle(enemy, modifier) }} acres</li>
-        <li>Pillage: Duration {{ county.get_army_duration(True, 'Pillage') }} days, steals {{ county.get_resources_from_winning_pillage(enemy, modifier) }}</li>
-        <li>Raze: Duration {{ county.get_army_duration(True, 'Raze') }} days, destroys {{ (county.get_score_from_winning_battle(enemy, modifier) * 1.5)|int }} acres</li>
+        <li>Attack: Duration {{ military.get_expedition_duration('Attack') }} days, gains {{ county.get_score_from_winning_battle(enemy, modifier) }} acres</li>
+        <li>Pillage: Duration {{ military.get_expedition_duration('Pillage') }} days, steals {{ county.get_resources_from_winning_pillage(enemy, modifier) }}</li>
+        <li>Raze: Duration {{ military.get_expedition_duration('Raze') }} days, destroys {{ (county.get_score_from_winning_battle(enemy, modifier) * 1.5)|int }} acres</li>
     </ul>
     <br><br>
     <button type="submit">Attack</button>

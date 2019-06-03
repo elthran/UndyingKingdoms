@@ -1,7 +1,10 @@
+from flask import flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 
 from wtforms.validators import DataRequired, Email, Length, EqualTo
+
+from undyingkingdoms.models.exports import User
 
 
 class RegisterForm(FlaskForm):
@@ -13,4 +16,14 @@ class RegisterForm(FlaskForm):
                               EqualTo('confirmation', message='Passwords must match.')])
     confirmation = PasswordField('Repeat password')
 
+    def validate(self):
+        if not FlaskForm.validate(self):
+            return False
+        if self.account_exists():
+            return False
+        return True
 
+    def account_exists(self):
+        if User.query.filter_by(email=self.email.data).first() is not None:
+            self.email.errors.append("That email/account is already exists.")
+            return True

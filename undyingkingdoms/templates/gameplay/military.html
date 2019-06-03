@@ -131,7 +131,7 @@ th {
         <th>Description</th>
       </tr>
       {% for army in county.armies.values() %}
-        <!-- {{ [county.gold // army.gold, county.wood // army.wood, county.iron // army.iron] }} -->
+        <!--  [county.gold // army.gold, county.wood // army.wood, county.iron // army.iron]  -->
         <!--(list | sort)[0] replicates min()-->
         {% set slider_size = max_trainable_by_cost(county, army) %}
       <tr>
@@ -284,7 +284,11 @@ var monsterMax = parseInt($("#monsterMax").text());
 function updateGold() {
     var sum = 0;
     sliders.each(function (index, element) {
-        sum += element.value * buildingGoldCosts[index].innerHTML;
+        try {
+          sum += element.value * buildingGoldCosts[index].innerHTML;
+        }
+        catch(err) {
+        }
     });
     goldCost.html(sum);
 }
@@ -292,7 +296,11 @@ function updateGold() {
 function updateWood() {
     var sum = 0;
     sliders.each(function (index, element) {
-        sum += element.value * buildingWoodCosts[index].innerHTML;
+        try {
+          sum += element.value * buildingWoodCosts[index].innerHTML;
+        }
+        catch(err) {
+        }
     });
     woodCost.html(sum);
 }
@@ -300,7 +308,11 @@ function updateWood() {
 function updateIron() {
     var sum = 0;
     sliders.each(function (index, element) {
-        sum += element.value * buildingIronCosts[index].innerHTML;
+        try {
+          sum += element.value * buildingIronCosts[index].innerHTML;
+        }
+        catch(err) {
+        }
     });
     ironCost.html(sum);
 }
@@ -324,9 +336,24 @@ function calcSliderWidth(size) {
 function resizeRemaining(gold, wood, iron) {
     // console.log(sliders);
     sliders.each(function (index, element) {
-        var goldPrice = buildingGoldCosts[index].innerHTML;
-        var woodPrice = buildingWoodCosts[index].innerHTML;
-        var ironPrice = buildingIronCosts[index].innerHTML;
+        try {
+          var goldPrice = buildingGoldCosts[index].innerHTML;
+        }
+        catch(err) {
+          var goldPrice = 0;
+        }
+        try {
+          var woodPrice = buildingWoodCosts[index].innerHTML;
+        }
+        catch(err) {
+          var woodPrice = 0;
+        }
+        try {
+          var ironPrice = buildingIronCosts[index].innerHTML;
+        }
+        catch(err) {
+          var ironPrice = 0;
+        }
         var isMonster = element.hasAttribute('data-monster');
         var currentSize = parseInt(element.value);
         var remaining = Math.max(Math.floor(Math.min(

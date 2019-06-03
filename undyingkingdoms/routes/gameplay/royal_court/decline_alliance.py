@@ -12,10 +12,10 @@ def decline_alliance(kingdom_id):
     county = current_user.county
     if county.id != county.kingdom.leader:
         return redirect(url_for('overview'))
-    alliance = Diplomacy.query.filter_by(status="Pending")\
-        .filter_by(action="Alliance")\
+    alliance = Diplomacy.query.filter_by(status=Diplomacy.PENDING)\
+        .filter_by(action=Diplomacy.ALLIANCE)\
         .filter_by(target_id=county.kingdom.id)\
         .filter_by(kingdom_id=kingdom_id)\
         .first()
-    alliance.status = "Cancelled"
+    alliance.status = Diplomacy.CANCELLED
     return redirect(url_for('royal_court'))

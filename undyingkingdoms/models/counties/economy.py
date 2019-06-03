@@ -1,3 +1,5 @@
+from math import ceil
+
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from undyingkingdoms.metadata.metadata import food_produced_modifier, buildings_produced_per_day, happiness_modifier, \
@@ -68,6 +70,7 @@ class Economy(GameState):
         county = self.county
         field = county.buildings['field']
         building_production = field.total * field.output
+        building_production *= county.building_efficiencies()
         # noinspection PyPropertyAccess
         return round((self._grain_produced + building_production) * (1 + self.grain_modifier))
 
@@ -94,6 +97,7 @@ class Economy(GameState):
         county = self.county
         building = county.buildings['pasture']
         building_production = building.total * building.output
+        building_production *= county.building_efficiencies()
         # noinspection PyPropertyAccess
         return round(building_production * (1 + self.dairy_modifier))
 
@@ -106,7 +110,8 @@ class Economy(GameState):
         county = self.county
 
         building_production = county.buildings['mine'].total * (county.buildings['mine'].output + self.iron_multiplier)
-        return building_production + self._iron_income
+        building_production *= county.building_efficiencies()
+        return ceil(building_production + self._iron_income)
 
     @iron_income.setter
     def iron_income(self, value):
@@ -134,7 +139,8 @@ class Economy(GameState):
     def bank_income(self):
         county = self.county
         building_income = county.buildings['bank'].total * (county.buildings['bank'].output + (self.bank_multiplier or 0))
-        return building_income
+        building_income *= county.building_efficiencies()
+        return ceil(building_income)
 
     @bank_income.setter
     def bank_income(self, value):

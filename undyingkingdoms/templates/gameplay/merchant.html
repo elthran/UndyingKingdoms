@@ -1,0 +1,45 @@
+{% extends "gameplay/layout.html" %}
+
+{% block title %}Merchant: {{ super() }}{% endblock %}
+
+{% block content2 %}
+
+<form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    <h2>Choose your resource</h2>
+    {{ form.offer_resource }}<br>
+    <h2>Type in the amount</h2>
+    {{ form.offer }}<br>
+    <h2>Choose what to trade for</h2><br>
+    {{ form.receive_resource }}<br>
+    <h2>How much you'll receive</h2><br>
+    <span id="receiveAmount">0</span><br>
+    <input class="value" name="receive" value="0" hidden/>
+    <br><br>
+    <button type="submit">Trade</button><br>
+</form>
+
+
+<script type="text/javascript">
+var offerResource = document.getElementById('offer_resource');
+var offerAmount = document.getElementById('offer');
+var receiveResource = document.getElementById('receive_resource');
+var receiveAmount = document.getElementById('receive');
+
+var tradeValueDict = {'stone': 1, 'iron': 2, 'wood': 4, 'gold': 6, 'food': 60};
+
+offerResource.onchange = function() {
+        receiveAmount.innerHTML = offerAmount.value * tradeValueDict[receiveResource] / tradeValueDict[offerResource];
+}
+
+offerAmount.onchange = function() {
+        receiveAmount.innerHTML = offerAmount.value * tradeValueDict[receiveResource] / tradeValueDict[offerResource];
+}
+
+receiveResource.onchange = function() {
+        receiveAmount.innerHTML = offerAmount.value * tradeValueDict[receiveResource] / tradeValueDict[offerResource];
+}
+
+</script>
+
+{% endblock %}

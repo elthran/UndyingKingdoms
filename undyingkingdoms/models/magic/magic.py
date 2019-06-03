@@ -37,10 +37,20 @@ class Magic(GameEvent):
         eligible_targets = [self.targets]
         if 'friendly' in eligible_targets:
             eligible_targets.append('self')
-
         target_relation = get_target_relation(county, target)
+        if target_relation == 'armistice':
+            # For magic, counties in armistice are identical to allies for targeting
+            target_relation = 'friendly'
         valid_target = (target_relation in eligible_targets)
         return valid_target, target_relation
+
+    def check_if_active(self, county, target, active):
+        """Checks active spells. If the same spell is active against the same target,
+        return True"""
+        for spell in active:
+            if spell.target_id == target.id and self.name == spell.name:
+                return True
+        return False
 
     @staticmethod
     def get_know_spells(county):

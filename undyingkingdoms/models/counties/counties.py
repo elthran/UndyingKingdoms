@@ -6,7 +6,7 @@ from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
 from tests import bp
-from undyingkingdoms.calculations.distributions import get_int_between_0_to_100
+from undyingkingdoms.calculations.distributions import get_int_between_0_and_100, get_int_between_n_and_m
 from undyingkingdoms.metadata.armies.metadata_armies_updater import update_armies
 from ..magic import Casting
 from ..bases import GameState, db
@@ -216,7 +216,7 @@ class County(GameState):
 
     @happiness.setter
     def happiness(self, value):
-        self._happiness = get_int_between_0_to_100(value)
+        self._happiness = get_int_between_n_and_m(value)
 
     @property
     def healthiness(self):
@@ -224,7 +224,7 @@ class County(GameState):
 
     @healthiness.setter
     def healthiness(self, value):
-        self._healthiness = get_int_between_0_to_100(value)
+        self._healthiness = get_int_between_n_and_m(value)
 
     @property
     def tax_rate(self):
@@ -459,7 +459,6 @@ class County(GameState):
             return
         random_chance = randint(1, 8)
         notification = None
-        amount = 0
         if random_chance == 1 and self.grain_stores > 0:
             amount = int(randint(3, 7) * self.grain_stores / 100)
             notification = Notification(
@@ -528,8 +527,8 @@ class County(GameState):
             self.buildings['house'].total -= amount
         if notification:
             notification.category = "Random Event"
-        notification.save()
-        self.preferences.days_since_event = 0
+            notification.save()
+            self.preferences.days_since_event = 0
 
     def get_healthiness_change(self):
         hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
@@ -598,6 +597,14 @@ class County(GameState):
         return max(self.land - sum(building.total + building.pending for building in self.buildings.values()), 0)
 
     # Workers / Population / Soldiers
+    def get_workers_needed_to_be_efficient(self):
+        if self.get_non_military_citizens() < self.get_employed_workers():
+            return self.get_employed_workers() - self.get_non_military_citizens()
+        return 0
+
+    def building_efficiencies(self):
+        return max(round((self.population - self.get_workers_needed_to_be_efficient()) / self.population, 2), 0.25)
+
     def get_army_size(self):
         return sum(army.total + army.currently_training for army in self.armies.values())
 
@@ -609,6 +616,9 @@ class County(GameState):
 
     def get_unavailable_army_size(self):
         return sum(army.traveling for army in self.armies.values())
+
+    def get_non_military_citizens(self):
+        return self.population - self.get_army_size()
 
     def get_employed_workers(self):
         """
@@ -932,7 +942,7 @@ class County(GameState):
             # TODO: defender should gain points as well.
             kingdom.distribute_war_points(enemy_kingdom, war_score)
         else:
-            enemy_kingdom.distribute_war_points(kingdom, casualties * 0.01)
+            enemy_kingdom.distribute_war_points(kingdom, casualties // 10)
             expedition.success = False
             notification = Notification(
                 enemy,
@@ -1015,7 +1025,7 @@ class County(GameState):
         for spell in modify_thief_prevention or []:
             chance += spell.output * self.spell_modifier
 
-        return get_int_between_0_to_100(chance)
+        return get_int_between_0_and_100(chance)
 
     def chance_to_disrupt_spell(self):
         chance = 0
@@ -1028,7 +1038,7 @@ class County(GameState):
         if self.race == "Dwarf":
             chance += 15
 
-        return get_int_between_0_to_100(chance)
+        return get_int_between_0_and_100(chance)
 
     # Terminology
     @property

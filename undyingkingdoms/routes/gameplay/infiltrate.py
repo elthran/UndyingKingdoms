@@ -38,7 +38,7 @@ def infiltrate(template, county_id):
 
         chance_of_success = max(min(100 + form.amount.data - target.get_chance_to_catch_enemy_thieves(), 100), 0)
 
-        gain_modifier = 1 + espionage.gain_modifer
+        gain_modifier = 1 + espionage.gain_modifier
 
         kingdom = county.kingdom
         target_kingdom = target.kingdom

@@ -1,4 +1,4 @@
-from private_config import JACOB_TEMPORARY_EMAIL, JACOB_TEMPORARY_ACCOUNT_PASSWORD, MARLEN_TEMPORARY_EMAIL, \
+from config import JACOB_TEMPORARY_EMAIL, JACOB_TEMPORARY_ACCOUNT_PASSWORD, MARLEN_TEMPORARY_EMAIL, \
     MARLEN_TEMPORARY_ACCOUNT_PASSWORD
 from undyingkingdoms.controler.initialize import initialize_county
 from undyingkingdoms.models.exports import World, Kingdom, User
@@ -20,17 +20,14 @@ def build_testing_objects():
     user.is_admin = True
     user.is_active = True
     user.is_verified = True
-    county = initialize_county(user, kingdom1, "Ulthuan", 'Sir', "Elthran", 'Ogre', 'Alchemist')
+    county = initialize_county(user, kingdom1, "Ulthuan", 'Sir', "Elthran", 'Human', 'Alchemist')
     county.save()
     county.vote = county.id
-    county.buildings['arcane'].total = 5
-    county.buildings['lab'].total = 100
-    county.technologies['basic agriculture'].completed = True
-    # county.technologies['basic agriculture II'].completed = True
-    # county.technologies['basic agriculture III'].completed = True
+    county.buildings['fort'].total = 10
     county.mana = 500
     county.happiness = 80
     kingdom1.leader = county.id
+    county.technologies['elixir of life'].completed = True
     kingdom1.approval_rating = 60
     # Create Haldon
     kingdom2 = Kingdom.query.get(2)

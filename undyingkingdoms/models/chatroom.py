@@ -6,7 +6,7 @@ class Chatroom(GameState):
 
     kingdom_id = db.Column(db.Integer, db.ForeignKey('kingdom.id'), nullable=False)
     county_id = db.Column(db.Integer, db.ForeignKey('county.id'), nullable=False)
-    content = db.Column(db.String(512))
+    content = db.Column(db.String(5000))
     is_global = db.Column(db.Boolean, default=False)
 
     def __init__(self, kingdom_id, county_id, content, is_global=False):

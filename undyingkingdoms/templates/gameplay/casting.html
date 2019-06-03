@@ -26,7 +26,8 @@
     <a href="{{ url_for('cast_spell', spell_id=spell.id, target_id=target.id) }}">
         <!-- Lay out all the cases where the spell is not castable -->
         {% set valid_target, _ = spell.validate_targeting(county, target) %}
-        {% if (spell.mana_cost > county.mana) or not valid_target %}
+        {% set spell_active_on_target = spell.check_if_active(county, target, active_spells) %}
+        {% if (spell.mana_cost > county.mana) or not valid_target or spell_active_on_target %}
         <button style="float:left;width:100px;" disabled>Cast</button></a>
         {% else %}
         <button style="float:left;width:100px;">Cast</button></a>
