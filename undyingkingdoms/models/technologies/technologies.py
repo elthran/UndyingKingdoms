@@ -25,7 +25,7 @@ class Technology(GameEvent):
     level = db.Column(db.Integer)
     max_level = db.Column(db.Integer)
     _completed = db.Column(db.Boolean)
-    _description = db.Column(db.String(128))
+    _description = db.Column(db.String(256))
     effects = db.Column(db.PickleType)
 
     requirements = db.relationship(
