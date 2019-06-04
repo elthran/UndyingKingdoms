@@ -2,8 +2,10 @@ import warnings
 
 from sqlalchemy.ext.hybrid import hybrid_property
 
+from tests import bp
 from undyingkingdoms.models.notifications import Notification
 from ..bases import GameEvent, db
+from .base_technology import BaseTechnology
 
 tech_to_tech = db.Table(
     "tech_to_tech", db.metadata,
@@ -14,19 +16,12 @@ tech_to_tech = db.Table(
 
 
 class Technology(GameEvent):
+    name = db.Column(db.String(64))
+    tier = db.Column(db.Integer)
     world_day = db.Column(db.Integer)  # Day you started to research
     county_day = db.Column(db.Integer)
-    name = db.Column(db.String(64))
-    source = db.Column(db.String(32))
     current = db.Column(db.Integer)
-    tier = db.Column(db.Integer)
-    output = db.Column(db.Float)
-    cost = db.Column(db.Integer)
-    level = db.Column(db.Integer)
-    max_level = db.Column(db.Integer)
     _completed = db.Column(db.Boolean)
-    _description = db.Column(db.String(256))
-    effects = db.Column(db.PickleType)
 
     requirements = db.relationship(
         "Technology",
@@ -35,6 +30,9 @@ class Technology(GameEvent):
         secondaryjoin="Technology.id==tech_to_tech.c.right_node_id",
         backref="requirees"
     )
+
+    base_id = db.Column(db.Integer, db.ForeignKey('base_technology.id'))
+    base = db.relationship("BaseTechnology")
 
     @hybrid_property
     def completed(self):
@@ -49,63 +47,50 @@ class Technology(GameEvent):
             self.deactivate(self.county)
         self._completed = value
 
-    @db.validates('effects')
-    def validate_effects(self, key, effects):
-        try:
-            _ = (e for e in effects)
-        except TypeError:
-            return [effects]
-        return effects
-
     @hybrid_property
     def key(self):
         return self.name.lower()
 
     @hybrid_property
+    def max_level(self):
+        return self.base.max_level
+
+    @hybrid_property
+    def effects(self):
+        return self.base.effects
+
+    @hybrid_property
     def description(self):
-        """Map all effect kwargs into the description format string.
+        # noinspection PyPropertyAccess
+        return self.base.description
 
-        Note that output is included as well.
-        """
-
-        all_kwargs = dict(output=self.output)
-        for effect in self.effects:
-            all_kwargs.update(effect.kwargs)
-        code = compile(self._description, '<string>', 'eval')
-        return eval(code, all_kwargs)
-
-    @description.setter
-    def description(self, value):
-        """Compile description into a format string.
-
-        This has the added bonus of validating all format code.
-        """
-        # validate format code, but otherwise do nothing.
-        # I haven't worked out how to store code objects yet.
-        compile('f' + repr(value), '<string>', 'eval')
-        self._description = 'f' + repr(value)
+    @db.reconstructor
+    def init_on_load(self):
+        self.notifier = Notification
 
     def __init__(self, name, cost, max_level, description, requirements=None,
-                 tier=1, output=None, effects=None, source="Generic"):
+                 tier=1, effects=None, source="Generic"):
         if requirements is None:
             requirements = []
         if effects is None:
             effects = []
 
+        self.name = name
+        self.tier = tier
         self.world_day = None
         self.county_day = None
-        self.name = name
-        self.source = source
         self.current = 0
-        self.cost = cost
-        self.level = 0
-        self.tier = tier
-        self.output = output
-        self.max_level = max_level
         self._completed = False
-        self.description = description
         self.requirements = requirements
-        self.effects = effects
+
+        self.base = BaseTechnology(
+            source,
+            cost,
+            max_level,
+            description,
+            effects
+        )
+        self.init_on_load()
 
     @staticmethod
     def establish_requirements(techs, metadata):
@@ -138,7 +123,7 @@ class Technology(GameEvent):
                     f"by {effect_info} in county {county_name}"
                 )
 
-        notice = Notification(
+        notice = self.notifier(
             county,
             f"Discovered {self.name}",
             self.description,
@@ -150,7 +135,7 @@ class Technology(GameEvent):
         for effect in self.effects:
             effect.undo(county)
 
-        notice = Notification(
+        notice = self.notifier(
             county,
             f"Lost {self.name}",
             self.description,
