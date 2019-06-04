@@ -53,13 +53,15 @@ class Military(GameState):
         assert type(self) == Military
 
         county = self.county
+        full_army = county.armies
         strength = 0
         if army:
-            for unit in county.armies.values():
+            for name in army.keys():
+                unit = full_army[name]
                 if unit.type == unit.BESIEGER:
-                    strength += army[unit.name] * enemy_forts * max(unit.attack, 1)
+                    strength += army[name] * enemy_forts * max(unit.attack, 1)
                 elif unit.attack > 0:
-                    strength += army[unit.name] * unit.attack
+                    strength += army[name] * unit.attack
         else:
             for unit in county.armies.values():
                 if scoreboard:
