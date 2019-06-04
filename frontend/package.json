@@ -12,6 +12,7 @@
     "babel-runtime": "^6.26.0",
     "jquery": "^3.4.1",
     "lodash": "^4.17.11",
+    "npm": "^6.9.0",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.4",
     "vue-markdown": "^2.2.4",
