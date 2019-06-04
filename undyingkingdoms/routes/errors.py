@@ -28,6 +28,11 @@ def server_fault(error, admin_id=None):
     # if log_hash not in error_log_cache:
     #     error_log_cache[log_hash] = error_log
 
+    try:
+        error = str(error)
+    except Exception as ex:
+        error = "Error is broken for some reason", str(ex)
+
 
     try:
         county = current_user.county
