@@ -1,6 +1,7 @@
+from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from utilities.helpers import strip_leading_underscore
+from utilities.helpers import strip_leading_underscore, to_var_name
 from ..bases import db
 
 
@@ -75,11 +76,26 @@ def sub_table_addon(master_cls, slave_cls, hoist=True):
     )
 
     # add sub table object to county init
+    compose_into_init(master_cls, slave_cls, sub_table_name)
+
+
+def compose_into_init(primary_cls, component_cls, component_name=None):
+    """Attach an object to the creation process of another object."""
+    component_name = component_name or to_var_name(component_cls.__name__)
+
     # Make copy of original __init__, so we can call it without recursion
-    orig_init = master_cls.__init__
+    orig_init = primary_cls.__init__
 
     def __init__(self, *args, **kws):
         orig_init(self, *args, **kws)  # Call the original __init__
-        setattr(self, sub_table_name, slave_cls(self))
+        setattr(self, component_name, component_cls(self))
 
-    master_cls.__init__ = __init__  # Set the class' __init__ to the new one
+    primary_cls.__init__ = __init__  # Set the class' __init__ to the new one
+
+
+def compose_into_reconstructor(primary_cls, component_cls, component_name=None):
+    component_name = component_name or to_var_name(component_cls.__name__)
+
+    @listens_for(primary_cls, 'load')
+    def receive_load(target, context):
+        setattr(target, component_name, component_cls(target))
