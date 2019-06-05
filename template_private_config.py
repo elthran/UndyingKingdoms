@@ -11,4 +11,5 @@ SECRET_KEY = 'complex_pass'
 CLOCK_KEY = 'complex_pass2'
 # Enable protection against *Cross-site Request Forgery (CSRF)*
 CSRF_SESSION_KEY = 'complex_pass3'
-SENDGRID_API_KEY = "api_key_that_you_can't_have"
+SENDGRID_API_KEY = "api key you can't have"
+SERVER_DATABASE_URI = "database uri you don't need"

@@ -70,17 +70,23 @@ def tech_addon(county_cls, tech_cls):
 
     def advance_research(self):
         tech = self.research_choice
-        tech.current += self.research
-        if tech.current >= tech.cost:  # You save left over research
-            self.research = tech.current - tech.cost
-            tech.current = tech.cost  # Remove the excess research as it looks off and is useless
-            tech.completed = True
-            available_technologies = list(self.available_techs)
-            if available_technologies:
-                self.research_choice = choice(available_technologies)
+        if tech == None:
+            self.gold += self.research
+            self.research = 0
+        else:
+            tech.current += self.research
+            if tech.current >= tech.cost:  # You save left over research
+                self.research = tech.current - tech.cost
+                tech.current = tech.cost  # Remove the excess research as it looks off and is useless
+                tech.completed = True
+                available_technologies = list(self.available_techs)
+                if available_technologies:
+                    self.research_choice = choice(available_technologies)
+                    if self.research_choice == tech and len(available_technologies) <= 1:
+                        self.research_choice = None
+                else:
+                    self.research = 0
             else:
                 self.research = 0
-        else:
-            self.research = 0
 
     county_cls.advance_research = advance_research
