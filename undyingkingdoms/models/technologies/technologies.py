@@ -2,7 +2,6 @@ import warnings
 
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from tests import bp
 from undyingkingdoms.models.notifications import Notification
 from ..bases import GameEvent, db
 from .base_technology import BaseTechnology
@@ -52,6 +51,14 @@ class Technology(GameEvent):
         return self.name.lower()
 
     @hybrid_property
+    def source(self):
+        return self.base.source
+
+    @hybrid_property
+    def cost(self):
+        return self.base.cost
+
+    @hybrid_property
     def max_level(self):
         return self.base.max_level
 
@@ -88,7 +95,7 @@ class Technology(GameEvent):
             cost,
             max_level,
             description,
-            effects
+            effects,
         )
         self.init_on_load()
 

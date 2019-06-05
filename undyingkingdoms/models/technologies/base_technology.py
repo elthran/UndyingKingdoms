@@ -1,24 +1,40 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from undyingkingdoms.models.bases import GameEvent, db
+import undyingkingdoms.models.effects as effect_module
 
 
 class BaseTechnology(GameEvent):
+    """An object that holds shared data between technologies.
+
+    NOTE: when copied this object returns itself.
+    """
     source = db.Column(db.String(32))
     output = db.Column(db.Float)  # output is depreciated
     cost = db.Column(db.Integer)
     max_level = db.Column(db.Integer)
     _description = db.Column(db.String(256))
     # TODO: make effects a string?
-    effects = db.Column(db.PickleType)
+    _effects = db.Column(db.String(256))
 
-    @db.validates('effects')
-    def validate_effects(self, key, effects):
+    @hybrid_property
+    def effects(self):
+        """Extract Effect string and return it as an object."""
+        code = compile(self._effects, '<string>', 'eval')
+        return eval(code, effect_module.__dict__)
+
+    @effects.setter
+    def effects(self, value):
+        """Save effects as a string.
+
+        If effects isn't an iterable it will be coerced into one.
+        """
         try:
-            _ = (e for e in effects)
+            value = list(value)
         except TypeError:
-            return [effects]
-        return effects
+            self._effects = repr([value])
+            return
+        self._effects = repr(value)
 
     @hybrid_property
     def description(self):
@@ -28,21 +44,23 @@ class BaseTechnology(GameEvent):
         """
 
         all_kwargs = dict(output=self.output)
+        # noinspection PyPropertyAccess
         for effect in self.effects:
             all_kwargs.update(effect.kwargs)
-        code = compile(self._description, '<string>', 'eval')
+        code = compile('f' + repr(self._description), '<string>', 'eval')
         return eval(code, all_kwargs)
 
     @description.setter
     def description(self, value):
-        """Compile description into a format string.
+        """Save the description as a string..
 
-        This has the added bonus of validating all format code.
+        NOTE: I run compile on this to get some quick validation.
+        The complied code isn't stored.
         """
-        # validate format code, but otherwise do nothing.
-        # I haven't worked out how to store code objects yet.
+
         compile('f' + repr(value), '<string>', 'eval')
-        self._description = 'f' + repr(value)
+
+        self._description = value
 
     def __init__(self, source, cost, max_level, description,
                  effects):
@@ -51,3 +69,12 @@ class BaseTechnology(GameEvent):
         self.max_level = max_level
         self.description = description
         self.effects = effects
+
+    def __copy__(self):
+        return self
+
+    # noinspection PyDefaultArgument
+    def __deepcopy__(self, memodict={}):
+        memodict[id(self)] = self
+        return self
+

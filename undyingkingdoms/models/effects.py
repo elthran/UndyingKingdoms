@@ -34,6 +34,12 @@ class Effect:
                 op(initial_val, self.kwargs[key])
             )
 
+    def __repr__(self):
+        class_name = self.__class__.__name__
+        attr = self.attr
+        kwargs = ', '.join(f'{k}={v}' for k, v in self.kwargs.items())
+        return f"{class_name}({attr!r}, {kwargs})"
+
 
 class Add(Effect, EffectInterface):
     """Increase an obj value by a given amount.
