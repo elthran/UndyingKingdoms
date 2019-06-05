@@ -6,8 +6,9 @@ from .espionage import Espionage
 from .military import Military
 from .wizardry import Wizardry
 from .scientist import Scientist
+from .events import Event
 
-from .sub_table_addon import sub_table_addon
+from .sub_table_addon import sub_table_addon, compose_into_reconstructor
 from .tech_addon import tech_addon
 from .casting_addon import casting_addon
 
@@ -20,3 +21,4 @@ sub_table_addon(County, Wizardry)
 sub_table_addon(County, Scientist)
 sub_table_addon(County, Espionage)
 sub_table_addon(County, Infrastructure)
+compose_into_reconstructor(County, Event)

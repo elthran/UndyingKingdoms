@@ -85,7 +85,7 @@ export default {
   float: right;
   font-weight: normal;
   min-width: auto;
-  width: 7em;
+  width: 8em;
   height: auto;
 }
 

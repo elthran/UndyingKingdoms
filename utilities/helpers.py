@@ -1,4 +1,5 @@
 import operator
+import re
 
 import roman
 
@@ -14,6 +15,19 @@ def to_class_name(name):
         foo bar_bag -> FooBarBag
     """
     return ''.join(name.title().replace(" ", "_").split('_'))
+
+
+def to_var_name(name):
+    """Convert a upper case class name to a variable name.
+    e.g.
+        FooBar -> foo_bar
+        FooBAR -> foo_b_a_r
+    TODO: make FooBAR => foo_bar ...
+    """
+
+    words = re.sub(r"([A-Z])", r" \1", name).split()
+
+    return '_'.join(words).lower()
 
 
 def romanize(word, n):
