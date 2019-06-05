@@ -35,7 +35,7 @@ class Event:
         elif random_chance == 3 and county.buildings['pasture'].total > 0:
             amount = min(randint(2, 4), county.buildings['pasture'].total)
             notification = notifier(
-                county.id,
+                county,
                 "A disease has affected your cattle",
                 f"Your county has lost {amount} of its dairy farms.",
             )
