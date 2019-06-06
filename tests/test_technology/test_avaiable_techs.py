@@ -1,5 +1,5 @@
 from tests.fakes.factories import UserFactory, CountyFactory
-from tests.fakes.providers import fake
+from undyingkingdoms.models.counties.specifics import merge_tech_requirements
 from undyingkingdoms.models.exports import Preferences, Technology
 
 
@@ -27,10 +27,8 @@ def test_completed_techs(ctx):
 
 def test_available_techs(ctx):
     county = initialize_account()
-    level_1s = 4
-    requirements = fake.requirements(county.technologies.keys(), level_1s=level_1s)
-    # pp(requirements)
-    Technology.establish_requirements(county.technologies, requirements)
+    all_requirements = merge_tech_requirements(county.race, county.background)
+    Technology.establish_requirements(county.technologies, all_requirements)
     county.save()
 
     assert list(county.technologies) != []

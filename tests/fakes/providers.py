@@ -73,6 +73,7 @@ class Provider(BaseProvider):
             ],
         }
         """
+        UserWarning("Fake requirement generation is bugged.")
         if requirements is None:
             requirements = generic_technology.keys()
         if variable_nb_elements:
