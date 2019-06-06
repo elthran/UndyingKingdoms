@@ -1,5 +1,6 @@
 from flask import url_for, redirect, render_template, request
 from flask_login import current_user, login_required
+from python_http_client import UnauthorizedError
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
@@ -11,10 +12,6 @@ from undyingkingdoms.models.forms.activate import EmailVerificationForm
 @app.route('/activate/', methods=['GET', 'POST'])
 @login_required
 def activate():
-    if app.config['ENV'] == 'development':
-        current_user.is_verified = True
-        return redirect(url_for('initialize'))
-
     form = EmailVerificationForm()
     user = current_user
     if request.method == "POST":
@@ -51,13 +48,20 @@ def activate():
 
     try:
         sg = SendGridAPIClient(api_key=private_config.SENDGRID_API_KEY)
-        # noinspection PyUnresolvedReferences
-        response = sg.send(message)
-        assert response.status_code == 202
-    except Exception as e:
-        print(e, message)
+        if app.config['ENV'] in ['production']:
+            # noinspection PyUnresolvedReferences
+            response = sg.send(message)
+            assert response.status_code == 202
+    except UnauthorizedError as ex:
+        # app.logger.error(f"{ex!r} for api key: {api_key}")
+        raise Exception(f"{ex!r} -> check your api key.")
+    except Exception as ex:
+        # app.logger.error(f'{ex!r} for message: {message}')
+        raise Exception(f'{ex!r}\nfor message:\n{message}')
     return render_template(
         'index/activate.html',
         form=form,
-        user=user
+        user=user,
+        env=app.config['ENV'],
+        email_hash=email_hash,
     )
