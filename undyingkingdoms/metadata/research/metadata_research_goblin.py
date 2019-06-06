@@ -40,3 +40,5 @@ goblin_technology = {
 custom_requirements = {}
 
 goblin_technology, goblin_requirements = generate_tech_levels(goblin_technology, custom_requirements)
+
+'Your slaves are {abs(peasant_gold)} gold, {abs(peasant_wood)} wood, and {abs(peasant_iron)} iron cheaper. Also increases your excess production by a factor of {excess_production_multiplier}.'
