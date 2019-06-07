@@ -4,7 +4,7 @@ from tests.helpers import login
 from undyingkingdoms.models.exports import World
 
 
-def test_advance_day(client, build):
+def test_advance_day(rebuild_db, client):
     rv_login = login(client, 'haldon@gmail.com', 'brunner')
     assert "Undying Kingdoms" in rv_login.data.decode()
     assert rv_login.status_code == 200

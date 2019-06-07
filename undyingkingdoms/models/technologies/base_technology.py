@@ -1,6 +1,6 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from undyingkingdoms.models.bases import GameEvent, db
+from ..bases import GameEvent, db
 import undyingkingdoms.models.effects as effect_module
 
 
@@ -75,6 +75,10 @@ class BaseTechnology(GameEvent):
 
     # noinspection PyDefaultArgument
     def __deepcopy__(self, memodict={}):
+        """This object returns self when copied.
+
+        NOTE: if the session expires this will break when copied.
+        """
         memodict[id(self)] = self
         return self
 

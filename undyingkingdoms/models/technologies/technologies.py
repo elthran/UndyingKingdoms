@@ -64,6 +64,7 @@ class Technology(GameEvent):
 
     @hybrid_property
     def effects(self):
+        # noinspection PyPropertyAccess
         return self.base.effects
 
     @hybrid_property
@@ -73,6 +74,7 @@ class Technology(GameEvent):
 
     @db.reconstructor
     def init_on_load(self):
+        # noinspection PyAttributeOutsideInit
         self.notifier = Notification
 
     def __init__(self, name, cost, max_level, description, requirements=None,
@@ -128,6 +130,7 @@ class Technology(GameEvent):
                 raise TypeError(
                     f"Tech: {tech_name} of {description} was crashed "
                     f"by {effect_info} in county {county_name}"
+                    f"\nThe original exception was\n{ex}"
                 )
 
         notice = self.notifier(

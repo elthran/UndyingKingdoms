@@ -6,6 +6,7 @@ import config
 from undyingkingdoms import app as udk_app, flask_db
 from utilities.testing_objects import build_testing_objects
 
+objs = None
 
 @pytest.fixture(scope="session")
 def app():
@@ -18,6 +19,7 @@ def app():
         create_database(engine.url)
 
     with app.app_context():
+        global objs
         flask_db.drop_all()
         flask_db.create_all()
         # Create the game world
@@ -32,14 +34,9 @@ def app():
 
 
 @pytest.fixture(scope='module')
-def build(app):
-    with app.app_context():
-        flask_db.drop_all()
-        flask_db.create_all()
-        # Create the game world
-        objs = build_testing_objects()
-        flask_db.session.commit()
-        return objs
+def rebuild_db(app):
+    global objs
+    return objs
 
 
 @pytest.fixture
