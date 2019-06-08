@@ -91,7 +91,7 @@ class World(GameState):
         tables = ['DAU', 'army', 'building', 'casting', 'chatroom', 'diplomacy', 'economy', 'espionage', 'expedition',
                   'infiltration', 'infrastructure', 'magic', 'message', 'military', 'notification', 'preferences',
                   'scientist', 'session', 'tech_to_tech', 'technology', 'trade', 'transaction', 'wizardry',
-                  'county']
+                  'county', 'base_technology']
         table_mixers.drop_then_rebuild_tables(db, tables)
         self.age += 1
         self.day = -12

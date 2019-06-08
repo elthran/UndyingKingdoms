@@ -1,6 +1,7 @@
 import warnings
 
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm.exc import DetachedInstanceError
 
 from undyingkingdoms.models.notifications import Notification
 from ..bases import GameEvent, db
@@ -31,7 +32,19 @@ class Technology(GameEvent):
     )
 
     base_id = db.Column(db.Integer, db.ForeignKey('base_technology.id'))
-    base = db.relationship("BaseTechnology")
+    _base = db.relationship("BaseTechnology", lazy='joined')
+
+    @property
+    def base(self):
+        try:
+            return self.base_technology
+        except AttributeError:
+            return self._base
+
+    @base.setter
+    def base(self, value):
+        self._base = value
+        self.base_template = value
 
     @hybrid_property
     def completed(self):
@@ -72,11 +85,6 @@ class Technology(GameEvent):
         # noinspection PyPropertyAccess
         return self.base.description
 
-    @db.reconstructor
-    def init_on_load(self):
-        # noinspection PyAttributeOutsideInit
-        self.notifier = Notification
-
     def __init__(self, name, cost, max_level, description, requirements=None,
                  tier=1, effects=None, source="Generic"):
         if requirements is None:
@@ -92,14 +100,15 @@ class Technology(GameEvent):
         self._completed = False
         self.requirements = requirements
 
+        # must migrate to base when copied ...
         self.base = BaseTechnology(
+            self,
             source,
             cost,
             max_level,
             description,
             effects,
         )
-        self.init_on_load()
 
     @staticmethod
     def establish_requirements(techs, metadata):
@@ -133,7 +142,7 @@ class Technology(GameEvent):
                     f"\nThe original exception was\n{ex}"
                 )
 
-        notice = self.notifier(
+        notice = Notification(
             county,
             f"Discovered {self.name}",
             self.description,
@@ -145,7 +154,7 @@ class Technology(GameEvent):
         for effect in self.effects:
             effect.undo(county)
 
-        notice = self.notifier(
+        notice = Notification(
             county,
             f"Lost {self.name}",
             self.description,

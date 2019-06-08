@@ -3,7 +3,6 @@
 import os
 from importlib import import_module
 
-from tests import bp
 
 all_metadata_imports = {}
 

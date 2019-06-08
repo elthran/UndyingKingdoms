@@ -1,7 +1,11 @@
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm.exc import ObjectDeletedError, DetachedInstanceError
 
 from ..bases import GameEvent, db
 import undyingkingdoms.models.effects as effect_module
+
+base_technology_registry = {}
+bp_counter = 0
 
 
 class BaseTechnology(GameEvent):
@@ -13,8 +17,7 @@ class BaseTechnology(GameEvent):
     output = db.Column(db.Float)  # output is depreciated
     cost = db.Column(db.Integer)
     max_level = db.Column(db.Integer)
-    _description = db.Column(db.String(256))
-    # TODO: make effects a string?
+    _description = db.Column(db.String(256), unique=True)
     _effects = db.Column(db.String(256))
 
     @hybrid_property
@@ -62,8 +65,9 @@ class BaseTechnology(GameEvent):
 
         self._description = value
 
-    def __init__(self, source, cost, max_level, description,
+    def __init__(self, technology, source, cost, max_level, description,
                  effects):
+        self.technology = technology
         self.source = source
         self.cost = cost
         self.max_level = max_level
@@ -79,6 +83,42 @@ class BaseTechnology(GameEvent):
 
         NOTE: if the session expires this will break when copied.
         """
-        memodict[id(self)] = self
-        return self
 
+        try:
+            self.id
+        except DetachedInstanceError:
+            self = self.technology.base
+
+        from inspect import signature
+        sig = signature(self.__class__)
+        args_names = [k for k in sig.parameters]
+        args_names.remove('effects')
+
+        dct = self.__dict__
+        arguments = [dct.get(k, dct.get('_' + k)) for k in args_names]
+        arguments.append(getattr(self, 'effects'))
+
+        global base_technology_registry
+        try:
+            obj = base_technology_registry[self._description]
+            try:
+                obj.id
+            except DetachedInstanceError:
+                # breakpoint()
+                # if any object is detached they all are.
+                raise KeyError
+        except KeyError:
+            obj = self.__class__(*arguments)
+            base_technology_registry[self._description] = obj
+
+        global bp_counter
+        print(bp_counter)
+        if bp_counter >= 168:
+            # db.session.add(obj)
+            # obj.save()
+            # breakpoint()
+            pass
+        bp_counter += 1
+
+        memodict[id(obj)] = obj
+        return obj

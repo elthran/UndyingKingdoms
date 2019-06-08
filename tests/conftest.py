@@ -1,17 +1,17 @@
 import pytest
 from sqlalchemy import create_engine
+from sqlalchemy.exc import DatabaseError
 from sqlalchemy_utils import database_exists, create_database
 
 import config
-from undyingkingdoms import app as udk_app, flask_db
-from utilities.testing_objects import build_testing_objects
+from extensions import flask_db as db
+import undyingkingdoms as udk
+import utilities.testing_objects as to
 
-objs = None
 
-@pytest.fixture(scope="session")
-def app():
-    """Create and configure a new app instance for each test."""
-    app = udk_app  # fixing naming overlap.
+def setup_app():
+    """Create an configure an app."""
+    app = udk.app
     app.config.from_object(config.TestingConfig)  # overwrite dev config.
 
     engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
@@ -19,24 +19,50 @@ def app():
         create_database(engine.url)
 
     with app.app_context():
-        global objs
-        flask_db.drop_all()
-        flask_db.create_all()
+        db.drop_all()
+        db.create_all()
         # Create the game world
-        objs = build_testing_objects()
-        flask_db.session.commit()
+        objs = to.build_testing_objects()
+        db.session.commit()
 
-    yield app
+    yield (app, objs)
     app.config['SQLALCHEMY_ECHO'] = False
 
     with app.app_context():
-        flask_db.drop_all()
+        db.drop_all()
+
+
+@pytest.fixture(scope="session")
+def app():
+    """Create and configure a new app instance for each test."""
+    for udk_app, objs in setup_app():
+        yield udk_app
 
 
 @pytest.fixture(scope='module')
-def rebuild_db(app):
-    global objs
-    return objs
+def rebuild_after(app):
+    with app.app_context() as ctx:
+        yield ctx
+        try:
+            db.session.commit()  # prevents hangs
+        except DatabaseError:
+            db.session.rollback()
+            raise
+
+        # from undyingkingdoms.metadata.research.metadata_research_all import generic_technology
+        # generic_technology['infiltration'].base.id
+        # breakpoint()
+        db.drop_all()
+        db.create_all()
+        # Apparently you shouldn't change the database structure while
+        # the app is running. I'll need to delete all the datum individually.
+        # Create the game world
+        to.build_testing_objects()
+        db.session.commit()
+
+        # The following is temporary for testing.
+        from undyingkingdoms.models.exports import County
+        assert County.query.get(1) is not None
 
 
 @pytest.fixture
