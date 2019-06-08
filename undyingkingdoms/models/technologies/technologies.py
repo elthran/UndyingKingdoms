@@ -6,8 +6,8 @@ from undyingkingdoms.models.notifications import Notification
 from ..bases import GameEvent, db
 import undyingkingdoms.models.effects as effect_module
 
-tech_to_tech = db.Table(
-    "tech_to_tech", db.metadata,
+technology_to_technology = db.Table(
+    "technology_to_technology", db.metadata,
     # don't really understand enough to name these properly
     db.Column("left_node_id", db.Integer, db.ForeignKey("technology.id"), primary_key=True),
     db.Column("right_node_id", db.Integer, db.ForeignKey("technology.id"), primary_key=True)
@@ -32,9 +32,9 @@ class Technology(GameEvent):
 
     requirements = db.relationship(
         "Technology",
-        secondary="tech_to_tech",
-        primaryjoin="Technology.id==tech_to_tech.c.left_node_id",
-        secondaryjoin="Technology.id==tech_to_tech.c.right_node_id",
+        secondary="technology_to_technology",
+        primaryjoin="Technology.id==technology_to_technology.c.left_node_id",
+        secondaryjoin="Technology.id==technology_to_technology.c.right_node_id",
         backref="requirees"
     )
 
@@ -133,7 +133,7 @@ class Technology(GameEvent):
         self.effects = effects
 
     @staticmethod
-    def establish_requirements(techs, metadata):
+    def establish_requirements(technologies, metadata):
         """Merge a dict of requirements with a dict of technologies.
 
         When a requirement doesn't exist a new tech should be added
@@ -143,11 +143,11 @@ class Technology(GameEvent):
             assert type(metadata[key]) != str
             for requirement in metadata[key]:
                 try:
-                    techs[key].requirements.append(techs[requirement])
+                    technologies[key].requirements.append(technologies[requirement])
                 except KeyError:
                     message = f'Tech "{key}" -> "{requirement} relationship is failing.'
                     warnings.warn(message, RuntimeWarning)
-                    pass  # add new tech to techs
+                    pass  # add new tech to technologies
 
     def activate(self, county):
         # noinspection PyPropertyAccess

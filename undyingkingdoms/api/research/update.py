@@ -14,22 +14,22 @@ class UpdateAPI(MethodView):
 
         known_technologies = [
             generic_vue_safe(tech, ['name', 'description', 'source'])
-            for tech in county.completed_techs
+            for tech in county.completed_technologies
         ]
         available_technologies = [
             generic_vue_safe(tech, ['name', 'description', 'tier', 'current', 'cost', 'source'])
-            for tech in county.available_techs
+            for tech in county.available_technologies
         ]
 
         locked_technologies = [
             generic_vue_safe(tech, ['name', 'description', 'tier', 'current', 'cost', 'source'])
-            for tech in county.unavailable_techs
+            for tech in county.unavailable_technologies
         ]
 
         form = TechnologyForm()
         form.technology.choices = [
             (tech.id, tech.name)
-            for tech in county.available_techs
+            for tech in county.available_technologies
         ]
 
         county_data = dict(
@@ -59,7 +59,7 @@ class UpdateAPI(MethodView):
 
         form.technology.choices = [
             (tech.id, tech.name)
-            for tech in county.available_techs
+            for tech in county.available_technologies
         ]
 
         if form.validate_on_submit():

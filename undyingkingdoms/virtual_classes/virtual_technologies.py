@@ -8,8 +8,8 @@ for key in md:
     discriminant = key.rsplit('_', maxsplit=1)[1]
     if 'research' in key:
         module = md[key]
-        techs = getattr(module, discriminant)
-        for tech in techs:
+        technologies = getattr(module, discriminant)
+        for tech in technologies:
             cls_name = to_class_name(f'{tech.source} {tech.name}')
             print(
                 f"""class {cls_name}:

@@ -10,27 +10,27 @@ def initialize_account():
     return county
 
 
-def test_completed_techs(ctx):
+def test_completed_technologies(ctx):
     # app.config['SQLALCHEMY_ECHO'] = True
     county = initialize_account()
     county.save()
 
-    assert list(county.completed_techs) == []
-    assert set(county.technologies.values()) == set(county.incomplete_techs)
+    assert list(county.completed_technologies) == []
+    assert set(county.technologies.values()) == set(county.incomplete_technologies)
 
     tech = county.technologies['basic agriculture']
     tech.completed = True
 
-    assert list(county.completed_techs) == [tech]
-    assert len(list(county.incomplete_techs)) == len(county.technologies) - 1
+    assert list(county.completed_technologies) == [tech]
+    assert len(list(county.incomplete_technologies)) == len(county.technologies) - 1
 
 
-def test_available_techs(ctx):
+def test_available_technologies(ctx):
     county = initialize_account()
     all_requirements = merge_tech_requirements(county.race, county.background)
     Technology.establish_requirements(county.technologies, all_requirements)
     county.save()
 
     assert list(county.technologies) != []
-    assert list(county.available_techs) != []
-    assert set(county.technologies.values()) != set(county.available_techs)
+    assert list(county.available_technologies) != []
+    assert set(county.technologies.values()) != set(county.available_technologies)
