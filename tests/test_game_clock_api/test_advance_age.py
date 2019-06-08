@@ -4,7 +4,7 @@ from tests.helpers import login
 from undyingkingdoms.models.exports import World, County
 
 
-def test_advance_age(client):
+def test_advance_age(client, rebuild_after):
     rv_login = login(client, 'haldon@gmail.com', 'brunner')
     assert "Undying Kingdoms" in rv_login.data.decode()
     assert rv_login.status_code == 200

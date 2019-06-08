@@ -13,11 +13,10 @@ undyingkingdoms/routes/gameplay/testing_page.py
 frontend/node_modules
 /undyingkingdoms/static/dist
 /undyingkingdoms/templates/dist
-/System Volume Information/
 package-lock.json
 export/dump.sql
 bin/activate
 .vagrant
 
 # Log files
-*.log
+/logs/

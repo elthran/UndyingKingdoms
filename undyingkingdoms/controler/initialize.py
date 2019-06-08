@@ -12,7 +12,7 @@ def initialize_county(user, kingdom, county_name, title, leader_name, race, back
     Preferences(county, user)
     all_requirements = merge_tech_requirements(county.race, county.background)
     Technology.establish_requirements(county.technologies, all_requirements)
-    county.research_choice = choice(list(county.available_techs))
+    county.research_choice = choice(list(county.available_technologies))
     return county
 
 

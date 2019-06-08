@@ -98,8 +98,8 @@ generic_technology = [
         name='Banking',
         cost=750,
         max_level=1,
-        description='Your banks generate an additional 6 gold each.',
-        effects=Add('economy', dairy_modifier=0.50)
+        description='Your banks generate an additional {bank_multiplier:+} gold each.',
+        effects=Add('economy', bank_multiplier=6)
     ),
     Technology(
         name='Basic Espionage',

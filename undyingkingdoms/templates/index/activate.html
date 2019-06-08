@@ -54,6 +54,10 @@ button {
     text-align: center;
 }
 
+.top-spacer-1 {
+    margin-top: 1em;
+}
+
 </style>
 {% endblock %}
 
@@ -68,10 +72,18 @@ button {
     <br>
     <button type="submit">Verify</button>
   </form>
-
-      <br>
-      <button><a href="{{ url_for('activate') }}">Resend verification</a></button>
-      <br><br>If unable to verify, please contact me at jacobbrunner@gmail.com and I will fix the issue
+    {% if env in ['development', 'testing'] %}
+      <p class="top-spacer-1">
+        You are in testing or development mode so here is your key:
+        <br>
+        <strong id="key">{{ email_hash }}</strong>
+        <br>
+        Note: no email was sent. Set mode to production to test email verification.
+      </p>
+    {% endif %}
+    <br>
+    <button><a href="{{ url_for('activate') }}">Resend verification</a></button>
+    <br><br>If unable to verify, please contact me at jacobbrunner@gmail.com and I will fix the issue
 
   </div>
 </div>

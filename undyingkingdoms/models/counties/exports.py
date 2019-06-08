@@ -9,12 +9,12 @@ from .scientist import Scientist
 from .events import Event
 
 from .sub_table_addon import sub_table_addon, compose_into_reconstructor
-from .tech_addon import tech_addon
+from .technology_addon import technology_addon
 from .casting_addon import casting_addon
 
 # Attach any add-ons needed to the County class.
 casting_addon(County)
-tech_addon(County, Technology)
+technology_addon(County, Technology)
 sub_table_addon(County, Economy)
 sub_table_addon(County, Military, hoist=False)
 sub_table_addon(County, Wizardry)
