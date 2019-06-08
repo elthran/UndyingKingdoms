@@ -55,7 +55,7 @@ class Technology(GameEvent):
     def key(self):
         return self.name.lower()
 
-    @property
+    @hybrid_property
     def effects(self):
         """Extract Effect string and return it as an object."""
         code = compile(self._effects, '<string>', 'eval')
@@ -79,7 +79,7 @@ class Technology(GameEvent):
     def effects(cls):
         return cls._effects
 
-    @property
+    @hybrid_property
     def description(self):
         """Map all effect kwargs into the description format string.
 
@@ -150,12 +150,14 @@ class Technology(GameEvent):
                     pass  # add new tech to techs
 
     def activate(self, county):
+        # noinspection PyPropertyAccess
         for effect in self.effects:
             try:
                 effect.activate(county)
             except TypeError as ex:
                 tech_name = self.name
                 effect_info = repr(effect.kwargs)
+                # noinspection PyPropertyAccess
                 description = self.description
                 county_name = county.name
                 raise TypeError(
@@ -164,6 +166,7 @@ class Technology(GameEvent):
                     f"\nThe original exception was\n{ex}"
                 )
 
+        # noinspection PyPropertyAccess
         notice = Notification(
             county,
             f"Discovered {self.name}",
@@ -173,9 +176,11 @@ class Technology(GameEvent):
         notice.save()
 
     def deactivate(self, county):
+        # noinspection PyPropertyAccess
         for effect in self.effects:
             effect.undo(county)
 
+        # noinspection PyPropertyAccess
         notice = Notification(
             county,
             f"Lost {self.name}",
