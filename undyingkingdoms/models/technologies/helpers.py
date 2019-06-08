@@ -1,9 +1,6 @@
 from copy import deepcopy
 
-from sqlalchemy.ext.hybrid import hybrid_property
-
-from tests import bp
-from utilities.helpers import romanize, strip_leading_underscore
+from utilities.helpers import romanize
 
 
 def generate_tech_levels(techs, requirements):
@@ -41,39 +38,3 @@ def generate_tech_levels(techs, requirements):
         tech.key: tech
         for tech in all_techs
     }, all_reqs
-
-
-# def hoist_cols_macro(cls, sub_cls, sub_table_alias=None):
-#     sub_table_alias = sub_table_alias or sub_cls.__table__.name
-#
-#     cols_to_hoist = set([
-#         strip_leading_underscore(c.name)
-#         for c in sub_cls.__table__.c
-#     ]) - set([
-#         strip_leading_underscore(c.name)
-#         for c in cls.__table__.c
-#     ])
-#
-#     for name in cols_to_hoist:
-#         func = hybrid_property(
-#             lambda self, key=name: getattr(
-#                 getattr(self, sub_table_alias),
-#                 key
-#             )
-#         )
-#         setattr(
-#             cls,
-#             name,
-#             func
-#         )
-#         setattr(
-#             cls,
-#             name,
-#             func.setter(
-#                 lambda self, value, key=name: setattr(
-#                     getattr(self, sub_table_alias),
-#                     key,
-#                     value
-#                 )
-#             )
-#         )

@@ -1,11 +1,10 @@
 import warnings
 
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm.exc import DetachedInstanceError
 
 from undyingkingdoms.models.notifications import Notification
 from ..bases import GameEvent, db
-from .base_technology import BaseTechnology
+import undyingkingdoms.models.effects as effect_module
 
 tech_to_tech = db.Table(
     "tech_to_tech", db.metadata,
@@ -23,6 +22,14 @@ class Technology(GameEvent):
     current = db.Column(db.Integer)
     _completed = db.Column(db.Boolean)
 
+    # generic, could be shared
+    source = db.Column(db.String(32))
+    output = db.Column(db.Float)  # output is depreciated
+    cost = db.Column(db.Integer)
+    max_level = db.Column(db.Integer)
+    _description = db.Column(db.String(256))
+    _effects = db.Column(db.String(256))
+
     requirements = db.relationship(
         "Technology",
         secondary="tech_to_tech",
@@ -30,21 +37,6 @@ class Technology(GameEvent):
         secondaryjoin="Technology.id==tech_to_tech.c.right_node_id",
         backref="requirees"
     )
-
-    base_id = db.Column(db.Integer, db.ForeignKey('base_technology.id'))
-    _base = db.relationship("BaseTechnology", lazy='joined')
-
-    @property
-    def base(self):
-        try:
-            return self.base_technology
-        except AttributeError:
-            return self._base
-
-    @base.setter
-    def base(self, value):
-        self._base = value
-        self.base_template = value
 
     @hybrid_property
     def completed(self):
@@ -63,27 +55,60 @@ class Technology(GameEvent):
     def key(self):
         return self.name.lower()
 
-    @hybrid_property
-    def source(self):
-        return self.base.source
-
-    @hybrid_property
-    def cost(self):
-        return self.base.cost
-
-    @hybrid_property
-    def max_level(self):
-        return self.base.max_level
-
-    @hybrid_property
+    @property
     def effects(self):
-        # noinspection PyPropertyAccess
-        return self.base.effects
+        """Extract Effect string and return it as an object."""
+        code = compile(self._effects, '<string>', 'eval')
+        return eval(code, effect_module.__dict__)
 
-    @hybrid_property
+    @effects.setter
+    def effects(self, value):
+        """Save effects as a string.
+
+        If effects isn't an iterable it will be coerced into one.
+        """
+        try:
+            value = list(value)
+        except TypeError:
+            self._effects = repr([value])
+            return
+        self._effects = repr(value)
+
+    # noinspection PyUnresolvedReferences,PyMethodParameters
+    @effects.expression
+    def effects(cls):
+        return cls._effects
+
+    @property
     def description(self):
+        """Map all effect kwargs into the description format string.
+
+        Note that output is included as well.
+        """
+
+        all_kwargs = dict(output=self.output)
         # noinspection PyPropertyAccess
-        return self.base.description
+        for effect in self.effects:
+            all_kwargs.update(effect.kwargs)
+        code = compile('f' + repr(self._description), '<string>', 'eval')
+        return eval(code, all_kwargs)
+
+    @description.setter
+    def description(self, value):
+        """Save the description as a string..
+
+        NOTE: I run compile on this to get some quick validation.
+        The complied code isn't stored.
+        """
+
+        compile('f' + repr(value), '<string>', 'eval')
+
+        self._description = value
+
+    # noinspection PyUnresolvedReferences,PyMethodParameters
+    @description.expression
+    def description(cls):
+        return cls._description
 
     def __init__(self, name, cost, max_level, description, requirements=None,
                  tier=1, effects=None, source="Generic"):
@@ -100,15 +125,12 @@ class Technology(GameEvent):
         self._completed = False
         self.requirements = requirements
 
-        # must migrate to base when copied ...
-        self.base = BaseTechnology(
-            self,
-            source,
-            cost,
-            max_level,
-            description,
-            effects,
-        )
+        # could be shared
+        self.source = source
+        self.cost = cost
+        self.max_level = max_level
+        self.description = description
+        self.effects = effects
 
     @staticmethod
     def establish_requirements(techs, metadata):

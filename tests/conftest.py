@@ -49,14 +49,10 @@ def rebuild_after(app):
             db.session.rollback()
             raise
 
-        # from undyingkingdoms.metadata.research.metadata_research_all import generic_technology
-        # generic_technology['infiltration'].base.id
-        # breakpoint()
         db.drop_all()
         db.create_all()
         # Apparently you shouldn't change the database structure while
-        # the app is running. I'll need to delete all the datum individually.
-        # Create the game world
+        # the app is running. But I'm doing it.
         to.build_testing_objects()
         db.session.commit()
 
