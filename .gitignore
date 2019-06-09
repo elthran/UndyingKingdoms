@@ -17,6 +17,8 @@ package-lock.json
 export/dump.sql
 bin/activate
 .vagrant
+*.sublime-project
+*.sublime-workspace
 
 # Log files
 /logs/

@@ -127,6 +127,14 @@ generate_private_config() {
 	echo "Private app config generated."
 }
 
+clone_dist_files() {
+	udk_site='https://www.undyingkingdoms.com/'
+	dist_file='static/dist/dist_files.txt'
+	cd "undyingkingdoms"
+	wget -qO- $udk_site$dist_file | xargs -i wget $udk_site'{}' -x -nH
+	cd ..
+}
+
 # NOTE: to server app from inside vagrant I need to use
 # python manage.py serve -h 0.0.0.0
 # NOTE: I need to update the dist files!
@@ -144,6 +152,7 @@ install() {
 	get_set_mysql_root_password
 	set_udk_user_grants
 	generate_private_config
+	clone_dist_files
 	echo "Undyking Kingdoms back-end development environment installed."
 }
 

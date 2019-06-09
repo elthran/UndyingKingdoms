@@ -20,3 +20,9 @@ UDK="undyingkingdoms"
 scp -rC $UDK/static/dist $HOST:~/UndyingKingdoms/$UDK/static
 scp -rC $UDK/templates/dist $HOST:~/UndyingKingdoms/$UDK/templates
 
+ssh $HOST '
+cd ~/UndyingKingdoms/undyingkingdoms
+find static/dist/* -type f > static/dist/dist_files.txt
+find templates/dist/* -type f >> static/dist/dist_files.txt
+exit
+'
