@@ -4,12 +4,17 @@ import VueRouter from 'vue-router'
 // you don't need to use this, just put all chunked files in here.
 // NOTE: chunking only works if the component is also async
 import '@/assets/chunks.js'
+
 import LoadingComponent from '@/components/LoadingComponent.vue'
 import ErrorComponent from '@/components/ErrorComponent.vue'
 import NotFoundComponent from '@/components/NotFoundComponent.vue'
+
 import OverviewApp from '@/overview/OverviewApp.vue'
 import InfrastructureApp from '@/infrastructure/InfrastructureApp.vue'
+import MilitaryApp from '@/military/MilitaryApp.vue'
+
 const AsyncChatroomApp = () => import(/* webpackChunkName: "ChatroomApp" */ '@/chatroom/ChatroomApp.vue')
+
 import ForumApp from '@/forum/ForumApp.vue'
 import ResearchApp from '@/research/ResearchApp.vue'
 
@@ -26,6 +31,11 @@ export default new VueRouter({
       path: '/gameplay/infrastructure',
       name: 'InfrastructureApp',
       component: InfrastructureApp,
+    },
+    {
+      path: '/gameplay/military',
+      name: 'MilitaryApp',
+      component: MilitaryApp,
     },
     {
       path: '/gameplay/chatroom',

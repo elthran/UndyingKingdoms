@@ -24,6 +24,11 @@
         City&nbsp;Planner
       </router-link> -->
       <a :href="urlFor.infrastructure">City&nbsp;Planner</a>
+      <!-- <router-link
+        :to="urlFor.military"
+      >
+        War
+      </router-link> -->
       <a
         :href="urlFor.military"
       >
