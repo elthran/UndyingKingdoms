@@ -833,7 +833,7 @@ class County(GameState):
                 )
                 message += f" You gained {war_score} acres, but lost {casualties} troops in the battle."
             elif expedition.mission == "Raze":
-                land_razed = int(war_score * 1.50)
+                land_razed = int(war_score * 1.40)
                 expedition.land_razed = land_razed
                 enemy.land -= land_razed
                 notification = Notification(

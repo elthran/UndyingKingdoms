@@ -70,22 +70,23 @@ def technology_addon(county_cls, tech_cls):
 
     def advance_research(self):
         tech = self.research_choice
-        if tech == None:
+        if tech is None:
+            # Should add a Notification here saying you get gold instead of research
             self.gold += self.research
-            self.research = 0
         else:
             tech.current += self.research
             if tech.current >= tech.cost:  # You save left over research
                 self.research = tech.current - tech.cost
                 tech.current = tech.cost  # Remove the excess research as it looks off and is useless
                 tech.completed = True
-                available_technologies = list(self.available_technologies)
-                if available_technologies:
+                try:
+                    available_technologies = list(self.available_technologies)
                     self.research_choice = choice(available_technologies)
-                    if self.research_choice == tech and len(available_technologies) <= 1:
-                        self.research_choice = None
-                else:
+                except AttributeError:
+                    available_technologies = []
+                    self.gold += self.research
                     self.research = 0
+                    self.research_choice = None
             else:
                 self.research = 0
 

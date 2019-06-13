@@ -28,7 +28,7 @@
         <li>Current Army has <span id="calculatedAttack">0</span> attack power {% if war %}and would gain {{ county.get_score_from_winning_battle(enemy, modifier) }} war points if victorious</li>{% endif %}<br>
         <li>Attack: Duration {{ military.get_expedition_duration('Attack') }} days, gains {{ county.get_score_from_winning_battle(enemy, modifier) }} acres</li>
         <li>Pillage: Duration {{ military.get_expedition_duration('Pillage') }} days, steals {{ county.get_resources_from_winning_pillage(enemy, modifier) }}</li>
-        <li>Raze: Duration {{ military.get_expedition_duration('Raze') }} days, destroys {{ (county.get_score_from_winning_battle(enemy, modifier) * 1.5)|int }} acres</li>
+        <li>Raze: Duration {{ military.get_expedition_duration('Raze') }} days, destroys {{ (county.get_score_from_winning_battle(enemy, modifier) * 1.4)|int }} acres</li>
     </ul>
     <br><br>
     <button type="submit">Attack</button>
