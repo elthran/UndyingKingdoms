@@ -14,7 +14,8 @@ class SidebarAPI(MethodView):
             isAdmin=current_user.is_admin,
             hasMail=preferences.has_mail(),
             hasChatMessage=preferences.has_new_townhall_message(),
-            isKing=kingdom.leader != 0
+            isKing=kingdom.leader != 0,
+            hasClan=current_user.clan is not None,
         )
 
         # the url names on the left here must match the ones
@@ -39,6 +40,7 @@ class SidebarAPI(MethodView):
             leaderboard=url_for('leaderboard'),
             profile=url_for('profile', tab='basic'),
             adminHomeAPI=url_for('admin.home_api'),
+            clan=url_for('generic_clan'),
             logout=url_for('logout'),
         )
 

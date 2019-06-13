@@ -106,6 +106,16 @@
         v-if="user.isAdmin"
         :href="urlFor.adminHomeAPI"
       >Admin</a>
+      <a
+        :href="urlFor.clan"
+      >
+        <span v-if="user.hasClan">
+          Clan
+        </span>
+        <span v-else>
+          Create Kingdom
+        </span>
+      </a>
     </div>
     <div class="top-spacer-dot-3" />
     <a :href="urlFor.logout">Logout</a>
