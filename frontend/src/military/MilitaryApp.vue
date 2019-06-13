@@ -4,23 +4,31 @@
     class="invisible"
   >
     <prefix-title title="War" />
-
-    <br style="margin-bottom: 2em">
+    <div id="content">
+      <military-strength
+        :county="county"
+      />
+      <!-- <military-form /> -->
+      <br><br>
+      <!-- <military-expedtions /> -->
+      <br style="margin-bottom: 2em">
+    </div>
   </div>
 </template>
 
 <script>
-// import SelectGenerator from '@/components/SelectGenerator.vue'
+import MilitaryStrength from './MilitaryStrength.vue'
 
 export default {
   name: 'ResearchApp',
   components: {
-    // SelectGenerator,
+    MilitaryStrength,
   },
   data () {
     return {
       loaded: false,
-
+      county: null,
+      form: null,
     }
   },
   mounted () {
@@ -43,5 +51,9 @@ export default {
 </script>
 
 <style scoped>
-
+@media (min-width: 640px) {
+  #content {
+    padding-top: 1em;
+  }
+}
 </style>

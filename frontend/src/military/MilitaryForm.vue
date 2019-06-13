@@ -1,0 +1,385 @@
+<template>
+  <form method="POST" accept-charset="UTF-8" role="form">
+    {{ form.csrf_token }}
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Available</th>
+        <th>Traveling</th>
+        <th>Training</th>
+        <th>Train</th>
+        <th id="costCol">Cost</th>
+        <th>
+          <div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div>
+        </th>
+        <th>
+          <div class="tooltip">Defence<span class="tooltipText">{{ meta_data["defence"] }}</span></div>
+        </th>
+        <th>
+          <div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div>
+        </th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+      {% for army in county.armies.values() %}
+        <!--  [county.gold // army.gold, county.wood // army.wood, county.iron // army.iron]  -->
+        <!--(list | sort)[0] replicates min()-->
+        {% set slider_size = max_trainable_by_cost(county, army) %}
+      <tr>
+        <td>{{ army.class_name.title() }}</td>
+        <td>{{ army.available }}</td>
+        <td>{{ army.traveling }}</td>
+        <td><div class="tooltip">{{ army.currently_training }}<span class="tooltipText">Max trainable per day: {{ army.trainable_per_day }}</span></td>
+        <td>
+          {% if army.name == 'monster' %}
+            {% set lair = county.buildings['lair'] %}
+            {% set lair_name = lair.class_name_plural.title() %}
+            <span class="invisible" id="monsterMax">{{ slider_size }}</span>
+            {% if monsters_buildable(county) <= 0 %}
+              <div class="slide-container">
+                <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1" hidden/>
+              </div>
+              <span class="display" hidden>0</span>
+              <span style="color:red;">Requires more<br>{{ lair_name }}</span>
+            {% else %}
+              <div class="slide-container">
+                <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" data-monster step="1"/>
+              </div>
+              <span class="display">0</span>
+              <span>
+                <span class="tooltip">of {{ lair.total - army.total - army.currently_training }}
+                  <span class="tooltipText">Build more {{ lair_name }}</span>
+                </span>
+              </span>
+            {% endif %}
+          {% elif army.name == 'summon' %}
+            N/A
+          {% else %}
+            <div class="slide-container">
+              <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
+            </div>
+            <span class="display">0</span>
+          {% endif %}
+          <input class="value" name="{{ army.name }}" value="0" hidden/>
+        </td>
+        <td>
+          {% if army.name == 'summon' %}
+            N/A
+          {% else %}
+            {% if army.gold %}
+              <span class="buildingGoldCost">{{ army.gold }}</span><img class="resource_icons" src="/static/images/gold_icon.jpg">
+            {% endif %}
+            {% if army.wood %}
+              <span class="buildingWoodCost">{{ army.wood }}</span><img class="resource_icons" src="/static/images/wood_icon.jpg">
+            {% endif %}
+            {% if army.iron %}
+              <span class="buildingIronCost">{{ army.iron }}</span><img class="resource_icons" src="/static/images/iron_icon.jpg">
+            {% endif %}
+            {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
+          {% endif %}
+        </td>
+        <td>{% if army.name == 'besieger' %}<div class="tooltip">*<span class="tooltipText">{{ meta_data["besieger_attack"] }}</span>{% else %}{{ army.attack }}{% endif %}</td>
+        <td>{{ army.defence }}</td>
+        <td><div class="tooltip">{{ army.health }}<span class="tooltipText">Armour type: {{ army.armour_type }}</span></td>
+        <td>{{ army.category }}</td>
+        <td>{{ army.description }}</td>
+      </tr>
+      {% endfor %}
+      <tr class="total-row">
+        <td>Total</td>
+        <td>{{ county.get_available_army_size() }}</td>
+        <td>{{ county.get_unavailable_army_size() }}</td>
+        <td>{{ county.get_training_army_size() }}</td>
+        <td>-</td>
+        <td>
+          <div class="tooltip">{{ county.get_upkeep_costs() }}<span
+              class="tooltipText">{{ meta_data["upkeep_daily"] }}</span>
+          </div>
+        </td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+    </table>
+    <br>
+    Gold Cost: <span id="goldCost">0</span>
+    <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
+    Wood Cost: <span id="woodCost">0</span>
+    <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
+    Iron Cost: <span id="ironCost">0</span>
+    <img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons"  src="/static/images/iron_icon.jpg"><br>
+    Happiness Cost: <span id="happinessCost">0</span>
+    <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+    <br><br>
+    <button id="submitButton" type="submit">Build</button>
+    <br>
+    <div id="invisibleDataFields">
+      <span id="population">{{ county.population }}</span>
+      <span id="totalGold">{{ county.gold }}</span>
+      <span id="totalWood">{{ county.wood }}</span>
+      <span id="totalIron">{{ county.iron }}</span>
+    </div>
+  </form>
+<template>
+
+<script>
+  // var sliders = $(".slider");
+  // var displays = $(".display");
+  // var values = $(".value");
+
+  // var buildingGoldCosts = $(".buildingGoldCost");
+  // var buildingWoodCosts = $(".buildingWoodCost");
+  // var buildingIronCosts = $(".buildingIronCost");
+
+  // var submitButton = $("#submitButton");
+  // var goldCost = $("#goldCost");
+  // var woodCost = $("#woodCost");
+  // var ironCost = $("#ironCost");
+  // var happinessCost = $("#happinessCost");
+
+
+  // var totalGold = parseInt($("#totalGold").text());
+  // var totalWood = parseInt($("#totalWood").text());
+  // var totalIron = parseInt($("#totalIron").text());
+  // var population = parseInt($("#population").text());
+
+  // var monsterMax = parseInt($("#monsterMax").text());
+
+  // function updateGold() {
+  //     var sum = 0;
+  //     sliders.each(function (index, element) {
+  //         try {
+  //           sum += element.value * buildingGoldCosts[index].innerHTML;
+  //         }
+  //         catch(err) {
+  //         }
+  //     });
+  //     goldCost.html(sum);
+  // }
+
+  // function updateWood() {
+  //     var sum = 0;
+  //     sliders.each(function (index, element) {
+  //         try {
+  //           sum += element.value * buildingWoodCosts[index].innerHTML;
+  //         }
+  //         catch(err) {
+  //         }
+  //     });
+  //     woodCost.html(sum);
+  // }
+
+  // function updateIron() {
+  //     var sum = 0;
+  //     sliders.each(function (index, element) {
+  //         try {
+  //           sum += element.value * buildingIronCosts[index].innerHTML;
+  //         }
+  //         catch(err) {
+  //         }
+  //     });
+  //     ironCost.html(sum);
+  // }
+
+  // function updateHappiness() {
+  //     var sum = 0;
+  //     sliders.each(function (ignore, element) {
+  //         sum += parseInt(element.value);
+  //     });
+  //     if ('{{ current_user.county.background }}' == 'Warlord') {
+  //       happinessCost.html(0);
+  //     } else {
+  //       happinessCost.html(Math.ceil(sum / population * 200));
+  //     }
+  // }
+
+  // function calcSliderWidth(size) {
+  //     return Math.min(size + 0.8, 10) + "em";
+  // }
+
+  // function resizeRemaining(gold, wood, iron) {
+  //     // console.log(sliders);
+  //     sliders.each(function (index, element) {
+  //         try {
+  //           var goldPrice = buildingGoldCosts[index].innerHTML;
+  //         }
+  //         catch(err) {
+  //           var goldPrice = 0;
+  //         }
+  //         try {
+  //           var woodPrice = buildingWoodCosts[index].innerHTML;
+  //         }
+  //         catch(err) {
+  //           var woodPrice = 0;
+  //         }
+  //         try {
+  //           var ironPrice = buildingIronCosts[index].innerHTML;
+  //         }
+  //         catch(err) {
+  //           var ironPrice = 0;
+  //         }
+  //         var isMonster = element.hasAttribute('data-monster');
+  //         var currentSize = parseInt(element.value);
+  //         var remaining = Math.max(Math.floor(Math.min(
+  //             (totalGold - gold) / goldPrice,
+  //             (totalWood - wood) / woodPrice,
+  //             (totalIron - iron) / ironPrice,
+  //             (isMonster) ? monsterMax-currentSize : Infinity
+  //         )), 0);
+
+  //         var size = currentSize + remaining;
+  //         // need to include current element.value + current_max - remaining?
+  //         $(element).prop("max", size);
+  //         $(element).css("width", calcSliderWidth(size));
+  //         if (size === 0) {
+  //             $(element).addClass("slider-disabled");
+  //         } else {
+  //             $(element).removeClass("slider-disabled");
+  //         }
+  //     });
+  //     // return remaining;
+  // }
+
+  // function updateCosts() {
+  //     updateGold();
+  //     updateWood();
+  //     updateIron();
+  //     updateHappiness();
+
+  //     var gold = parseInt(goldCost.text());
+  //     var wood = parseInt(woodCost.text());
+  //     var iron = parseInt(ironCost.text());
+
+  //     if (gold > totalGold) {
+  //         goldCost.css("color", "red");
+  //     } else {
+  //         goldCost.css("color", "green");
+  //     }
+
+  //     if (wood > totalWood) {
+  //         woodCost.css("color", "red");
+  //     } else {
+  //         woodCost.css("color", "green");
+  //     }
+  //     if (iron > totalIron) {
+  //         ironCost.css("color", "red");
+  //     } else {
+  //         ironCost.css("color", "green");
+  //     }
+  //     if (gold <= totalGold && wood <= totalWood && iron <= totalIron) {
+  //         submitButton.prop("disabled", false);
+  //     } else {
+  //         submitButton.prop("disabled", true);
+  //     }
+
+  //     resizeRemaining(gold, wood, iron);
+  // }
+
+  // sliders.each(function (index, element) {
+  //     var size = parseInt($(element).prop("max"));
+  //     if (size === 0) {
+  //         $(element).addClass("slider-disabled");
+  //     }
+  //     $(element).css("width", calcSliderWidth(size));
+  //     $(element).on("input", function () {
+  //         displays[index].innerHTML = $(element).val();
+  //         values[index].value = $(element).val();
+  //         updateCosts();
+  //     });
+  // });
+</script>
+
+<style scoped>
+@media (min-width: 640px) {
+  input {
+    padding: 0.5em 0 0;
+  }
+
+  #invisibleDataFields {
+    display: none;
+  }
+
+  #costCol {
+    min-width: 8.5em;
+  }
+
+  .slide-container {
+    display: flex;
+    justify-content: space-around;
+    width: 10em;
+  }
+
+  /* The slider itself */
+  .slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width */
+    height: 0.1em; /* Specified height */
+    background: #d3d3d3; /* Grey background */
+    outline: none; /* Remove outline */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+    padding: 0.1em 0 0.1em;
+    margin: 1em 0 1em;
+    width: 10em;
+  }
+
+  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 0.4em; /* Set a specific slider handle width */
+    height: 1.5em; /* Slider handle height */
+    background: #4CAF50; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+  }
+
+  .slider::-moz-range-thumb {
+    width: 0.4em; /* Set a specific slider handle width */
+    height: 1.5em; /* Slider handle height */
+    background: #4CAF50; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+  }
+
+  .slider-disabled::-moz-range-thumb  {
+    background: grey;
+  }
+
+  .slider-disabled::-webkit-slider-thumb {
+    background: grey;
+  }
+
+  table {
+    margin-top: 1em;
+  }
+
+  tr:nth-child(even) {background-color: #f2f2f2;}
+
+  th, td {
+    vertical-align: bottom;
+    border: 1px solid #ddd;
+    padding: 0 0.3em 0.3em;
+  }
+
+  th {
+    font-weight: bold;
+    vertical-align: middle;
+  }
+
+  .total-row {
+    font-weight: bold;
+    height: 2.6em;
+  }
+
+  .tooltip .tooltipText {
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 120%;
+    left: 50%;
+    margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  }
+}
+</style>

@@ -15,9 +15,19 @@ class UpdateAPI(MethodView):
         form = MilitaryForm()
         form.county_id.data = county.id
 
+        military_strength = dict(
+            offensiveStrength=county.get_offensive_strength(),
+            defensiveStrength=county.get_defensive_strength(),
+            availableWorkers=county.get_available_workers(),
+            besiegers=county.armies['besieger'].total,
+        )
+
+        vue_safe_county = {**military_strength, }
+
         return jsonify(
             debugMessage=f"You called on {__name__}",
             form=vue_safe_form(form),
+            county=vue_safe_county,
             meta_data=game_descriptions,
             # max_trainable_by_cost=max_trainable_by_cost,
             # monsters_buildable=monsters_buildable
