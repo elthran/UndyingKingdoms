@@ -2,8 +2,8 @@
   <div>
     <h2>
       Current Attack Power Available: {{ county.offensiveStrength }}
-      <span v-if="county.besiegers > 0">
-        + {{ county.besiegers }} for each enemy fort
+      <span v-if="county.besiegerStrength > 0">
+        + {{ county.besiegerStrength }} for each enemy fort
       </span>
     </h2>
     <h2>Current Defensive Power: {{ county.defensiveStrength }}</h2>

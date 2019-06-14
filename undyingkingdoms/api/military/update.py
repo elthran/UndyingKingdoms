@@ -15,11 +15,14 @@ class UpdateAPI(MethodView):
         form = MilitaryForm()
         form.county_id.data = county.id
 
+        armies = county.armies
+        besiegers = armies['besieger']
+
         military_strength = dict(
             offensiveStrength=county.get_offensive_strength(),
             defensiveStrength=county.get_defensive_strength(),
             availableWorkers=county.get_available_workers(),
-            besiegers=county.armies['besieger'].total,
+            besiegerStrength=besiegers.total * besiegers.attack,
         )
 
         vue_safe_county = {**military_strength, }
