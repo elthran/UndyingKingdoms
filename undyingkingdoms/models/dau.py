@@ -101,7 +101,10 @@ class DAU(GameEvent):
         self.healthiness = county.healthiness
 
         self.production_choice = county.production_choice
-        self.research_choice = county.research_choice.name
+        try:
+            self.research_choice = county.research_choice.name
+        except AttributeError:
+            self.research_choice = None
         self.rations = county.rations
         self.taxes = county.tax_rate
         self.technologies = len(county.technologies)
