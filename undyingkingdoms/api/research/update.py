@@ -37,6 +37,26 @@ class UpdateAPI(MethodView):
         )
 
         current_tech = county.research_choice
+        try:
+            current_tech_data = dict(
+                currentTech=current_tech.name,
+                description=current_tech.description,
+                selectedResearch=current_tech.id,
+                progressCurrent=current_tech.current,
+                progressRequired=current_tech.cost,
+            )
+        except AttributeError:
+            current_tech_data = dict(
+                currentTech="N/A",
+                description="You have researched everything!",
+                selectedResearch="N/A",
+                progressCurrent=0,
+                progressRequired=0,
+            )
+            form.technology.choices.append((
+                current_tech_data['selectedResearch'],
+                current_tech_data['currentTech'],
+            ))
         return jsonify(
             debugMessage=f"You called on {__name__}",
             form=vue_safe_form(form),
@@ -44,12 +64,8 @@ class UpdateAPI(MethodView):
             knownTechnologies=known_technologies,
             availableTechnologies=available_technologies,
             researchChange=county.research_change,
-            currentTech=current_tech.name,
-            description=current_tech.description,
-            selectedResearch=current_tech.id,
-            progressCurrent=current_tech.current,
-            progressRequired=current_tech.cost,
             lockedTechnologies=locked_technologies,
+            **current_tech_data
         )
 
     @login_required
