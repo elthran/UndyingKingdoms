@@ -25,13 +25,19 @@ class UpdateAPI(MethodView):
             besiegerStrength=besiegers.total * besiegers.attack,
         )
 
-        vue_safe_county = {**military_strength, }
+        vue_safe_county = dict(
+            unitsAvailable=county.get_available_army_size(),
+            unitsUnavailable=county.get_unavailable_army_size(),
+            unitsInTraining=county.get_training_army_size(),
+            upkeepCosts=county.get_upkeep_costs(),
+            **military_strength
+        )
 
         return jsonify(
             debugMessage=f"You called on {__name__}",
             form=vue_safe_form(form),
             county=vue_safe_county,
-            meta_data=game_descriptions,
+            metadata=game_descriptions,
             # max_trainable_by_cost=max_trainable_by_cost,
             # monsters_buildable=monsters_buildable
         )

@@ -8,7 +8,11 @@
       <military-strength
         :county="county"
       />
-      <!-- <military-form /> -->
+      <military-form
+        :form="form"
+        :metadata="metadata"
+        :county="county"
+      />
       <br><br>
       <!-- <military-expedtions /> -->
       <br style="margin-bottom: 2em">
@@ -18,17 +22,20 @@
 
 <script>
 import MilitaryStrength from './MilitaryStrength.vue'
+import MilitaryForm from './MilitaryForm.vue'
 
 export default {
   name: 'ResearchApp',
   components: {
     MilitaryStrength,
+    MilitaryForm,
   },
   data () {
     return {
       loaded: false,
       county: null,
       form: null,
+      metadata: null,
     }
   },
   mounted () {

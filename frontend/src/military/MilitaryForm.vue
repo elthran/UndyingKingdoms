@@ -1,6 +1,6 @@
 <template>
   <form method="POST" accept-charset="UTF-8" role="form">
-    {{ form.csrf_token }}
+    <span v-html="form.csrf_token.html" />
     <table>
       <tr>
         <th>Name</th>
@@ -10,21 +10,21 @@
         <th>Train</th>
         <th id="costCol">Cost</th>
         <th>
-          <div class="tooltip">Attack<span class="tooltipText">{{ meta_data["attack"] }}</span></div>
+          <div class="tooltip">Attack<span class="tooltipText">{{ metadata.attack }}</span></div>
         </th>
         <th>
-          <div class="tooltip">Defence<span class="tooltipText">{{ meta_data["defence"] }}</span></div>
+          <div class="tooltip">Defence<span class="tooltipText">{{ metadata.defence }}</span></div>
         </th>
         <th>
-          <div class="tooltip">Health<span class="tooltipText">{{ meta_data["health"] }}</span></div>
+          <div class="tooltip">Health<span class="tooltipText">{{ metadata.health }}</span></div>
         </th>
         <th>Type</th>
         <th>Description</th>
       </tr>
-      {% for army in county.armies.values() %}
+      <!-- {% for army in county.armies.values() %} -->
         <!--  [county.gold // army.gold, county.wood // army.wood, county.iron // army.iron]  -->
         <!--(list | sort)[0] replicates min()-->
-        {% set slider_size = max_trainable_by_cost(county, army) %}
+        <!-- {% set slider_size = max_trainable_by_cost(county, army) %}
       <tr>
         <td>{{ army.class_name.title() }}</td>
         <td>{{ army.available }}</td>
@@ -84,16 +84,16 @@
         <td>{{ army.category }}</td>
         <td>{{ army.description }}</td>
       </tr>
-      {% endfor %}
+      {% endfor %} -->
       <tr class="total-row">
         <td>Total</td>
-        <td>{{ county.get_available_army_size() }}</td>
-        <td>{{ county.get_unavailable_army_size() }}</td>
-        <td>{{ county.get_training_army_size() }}</td>
+        <td>{{ county.unitsAvailable }}</td>
+        <td>{{ county.unitsUnavailable }}</td>
+        <td>{{ county.unitsInTraining }}</td>
         <td>-</td>
         <td>
-          <div class="tooltip">{{ county.get_upkeep_costs() }}<span
-              class="tooltipText">{{ meta_data["upkeep_daily"] }}</span>
+          <div class="tooltip">{{ county.upkeepCosts }}<span
+              class="tooltipText">{{ metadata.upkeep_daily }}</span>
           </div>
         </td>
         <td>-</td>
@@ -103,7 +103,9 @@
         <td>-</td>
       </tr>
     </table>
-    <br>
+
+    <!-- Maybe some kind of cost/resource component? -->
+    <!-- <br>
     Gold Cost: <span id="goldCost">0</span>
     <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
     Wood Cost: <span id="woodCost">0</span>
@@ -111,20 +113,33 @@
     Iron Cost: <span id="ironCost">0</span>
     <img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons"  src="/static/images/iron_icon.jpg"><br>
     Happiness Cost: <span id="happinessCost">0</span>
-    <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+    <img class="resource_icons" src="/static/images/happiness_icon.jpg"> -->
     <br><br>
     <button id="submitButton" type="submit">Build</button>
     <br>
-    <div id="invisibleDataFields">
+    <!-- <div id="invisibleDataFields">
       <span id="population">{{ county.population }}</span>
       <span id="totalGold">{{ county.gold }}</span>
       <span id="totalWood">{{ county.wood }}</span>
       <span id="totalIron">{{ county.iron }}</span>
-    </div>
+    </div> -->
   </form>
-<template>
+</template>
 
 <script>
+export default {
+  name: 'MilitaryForm',
+  props: {
+    county: Object,
+    form: Object,
+    metadata: Object,
+  },
+  data () {
+    return {
+
+    }
+  },
+}
   // var sliders = $(".slider");
   // var displays = $(".display");
   // var values = $(".value");
