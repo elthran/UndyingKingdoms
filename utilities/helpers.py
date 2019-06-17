@@ -30,6 +30,16 @@ def to_var_name(name):
     return '_'.join(words).lower()
 
 
+def to_mixed_case(name):
+    """Convert a lower_case_with_underscores to mixedCase naming."""
+    mixed_case = ''.join(name.title().split('_'))
+    try:
+        return mixed_case[0].lower() + mixed_case[1:]
+    except IndexError:
+        return mixed_case
+
+
+# noinspection SpellCheckingInspection
 def romanize(word, n):
     """Attach a Roman numeral to the given word.
 

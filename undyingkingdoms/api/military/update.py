@@ -1,9 +1,11 @@
+from types import SimpleNamespace
+
 from flask import jsonify
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
-from .helpers import build_units, max_trainable_by_cost, monsters_buildable
-from undyingkingdoms.metadata.metadata import game_descriptions
+from .helpers import build_units, vue_safe_army
+from undyingkingdoms.metadata.metadata import game_descriptions, all_armies
 from undyingkingdoms.models.forms.military import MilitaryForm
 from undyingkingdoms.api.vue_safe import vue_safe_form, generic_vue_safe
 
@@ -33,13 +35,24 @@ class UpdateAPI(MethodView):
             **military_strength
         )
 
+        vue_save_armies = {
+            army.key: vue_safe_army(county, army)
+            for army in county.armies.values()
+        }
+
+        vue_safe_metadata = generic_vue_safe(
+            SimpleNamespace(id='metadata'),
+            [],
+            **game_descriptions
+        )
+
         return jsonify(
             debugMessage=f"You called on {__name__}",
             form=vue_safe_form(form),
             county=vue_safe_county,
-            metadata=game_descriptions,
-            # max_trainable_by_cost=max_trainable_by_cost,
-            # monsters_buildable=monsters_buildable
+            metadata=vue_safe_metadata,
+            armies=vue_save_armies,
+            armyOrdering=all_armies,
         )
 
     @login_required

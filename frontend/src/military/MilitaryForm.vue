@@ -1,5 +1,9 @@
 <template>
-  <form method="POST" accept-charset="UTF-8" role="form">
+  <form
+    method="POST"
+    accept-charset="UTF-8"
+    role="form"
+  >
     <span v-html="form.csrf_token.html" />
     <table>
       <tr>
@@ -8,83 +12,33 @@
         <th>Traveling</th>
         <th>Training</th>
         <th>Train</th>
-        <th id="costCol">Cost</th>
-        <th>
-          <div class="tooltip">Attack<span class="tooltipText">{{ metadata.attack }}</span></div>
+        <th id="costCol">
+          Cost
         </th>
         <th>
-          <div class="tooltip">Defence<span class="tooltipText">{{ metadata.defence }}</span></div>
+          <div class="tooltip">
+            Attack<span class="tooltip-text">{{ metadata.attack }}</span>
+          </div>
         </th>
         <th>
-          <div class="tooltip">Health<span class="tooltipText">{{ metadata.health }}</span></div>
+          <div class="tooltip">
+            Defence<span class="tooltip-text">{{ metadata.defence }}</span>
+          </div>
+        </th>
+        <th>
+          <div class="tooltip">
+            Health<span class="tooltip-text">{{ metadata.health }}</span>
+          </div>
         </th>
         <th>Type</th>
         <th>Description</th>
       </tr>
-      <!-- {% for army in county.armies.values() %} -->
-        <!--  [county.gold // army.gold, county.wood // army.wood, county.iron // army.iron]  -->
-        <!--(list | sort)[0] replicates min()-->
-        <!-- {% set slider_size = max_trainable_by_cost(county, army) %}
-      <tr>
-        <td>{{ army.class_name.title() }}</td>
-        <td>{{ army.available }}</td>
-        <td>{{ army.traveling }}</td>
-        <td><div class="tooltip">{{ army.currently_training }}<span class="tooltipText">Max trainable per day: {{ army.trainable_per_day }}</span></td>
-        <td>
-          {% if army.name == 'monster' %}
-            {% set lair = county.buildings['lair'] %}
-            {% set lair_name = lair.class_name_plural.title() %}
-            <span class="invisible" id="monsterMax">{{ slider_size }}</span>
-            {% if monsters_buildable(county) <= 0 %}
-              <div class="slide-container">
-                <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1" hidden/>
-              </div>
-              <span class="display" hidden>0</span>
-              <span style="color:red;">Requires more<br>{{ lair_name }}</span>
-            {% else %}
-              <div class="slide-container">
-                <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" data-monster step="1"/>
-              </div>
-              <span class="display">0</span>
-              <span>
-                <span class="tooltip">of {{ lair.total - army.total - army.currently_training }}
-                  <span class="tooltipText">Build more {{ lair_name }}</span>
-                </span>
-              </span>
-            {% endif %}
-          {% elif army.name == 'summon' %}
-            N/A
-          {% else %}
-            <div class="slide-container">
-              <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
-            </div>
-            <span class="display">0</span>
-          {% endif %}
-          <input class="value" name="{{ army.name }}" value="0" hidden/>
-        </td>
-        <td>
-          {% if army.name == 'summon' %}
-            N/A
-          {% else %}
-            {% if army.gold %}
-              <span class="buildingGoldCost">{{ army.gold }}</span><img class="resource_icons" src="/static/images/gold_icon.jpg">
-            {% endif %}
-            {% if army.wood %}
-              <span class="buildingWoodCost">{{ army.wood }}</span><img class="resource_icons" src="/static/images/wood_icon.jpg">
-            {% endif %}
-            {% if army.iron %}
-              <span class="buildingIronCost">{{ army.iron }}</span><img class="resource_icons" src="/static/images/iron_icon.jpg">
-            {% endif %}
-            {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
-          {% endif %}
-        </td>
-        <td>{% if army.name == 'besieger' %}<div class="tooltip">*<span class="tooltipText">{{ meta_data["besieger_attack"] }}</span>{% else %}{{ army.attack }}{% endif %}</td>
-        <td>{{ army.defence }}</td>
-        <td><div class="tooltip">{{ army.health }}<span class="tooltipText">Armour type: {{ army.armour_type }}</span></td>
-        <td>{{ army.category }}</td>
-        <td>{{ army.description }}</td>
-      </tr>
-      {% endfor %} -->
+      <military-army-row
+        v-for="armyName in armyOrdering"
+        :key="armyName"
+        :army="armies[armyName]"
+        :metadata="metadata"
+      />
       <tr class="total-row">
         <td>Total</td>
         <td>{{ county.unitsAvailable }}</td>
@@ -92,8 +46,10 @@
         <td>{{ county.unitsInTraining }}</td>
         <td>-</td>
         <td>
-          <div class="tooltip">{{ county.upkeepCosts }}<span
-              class="tooltipText">{{ metadata.upkeep_daily }}</span>
+          <div class="tooltip">
+            {{ county.upkeepCosts }}<span
+              class="tooltip-text"
+            >{{ metadata.upkeepDaily }}</span>
           </div>
         </td>
         <td>-</td>
@@ -115,7 +71,12 @@
     Happiness Cost: <span id="happinessCost">0</span>
     <img class="resource_icons" src="/static/images/happiness_icon.jpg"> -->
     <br><br>
-    <button id="submitButton" type="submit">Build</button>
+    <button
+      id="submitButton"
+      type="submit"
+    >
+      Build
+    </button>
     <br>
     <!-- <div id="invisibleDataFields">
       <span id="population">{{ county.population }}</span>
@@ -127,12 +88,19 @@
 </template>
 
 <script>
+import MilitaryArmyRow from './MilitaryArmyRow.vue'
+
 export default {
   name: 'MilitaryForm',
+  components: {
+    MilitaryArmyRow,
+  },
   props: {
     county: Object,
     form: Object,
     metadata: Object,
+    armies: Object,
+    armyOrdering: Array,
   },
   data () {
     return {
@@ -388,7 +356,7 @@ export default {
     height: 2.6em;
   }
 
-  .tooltip .tooltipText {
+  .tooltip .tooltip-text {
     /* Position the tooltip */
     position: absolute;
     z-index: 1;

@@ -1,6 +1,33 @@
+from undyingkingdoms.api.vue_safe import generic_vue_safe
 from undyingkingdoms.metadata.metadata import all_armies
 from undyingkingdoms.models.exports import Transaction
 from undyingkingdoms.models.exports import World
+
+
+def vue_safe_army(county, army):
+    return generic_vue_safe(
+        army,
+        [
+            'gold',
+            'wood',
+            'iron',
+            'available',
+            'traveling',
+            'currently_training',
+            'trainable_per_day',
+            'armour_type',
+            'total',
+            'attack',
+            'defence',
+            'health',
+            'category',
+            'description',
+        ],
+        key=army.name,
+        name=army.class_name.title(),
+        name_plural=army.class_name_plural.title(),
+        max_trainable_by_cost=max_trainable_by_cost(county, army),
+    )
 
 
 def monsters_buildable(county):

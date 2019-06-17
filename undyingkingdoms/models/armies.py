@@ -44,6 +44,10 @@ class Army(GameState):
         """
         return self.TYPES[self.name]
 
+    @property
+    def key(self):
+        return self.name
+
     def __init__(self, name, class_name, class_name_plural, total, trainable_per_day, gold, wood, iron, upkeep,
                  category, attack, defence, health, armour_type, description):
         self.name = name

@@ -95,7 +95,7 @@ a:active {
     border-bottom: 1px dotted black;
 }
 
-.tooltip .tooltipText {
+.tooltip .tooltip-text {
     visibility: hidden;
     width: 350px;
     background-color: black;
@@ -111,7 +111,7 @@ a:active {
     left: 105%;
 }
 
-.tooltip:hover .tooltipText {
+.tooltip:hover .tooltip-text {
     visibility: visible;
 }
 

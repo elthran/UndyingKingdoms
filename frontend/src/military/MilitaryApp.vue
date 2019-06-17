@@ -12,6 +12,8 @@
         :form="form"
         :metadata="metadata"
         :county="county"
+        :armies="armies"
+        :army-ordering="armyOrdering"
       />
       <br><br>
       <!-- <military-expedtions /> -->
@@ -36,6 +38,8 @@ export default {
       county: null,
       form: null,
       metadata: null,
+      armies: null,
+      armyOrdering: null,
     }
   },
   mounted () {
