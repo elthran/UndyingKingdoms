@@ -34,6 +34,17 @@
 </ul>
 <p style="color:green;">Rewards: The top county in this category gets 1 gem.</p>
 <br>
+<br>
+<h2>(County) Most Population:</h2>
+<ul>
+{% for county in counties|sort(attribute='_population', reverse=True) %}
+    <li {% if county == current_user.county %}style="font-weight:bold;"{% endif %}><a href="{{ url_for('enemy_overview', county_id=county.id) }}">
+        {{ county.leader }} of {{ county.name }}
+        </a>: {{ county._population }}
+    </li>
+{% endfor %}
+</ul>
+<p style="color:green;">Rewards: No rewards implemented yet.</p>
 
 <h1 style="text-align:center;">All Time Best (Rounds completed: {{ counties[0].kingdom.world.age }})</h1>
 
