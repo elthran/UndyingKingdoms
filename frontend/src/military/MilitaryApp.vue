@@ -6,9 +6,11 @@
     <prefix-title title="War" />
     <div id="content">
       <military-strength
+        v-if="ready"
         :county="county"
       />
       <military-form
+        v-if="ready"
         :form="form"
         :metadata="metadata"
         :county="county"
@@ -27,7 +29,7 @@ import MilitaryStrength from './MilitaryStrength.vue'
 import MilitaryForm from './MilitaryForm.vue'
 
 export default {
-  name: 'ResearchApp',
+  name: 'MilitaryApp',
   components: {
     MilitaryStrength,
     MilitaryForm,
@@ -40,12 +42,14 @@ export default {
       metadata: null,
       armies: null,
       armyOrdering: null,
+      ready: false,
     }
   },
   mounted () {
     this.$hydrate('/api/military/update')
     .then(() => {
       this.$el.classList.remove('invisible')
+      this.ready = true
     })
   },
   methods: {

@@ -43,7 +43,7 @@ export default {
   },
   computed: {
     cantTrain () {
-      return army.maxTrainable == 0
+      return this.army.maxTrainable == 0
     }
   }
 }

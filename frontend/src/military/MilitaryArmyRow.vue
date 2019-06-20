@@ -36,22 +36,25 @@
         <span class="display">0</span>
       </div>
     </td>
-    <!--  <td>
-      {% if army.name == 'summon' %}
+     <td>
+      <div v-if="isSummon">
         N/A
-      {% else %}
-        {% if army.gold %}
-          <span class="buildingGoldCost">{{ army.gold }}</span><img class="resource_icons" src="/static/images/gold_icon.jpg">
-        {% endif %}
-        {% if army.wood %}
-          <span class="buildingWoodCost">{{ army.wood }}</span><img class="resource_icons" src="/static/images/wood_icon.jpg">
-        {% endif %}
-        {% if army.iron %}
-          <span class="buildingIronCost">{{ army.iron }}</span><img class="resource_icons" src="/static/images/iron_icon.jpg">
-        {% endif %}
-        {% if army.gold == 0 and army.wood == 0 and army.iron == 0 %}Free{% endif %}
-      {% endif %}
-    </td> -->
+      </div>
+      <div v-else>
+        <span v-if="army.gold">
+          <span class="buildingGoldCost">{{ army.gold }}</span><img class="resource_icons" src="/static/dist/images/gold_icon.jpg">
+        </span>
+        <span v-if="army.wood">
+          <span class="buildingWoodCost">{{ army.wood }}</span><img class="resource_icons" src="/static/dist/images/wood_icon.jpg">
+        </span>
+        <span v-if="army.iron">
+          <span class="buildingIronCost">{{ army.iron }}</span><img class="resource_icons" src="/static/dist/images/iron_icon.jpg">
+        </span>
+        <span v-if="isFree">
+          Free
+        </span>
+      </div>
+    </td>
     <td>
       <div
         v-if="isBeseiger"
@@ -88,13 +91,16 @@ export default {
   },
   computed: {
     isMonster () {
-      return army.key === 'monster'
+      return this.army.key === 'monster'
     },
     isSummon () {
-      return army.key === 'summon'
+      return this.army.key === 'summon'
     },
     isBeseiger () {
-      return army.key === 'besieger'
+      return this.army.key === 'besieger'
+    },
+    isFree () {
+      return this.army.gold == 0  & this.army.wood == 0 & this.army.iron == 0
     }
   },
   data () {
@@ -109,15 +115,15 @@ export default {
 </script>
 
 <style scoped>
-/deep/ @media (min-width: 640px) {
-  .slide-container {
+@media (min-width: 640px) {
+  /deep/ .slide-container {
     display: flex;
     justify-content: space-around;
     width: 10em;
   }
 
   /* The slider itself */
-  .slider {
+  /deep/ .slider {
     -webkit-appearance: none;  /* Override default CSS styles */
     appearance: none;
     width: 100%; /* Full-width */
@@ -132,7 +138,7 @@ export default {
   }
 
   /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-  .slider::-webkit-slider-thumb {
+  /deep/ .slider::-webkit-slider-thumb {
     -webkit-appearance: none; /* Override default look */
     appearance: none;
     width: 0.4em; /* Set a specific slider handle width */
@@ -141,18 +147,18 @@ export default {
     cursor: pointer; /* Cursor on hover */
   }
 
-  .slider::-moz-range-thumb {
+  /deep/ .slider::-moz-range-thumb {
     width: 0.4em; /* Set a specific slider handle width */
     height: 1.5em; /* Slider handle height */
     background: #4CAF50; /* Green background */
     cursor: pointer; /* Cursor on hover */
   }
 
-  .slider-disabled::-moz-range-thumb  {
+  /deep/ .slider-disabled::-moz-range-thumb  {
     background: grey;
   }
 
-  .slider-disabled::-webkit-slider-thumb {
+  /deep/ .slider-disabled::-webkit-slider-thumb {
     background: grey;
   }
 }
