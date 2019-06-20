@@ -19,6 +19,7 @@ class UpdateAPI(MethodView):
 
         armies = county.armies
         besiegers = armies['besieger']
+        lair = county.buildings['lair']
 
         military_strength = dict(
             offensiveStrength=county.get_offensive_strength(),
@@ -35,10 +36,13 @@ class UpdateAPI(MethodView):
             **military_strength
         )
 
-        vue_save_armies = {
+        vue_safe_armies = {
             army.key: vue_safe_army(county, army)
-            for army in county.armies.values()
+            for army in armies.values()
         }
+        vue_safe_armies['monster']['building'] = dict(
+            name=lair.class_name_plural.title()
+        )
 
         vue_safe_metadata = generic_vue_safe(
             SimpleNamespace(id='metadata'),
@@ -51,7 +55,7 @@ class UpdateAPI(MethodView):
             form=vue_safe_form(form),
             county=vue_safe_county,
             metadata=vue_safe_metadata,
-            armies=vue_save_armies,
+            armies=vue_safe_armies,
             armyOrdering=all_armies,
         )
 

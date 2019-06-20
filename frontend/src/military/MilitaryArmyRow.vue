@@ -11,39 +11,32 @@
         {{ army.currently_training }}<span class="tooltip-text">Max trainable per day: {{ army.trainable_per_day }}</span>
       </div>
     </td>
-    <!-- <td>
-      {% if army.name == 'monster' %}
-        {% set lair = county.buildings['lair'] %}
-        {% set lair_name = lair.class_name_plural.title() %}
-        <span class="invisible" id="monsterMax">{{ slider_size }}</span>
-        {% if monsters_buildable(county) <= 0 %}
-          <div class="slide-container">
-            <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1" hidden/>
-          </div>
-          <span class="display" hidden>0</span>
-          <span style="color:red;">Requires more<br>{{ lair_name }}</span>
-        {% else %}
-          <div class="slide-container">
-            <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" data-monster step="1"/>
-          </div>
-          <span class="display">0</span>
-          <span>
-            <span class="tooltip">of {{ lair.total - army.total - army.currently_training }}
-              <span class="tooltip-text">Build more {{ lair_name }}</span>
-            </span>
-          </span>
-        {% endif %}
-      {% elif army.name == 'summon' %}
+    <td>
+      <military-monster-selector
+        v-if="isMonster"
+        :army="army"
+        :building="army.building"
+        :slider-size="sliderSize"
+      />
+      <div v-else-if="isSummon">
         N/A
-      {% else %}
+      </div>
+      <div v-else>
         <div class="slide-container">
-          <input class="slider" type="range" value="0" min="0" max="{{ slider_size }}" step="1"/>
+          <input
+            class="slider"
+            type="range"
+            :name="army.key"
+            value="0"
+            min="0"
+            :max="sliderSize"
+            step="1"
+          >
         </div>
         <span class="display">0</span>
-      {% endif %}
-      <input class="value" name="{{ army.name }}" value="0" hidden/>
+      </div>
     </td>
-    <td>
+    <!--  <td>
       {% if army.name == 'summon' %}
         N/A
       {% else %}
@@ -60,8 +53,10 @@
       {% endif %}
     </td> -->
     <td>
-      <div v-if="army.key == 'besieger'"
-        class="tooltip">
+      <div
+        v-if="isBeseiger"
+        class="tooltip"
+      >
         *<span class="tooltip-text">{{ metadata.besiegerAttack }}</span>
       </div>
       <div v-else>
@@ -80,15 +75,85 @@
 </template>
 
 <script>
+import MilitaryMonsterSelector from './MilitaryMonsterSelector.vue'
+
 export default {
   name: 'MilitaryArmyRow',
+  components: {
+    MilitaryMonsterSelector
+  },
   props: {
     army: Object,
     metadata: Object,
   },
+  computed: {
+    isMonster () {
+      return army.key === 'monster'
+    },
+    isSummon () {
+      return army.key === 'summon'
+    },
+    isBeseiger () {
+      return army.key === 'besieger'
+    }
+  },
   data () {
     return {
+      sliderSize: -1,
     }
-  }
+  },
+  mounted () {
+    // this.$set(this.army, sliderSize)
+  },
 }
 </script>
+
+<style scoped>
+/deep/ @media (min-width: 640px) {
+  .slide-container {
+    display: flex;
+    justify-content: space-around;
+    width: 10em;
+  }
+
+  /* The slider itself */
+  .slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width */
+    height: 0.1em; /* Specified height */
+    background: #d3d3d3; /* Grey background */
+    outline: none; /* Remove outline */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+    padding: 0.1em 0 0.1em;
+    margin: 1em 0 1em;
+    width: 10em;
+  }
+
+  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 0.4em; /* Set a specific slider handle width */
+    height: 1.5em; /* Slider handle height */
+    background: #4CAF50; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+  }
+
+  .slider::-moz-range-thumb {
+    width: 0.4em; /* Set a specific slider handle width */
+    height: 1.5em; /* Slider handle height */
+    background: #4CAF50; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+  }
+
+  .slider-disabled::-moz-range-thumb  {
+    background: grey;
+  }
+
+  .slider-disabled::-webkit-slider-thumb {
+    background: grey;
+  }
+}
+</style>

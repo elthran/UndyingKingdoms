@@ -26,17 +26,19 @@ def vue_safe_army(county, army):
         key=army.name,
         name=army.class_name.title(),
         name_plural=army.class_name_plural.title(),
-        max_trainable_by_cost=max_trainable_by_cost(county, army),
+        max_trainable=max_trainable(county, army),
     )
 
 
 def monsters_buildable(county):
-    return county.buildings['lair'].total - \
-            county.armies['monster'].total - \
-            county.armies['monster'].currently_training
+    """Calculate the number of monsters buildable."""
+    lair = county.buildings['lair']
+    monster = county.armies['monster']
+    return lair.total - monster.total - monster.currently_training
 
 
-def max_trainable_by_cost(county, army):
+def max_trainable(county, army):
+    """Calculate the maximum trainable amount of each unit type."""
     try:
         max_size = min(
             county.gold // army.gold,
