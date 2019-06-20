@@ -39,6 +39,7 @@
         :key="armyName"
         :army="armies[armyName]"
         :metadata="metadata"
+        :county="county"
       />
       <tr class="total-row">
         <td>Total</td>
@@ -79,12 +80,6 @@
       Build
     </button>
     <br>
-    <!-- <div id="invisibleDataFields">
-      <span id="population">{{ county.population }}</span>
-      <span id="totalGold">{{ county.gold }}</span>
-      <span id="totalWood">{{ county.wood }}</span>
-      <span id="totalIron">{{ county.iron }}</span>
-    </div> -->
   </form>
 </template>
 
@@ -125,12 +120,6 @@ export default {
   // var woodCost = $("#woodCost");
   // var ironCost = $("#ironCost");
   // var happinessCost = $("#happinessCost");
-
-
-  // var totalGold = parseInt($("#totalGold").text());
-  // var totalWood = parseInt($("#totalWood").text());
-  // var totalIron = parseInt($("#totalIron").text());
-  // var population = parseInt($("#population").text());
 
   // var monsterMax = parseInt($("#monsterMax").text());
 

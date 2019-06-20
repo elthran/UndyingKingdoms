@@ -8,7 +8,10 @@
     <td>{{ army.traveling }}</td>
     <td>
       <div class="tooltip">
-        {{ army.currently_training }}<span class="tooltip-text">Max trainable per day: {{ army.trainable_per_day }}</span>
+        {{ army.currentlyTraining }}
+        <span class="tooltip-text">
+          Max trainable per day: {{ army.trainablePerDay }}
+        </span>
       </div>
     </td>
     <td>
@@ -17,6 +20,7 @@
         :army="army"
         :building="army.building"
         :slider-size="sliderSize"
+        :slider-width="sliderWidth"
       />
       <div v-else-if="isSummon">
         N/A
@@ -27,28 +31,38 @@
             class="slider"
             type="range"
             :name="army.key"
-            value="0"
+            v-model="sliderValue"
             min="0"
             :max="sliderSize"
             step="1"
+            :style="{ width: sliderWidth + 'em' }"
           >
         </div>
-        <span class="display">0</span>
+        <span class="display">{{ sliderValue }}</span>
       </div>
     </td>
-     <td>
+    <td>
       <div v-if="isSummon">
         N/A
       </div>
       <div v-else>
-        <span v-if="army.gold">
-          <span class="buildingGoldCost">{{ army.gold }}</span><img class="resource_icons" src="/static/dist/images/gold_icon.jpg">
+        <span v-if="costsGold">
+          <span class="buildingGoldCost">{{ army.gold }}</span><img
+            class="resource_icons"
+            src="/static/dist/images/gold_icon.jpg"
+          >
         </span>
-        <span v-if="army.wood">
-          <span class="buildingWoodCost">{{ army.wood }}</span><img class="resource_icons" src="/static/dist/images/wood_icon.jpg">
+        <span v-if="costsWood">
+          <span class="buildingWoodCost">{{ army.wood }}</span><img
+            class="resource_icons"
+            src="/static/dist/images/wood_icon.jpg"
+          >
         </span>
-        <span v-if="army.iron">
-          <span class="buildingIronCost">{{ army.iron }}</span><img class="resource_icons" src="/static/dist/images/iron_icon.jpg">
+        <span v-if="costsIron">
+          <span class="buildingIronCost">{{ army.iron }}</span><img
+            class="resource_icons"
+            src="/static/dist/images/iron_icon.jpg"
+          >
         </span>
         <span v-if="isFree">
           Free
@@ -60,7 +74,10 @@
         v-if="isBeseiger"
         class="tooltip"
       >
-        *<span class="tooltip-text">{{ metadata.besiegerAttack }}</span>
+        *
+        <span class="tooltip-text">
+          {{ metadata.besiegerAttack }}
+        </span>
       </div>
       <div v-else>
         {{ army.attack }}
@@ -69,7 +86,10 @@
     <td>{{ army.defence }}</td>
     <td>
       <div class="tooltip">
-        {{ army.health }}<span class="tooltip-text">Armour type: {{ army.armourType }}</span>
+        {{ army.health }}
+        <span class="tooltip-text">
+          Armour type: {{ army.armourType }}
+        </span>
       </div>
     </td>
     <td>{{ army.category }}</td>
@@ -88,6 +108,12 @@ export default {
   props: {
     army: Object,
     metadata: Object,
+    county: Object,
+  },
+  data () {
+    return {
+      sliderValue: 0,
+    }
   },
   computed: {
     isMonster () {
@@ -99,13 +125,44 @@ export default {
     isBeseiger () {
       return this.army.key === 'besieger'
     },
+    costsGold () {
+      return this.army.gold > 0
+    },
+    costsIron () {
+      return this.army.iron > 0
+    },
+    costsWood () {
+      return this.army.wood > 0
+    },
     isFree () {
-      return this.army.gold == 0  & this.army.wood == 0 & this.army.iron == 0
-    }
-  },
-  data () {
-    return {
-      sliderSize: -1,
+      return this.army.gold == 0  && this.army.wood == 0 && this.army.iron == 0
+    },
+    sliderSize () {
+      var totalGold = this.county.gold
+      var totalWood = this.county.wood
+      var totalIron = this.county.iron
+
+      var gold = this.county.goldRemaining || 0 // ?
+      var wood = this.county.woodRemaining || 0 // ?
+      var iron = this.county.ironRemaining || 0 // ?
+
+
+      var goldPrice = this.army.gold || 0
+      var woodPrice = this.army.wood || 0
+      var ironPrice = this.army.iron || 0
+      var currentSize = this.army.maxTrainable
+      var remaining = Math.max(Math.floor(Math.min(
+          (totalGold - gold) / goldPrice,
+          (totalWood - wood) / woodPrice,
+          (totalIron - iron) / ironPrice,
+          (this.isMonster) ? this.army.maxTrainable - currentSize : Infinity
+      )), 0)
+
+      var size = currentSize + remaining
+      return size
+    },
+    sliderWidth () {
+      return Math.min(this.sliderSize + 0.8, 10)
     }
   },
   mounted () {

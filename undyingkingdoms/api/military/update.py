@@ -29,6 +29,11 @@ class UpdateAPI(MethodView):
         )
 
         vue_safe_county = dict(
+            population=county.population,
+            gold=county.gold,
+            wood=county.wood,
+            iron=county.iron,
+            happiness=county.happiness,
             unitsAvailable=county.get_available_army_size(),
             unitsUnavailable=county.get_unavailable_army_size(),
             unitsInTraining=county.get_training_army_size(),

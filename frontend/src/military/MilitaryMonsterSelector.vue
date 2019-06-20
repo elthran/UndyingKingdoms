@@ -5,10 +5,11 @@
         class="slider"
         type="range"
         :name="army.key"
-        value="0"
+        v-model="sliderValue"
         min="0"
         :max="sliderSize"
         step="1"
+        :style="{ width: sliderWidth + 'em' }"
         :hidden="cantTrain"
       >
     </div>
@@ -16,7 +17,7 @@
       class="display"
       :hidden="cantTrain"
     >
-      0
+      {{ sliderValue }}
     </span>
     <span
       v-if="cantTrain"
@@ -40,6 +41,12 @@ export default {
     army: Object,
     building: Object,
     sliderSize: Number,
+    sliderWidth: Number,
+  },
+  data () {
+    return {
+      sliderValue: 0,
+    }
   },
   computed: {
     cantTrain () {
