@@ -15,31 +15,14 @@
       </div>
     </td>
     <td>
-      <military-monster-selector
-        v-if="isMonster"
+      <military-unit-selector
+        v-model="sliderValue"
         :army="army"
         :building="army.building"
         :slider-size="sliderSize"
-        :slider-width="sliderWidth"
+        :is-monster="isMonster"
+        :is-summon="isSummon"
       />
-      <div v-else-if="isSummon">
-        N/A
-      </div>
-      <div v-else>
-        <div class="slide-container">
-          <input
-            class="slider"
-            type="range"
-            :name="army.key"
-            v-model="sliderValue"
-            min="0"
-            :max="sliderSize"
-            step="1"
-            :style="{ width: sliderWidth + 'em' }"
-          >
-        </div>
-        <span class="display">{{ sliderValue }}</span>
-      </div>
     </td>
     <td>
       <div v-if="isSummon">
@@ -98,21 +81,22 @@
 </template>
 
 <script>
-import MilitaryMonsterSelector from './MilitaryMonsterSelector.vue'
+import MilitaryUnitSelector from './MilitaryUnitSelector.vue'
 
 export default {
   name: 'MilitaryArmyRow',
   components: {
-    MilitaryMonsterSelector
+    MilitaryUnitSelector
   },
   props: {
     army: Object,
     metadata: Object,
-    county: Object,
+    value: Object,
   },
   data () {
     return {
       sliderValue: 0,
+      resourcesRemaining: this.value,
     }
   },
   computed: {
@@ -138,31 +122,35 @@ export default {
       return this.army.gold == 0  && this.army.wood == 0 && this.army.iron == 0
     },
     sliderSize () {
-      var totalGold = this.county.gold
-      var totalWood = this.county.wood
-      var totalIron = this.county.iron
+      var goldPrice = this.army.gold * this.sliderValue || 0
+      var woodPrice = this.army.wood * this.sliderValue || 0
+      var ironPrice = this.army.iron * this.sliderValue || 0
 
-      var gold = this.county.goldRemaining || 0 // ?
-      var wood = this.county.woodRemaining || 0 // ?
-      var iron = this.county.ironRemaining || 0 // ?
+      var totalGold = this.resourcesRemaining.gold - goldPrice
+      var totalWood = this.resourcesRemaining.wood - woodPrice
+      var totalIron = this.resourcesRemaining.iron - ironPrice
 
-
-      var goldPrice = this.army.gold || 0
-      var woodPrice = this.army.wood || 0
-      var ironPrice = this.army.iron || 0
-      var currentSize = this.army.maxTrainable
       var remaining = Math.max(Math.floor(Math.min(
-          (totalGold - gold) / goldPrice,
-          (totalWood - wood) / woodPrice,
-          (totalIron - iron) / ironPrice,
-          (this.isMonster) ? this.army.maxTrainable - currentSize : Infinity
+          totalGold / goldPrice,
+          totalWood / woodPrice,
+          totalIron / ironPrice,
+          this.army.maxTrainable - this.sliderValue
       )), 0)
 
-      var size = currentSize + remaining
+      var size = this.sliderValue + remaining
       return size
     },
-    sliderWidth () {
-      return Math.min(this.sliderSize + 0.8, 10)
+  },
+  watch: {
+    sliderValue (val, oldVal) {
+      var resourcesRemaining = {
+        gold: this.value.gold,
+        wood: this.value.wood,
+        iron: this.value.iron,
+        workers: this.value.availableWorkers,
+        happiness: this.value.happiness,
+      }
+      this.$emit('input', resourcesRemaining)
     }
   },
   mounted () {
@@ -173,50 +161,5 @@ export default {
 
 <style scoped>
 @media (min-width: 640px) {
-  /deep/ .slide-container {
-    display: flex;
-    justify-content: space-around;
-    width: 10em;
-  }
-
-  /* The slider itself */
-  /deep/ .slider {
-    -webkit-appearance: none;  /* Override default CSS styles */
-    appearance: none;
-    width: 100%; /* Full-width */
-    height: 0.1em; /* Specified height */
-    background: #d3d3d3; /* Grey background */
-    outline: none; /* Remove outline */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-    transition: opacity .2s;
-    padding: 0.1em 0 0.1em;
-    margin: 1em 0 1em;
-    width: 10em;
-  }
-
-  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-  /deep/ .slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
-    appearance: none;
-    width: 0.4em; /* Set a specific slider handle width */
-    height: 1.5em; /* Slider handle height */
-    background: #4CAF50; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-  }
-
-  /deep/ .slider::-moz-range-thumb {
-    width: 0.4em; /* Set a specific slider handle width */
-    height: 1.5em; /* Slider handle height */
-    background: #4CAF50; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-  }
-
-  /deep/ .slider-disabled::-moz-range-thumb  {
-    background: grey;
-  }
-
-  /deep/ .slider-disabled::-webkit-slider-thumb {
-    background: grey;
-  }
 }
 </style>

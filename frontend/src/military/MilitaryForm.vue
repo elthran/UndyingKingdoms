@@ -39,7 +39,7 @@
         :key="armyName"
         :army="armies[armyName]"
         :metadata="metadata"
-        :county="county"
+        v-model="resourcesRemaining"
       />
       <tr class="total-row">
         <td>Total</td>
@@ -100,9 +100,22 @@ export default {
   },
   data () {
     return {
+      costs: {
+        goldCost: 0,
+        woodCost: 0,
+        ironCost: 0,
+      },
+      resourcesRemaining: {
+        gold: this.county.gold,
+        wood: this.county.wood,
+        iron: this.county.iron,
+        workers: this.county.availableWorkers,
+        happiness: this.county.happiness,
+      }
     }
   },
   mounted () {
+    // this.county.goldCost =
     // for army in armies
     // army.sliderSize = calcBuildable(army)
   }
