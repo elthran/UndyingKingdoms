@@ -6,9 +6,9 @@
     <div v-else>
       <div class="slide-container">
         <input
+          v-model="sliderValue"
           class="slider"
           type="range"
-          v-model="sliderValue"
           :name="army.key"
           min="0"
           :max="sliderSize"
@@ -17,12 +17,6 @@
           :hidden="cantTrain"
         >
       </div>
-      <span
-        class="display"
-        :hidden="cantTrain"
-      >
-        {{ sliderValue }}
-      </span>
       <div v-if="isMonster">
         <span
           v-if="cantTrain"
@@ -33,10 +27,17 @@
         <span
           v-else
           class="tooltip"
-        >of {{ army.maxTrainable }}
+        >{{sliderValue }} of {{ army.maxTrainable }}
           <span class="tooltip-text">Build more {{ building.name }}</span>
         </span>
       </div>
+      <span
+        v-else
+        class="display"
+        :hidden="cantTrain"
+      >
+        {{ sliderValue }}
+      </span>
     </div>
   </div>
 </template>
@@ -67,8 +68,8 @@ export default {
   },
   watch: {
     sliderValue (val) {
-      this.$emit('input', val)
-    },
+      this.$emit('input', parseInt(val))
+    }
   },
 }
 </script>

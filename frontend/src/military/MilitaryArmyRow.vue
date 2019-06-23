@@ -1,7 +1,4 @@
 <template>
-  <!-- [county.gold // army.gold, county.wood // army.wood, county.iron // army.iron]
-        (list | sort)[0] replicates min()-->
-  <!-- {% set slider_size = max_trainable_by_cost(county, army) %} -->
   <tr>
     <td>{{ army.name }}</td>
     <td>{{ army.available }}</td>
@@ -96,6 +93,7 @@ export default {
   data () {
     return {
       sliderValue: 0,
+      sliderSize: this.calcSliderSize(this.value),
       resourcesRemaining: this.value,
     }
   },
@@ -121,40 +119,50 @@ export default {
     isFree () {
       return this.army.gold == 0  && this.army.wood == 0 && this.army.iron == 0
     },
-    sliderSize () {
-      var goldPrice = this.army.gold * this.sliderValue || 0
-      var woodPrice = this.army.wood * this.sliderValue || 0
-      var ironPrice = this.army.iron * this.sliderValue || 0
-
-      var totalGold = this.resourcesRemaining.gold - goldPrice
-      var totalWood = this.resourcesRemaining.wood - woodPrice
-      var totalIron = this.resourcesRemaining.iron - ironPrice
-
-      var remaining = Math.max(Math.floor(Math.min(
-          totalGold / goldPrice,
-          totalWood / woodPrice,
-          totalIron / ironPrice,
-          this.army.maxTrainable - this.sliderValue
-      )), 0)
-
-      var size = this.sliderValue + remaining
-      return size
+    goldPrice () {
+      return (this.army.gold || 0)
+    },
+    woodPrice () {
+      return (this.army.wood || 0)
+    },
+    ironPrice () {
+      return (this.army.iron || 0)
     },
   },
   watch: {
     sliderValue (val, oldVal) {
-      var resourcesRemaining = {
-        gold: this.value.gold,
-        wood: this.value.wood,
-        iron: this.value.iron,
-        workers: this.value.availableWorkers,
-        happiness: this.value.happiness,
-      }
-      this.$emit('input', resourcesRemaining)
+      console.log(val, oldVal)
+      this.resourcesRemaining = this.calcResourcesRemaining(val, oldVal)
+      this.sliderSize = this.calcSliderSize(this.resourcesRemaining)
+      this.$emit('input', this.resourcesRemaining)
     }
   },
   mounted () {
     // this.$set(this.army, sliderSize)
+  },
+  methods: {
+    calcResourcesRemaining (val, oldVal) {
+      return {
+        gold: this.value.gold - (this.goldPrice * (val - oldVal)),
+        wood: this.value.gold - (this.woodPrice * (val - oldVal)),
+        iron: this.value.gold - (this.ironPrice * (val - oldVal)),
+      }
+    },
+    calcSliderSize (resources) {
+      var totalGold = resources.gold
+      var totalWood = resources.wood
+      var totalIron = resources.iron
+
+      var remaining = Math.max(Math.floor(Math.min(
+          (totalGold / this.goldPrice) || Infinity,
+          (totalWood / this.woodPrice) || Infinity,
+          (totalIron / this.ironPrice) || Infinity,
+          this.army.maxTrainable - (this.sliderValue || 0)
+      )), 0)
+
+      var size = (this.sliderValue || 0) + remaining
+      return size
+    },
   },
 }
 </script>

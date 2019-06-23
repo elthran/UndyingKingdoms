@@ -33,13 +33,12 @@
         <th>Type</th>
         <th>Description</th>
       </tr>
-      <!-- v-model="army.sliderSize" -->
       <military-army-row
         v-for="armyName in armyOrdering"
         :key="armyName"
+        v-model="resourcesRemaining"
         :army="armies[armyName]"
         :metadata="metadata"
-        v-model="resourcesRemaining"
       />
       <tr class="total-row">
         <td>Total</td>
