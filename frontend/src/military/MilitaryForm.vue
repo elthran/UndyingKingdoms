@@ -61,6 +61,7 @@
       </tr>
     </table>
     <military-resources
+      id="resources"
       :county="county"
       :costs="costs"
     />
@@ -98,17 +99,18 @@ export default {
         wood: this.county.wood,
         iron: this.county.iron,
         workers: this.county.availableWorkers,
-        happiness: this.county.happiness,
       }
     }
   },
   computed: {
+    workerCosts () {
+      return this.county.availableWorkers - this.resources.workers
+    },
     happinessCost () {
       if (this.county.background == 'Warlord') {
         return 0
       } else {
-        var sum = -999
-        return Math.ceil(sum / this.county.population * 200)
+        return Math.ceil(this.workerCosts / this.county.population * 200)
       }
     },
     costs () {
@@ -116,6 +118,7 @@ export default {
         gold: this.county.gold - this.resources.gold,
         wood: this.county.wood - this.resources.wood,
         iron: this.county.iron - this.resources.iron,
+        workers: this.workerCosts,
         happiness: this.happinessCost,
       }
     }
@@ -123,53 +126,6 @@ export default {
   mounted () {
   }
 }
-  // function updateCosts() {
-  //     updateGold();
-  //     updateWood();
-  //     updateIron();
-  //     updateHappiness();
-
-  //     var gold = parseInt(goldCost.text());
-  //     var wood = parseInt(woodCost.text());
-  //     var iron = parseInt(ironCost.text());
-
-  //     if (gold > totalGold) {
-  //         goldCost.css("color", "red");
-  //     } else {
-  //         goldCost.css("color", "green");
-  //     }
-
-  //     if (wood > totalWood) {
-  //         woodCost.css("color", "red");
-  //     } else {
-  //         woodCost.css("color", "green");
-  //     }
-  //     if (iron > totalIron) {
-  //         ironCost.css("color", "red");
-  //     } else {
-  //         ironCost.css("color", "green");
-  //     }
-  //     if (gold <= totalGold && wood <= totalWood && iron <= totalIron) {
-  //         submitButton.prop("disabled", false);
-  //     } else {
-  //         submitButton.prop("disabled", true);
-  //     }
-
-  //     resizeRemaining(gold, wood, iron);
-  // }
-
-  // sliders.each(function (index, element) {
-  //     var size = parseInt($(element).prop("max"));
-  //     if (size === 0) {
-  //         $(element).addClass("slider-disabled");
-  //     }
-  //     $(element).css("width", calcSliderWidth(size));
-  //     $(element).on("input", function () {
-  //         displays[index].innerHTML = $(element).val();
-  //         values[index].value = $(element).val();
-  //         updateCosts();
-  //     });
-  // });
 </script>
 
 <style scoped>
@@ -215,6 +171,11 @@ export default {
     top: 120%;
     left: 50%;
     margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  }
+
+  #resources {
+    margin-top: 1em;
+    margin-bottom: 1em;
   }
 }
 </style>

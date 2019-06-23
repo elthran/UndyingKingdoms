@@ -34,6 +34,7 @@ class UpdateAPI(MethodView):
             wood=county.wood,
             iron=county.iron,
             happiness=county.happiness,
+            background=county.background,
             unitsAvailable=county.get_available_army_size(),
             unitsUnavailable=county.get_unavailable_army_size(),
             unitsInTraining=county.get_training_army_size(),

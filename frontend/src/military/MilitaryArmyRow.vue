@@ -155,6 +155,7 @@ export default {
         gold: this.resources.gold - (this.goldPrice * (val - oldVal)),
         wood: this.resources.wood - (this.woodPrice * (val - oldVal)),
         iron: this.resources.iron - (this.ironPrice * (val - oldVal)),
+        workers: this.resources.workers - (1 * (val - oldVal))
       }
     },
   },
