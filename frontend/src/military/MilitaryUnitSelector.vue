@@ -8,6 +8,7 @@
         <input
           v-model="sliderValue"
           class="slider"
+          :class="{ 'slider-disabled': isDisabled }"
           type="range"
           :name="army.key"
           min="0"
@@ -27,7 +28,7 @@
         <span
           v-else
           class="tooltip"
-        >{{sliderValue }} of {{ army.maxTrainable }}
+        >{{ sliderValue }} of {{ army.maxTrainable }}
           <span class="tooltip-text">Build more {{ building.name }}</span>
         </span>
       </div>
@@ -65,10 +66,13 @@ export default {
     sliderWidth () {
       return Math.min(this.sliderSize + 0.8, 10)
     },
+    isDisabled () {
+      return this.sliderSize == 0
+    },
   },
   watch: {
     sliderValue (val) {
-      this.$emit('input', parseInt(val))
+      this.$emit('input', val)
     }
   },
 }

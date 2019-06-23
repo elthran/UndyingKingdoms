@@ -13,7 +13,7 @@
     </td>
     <td>
       <military-unit-selector
-        v-model="sliderValue"
+        v-model.number="sliderValue"
         :army="army"
         :building="army.building"
         :slider-size="sliderSize"
@@ -27,22 +27,13 @@
       </div>
       <div v-else>
         <span v-if="costsGold">
-          <span class="buildingGoldCost">{{ army.gold }}</span><img
-            class="resource_icons"
-            src="/static/dist/images/gold_icon.jpg"
-          >
+          <span class="buildingGoldCost">{{ army.gold }}</span><resource-icon type="gold" />
         </span>
         <span v-if="costsWood">
-          <span class="buildingWoodCost">{{ army.wood }}</span><img
-            class="resource_icons"
-            src="/static/dist/images/wood_icon.jpg"
-          >
+          <span class="buildingWoodCost">{{ army.wood }}</span><resource-icon type="wood" />
         </span>
         <span v-if="costsIron">
-          <span class="buildingIronCost">{{ army.iron }}</span><img
-            class="resource_icons"
-            src="/static/dist/images/iron_icon.jpg"
-          >
+          <span class="buildingIronCost">{{ army.iron }}</span><resource-icon type="iron" />
         </span>
         <span v-if="isFree">
           Free
@@ -79,22 +70,27 @@
 
 <script>
 import MilitaryUnitSelector from './MilitaryUnitSelector.vue'
+import ResourceIcon from '@/components/ResourceIcon.vue'
 
 export default {
   name: 'MilitaryArmyRow',
   components: {
-    MilitaryUnitSelector
+    MilitaryUnitSelector,
+    ResourceIcon,
+  },
+  model: {
+    prop: 'resources',
+    event: 'change',
   },
   props: {
     army: Object,
     metadata: Object,
-    value: Object,
+    resources: Object,
   },
   data () {
     return {
       sliderValue: 0,
-      sliderSize: this.calcSliderSize(this.value),
-      resourcesRemaining: this.value,
+      resourcesRemaining: this.resources,
     }
   },
   computed: {
@@ -128,13 +124,26 @@ export default {
     ironPrice () {
       return (this.army.iron || 0)
     },
+    sliderSize () {
+      var totalGold = this.resources.gold
+      var totalWood = this.resources.wood
+      var totalIron = this.resources.iron
+
+      var remaining = Math.max(Math.floor(Math.min(
+          (totalGold / this.goldPrice) || 0,
+          (totalWood / this.woodPrice) || 0,
+          (totalIron / this.ironPrice) || 0,
+          this.army.maxTrainable - (this.sliderValue || 0)
+      )), 0)
+
+      var size = (this.sliderValue || 0) + remaining
+      return size
+    },
   },
   watch: {
     sliderValue (val, oldVal) {
-      console.log(val, oldVal)
       this.resourcesRemaining = this.calcResourcesRemaining(val, oldVal)
-      this.sliderSize = this.calcSliderSize(this.resourcesRemaining)
-      this.$emit('input', this.resourcesRemaining)
+      this.$emit('change', this.resourcesRemaining)
     }
   },
   mounted () {
@@ -143,25 +152,10 @@ export default {
   methods: {
     calcResourcesRemaining (val, oldVal) {
       return {
-        gold: this.value.gold - (this.goldPrice * (val - oldVal)),
-        wood: this.value.gold - (this.woodPrice * (val - oldVal)),
-        iron: this.value.gold - (this.ironPrice * (val - oldVal)),
+        gold: this.resources.gold - (this.goldPrice * (val - oldVal)),
+        wood: this.resources.wood - (this.woodPrice * (val - oldVal)),
+        iron: this.resources.iron - (this.ironPrice * (val - oldVal)),
       }
-    },
-    calcSliderSize (resources) {
-      var totalGold = resources.gold
-      var totalWood = resources.wood
-      var totalIron = resources.iron
-
-      var remaining = Math.max(Math.floor(Math.min(
-          (totalGold / this.goldPrice) || Infinity,
-          (totalWood / this.woodPrice) || Infinity,
-          (totalIron / this.ironPrice) || Infinity,
-          this.army.maxTrainable - (this.sliderValue || 0)
-      )), 0)
-
-      var size = (this.sliderValue || 0) + remaining
-      return size
     },
   },
 }

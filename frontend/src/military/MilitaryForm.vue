@@ -36,7 +36,7 @@
       <military-army-row
         v-for="armyName in armyOrdering"
         :key="armyName"
-        v-model="resourcesRemaining"
+        v-model="resources"
         :army="armies[armyName]"
         :metadata="metadata"
       />
@@ -60,18 +60,10 @@
         <td>-</td>
       </tr>
     </table>
-
-    <!-- Maybe some kind of cost/resource component? -->
-    <!-- <br>
-    Gold Cost: <span id="goldCost">0</span>
-    <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
-    Wood Cost: <span id="woodCost">0</span>
-    <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
-    Iron Cost: <span id="ironCost">0</span>
-    <img class="resource_icons" src="/static/images/iron_icon.jpg"> / {{ county.iron }} <img class="resource_icons"  src="/static/images/iron_icon.jpg"><br>
-    Happiness Cost: <span id="happinessCost">0</span>
-    <img class="resource_icons" src="/static/images/happiness_icon.jpg"> -->
-    <br><br>
+    <military-resources
+      :county="county"
+      :costs="costs"
+    />
     <button
       id="submitButton"
       type="submit"
@@ -84,11 +76,13 @@
 
 <script>
 import MilitaryArmyRow from './MilitaryArmyRow.vue'
+import MilitaryResources from './MilitaryResources.vue'
 
 export default {
   name: 'MilitaryForm',
   components: {
     MilitaryArmyRow,
+    MilitaryResources,
   },
   props: {
     county: Object,
@@ -99,12 +93,7 @@ export default {
   },
   data () {
     return {
-      costs: {
-        goldCost: 0,
-        woodCost: 0,
-        ironCost: 0,
-      },
-      resourcesRemaining: {
+      resources: {
         gold: this.county.gold,
         wood: this.county.wood,
         iron: this.county.iron,
@@ -113,123 +102,27 @@ export default {
       }
     }
   },
+  computed: {
+    happinessCost () {
+      if (this.county.background == 'Warlord') {
+        return 0
+      } else {
+        var sum = -999
+        return Math.ceil(sum / this.county.population * 200)
+      }
+    },
+    costs () {
+      return {
+        gold: this.county.gold - this.resources.gold,
+        wood: this.county.wood - this.resources.wood,
+        iron: this.county.iron - this.resources.iron,
+        happiness: this.happinessCost,
+      }
+    }
+  },
   mounted () {
-    // this.county.goldCost =
-    // for army in armies
-    // army.sliderSize = calcBuildable(army)
   }
 }
-  // var sliders = $(".slider");
-  // var displays = $(".display");
-  // var values = $(".value");
-
-  // var buildingGoldCosts = $(".buildingGoldCost");
-  // var buildingWoodCosts = $(".buildingWoodCost");
-  // var buildingIronCosts = $(".buildingIronCost");
-
-  // var submitButton = $("#submitButton");
-  // var goldCost = $("#goldCost");
-  // var woodCost = $("#woodCost");
-  // var ironCost = $("#ironCost");
-  // var happinessCost = $("#happinessCost");
-
-  // var monsterMax = parseInt($("#monsterMax").text());
-
-  // function updateGold() {
-  //     var sum = 0;
-  //     sliders.each(function (index, element) {
-  //         try {
-  //           sum += element.value * buildingGoldCosts[index].innerHTML;
-  //         }
-  //         catch(err) {
-  //         }
-  //     });
-  //     goldCost.html(sum);
-  // }
-
-  // function updateWood() {
-  //     var sum = 0;
-  //     sliders.each(function (index, element) {
-  //         try {
-  //           sum += element.value * buildingWoodCosts[index].innerHTML;
-  //         }
-  //         catch(err) {
-  //         }
-  //     });
-  //     woodCost.html(sum);
-  // }
-
-  // function updateIron() {
-  //     var sum = 0;
-  //     sliders.each(function (index, element) {
-  //         try {
-  //           sum += element.value * buildingIronCosts[index].innerHTML;
-  //         }
-  //         catch(err) {
-  //         }
-  //     });
-  //     ironCost.html(sum);
-  // }
-
-  // function updateHappiness() {
-  //     var sum = 0;
-  //     sliders.each(function (ignore, element) {
-  //         sum += parseInt(element.value);
-  //     });
-  //     if ('{{ current_user.county.background }}' == 'Warlord') {
-  //       happinessCost.html(0);
-  //     } else {
-  //       happinessCost.html(Math.ceil(sum / population * 200));
-  //     }
-  // }
-
-  // function calcSliderWidth(size) {
-  //     return Math.min(size + 0.8, 10) + "em";
-  // }
-
-  // function resizeRemaining(gold, wood, iron) {
-  //     // console.log(sliders);
-  //     sliders.each(function (index, element) {
-  //         try {
-  //           var goldPrice = buildingGoldCosts[index].innerHTML;
-  //         }
-  //         catch(err) {
-  //           var goldPrice = 0;
-  //         }
-  //         try {
-  //           var woodPrice = buildingWoodCosts[index].innerHTML;
-  //         }
-  //         catch(err) {
-  //           var woodPrice = 0;
-  //         }
-  //         try {
-  //           var ironPrice = buildingIronCosts[index].innerHTML;
-  //         }
-  //         catch(err) {
-  //           var ironPrice = 0;
-  //         }
-  //         var isMonster = element.hasAttribute('data-monster');
-  //         var currentSize = parseInt(element.value);
-  //         var remaining = Math.max(Math.floor(Math.min(
-  //             (totalGold - gold) / goldPrice,
-  //             (totalWood - wood) / woodPrice,
-  //             (totalIron - iron) / ironPrice,
-  //             (isMonster) ? monsterMax-currentSize : Infinity
-  //         )), 0);
-
-  //         var size = currentSize + remaining;
-  //         // need to include current element.value + current_max - remaining?
-  //         $(element).prop("max", size);
-  //         $(element).css("width", calcSliderWidth(size));
-  //         if (size === 0) {
-  //             $(element).addClass("slider-disabled");
-  //         } else {
-  //             $(element).removeClass("slider-disabled");
-  //         }
-  //     });
-  //     // return remaining;
-  // }
-
   // function updateCosts() {
   //     updateGold();
   //     updateWood();
