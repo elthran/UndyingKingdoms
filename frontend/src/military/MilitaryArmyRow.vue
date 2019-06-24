@@ -86,6 +86,7 @@ export default {
     army: Object,
     metadata: Object,
     resources: Object,
+    reset: Boolean,
   },
   data () {
     return {
@@ -144,7 +145,10 @@ export default {
     sliderValue (val, oldVal) {
       this.resourcesRemaining = this.calcResourcesRemaining(val, oldVal)
       this.$emit('change', this.resourcesRemaining)
-    }
+    },
+    reset () {
+      this.sliderValue = 0
+    },
   },
   mounted () {
     // this.$set(this.army, sliderSize)

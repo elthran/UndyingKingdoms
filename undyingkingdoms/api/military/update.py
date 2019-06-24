@@ -15,7 +15,6 @@ class UpdateAPI(MethodView):
     def get(self):
         county = current_user.county
         form = MilitaryForm()
-        form.county_id.data = county.id
 
         armies = county.armies
         besiegers = armies['besieger']
@@ -70,7 +69,7 @@ class UpdateAPI(MethodView):
         county = current_user.county
         form = MilitaryForm()
 
-        if form.validate_on_submit():
+        if form.validate(county):
             build_units(county, form)
             return jsonify(
                 debugMessage='You have updated your current troop production.',

@@ -53,15 +53,10 @@ export default {
     })
   },
   methods: {
-    updatePage (data) {
-      // this.$sendForm(this.$refs.form)
-      // .then((data) => {
-      //   this.$deployData(data)
-      // }).catch((error) => {
-      //   console.log(error.debugMessage)
-      // })
+    updatePage () {
+      return this.$hydrate('/api/military/update')
     }
-  }
+  },
 }
 </script>
 

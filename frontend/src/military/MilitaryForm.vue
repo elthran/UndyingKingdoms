@@ -1,8 +1,10 @@
 <template>
   <form
+    ref="form"
     method="POST"
     accept-charset="UTF-8"
-    role="form"
+    action="/api/military/update"
+    @submit.prevent="updatePage"
   >
     <span v-html="form.csrf_token.html" />
     <table>
@@ -39,6 +41,7 @@
         v-model="resources"
         :army="armies[armyName]"
         :metadata="metadata"
+        :reset="reset"
       />
       <tr class="total-row">
         <td>Total</td>
@@ -68,6 +71,7 @@
     <button
       id="submitButton"
       type="submit"
+      :disabled="disabled"
     >
       Build
     </button>
@@ -99,7 +103,9 @@ export default {
         wood: this.county.wood,
         iron: this.county.iron,
         workers: this.county.availableWorkers,
-      }
+      },
+      reset: true,
+      disabled: false,
     }
   },
   computed: {
@@ -123,7 +129,26 @@ export default {
       }
     }
   },
-  mounted () {
+  methods: {
+    updatePage (data) {
+      this.disabled = true
+      this.reset = !this.reset
+      this.$sendForm(this.$refs.form)
+      .then((data) => {
+        this.disabled = false
+        this.$parent.updatePage()
+        .then(() => {
+          this.resources = {
+            gold: this.county.gold,
+            wood: this.county.wood,
+            iron: this.county.iron,
+            workers: this.county.availableWorkers,
+          }
+        })
+      }).catch((error) => {
+        console.log(error.debugMessage)
+      })
+    }
   }
 }
 </script>

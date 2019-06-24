@@ -73,6 +73,9 @@ export default {
   watch: {
     sliderValue (val) {
       this.$emit('input', val)
+    },
+    value (val) {
+      this.sliderValue = val
     }
   },
 }
