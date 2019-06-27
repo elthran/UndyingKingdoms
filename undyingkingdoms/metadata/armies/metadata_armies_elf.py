@@ -15,7 +15,7 @@ elf_armies['besieger'].class_name, elf_armies['besieger'].class_name_plural, elf
 elf_armies['elite'].class_name, elf_armies['elite'].class_name_plural, elf_armies[
     'elite'].description = 'dragonhelm', 'dragonhelms', 'Dragonhelms are elite cavalry and incredibly adept at attacking enemy counties.'
 elf_armies['monster'].class_name, elf_armies['monster'].class_name_plural, elf_armies[
-    'monster'].description = 'dragon', 'dragons', 'Dragons are incredibly powerful monsters.'
+    'monster'].description = 'phoenix', 'phoenixes', 'Phoenixes are incredibly powerful monsters.'
 # Elves: Slightly more damage and wood
 # Peasants
 elf_armies['peasant'].category = "Infantry"
@@ -35,3 +35,6 @@ elf_armies['elite'].armour_type = "Plate"
 # Monsters
 elf_armies['monster'].category = "Monster"
 elf_armies['monster'].armour_type = "Plate"
+elf_armies['monster'].ability = "Rebirth"
+elf_armies['monster'].ability_description = f"After any battle, each dead {elf_armies['monster'].class_name} " \
+                                            f"has a 50% chance to come back to life."

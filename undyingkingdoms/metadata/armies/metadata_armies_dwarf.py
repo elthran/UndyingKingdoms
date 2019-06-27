@@ -36,4 +36,7 @@ dwarf_armies['elite'].armour_type = "Plate"
 # Monsters
 dwarf_armies['monster'].category = "Infantry"
 dwarf_armies['monster'].armour_type = "Plate"
+dwarf_armies['monster'].ability = "Despairing Howl"
+dwarf_armies['monster'].ability_description = f"When attacking, each {dwarf_armies['monster'].class_name} " \
+    f"causes -3 happiness to the enemy county."
 

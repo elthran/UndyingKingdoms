@@ -33,6 +33,15 @@
 .nav-button {
     width: 8em;
 }
+
+.tooltip .tooltipText {
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 120%;
+    left: 50%;
+    margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
 </style>
 {% endblock %}
 
@@ -76,7 +85,11 @@
                     <form method="POST" accept-charset="UTF-8" role="form">
                         {{ form.csrf_token }}
                         <li style="font-style:italic;">
-                            {% if kingdom.leader == county.id %}<img class="resource_icons" src="/static/images/crown_icon.jpg">{% endif %}
+                            {% if kingdom.leader == county.id %}
+                                <div class="tooltip"><img class="resource_icons" src="/static/images/crown_icon.jpg">
+                                    <span class="tooltipText">Approval Rating: {{ kingdom.approval_rating }}</span>
+                                </div>
+                            {% endif %}
                             {{ county.name }} led by the infamous {{ county.leader }} with {{ county.land }} acres of land
                             {% if kingdom.leader == 0 and my_county.can_vote() %}(Vote: {{ form.vote }})
                                 <button type="submit">Change Vote</button>
@@ -87,7 +100,11 @@
                     </form>
                 {% else %}
                     <li>
-                        {% if kingdom.leader == county.id %}<img class="resource_icons" src="/static/images/crown_icon.jpg">{% endif %}
+                        {% if kingdom.leader == county.id %}
+                            <div class="tooltip"><img class="resource_icons" src="/static/images/crown_icon.jpg">
+                                <span class="tooltipText">Approval Rating: {{ kingdom.approval_rating }}</span>
+                            </div>
+                        {% endif %}
                         <a href="{{ url_for('enemy_overview', county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
                         {% if kingdom.leader == 0 %}
                             (Vote: {{ county.display_vote() }})
