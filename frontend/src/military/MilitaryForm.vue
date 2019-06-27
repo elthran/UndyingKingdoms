@@ -18,19 +18,25 @@
           Cost
         </th>
         <th>
-          <div class="tooltip">
-            Attack<span class="tooltip-text">{{ metadata.attack }}</span>
-          </div>
+          <tool-tip
+            content="Attack"
+            :tip="metadata.attack"
+            alight="left"
+          />
         </th>
         <th>
-          <div class="tooltip">
-            Defence<span class="tooltip-text">{{ metadata.defence }}</span>
-          </div>
+          <tool-tip
+            content="Defence"
+            :tip="metadata.defence"
+            alight="left"
+          />
         </th>
         <th>
-          <div class="tooltip">
-            Health<span class="tooltip-text">{{ metadata.health }}</span>
-          </div>
+          <tool-tip
+            content="Health"
+            :tip="metadata.health"
+            alight="left"
+          />
         </th>
         <th>Type</th>
         <th>Description</th>
@@ -50,11 +56,11 @@
         <td>{{ county.unitsInTraining }}</td>
         <td>-</td>
         <td>
-          <div class="tooltip">
-            {{ county.upkeepCosts }}<span
-              class="tooltip-text"
-            >{{ metadata.upkeepDaily }}</span>
-          </div>
+          <tool-tip
+            :content="county.upkeepCosts"
+            :tip="metadata.upkeepDaily"
+            align="top"
+          />
         </td>
         <td>-</td>
         <td>-</td>
@@ -82,12 +88,14 @@
 <script>
 import MilitaryArmyRow from './MilitaryArmyRow.vue'
 import MilitaryResources from './MilitaryResources.vue'
+import ToolTip from '@/components/ToolTip.vue'
 
 export default {
   name: 'MilitaryForm',
   components: {
     MilitaryArmyRow,
     MilitaryResources,
+    ToolTip,
   },
   props: {
     county: Object,

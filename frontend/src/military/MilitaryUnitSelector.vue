@@ -21,16 +21,15 @@
       <div v-if="isMonster">
         <span
           v-if="cantTrain"
-          style="color:red;"
+          class="negative"
         >
           Requires more<br>{{ building.name }}
         </span>
-        <span
-          v-else
-          class="tooltip"
-        >{{ sliderValue }} of {{ army.maxTrainable }}
-          <span class="tooltip-text">Build more {{ building.name }}</span>
-        </span>
+        <tool-tip
+          :content="sliderValue + ' of ' + army.maxTrainable"
+          :tip="'Build more ' + building.name"
+          align="left"
+        />
       </div>
       <span
         v-else
@@ -44,8 +43,13 @@
 </template>
 
 <script>
+import ToolTip from '@/components/ToolTip.vue'
+
 export default {
   name: 'MilitaryUnitSelector',
+  components: {
+    ToolTip,
+  },
   props: {
     army: Object,
     building: Object,

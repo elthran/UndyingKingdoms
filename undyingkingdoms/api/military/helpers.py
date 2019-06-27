@@ -80,3 +80,14 @@ def build_units(county, form):
         happiness_penalty = (total_trained * 200 // county.population) + 1
     county.happiness -= happiness_penalty
     return
+
+
+def troop_sum(expedition):
+    return (
+            expedition.peasant +
+            expedition.soldier +
+            expedition.besieger +
+            expedition.summon +
+            expedition.elite +
+            expedition.monster
+    )

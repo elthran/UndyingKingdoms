@@ -4,12 +4,11 @@
     <td>{{ army.available }}</td>
     <td>{{ army.traveling }}</td>
     <td>
-      <div class="tooltip">
-        {{ army.currentlyTraining }}
-        <span class="tooltip-text">
-          Max trainable per day: {{ army.trainablePerDay }}
-        </span>
-      </div>
+      <tool-tip
+        :content="army.currentlyTraining"
+        :tip="'Max trainable per day: ' + army.trainablePerDay"
+        align="left"
+      />
     </td>
     <td>
       <military-unit-selector
@@ -41,27 +40,23 @@
       </div>
     </td>
     <td>
-      <div
-        v-if="isBeseiger"
-        class="tooltip"
-      >
-        *
-        <span class="tooltip-text">
-          {{ metadata.besiegerAttack }}
-        </span>
-      </div>
+      <tool-tip
+        v-if="isBesieger"
+        content="*"
+        :tip="metadata.besiegerAttack"
+        align="left"
+      />
       <div v-else>
         {{ army.attack }}
       </div>
     </td>
     <td>{{ army.defence }}</td>
     <td>
-      <div class="tooltip">
-        {{ army.health }}
-        <span class="tooltip-text">
-          Armour type: {{ army.armourType }}
-        </span>
-      </div>
+      <tool-tip
+        :content="army.health"
+        :tip="'Armour type: ' + army.armourType"
+        align="right"
+      />
     </td>
     <td>{{ army.category }}</td>
     <td>{{ army.description }}</td>
@@ -71,12 +66,14 @@
 <script>
 import MilitaryUnitSelector from './MilitaryUnitSelector.vue'
 import ResourceIcon from '@/components/ResourceIcon.vue'
+import ToolTip from '@/components/ToolTip.vue'
 
 export default {
   name: 'MilitaryArmyRow',
   components: {
     MilitaryUnitSelector,
     ResourceIcon,
+    ToolTip,
   },
   model: {
     prop: 'resources',
@@ -101,7 +98,7 @@ export default {
     isSummon () {
       return this.army.key === 'summon'
     },
-    isBeseiger () {
+    isBesieger () {
       return this.army.key === 'besieger'
     },
     costsGold () {

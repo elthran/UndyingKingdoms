@@ -2,7 +2,7 @@
   <div>
     <h2>
       Current Attack Power Available: {{ county.offensiveStrength }}
-      <span v-if="county.besiegerStrength > 0">
+      <span v-if="hasBesiegers">
         + {{ county.besiegerStrength }} for each enemy fort
       </span>
     </h2>
@@ -19,9 +19,11 @@ export default {
   },
   data () {
     return {
-      // offensiveStrength: -1,
-      // defensiveStrength: -1,
-      // availableWorkers: -1,
+    }
+  },
+  computed: {
+    hasBesiegers () {
+      return this.county.besiegerStrength > 0
     }
   },
 }

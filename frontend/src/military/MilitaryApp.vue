@@ -18,7 +18,7 @@
         :army-ordering="armyOrdering"
       />
       <br><br>
-      <!-- <military-expedtions /> -->
+      <military-expeditions />
       <br style="margin-bottom: 2em">
     </div>
   </div>
@@ -27,12 +27,14 @@
 <script>
 import MilitaryStrength from './MilitaryStrength.vue'
 import MilitaryForm from './MilitaryForm.vue'
+import MilitaryExpeditions from './MilitaryExpeditions.vue'
 
 export default {
   name: 'MilitaryApp',
   components: {
     MilitaryStrength,
     MilitaryForm,
+    MilitaryExpeditions,
   },
   data () {
     return {
