@@ -17,7 +17,9 @@ def update_armies(background, armies):
         defence=5,
         health=5,
         armour_type='Not implemented',
-        description='Summoned creatures, bound by magic.'
+        description='Summoned creatures, bound by magic.',
+        ability='None',
+        ability_description='None'
     )
 
     if background == 'Alchemist':

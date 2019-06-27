@@ -31,6 +31,8 @@ class Army(GameState):
     _health = db.Column(db.Integer)
     armour_type = db.Column(db.String(32))
     description = db.Column(db.String(128))
+    ability = db.Column(db.String(32))
+    ability_description = db.Column(db.String(128))
 
     @property
     def type(self):
@@ -45,7 +47,7 @@ class Army(GameState):
         return self.TYPES[self.name]
 
     def __init__(self, name, class_name, class_name_plural, total, trainable_per_day, gold, wood, iron, upkeep,
-                 category, attack, defence, health, armour_type, description):
+                 category, attack, defence, health, armour_type, description, ability, ability_description):
         self.name = name
         self.class_name = class_name
         self.class_name_plural = class_name_plural
@@ -63,6 +65,8 @@ class Army(GameState):
         self.health = health
         self.armour_type = armour_type
         self.description = description
+        self.ability = ability
+        self.ability_description = ability_description
 
     @property
     def available(self):

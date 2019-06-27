@@ -17,6 +17,8 @@ class Infiltration(GameEvent):
     pilfer_amount = db.Column(db.Integer)
     # Burn crops
     crops_burned = db.Column(db.Integer)
+    # Pastures destroyed
+    dairy_destroyed = db.Column(db.Integer)
     # Sow distrust
     distrust = db.Column(db.Integer)
     # Steal Research
@@ -51,6 +53,7 @@ class Infiltration(GameEvent):
         self.fort = 0
 
         self.crops_burned = 0
+        self.dairy_destroyed = 0
         self.pilfer_amount = 0
         self.distrust = 0
         self.research_stolen = 0
