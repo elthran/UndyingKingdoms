@@ -43,7 +43,8 @@ def max_trainable(county, army):
         max_size = min(
             county.gold // army.gold,
             county.wood // army.wood,
-            county.iron // army.iron
+            county.iron // army.iron,
+            county.get_available_workers(),
         )
     except ZeroDivisionError:
         max_size = 50

@@ -126,12 +126,14 @@ export default {
       var totalGold = this.resources.gold
       var totalWood = this.resources.wood
       var totalIron = this.resources.iron
+      var workers = this.resources.workers
 
       var remaining = Math.max(Math.floor(Math.min(
           (totalGold / this.goldPrice) || 0,
           (totalWood / this.woodPrice) || 0,
           (totalIron / this.ironPrice) || 0,
-          this.army.maxTrainable - (this.sliderValue || 0)
+          workers,
+          this.army.maxTrainable - (this.sliderValue || 0),
       )), 0)
 
       var size = (this.sliderValue || 0) + remaining
