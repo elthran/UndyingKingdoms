@@ -15,7 +15,7 @@
           :max="sliderSize"
           step="1"
           :style="{ width: sliderWidth + 'em' }"
-          :hidden="cantTrain"
+          :hidden="cantTrain && isMonster"
         >
       </div>
       <div v-if="isMonster">
@@ -26,9 +26,10 @@
           Requires more<br>{{ building.name }}
         </span>
         <tool-tip
-          :content="sliderValue + ' of ' + army.maxTrainable"
+          :content="monsterCount + ' of ' + building.total"
           :tip="'Build more ' + building.name"
           align="left"
+          class="top-spacer-dot-6"
         />
       </div>
       <span
@@ -73,6 +74,9 @@ export default {
     isDisabled () {
       return this.sliderSize == 0
     },
+    monsterCount () {
+      return this.army.available + this.army.currentlyTraining + this.sliderValue
+    }
   },
   watch: {
     sliderValue (val) {

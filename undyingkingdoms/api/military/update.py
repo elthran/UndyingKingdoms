@@ -46,7 +46,8 @@ class UpdateAPI(MethodView):
             for army in armies.values()
         }
         vue_safe_armies['monster']['building'] = dict(
-            name=lair.class_name_plural.title()
+            name=lair.class_name_plural.title(),
+            total=lair.total,
         )
 
         vue_safe_metadata = generic_vue_safe(
