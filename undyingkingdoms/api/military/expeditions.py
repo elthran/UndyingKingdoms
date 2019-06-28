@@ -6,7 +6,7 @@ from .helpers import troop_sum
 from ..vue_safe import generic_vue_safe
 
 
-class UpdateAPI(MethodView):
+class ExpeditionsAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county

@@ -86,51 +86,53 @@ export default {
 </script>
 
 <style scoped>
+.slide-container {
+  display: flex;
+  justify-content: space-around;
+  width: 10em;
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 0.1em; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+  padding: 0.1em 0 0.1em;
+  margin: 1em 0 1em;
+  width: 10em;
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 0.4em; /* Set a specific slider handle width */
+  height: 1.5em; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 0.4em; /* Set a specific slider handle width */
+  height: 1.5em; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider-disabled::-moz-range-thumb  {
+  background: grey;
+}
+
+.slider-disabled::-webkit-slider-thumb {
+  background: grey;
+}
+
 @media (min-width: 640px) {
-  .slide-container {
-    display: flex;
-    justify-content: space-around;
-    width: 10em;
-  }
 
-  /* The slider itself */
-  .slider {
-    -webkit-appearance: none;  /* Override default CSS styles */
-    appearance: none;
-    width: 100%; /* Full-width */
-    height: 0.1em; /* Specified height */
-    background: #d3d3d3; /* Grey background */
-    outline: none; /* Remove outline */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-    transition: opacity .2s;
-    padding: 0.1em 0 0.1em;
-    margin: 1em 0 1em;
-    width: 10em;
-  }
-
-  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-  .slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
-    appearance: none;
-    width: 0.4em; /* Set a specific slider handle width */
-    height: 1.5em; /* Slider handle height */
-    background: #4CAF50; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-  }
-
-  .slider::-moz-range-thumb {
-    width: 0.4em; /* Set a specific slider handle width */
-    height: 1.5em; /* Slider handle height */
-    background: #4CAF50; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-  }
-
-  .slider-disabled::-moz-range-thumb  {
-    background: grey;
-  }
-
-  .slider-disabled::-webkit-slider-thumb {
-    background: grey;
-  }
 }
 </style>

@@ -7,14 +7,14 @@
     @submit.prevent="updatePage"
   >
     <span v-html="form.csrf_token.html" />
-    <table>
+    <table class="top-spacer-1">
       <tr>
         <th>Name</th>
         <th>Available</th>
         <th>Traveling</th>
         <th>Training</th>
         <th>Train</th>
-        <th id="costCol">
+        <th id="cost-col">
           Cost
         </th>
         <th>
@@ -162,53 +162,15 @@ export default {
 </script>
 
 <style scoped>
+#cost-col {
+  min-width: 8.5em;
+}
+
+#resources {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
 @media (min-width: 640px) {
-  input {
-    padding: 0.5em 0 0;
-  }
-
-  #invisibleDataFields {
-    display: none;
-  }
-
-  #costCol {
-    min-width: 8.5em;
-  }
-
-  table {
-    margin-top: 1em;
-  }
-
-  tr:nth-child(even) {background-color: #f2f2f2;}
-
-  th, td {
-    vertical-align: bottom;
-    border: 1px solid #ddd;
-    padding: 0 0.3em 0.3em;
-  }
-
-  th {
-    font-weight: bold;
-    vertical-align: middle;
-  }
-
-  .total-row {
-    font-weight: bold;
-    height: 2.6em;
-  }
-
-  .tooltip .tooltip-text {
-    /* Position the tooltip */
-    position: absolute;
-    z-index: 1;
-    top: 120%;
-    left: 50%;
-    margin-left: -195px; /* Use half of the width (120/2 = 60), to center the tooltip */
-  }
-
-  #resources {
-    margin-top: 1em;
-    margin-bottom: 1em;
-  }
 }
 </style>

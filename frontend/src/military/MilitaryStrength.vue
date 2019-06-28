@@ -1,13 +1,16 @@
 <template>
   <div>
-    <h2>
-      Current Attack Power Available: {{ county.offensiveStrength }}
+    <p>
+      Current Attack Power: <strong>{{ county.offensiveStrength }}</strong>
       <span v-if="hasBesiegers">
         + {{ county.besiegerStrength }} for each enemy fort
       </span>
-    </h2>
-    <h2>Current Defensive Power: {{ county.defensiveStrength }}</h2>
-    <h2>{{ county.availableWorkers }} workers available for training</h2>
+    </p>
+    <p>Current Defensive Power: <strong>{{ county.defensiveStrength }}</strong></p>
+    <p>
+      <strong>{{ county.availableWorkers }}</strong>
+      workers available for training
+    </p>
   </div>
 </template>
 
@@ -28,3 +31,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+p {
+  font-size: large;
+}
+</style>

@@ -6,5 +6,6 @@ import_endpoints(
     __name__,
     [
         'update',
+        'expeditions'
     ]
 )

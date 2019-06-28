@@ -4,7 +4,7 @@
     class="invisible"
   >
     <prefix-title title="War" />
-    <div id="content">
+    <div>
       <military-strength
         v-if="ready"
         :county="county"
@@ -63,9 +63,17 @@ export default {
 </script>
 
 <style scoped>
-@media (min-width: 640px) {
-  #content {
-    padding-top: 1em;
+#military-app {
+  padding-top: 1em;
+}
+
+@media (max-width: 640px) {
+  #military-app {
+    margin-left: 1em;
+    margin-right: 1em;
   }
+}
+
+@media (min-width: 640px) {
 }
 </style>
