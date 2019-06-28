@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h2 class="bottom-spacer-dot-3">Expeditions:</h2>
+    <h2 class="bottom-spacer-dot-3">
+      Expeditions:
+    </h2>
     <p
       v-for="expedition in unsucessfulExpeditions"
       :key="expedition"
