@@ -3,7 +3,7 @@
   width: 100%;
 }
 
-.tooltip .tooltipText {
+.tooltip .tooltip-text {
   /* Position the tooltip */
   position: absolute;
   z-index: 1;

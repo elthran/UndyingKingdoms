@@ -1,3 +1,64 @@
+<template>
+  <div class="tooltip-wrapper">
+    <slot>{{ content }}</slot>
+    <span
+      ref="tooltip"
+      class="tooltip"
+      :class="'tooltip-' + align + ' ' + 'arrow-box-for-' + align"
+    >
+      {{ tip }}
+    </span>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ToolTip',
+  props: {
+    content: [String, Number],
+    tip: String,
+    align: {
+      type: String,
+      default: 'bottom',
+      validator: function (value) {
+        // The value must match one of these strings
+        return ['top', 'left', 'right', 'bottom', 'mouse'].indexOf(value) !== -1
+      }
+    },
+    bounder: HTMLDivElement,
+  },
+  data () {
+    return {
+    }
+  },
+  mounted () {
+    if (this.align === 'mouse') {
+      this.$el.addEventListener('mousemove', this.showTooltip)
+    }
+  },
+  beforeDestroy () {
+    this.$el.removeEventListener('mousemove', this.showTooltip)
+  },
+  methods: {
+    showTooltip(e) {
+      var tooltip = this.$refs.tooltip
+      var bounderRect = this.bounder.getBoundingClientRect()
+      var absBounderRight = bounderRect.x + bounderRect.width
+
+      var offset = 30
+      tooltip.style.left =
+          (e.pageX + tooltip.scrollWidth < bounderRect.right - (10 + offset))
+              ? (e.pageX - bounderRect.x + 5 + "px")
+              : (e.pageX - (bounderRect.x + tooltip.offsetWidth + offset) + "px");
+
+      tooltip.style.top = (e.pageY + tooltip.clientHeight + 10 < bounderRect.bottom)
+          ? (5 + "px")
+          : (this.$el.clientHeight - tooltip.clientHeight + "px");
+    }
+  }
+}
+</script>
+
 <style scoped>
 .tooltip-wrapper {
   position: relative;
@@ -122,64 +183,3 @@
   /* leaving blank on purpose */
 }
 </style>
-
-<template>
-  <div class="tooltip-wrapper">
-    <slot>{{ content }}</slot>
-    <span
-      ref="tooltip"
-      class="tooltip"
-      :class="'tooltip-' + align + ' ' + 'arrow-box-for-' + align"
-    >
-      {{ tip }}
-    </span>
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'ToolTip',
-  props: {
-    content: String,
-    tip: String,
-    align: {
-      type: String,
-      default: 'bottom',
-      validator: function (value) {
-        // The value must match one of these strings
-        return ['top', 'left', 'right', 'bottom', 'mouse'].indexOf(value) !== -1
-      }
-    },
-    bounder: HTMLDivElement,
-  },
-  data () {
-    return {
-    }
-  },
-  mounted () {
-    if (this.align === 'mouse') {
-      this.$el.addEventListener('mousemove', this.showTooltip)
-    }
-  },
-  beforeDestroy () {
-    this.$el.removeEventListener('mousemove', this.showTooltip)
-  },
-  methods: {
-    showTooltip(e) {
-      var tooltip = this.$refs.tooltip
-      var bounderRect = this.bounder.getBoundingClientRect()
-      var absBounderRight = bounderRect.x + bounderRect.width
-
-      var offset = 30
-      tooltip.style.left =
-          (e.pageX + tooltip.scrollWidth < bounderRect.right - (10 + offset))
-              ? (e.pageX - bounderRect.x + 5 + "px")
-              : (e.pageX - (bounderRect.x + tooltip.offsetWidth + offset) + "px");
-
-      tooltip.style.top = (e.pageY + tooltip.clientHeight + 10 < bounderRect.bottom)
-          ? (5 + "px")
-          : (this.$el.clientHeight - tooltip.clientHeight + "px");
-    }
-  }
-}
-</script>

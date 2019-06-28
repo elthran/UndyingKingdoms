@@ -1,6 +1,8 @@
 from flask import url_for
 from flask_login import current_user
 
+from utilities.helpers import to_mixed_case
+
 
 def vue_safe_nbsp(s):
     """Returns a string with all spaces non-breaking.
@@ -32,6 +34,7 @@ def vue_safe_metadata_mod(mod, county, is_percent=True):
         )
 
     return vue_safe_mod
+
 
 def vue_safe_array(value):
     """Convert all tuples to lists.
@@ -150,12 +153,19 @@ def vue_safe_thread(thread):
     )
 
 
-def generic_vue_safe(obj, attributes):
+def generic_vue_safe(obj, attributes, **kwargs):
     """Get all passed attributes from object.
+
+    You can now pass in key=values that will get added directly.
+    This allows finer grained control and pre-processing.
 
     return in a dictionary.
     """
     vue_obj = {'id': obj.id}
     for attr in attributes:
-        vue_obj[attr] = getattr(obj, attr)
+        vue_obj[to_mixed_case(attr)] = getattr(obj, attr)
+
+    for key, value in kwargs.items():
+        vue_obj[to_mixed_case(key)] = value
+
     return vue_obj
