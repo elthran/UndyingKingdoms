@@ -59,7 +59,15 @@
       />
     </td>
     <td>{{ army.category }}</td>
-    <td>{{ army.description }}</td>
+    <td>
+      {{ army.description }} <tool-tip
+        v-if="hasAbility"
+        :content="army.ability"
+        :tip="army.abilityDescription"
+        align="right"
+        tooltip-width="12em"
+      />
+    </td>
   </tr>
 </template>
 
@@ -138,6 +146,9 @@ export default {
 
       var size = (this.sliderValue || 0) + remaining
       return size
+    },
+    hasAbility () {
+      return this.army.ability != "None"
     },
   },
   watch: {

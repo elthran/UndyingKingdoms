@@ -22,6 +22,8 @@ def vue_safe_army(county, army):
             'health',
             'category',
             'description',
+            'ability',
+            'ability_description',
         ],
         key=army.name,
         name=army.class_name.title(),
