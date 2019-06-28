@@ -59,7 +59,7 @@ class Military(GameState):
             for name in army.keys():
                 unit = full_army[name]
                 if unit.type == unit.BESIEGER:
-                    strength += army[name] * enemy_forts * max(unit.attack, 1)
+                    strength += army[name] * enemy_forts + max(unit.attack, 1)
                 elif unit.attack > 0:
                     strength += army[name] * unit.attack
         else:

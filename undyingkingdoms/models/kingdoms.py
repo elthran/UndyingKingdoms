@@ -248,9 +248,11 @@ class Kingdom(GameState):
                 friendly_county,
                 "War",
                 f"We have declared war on {enemy.name}",
-                "War"
+                "War", votable=True
             )
             notice.save()
+        # TEMP
+        war.aggressor.approval_rating -= 10
         return war
 
     def cancel_alliances(self, enemy):
@@ -270,6 +272,9 @@ class Kingdom(GameState):
         self.wars_won_ta += 1
         self.wars_won_lt += 1
 
+        # TEMP
+        self.approval_rating += 25
+        enemy.approval_rating -= 10
         armistice = Diplomacy(self, enemy, action=Diplomacy.ARMISTICE, status=Diplomacy.IN_PROGRESS)
         armistice.duration = 24
         armistice.save()

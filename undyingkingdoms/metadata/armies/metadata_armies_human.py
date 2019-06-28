@@ -35,3 +35,6 @@ human_armies['elite'].armour_type = "Plate"
 # Monsters
 human_armies['monster'].category = "Monster"
 human_armies['monster'].armour_type = "Plate"
+human_armies['monster'].ability = "Inspiring Presence"
+human_armies['monster'].ability_description = f"When attacking, each {human_armies['monster'].class_name} " \
+    f"grants your entire army +1% power."

@@ -69,7 +69,18 @@ def infiltrate(template, county_id):
                 notification = Notification(
                     target,
                     "Thieves raided our lands",
-                    f"They burned {crops_burned} of our crops.",
+                    f"They burned {crops_burned} of our {target.buildings['field'].class_name_plural.title()}."
+                )
+            elif mission == 'kill cattle':
+                dairy_destroyed = min(target.buildings['pasture'].total, form.amount.data * gain_modifier)
+                target.buildings['pasture'].total -= dairy_destroyed
+                report.dairy_destroyed = dairy_destroyed
+                report.duration = randint(14, 16) * duration_multiplier
+                notification = Notification(
+                    target,
+                    "Thieves raided our lands",
+                    f"They killed our cattle and destroyed {dairy_destroyed} of our "
+                    f"{target.buildings['pasture'].class_name_plural.title()}."
                 )
             elif mission == 'sow distrust':
                 happiness_lost = min(target.happiness, form.amount.data * 3 * gain_modifier)

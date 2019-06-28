@@ -32,6 +32,8 @@ ul.mission li:first-of-type {
           Your {{ mission.amount_of_thieves }} thieves were able to steal {{ mission.pilfer_amount }} <img class="resource_icons" src="/static/images/gold_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).
         {% elif mission.mission == 'burn crops' %}
           Your {{ mission.amount_of_thieves }} thieves burned {{ mission.crops_burned }} crops. (Ready for next mission in {{ mission.duration }} days).
+        {% elif mission.mission == 'kill cattle' %}
+              Your {{ mission.amount_of_thieves }} thieves destroyed {{ mission.dairy_destroyed }} pastures. (Ready for next mission in {{ mission.duration }} days).
         {% elif mission.mission == 'sow distrust' %}
           Your {{ mission.amount_of_thieves }} thieves caused unrest and lowered enemy happiness by {{ mission.distrust }} <img class="resource_icons" src="/static/images/happiness_icon.jpg">. (Ready for next mission in {{ mission.duration }} days).
         {% elif mission.mission == 'scout military' %}

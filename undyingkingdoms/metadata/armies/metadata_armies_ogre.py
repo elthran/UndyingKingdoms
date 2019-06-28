@@ -54,3 +54,6 @@ ogre_armies['elite'].armour_type = "Plate"
 # Monsters
 ogre_armies['monster'].category = "Monster"
 ogre_armies['monster'].armour_type = "Unarmoured"
+ogre_armies['monster'].ability = "Thundering Charge"
+ogre_armies['monster'].ability_description = f"When attacking, each {ogre_armies['monster'].class_name}" \
+    f" destroys a random enemy building."

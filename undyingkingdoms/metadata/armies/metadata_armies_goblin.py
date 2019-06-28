@@ -41,3 +41,6 @@ goblin_armies['elite'].armour_type = "Plate"
 # Monsters
 goblin_armies['monster'].category = "Monster"
 goblin_armies['monster'].armour_type = "Plate"
+goblin_armies['monster'].ability = "Noxious Fumes"
+goblin_armies['monster'].ability_description = f"When attacking, each {goblin_armies['monster'].class_name} " \
+    f"causes a disease to plague the enemy county for an additional day."

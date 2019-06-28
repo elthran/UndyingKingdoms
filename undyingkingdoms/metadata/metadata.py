@@ -31,7 +31,8 @@ metadata_background_descriptions = {
 
 kingdom_names = ["Faenoth", "Ecthalion"]
 
-infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'sow distrust', 'steal research']
+infiltration_missions = ['scout military', 'pilfer', 'burn crops', 'kill cattle',
+                         'sow distrust', 'steal research']
 
 attack_types = ["Attack", "Pillage", "Raze"]
 

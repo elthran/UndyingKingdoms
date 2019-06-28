@@ -130,7 +130,7 @@ th {
         <th>Type</th>
         <th>Description</th>
       </tr>
-      {% for army in county.armies.values() %}
+      {% for army in county.armies.values()|sort(attribute='type') %}
         <!--  [county.gold // army.gold, county.wood // army.wood, county.iron // army.iron]  -->
         <!--(list | sort)[0] replicates min()-->
         {% set slider_size = max_trainable_by_cost(county, army) %}
