@@ -38,7 +38,7 @@
 <h2>Our Active Spells</h2>
 <ul>
     {% for spell in active_spells %}
-    {{ spell.name.title() }}
+    {{ spell.display_name.title() }}
     {% if spell.mana_sustain %}(Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)
     {% elif spell.duration %}(Spell ends in {{ spell.duration }} days)
     {% endif %}<br>
@@ -52,17 +52,19 @@
 <h2>Spells From Other Counties Affecting Us</h2>
 <ul>
     {% for spell in enemy_spells %}
-    {{ spell.name.title() }} by
+    {{ spell.display_name.title() }} by
     <a href="{{ url_for('enemy_overview', county_id=spell.caster.id) }}">
         {{ spell.caster.name }}
     </a>
     {% if spell.mana_sustain %}(Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)
     {% elif spell.duration %}(Spell ends in {{ spell.duration }} days)
     {% endif %}<br>
-    From county id: {{ spell.county_id }}<br>
-    Attempt to dispel for 10 <img class="resource_icons" src="/static/images/mana_icon.jpg">
     <a href="{{ url_for('dispel_spell', spell_id=spell.id) }}">
-        <button style="float:left;width:100px;" {% if county.mana < 10 %}disabled{% endif %}>Attempt to Dispel</button></a>
+        <button style="float:left;width:100px;" {% if county.mana < 10 %}disabled{% endif %}>
+        Attempt Dispel (10 <img class="resource_icons" src="/static/images/mana_icon.jpg">)
+        </button>
+    </a>
+    <br>
     {% else %}
     No active spells
     {% endfor %}

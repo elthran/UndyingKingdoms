@@ -12,3 +12,6 @@ The 20th age of Undying Kingdoms is about to begin,
         - New "Unit Abilities". Certain units have special abilities which are explained in their description.
         - New feature "Approval Rating" allows a kingdom to show their approval of their current king or queen.
         - New thief operation "Kill Cattle" allows you to destroy their dairy producing pastures.
+
+     Balance Changes:
+        - Monsters are now cheaper in gold, wood, and iron.

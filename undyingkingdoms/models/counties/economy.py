@@ -171,6 +171,27 @@ class Economy(GameState):
             modifier += spell.output * county.spell_modifier
         return modifier
 
+    @hybrid_property
+    def get_ration_modifier(self):
+        hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
+
+        if hungry_people <= 0:  # You fed everyone
+            if self.rations == 0:
+                return -6
+            elif self.rations < 1:
+                return int(- 1 / self.rations - 1)
+            else:
+                return int(self.rations * 2)
+        else:  # You can't feed everyone
+            return -((hungry_people // 200) + 1)
+
+    @hybrid_property
+    def get_noxious_fumes_modifier(self):
+        noxious_fumes = Casting.query.filter_by(target_id=self.id, name="noxious_fumes").filter(
+            (Casting.duration > 0) | (Casting.active == True)).all()
+        if noxious_fumes:
+            return -3
+
     @birth_rate_modifier.setter
     def birth_rate_modifier(self, value):
         self._birth_rate_modifier = value

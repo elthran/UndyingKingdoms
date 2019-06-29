@@ -454,16 +454,24 @@ class County(GameState):
         self.preferences.weather = choice(self.preferences.weather_choices)
 
     def get_healthiness_change(self):
+        change = 0
         hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
+
+        noxious_fumes = Casting.query.filter_by(target_id=self.id, name="noxious_fumes").filter(
+            (Casting.duration > 0) | (Casting.active == True)).all()
+        if noxious_fumes:
+            change += -3
+
         if hungry_people <= 0:  # You fed everyone
             if self.rations == 0:
-                return -6
+                change += -6
             elif self.rations < 1:
-                return int(- 1 / self.rations - 1)
+                change += int(- 1 / self.rations - 1)
             else:
-                return int(self.rations * 2)
+                change += int(self.rations * 2)
         else:  # You can't feed everyone
-            return -((hungry_people // 200) + 1)
+            change += -((hungry_people // 200) + 1)
+        return change
 
     def update_food(self):
         total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores + self.get_excess_worker_produced_food()
@@ -830,19 +838,37 @@ class County(GameState):
                 monster_title = "Manticores attack"
                 monster_content = f"Your county loses {happiness_impact} " \
                     f"happiness from the panic surrounding the battle."
+                message += f" Your manticores terrify the enemy with their shrieks" \
+                    f" and cause -{happiness_impact} happiness to their county."
+
             elif self.armies['monster'].class_name == 'mammoth':
                 enemy.destroy_buildings(enemy, expedition.monster_sent, destroy_all=True)
                 monster_title = "Mammoths attack"
                 monster_content = f"Your county lost {expedition.monster_sent} " \
                     f"buildings from the charging mammoths."
+                message += f" Your mammoths stampede the enemy and destroy an additional" \
+                    f" {expedition.monster_sent} buildings."
+
             elif self.armies['monster'].class_name == 'phoenix':
                 dead_phoenixes = expedition.monster_sent - expedition.monster
                 revived = 0
                 for i in range(dead_phoenixes):
                     if randint(0, 1) == 1:
                         revived += 1
-                        expedition.monster += 1
-                message += f" Miraculously, {revived} of your Phoenixes were reborn after the battle and rejoin your army."
+                expedition.monster += revived
+                casualties -= revived
+                message += f" Miraculously, {revived} of your Phoenixes were reborn after the battle " \
+                    f"and rejoin your army."
+
+            elif self.armies['monster'].class_name == 'wyvern':
+                noxious_fumes = Casting(self.id, enemy.id, None, self.kingdom.world.day, self.day, "noxious_fumes",
+                                        "Noxious Fumes", expedition.monster_sent, "Hostile")
+                noxious_fumes.save()
+                monster_title = "Wyverns attack"
+                monster_content = f"The noxious fumes from the wyvern's attack has engulfed our lands" \
+                    f" and will persist for {expedition.monster_sent} days."
+                message += f" Your wyverns shroud the enemy county in noxious fumes" \
+                    f" which should last for {expedition.monster_sent} days."
 
             if monster_title:
                 notification = Notification(enemy, monster_title, monster_content)

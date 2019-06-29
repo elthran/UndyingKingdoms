@@ -17,4 +17,4 @@ elf_buildings['bank'].class_name, elf_buildings['bank'].class_name_plural = 'exc
 elf_buildings['tavern'].class_name, elf_buildings['tavern'].class_name_plural = 'thieves tavern', 'thieves taverns'
 elf_buildings['lab'].class_name, elf_buildings['lab'].class_name_plural = 'laboratory', 'laboratories'
 elf_buildings['arcane'].class_name, elf_buildings['arcane'].class_name_plural = 'wizard tower', 'wizard towers'
-elf_buildings['lair'].class_name, elf_buildings['lair'].class_name_plural = 'dragon den', 'dragon dens'
+elf_buildings['lair'].class_name, elf_buildings['lair'].class_name_plural = 'phoenix spire', 'phoenix spires'
