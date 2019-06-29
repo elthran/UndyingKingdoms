@@ -37,6 +37,7 @@ setup(
         'factory_boy',
         'roman',
         'ipdb',
+        'markdown',
     ],
 )
 

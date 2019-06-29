@@ -4,7 +4,6 @@ from uuid import uuid4
 from flask import jsonify, current_app
 from flask_login import current_user
 
-from tests import bp
 from undyingkingdoms.controler.initialize import initialize_county
 from undyingkingdoms.models.exports import World
 from undyingkingdoms.utilities.convert_metadata import build_race_table, build_modifier_table

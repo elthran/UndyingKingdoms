@@ -1,9 +1,10 @@
-from flask import render_template, request, current_app
+from flask import render_template, request
 from flask.views import MethodView
 from flask_login import login_required
 from flask_mobility.decorators import mobile_template
 
-from undyingkingdoms.blueprints.admin.helpers import create_bots, create_notification, build_comparison_files, \
+from .email_newsletter import email_newsletter
+from .helpers import create_bots, create_notification, build_comparison_files, \
     run_advance_day
 from undyingkingdoms.routes.helpers import admin_required
 
@@ -21,6 +22,8 @@ class HomeAPI(MethodView):
                 return build_comparison_files()
             elif op_code == 'advance_day':
                 return run_advance_day()
+            elif op_code == 'email_newsletter':
+                return email_newsletter()
             elif op_code.startswith('example'):
                 return "execute and return an example function as json"
             else:
