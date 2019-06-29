@@ -817,20 +817,29 @@ class County(GameState):
         rewards_modifier -= previous_attacks_on_this_county * 0.15
         rewards_modifier = max(0.05, rewards_modifier)
 
-        if army['monster'] > 0 and self.armies['monster'].class_name == 'manticore':
-            # Before removing casualties, check for monster impacts
-            happiness_impact = army['monster'] * 3
-            enemy.happiness -= happiness_impact
-            notification = Notification(
-                enemy,
-                "Manticores attack",
-                f"Your county loses {happiness_impact} happiness from the panic surrounding the battle.",
-            )
-            notification.save()
+        attacking_monsters = army['monster']
+        defending_monsters = enemy.armies['monster'].available
 
         casualties = self.remove_casualties_after_attacking(defence_damage, army, expedition.id)
         defence_casualties = enemy.remove_casualties_after_being_attacked(attack_power=offence_damage)
         expedition.duration = military.get_expedition_duration(attack_type, win)
+
+        if attacking_monsters > 0:
+            # Before removing casualties, check for monster impacts
+            if self.armies['monster'].class_name == 'manticore':
+                happiness_impact = attacking_monsters * 3
+                enemy.happiness -= happiness_impact
+                monster_title = "Manticores attack"
+                monster_content = f"Your county loses {happiness_impact} " \
+                    f"happiness from the panic surrounding the battle."
+            elif self.armies['monster'].class_name == 'mammoth':
+                enemy.destroy_buildings(enemy, attacking_monsters, destroy_all=True)
+                monster_title = "Mammoths attack"
+                monster_content = f"Your county lost {attacking_monsters} " \
+                    f"buildings from the charging mammoths."
+
+            notification = Notification(enemy, monster_title, monster_content)
+            notification.save()
 
         if win:
             expedition.success = True
@@ -891,9 +900,12 @@ class County(GameState):
         return message
 
     @staticmethod
-    def destroy_buildings(county, land_destroyed):
-        destroyed = randint(0,
-                            county.get_available_land())  # The more available land, the less likely building are destroyed
+    def destroy_buildings(county, land_destroyed, destroy_all=False):
+        # destroy_all means it will always destroy this amount if you have it. Otherwise the amount destroyed is random.
+        if destroy_all:
+            destroyed = 0
+        else:
+            destroyed = randint(0, county.get_available_land())  # The more available land, the less likely building are destroyed
         need_list = True
         while destroyed < land_destroyed:
             if need_list:
