@@ -39,6 +39,8 @@ class Economy(GameState):
     _excess_production = db.Column(db.Integer)
     excess_production_multiplier = db.Column(db.Float)
     production_modifier = db.Column(db.Float)
+    _healthiness_food_change = db.Column(db.Integer)
+    disease_change = db.Column(db.Integer)
 
     @hybrid_property
     def grain_modifier(self):
@@ -173,7 +175,7 @@ class Economy(GameState):
 
     @hybrid_property
     def get_ration_modifier(self):
-        hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
+        hungry_people = self.get_hungry_people()
 
         if hungry_people <= 0:  # You fed everyone
             if self.rations == 0:
@@ -184,13 +186,6 @@ class Economy(GameState):
                 return int(self.rations * 2)
         else:  # You can't feed everyone
             return -((hungry_people // 200) + 1)
-
-    @hybrid_property
-    def get_noxious_fumes_modifier(self):
-        noxious_fumes = Casting.query.filter_by(target_id=self.id, name="noxious_fumes").filter(
-            (Casting.duration > 0) | (Casting.active == True)).all()
-        if noxious_fumes:
-            return -3
 
     @birth_rate_modifier.setter
     def birth_rate_modifier(self, value):
@@ -257,6 +252,33 @@ class Economy(GameState):
     def excess_production(cls):
         return cls._excess_production
 
+    @hybrid_property
+    def healthiness_food_change(self):
+        change = self._healthiness_food_change
+        hungry_people = self.get_hungry_people()
+
+        if hungry_people <= 0:  # You fed everyone
+            if self.rations == 0:
+                change += -6
+            elif self.rations < 1:
+                change += int(- 1 / self.rations - 1)
+            else:
+                change += int(self.rations * 2)
+        else:  # You can't feed everyone
+            change += -((hungry_people // 200) + 1)
+        return change
+
+    @healthiness_food_change.setter
+    def healthiness_food_change(self, value):
+        self._healthiness_food_change = value
+
+    def healthiness_change(self):
+        # noinspection PyPropertyAccess
+        return self.healthiness_food_change + self.disease_change
+
+    def get_hungry_people(self):
+        return self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
+
     def __init__(self, county):
         self.county = county
         self.grain_modifier = extract_modifiers(
@@ -285,3 +307,5 @@ class Economy(GameState):
         self.excess_production = 0
         self.excess_production_multiplier = 1
         self.production_modifier = extract_modifiers(production_per_worker_modifier, county.race, county.background)
+        self.disease_change = 0
+        self.healthiness_food_change = 0

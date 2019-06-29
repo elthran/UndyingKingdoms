@@ -8,6 +8,7 @@ from sqlalchemy.orm.collections import attribute_mapped_collection
 from tests import bp
 from undyingkingdoms.calculations.distributions import get_int_between_0_and_100, get_int_between_n_and_m
 from undyingkingdoms.metadata.armies.metadata_armies_updater import update_armies
+from undyingkingdoms.models.effects import Add
 from ..magic import Casting
 from ..bases import GameState, db
 from .specifics import add_racial_data, add_background_data
@@ -454,24 +455,9 @@ class County(GameState):
         self.preferences.weather = choice(self.preferences.weather_choices)
 
     def get_healthiness_change(self):
-        change = 0
-        hungry_people = self.get_food_to_be_eaten() - self.grain_stores - self.get_produced_dairy() - self.get_produced_grain()
-
-        noxious_fumes = Casting.query.filter_by(target_id=self.id, name="noxious_fumes").filter(
-            (Casting.duration > 0) | (Casting.active == True)).all()
-        if noxious_fumes:
-            change += -3
-
-        if hungry_people <= 0:  # You fed everyone
-            if self.rations == 0:
-                change += -6
-            elif self.rations < 1:
-                change += int(- 1 / self.rations - 1)
-            else:
-                change += int(self.rations * 2)
-        else:  # You can't feed everyone
-            change += -((hungry_people // 200) + 1)
-        return change
+        warnings.warn("`get_produced_grain()` is deprecated, use attribute `healthiness_change` instead.",
+                      DeprecationWarning)
+        return self.healthiness_change
 
     def update_food(self):
         total_food = self.get_produced_dairy() + self.get_produced_grain() + self.grain_stores + self.get_excess_worker_produced_food()
@@ -861,9 +847,11 @@ class County(GameState):
                     f"and rejoin your army."
 
             elif self.armies['monster'].class_name == 'wyvern':
-                noxious_fumes = Casting(self.id, enemy.id, None, self.kingdom.world.day, self.day, "noxious_fumes",
-                                        "Noxious Fumes", expedition.monster_sent, "Hostile")
-                noxious_fumes.save()
+                # noxious_fumes = Casting(self.id, enemy.id, None, self.kingdom.world.day, self.day, "noxious_fumes",
+                #                         "Noxious Fumes", expedition.monster_sent, "Hostile")
+                # noxious_fumes.save()
+                wyvern_effect = Add('economy', disease_change=-3)
+                wyvern_effect.activate(self)  # TODO: make effect time out
                 monster_title = "Wyverns attack"
                 monster_content = f"The noxious fumes from the wyvern's attack has engulfed our lands" \
                     f" and will persist for {expedition.monster_sent} days."
