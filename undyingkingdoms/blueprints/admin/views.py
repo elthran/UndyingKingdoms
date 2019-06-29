@@ -4,8 +4,10 @@ from flask_login import login_required
 from flask_mobility.decorators import mobile_template
 
 from .email_newsletter import email_newsletter
-from .helpers import create_bots, create_notification, build_comparison_files, \
-    run_advance_day
+from .run_advance_day import run_advance_day
+from .build_comparison_files import build_comparison_files
+from .create_notification import create_notification
+from .create_bots import create_bots
 from undyingkingdoms.routes.helpers import admin_required
 
 
