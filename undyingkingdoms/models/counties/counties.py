@@ -817,9 +817,21 @@ class County(GameState):
         rewards_modifier -= previous_attacks_on_this_county * 0.15
         rewards_modifier = max(0.05, rewards_modifier)
 
+        if army['monster'] > 0 and self.armies['monster'].class_name == 'manticore':
+            # Before removing casualties, check for monster impacts
+            happiness_impact = army['monster'] * 3
+            enemy.happiness -= happiness_impact
+            notification = Notification(
+                enemy,
+                "Manticores attack",
+                f"Your county loses {happiness_impact} happiness from the panic surrounding the battle.",
+            )
+            notification.save()
+
         casualties = self.remove_casualties_after_attacking(defence_damage, army, expedition.id)
         defence_casualties = enemy.remove_casualties_after_being_attacked(attack_power=offence_damage)
         expedition.duration = military.get_expedition_duration(attack_type, win)
+
         if win:
             expedition.success = True
             war_score = self.get_score_from_winning_battle(enemy, rewards_modifier)

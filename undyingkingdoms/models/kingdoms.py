@@ -274,7 +274,8 @@ class Kingdom(GameState):
 
         # TEMP
         self.approval_rating += 25
-        enemy.approval_rating -= 10
+        if enemy.approval_rating:
+            enemy.approval_rating -= 10
         armistice = Diplomacy(self, enemy, action=Diplomacy.ARMISTICE, status=Diplomacy.IN_PROGRESS)
         armistice.duration = 24
         armistice.save()

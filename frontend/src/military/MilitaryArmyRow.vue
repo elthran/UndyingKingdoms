@@ -40,15 +40,7 @@
       </div>
     </td>
     <td>
-      <tool-tip
-        v-if="isBesieger"
-        content="*"
-        :tip="metadata.besiegerAttack"
-        align="left"
-      />
-      <div v-else>
-        {{ army.attack }}
-      </div>
+      {{ army.attack }}
     </td>
     <td>{{ army.defence }}</td>
     <td>
@@ -56,6 +48,7 @@
         :content="army.health"
         :tip="'Armour type: ' + army.armourType"
         align="right"
+        tooltip-width="8em"
       />
     </td>
     <td>{{ army.category }}</td>
@@ -64,7 +57,7 @@
         v-if="hasAbility"
         :content="army.ability"
         :tip="army.abilityDescription"
-        align="right"
+        align="left"
         tooltip-width="12em"
       />
     </td>
