@@ -36,5 +36,5 @@ elf_armies['elite'].armour_type = "Plate"
 elf_armies['monster'].category = "Monster"
 elf_armies['monster'].armour_type = "Plate"
 elf_armies['monster'].ability = "Rebirth"
-elf_armies['monster'].ability_description = f"After any battle, each dead {elf_armies['monster'].class_name} " \
+elf_armies['monster'].ability_description = f"When attacking, each dead {elf_armies['monster'].class_name} " \
                                             f"has a 50% chance to come back to life."

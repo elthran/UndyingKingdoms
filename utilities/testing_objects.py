@@ -20,7 +20,7 @@ def build_testing_objects():
     user.is_admin = True
     user.is_active = True
     user.is_verified = True
-    county = initialize_county(user, kingdom1, "Ulthuan", 'Sir', "Elthran", 'Ogre', 'Alchemist')
+    county = initialize_county(user, kingdom1, "Ulthuan", 'Sir', "Elthran", 'Elf', 'Alchemist')
     county.save()
     county.vote = county.id
     county.buildings['fort'].total = 10

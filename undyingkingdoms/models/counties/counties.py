@@ -817,29 +817,36 @@ class County(GameState):
         rewards_modifier -= previous_attacks_on_this_county * 0.15
         rewards_modifier = max(0.05, rewards_modifier)
 
-        attacking_monsters = army['monster']
-        defending_monsters = enemy.armies['monster'].available
-
         casualties = self.remove_casualties_after_attacking(defence_damage, army, expedition.id)
         defence_casualties = enemy.remove_casualties_after_being_attacked(attack_power=offence_damage)
         expedition.duration = military.get_expedition_duration(attack_type, win)
 
-        if attacking_monsters > 0:
+        if expedition.monster_sent > 0:
             # Before removing casualties, check for monster impacts
+            monster_title = None
             if self.armies['monster'].class_name == 'manticore':
-                happiness_impact = attacking_monsters * 3
+                happiness_impact = expedition.monster_sent * 3
                 enemy.happiness -= happiness_impact
                 monster_title = "Manticores attack"
                 monster_content = f"Your county loses {happiness_impact} " \
                     f"happiness from the panic surrounding the battle."
             elif self.armies['monster'].class_name == 'mammoth':
-                enemy.destroy_buildings(enemy, attacking_monsters, destroy_all=True)
+                enemy.destroy_buildings(enemy, expedition.monster_sent, destroy_all=True)
                 monster_title = "Mammoths attack"
-                monster_content = f"Your county lost {attacking_monsters} " \
+                monster_content = f"Your county lost {expedition.monster_sent} " \
                     f"buildings from the charging mammoths."
+            elif self.armies['monster'].class_name == 'phoenix':
+                dead_phoenixes = expedition.monster_sent - expedition.monster
+                revived = 0
+                for i in range(dead_phoenixes):
+                    if randint(0, 1) == 1:
+                        revived += 1
+                        expedition.monster += 1
+                message += f" Miraculously, {revived} of your Phoenixes were reborn after the battle and rejoin your army."
 
-            notification = Notification(enemy, monster_title, monster_content)
-            notification.save()
+            if monster_title:
+                notification = Notification(enemy, monster_title, monster_content)
+                notification.save()
 
         if win:
             expedition.success = True
