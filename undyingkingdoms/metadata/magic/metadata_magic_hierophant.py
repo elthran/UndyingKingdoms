@@ -26,7 +26,7 @@ hierophant_spells = {
         category='instant',
         targets='self',
         known=True,
-        mana_cost=50,
+        mana_cost=5,
         output=1,
         description='Summon a Lesser Daemon to join your army.'
     )

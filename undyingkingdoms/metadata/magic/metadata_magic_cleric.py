@@ -26,8 +26,8 @@ cleric_spells = {
         category='instant',
         targets='self',
         known=True,
-        mana_cost=50,
-        output=1,
-        description='Summon a Cherub to join your army.'
+        mana_cost=25,
+        output=3,
+        description='Summon 3 Cherubs to join your army.'
     )
 }

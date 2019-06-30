@@ -77,6 +77,9 @@ button {
         {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
         {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
       <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+      {% if army.ability != 'None' %}
+      <li><span style="font-weight:bold;">{{ army.ability }}</span>: {{ army.ability_description }}</li>
+      {% endif %}
     </ul>
   <br>
   {% endfor %}
@@ -94,6 +97,9 @@ button {
         {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
         {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
       <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+      {% if army.ability != 'None' %}
+      <li><span style="font-weight:bold;">{{ army.ability }}</span>: {{ army.ability_description }}</li>
+      {% endif %}
     </ul>
   <br>
   {% endfor %}
@@ -113,6 +119,9 @@ button {
         {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
         {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
       <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+      {% if army.ability != 'None' %}
+      <li><span style="font-weight:bold;">{{ army.ability }}</span>: {{ army.ability_description }}</li>
+      {% endif %}
     </ul>
   <br>
   {% endfor %}
@@ -132,6 +141,9 @@ button {
         {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
         {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
       <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+      {% if army.ability != 'None' %}
+      <li><span style="font-weight:bold;">{{ army.ability }}</span>: {{ army.ability_description }}</li>
+      {% endif %}
     </ul>
   <br>
   {% endfor %}
@@ -151,6 +163,9 @@ button {
         {{ army.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
         {{ army.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
       <li>Attack/Defence/Health: {{ army.attack }}/{{ army.defence }}/{{ army.health }}</li>
+      {% if army.ability != 'None' %}
+      <li><span style="font-weight:bold;">{{ army.ability }}</span>: {{ army.ability_description }}</li>
+      {% endif %}
     </ul>
   <br>
   {% endfor %}

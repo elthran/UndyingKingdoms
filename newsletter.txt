@@ -15,3 +15,4 @@ The 20th age of Undying Kingdoms is about to begin,
 
      Balance Changes:
         - Monsters are now cheaper in gold, wood, and iron.
+        - Summoned monsters are now much cheaper to cast and typically summon multiple creatures.

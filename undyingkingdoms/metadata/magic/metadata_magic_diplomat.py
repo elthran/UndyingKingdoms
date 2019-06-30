@@ -26,8 +26,8 @@ diplomat_spells = {
         category='instant',
         targets='self',
         known=True,
-        mana_cost=50,
-        output=1,
-        description='Summon an Imp to join your army.'
+        mana_cost=30,
+        output=15,
+        description='Summon 15 Imps to join your army.'
     )
 }

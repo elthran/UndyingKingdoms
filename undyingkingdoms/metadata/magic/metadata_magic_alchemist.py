@@ -26,7 +26,7 @@ alchemist_spells = {
         category='instant',
         targets='self',
         known=True,
-        mana_cost=50,
+        mana_cost=15,
         output=1,
         description='Summon an Iron Golem to join your army.'
     )

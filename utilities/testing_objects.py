@@ -20,16 +20,17 @@ def build_testing_objects():
     user.is_admin = True
     user.is_active = True
     user.is_verified = True
-    county = initialize_county(user, kingdom1, "Ulthuan", 'Sir', "Elthran", 'Human', 'Alchemist')
+    county = initialize_county(user, kingdom1, "Ulthuan", 'Sir', "Elthran", 'Human', 'Warlord')
     county.save()
     county.vote = county.id
     county.buildings['fort'].total = 10
     county.armies['peasant'].total = 5000
     county.armies['monster'].total = 100
+    county.armies['summon'].total = 100
     county.mana = 500
     county.happiness = 80
     kingdom1.leader = county.id
-    county.technologies['elixir of life'].completed = True
+    # county.technologies['elixir of life'].completed = True
     kingdom1.approval_rating = 60
     # Create Haldon
     kingdom2 = Kingdom.query.get(2)
@@ -37,7 +38,8 @@ def build_testing_objects():
     user.is_admin = True
     user.is_active = True
     user.is_verified = True
-    county = initialize_county(user, kingdom2, "Northern Wastes", 'Sir', "Haldon", 'Human', 'Merchant')
+    county = initialize_county(user, kingdom2, "Northern Wastes", 'Sir', "Haldon", 'Human', 'Druid')
+    county.armies['summon'].total = 100
     county.save()
     county.vote = county.id
     county.buildings['arcane'].total = 5

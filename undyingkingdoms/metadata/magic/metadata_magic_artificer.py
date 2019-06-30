@@ -26,7 +26,7 @@ artificer_spells = {
         category='instant',
         targets='self',
         known=True,
-        mana_cost=50,
+        mana_cost=10,
         output=1,
         description='Summon a Wooden Construct to join your army.'
     )

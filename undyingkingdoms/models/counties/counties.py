@@ -709,12 +709,15 @@ class County(GameState):
         strength *= (self.buildings['fort'].output * self.buildings['fort'].total) / 100 + 1
         return int(strength)
 
+    def update_expedition_sent(self, army, expedition_id):
+        expedition = Expedition.query.get(expedition_id)
+        for unit in army.keys():
+            setattr(expedition, unit + '_sent', army[unit])
+
     def remove_casualties_after_attacking(self, attack_power, army, expedition_id):
         casualties = 0
         expedition = Expedition.query.get(expedition_id)
         hit_points_lost = randint(attack_power // 5, attack_power // 4)
-        for unit in army.keys():
-            setattr(expedition, unit + '_sent', army[unit])
         while hit_points_lost > 0:
             army = {key: value for key, value in army.items() if value > 0}  # Remove dead troops
             if army == {}:
@@ -825,12 +828,45 @@ class County(GameState):
         rewards_modifier -= previous_attacks_on_this_county * 0.15
         rewards_modifier = max(0.05, rewards_modifier)
 
+        self.update_expedition_sent(army, expedition.id)  # Add units sent to expedition object
+
+        if expedition.summon_sent > 0:
+            summon_title = None
+            if self.armies['summon'].class_name == 'pixie':
+                gold_stolen = min(enemy.gold, randint(expedition.summon_sent * 25, expedition.summon_sent * 50))
+                enemy.gold -= gold_stolen
+                self.gold += gold_stolen
+                summon_title = "Pixies attack"
+                summon_content = f"During battle, enemy pixies stole {gold_stolen}" \
+                    f" gold from our treasury."
+                message += f" Your pixies stole {gold_stolen} gold during the battle."
+
+            elif self.armies['summon'].class_name == 'cherub':
+                reduction = expedition.summon_sent
+                defence_damage *= 1 - (reduction / 100)
+                message += f" Your cherubs reduced enemy damage to your army by {reduction}%."
+
+            elif self.armies['summon'].class_name == 'valkyrie':
+                if not win:
+                    expedition.summon = 0
+                    army['summon'] = 0
+                message += f" Your {expedition.summon_sent} valkyries perished in the retreat."
+
+            if summon_title:
+                notification = Notification(enemy, summon_title, summon_content)
+                notification.save()
+
+        if enemy.armies["summon"].class_name == 'treant':
+            enemy_slowed = enemy.armies["summon"].available * 3
+            message += f" Enemy treants have rooted your forces and slowed their return by {enemy_slowed}%."
+        else:
+            enemy_slowed = 0
+
         casualties = self.remove_casualties_after_attacking(defence_damage, army, expedition.id)
         defence_casualties = enemy.remove_casualties_after_being_attacked(attack_power=offence_damage)
-        expedition.duration = military.get_expedition_duration(attack_type, win)
+        expedition.duration = military.get_expedition_duration(attack_type, win) * (1 + enemy_slowed / 100)
 
         if expedition.monster_sent > 0:
-            # Before removing casualties, check for monster impacts
             monster_title = None
             if self.armies['monster'].class_name == 'manticore':
                 happiness_impact = expedition.monster_sent * 3

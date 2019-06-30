@@ -28,8 +28,8 @@ merchant_spells = {
         category='instant',
         targets='self',
         known=True,
-        mana_cost=50,
+        mana_cost=25,
         output=10,
-        description='Summon a group of Fairies to join your army.'
+        description='Summon a group of 10 Fairies to join your army.'
     )
 }

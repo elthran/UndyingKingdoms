@@ -94,7 +94,7 @@ class World(GameState):
                   'county']
         table_mixers.drop_then_rebuild_tables(db, tables)
         self.age += 1
-        self.day = -12
+        self.day = -24
 
     def export_data_to_csv(self):
         all_tables = []

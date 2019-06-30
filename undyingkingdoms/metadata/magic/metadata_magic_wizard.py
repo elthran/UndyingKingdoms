@@ -30,8 +30,8 @@ wizard_spells = {
         category='instant',
         targets='self',
         known=True,
-        mana_cost=50,
-        output=1,
-        description='Summon an Elemental to join your army.'
+        mana_cost=10,
+        output=3,
+        description='Summon 3 Elementals to join your army.'
     )
 }

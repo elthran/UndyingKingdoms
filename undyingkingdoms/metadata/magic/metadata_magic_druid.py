@@ -26,8 +26,8 @@ druid_spells = {
         category='instant',
         targets='self',
         known=True,
-        mana_cost=50,
-        output=1,
-        description='Summon a Treant to join your army.'
+        mana_cost=25,
+        output=2,
+        description='Summon 2 Treants to join your army.'
     )
 }

@@ -32,8 +32,8 @@ rogue_spells = {
         category='instant',
         targets='self',
         known=True,
-        mana_cost=50,
-        output=1,
-        description='Summon a Shadow Wraith to join your army.'
+        mana_cost=15,
+        output=2,
+        description='Summon two Shadow Wraiths to join your army.'
     )
 }
