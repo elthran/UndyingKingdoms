@@ -930,7 +930,7 @@ class County(GameState):
         notification.category = "Military"
         notification.save()
 
-        return message
+        return message, offence_damage
 
     @staticmethod
     def destroy_buildings(county, land_destroyed, destroy_all=False):

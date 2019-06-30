@@ -55,6 +55,7 @@ class Military(GameState):
         county = self.county
         full_army = county.armies
         strength = 0
+        gryphon_bonus = 0
         if army:
             for name in army.keys():
                 unit = full_army[name]
@@ -62,6 +63,8 @@ class Military(GameState):
                     strength += army[name] * (enemy_forts + max(unit.attack, 1))
                 elif unit.attack > 0:
                     strength += army[name] * unit.attack
+                if unit.type == unit.MONSTER and unit.class_name == 'gryphon':
+                    gryphon_bonus = army[name] * 0.01
         else:
             for unit in county.armies.values():
                 if scoreboard:
@@ -69,10 +72,7 @@ class Military(GameState):
                 else:
                     strength += unit.available * unit.attack
         # noinspection PyPropertyAccess
-        return round(
-            (strength + self._offensive_power)
-            * (1 + self.offensive_modifier)
-        )
+        return int((strength + self._offensive_power) * (1 + self.offensive_modifier + gryphon_bonus))
 
     @offensive_power.setter
     def offensive_power(self, value):

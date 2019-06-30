@@ -38,10 +38,10 @@ def attack(template, county_id):
     form.attack_type.choices = [(_type, _type) for _type in attack_types]
 
     if form.validate_on_submit():
-        results = county.battle_results(form.army, enemy, form.attack_type.data)
+        results, offence_damage = county.battle_results(form.army, enemy, form.attack_type.data)
 
         # Would like to move to a attack_results route of some kind.
         # Ugly hack to return '{mobile/}gameplay/attack_results.html'
         template = '_results.'.join(template.split('.'))
-        return render_template(template, results=results)
+        return render_template(template, results=results, offence_damage=offence_damage)
     return render_template(template, enemy=enemy, form=form, war=war)
