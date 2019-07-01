@@ -33,5 +33,13 @@ module.exports = {
     plugins: [
       // new BundleAnalyzerPlugin()
     ],
+    module: {
+      rules: [
+        {
+          test: /\.pug$/,
+          loader: 'pug-plain-loader'
+        }
+      ],
+    }
   }
 }
