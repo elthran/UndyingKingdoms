@@ -14,61 +14,29 @@
           :is-summon="isSummon"
         )
         | {{ sliderValue }}
-    div
-      tool-tip(
-        content="Attack:"
-        :tip="metadata.attack"
-        align="right"
-        tip-width="10em"
-      )
-      |  {{ army.attack }}
-    div Defence: {{ army.defence }}
-    div Type: {{ army.category }}
-    div Description: {{ army.description }}
-    div
-      span(v-if="labelsOn") Available:
-      | {{ army.available }}
-    div
-      span(v-if="labelsOn") Away:
-      | {{ army.traveling }}
-    div
-      span(v-if="labelsOn") Training:
-      tool-tip(
-        :content="army.currentlyTraining"
-        :tip="'Max trainable per day: ' + army.trainablePerDay"
-        align="right"
-      )
-
-    span(v-if="labelsOn") Cost:
-    span
-      div(v-if="isSummon") N/A
-      span(v-else)
-        span(v-if="costsGold")
-          span(class="buildingGoldCost") {{ army.gold }}
-          resource-icon(type="gold")
-        span(v-if="costsWood")
-          span(class="buildingWoodCost") {{ army.wood }}
-          resource-icon(type="wood")
-        span(v-if="costsIron")
-          span(class="buildingIronCost") {{ army.iron }}
-          resource-icon(type="iron")
-        span(v-if="isFree")
-          Free
+    army-info(
+      :army="army"
+      :metadata="metadata"
+    )
+    army-cost(
+      :army="army"
+      :is-summon="isSummon"
+    )
 </template>
 
 <script>
-import ToolTip from '@/components/ToolTip.vue'
-import ResourceIcon from '@/components/ResourceIcon.vue'
 import BuildSelector from '@/components/BuildSelector.vue'
 import Collapsible from '@/components/Collapsible.vue'
+import ArmyInfo from './ArmyInfo.vue'
+import ArmyCost from './ArmyCost.vue'
 
 export default {
   name: 'MilitaryArmy',
   components: {
-    ToolTip,
-    ResourceIcon,
     BuildSelector,
     Collapsible,
+    ArmyInfo,
+    ArmyCost,
   },
   model: {
     prop: 'resources',
@@ -100,18 +68,6 @@ export default {
     },
     isBesieger () {
       return this.army.key === 'besieger'
-    },
-    costsGold () {
-      return this.army.gold > 0
-    },
-    costsIron () {
-      return this.army.iron > 0
-    },
-    costsWood () {
-      return this.army.wood > 0
-    },
-    isFree () {
-      return (this.goldPrice + this.woodPrice + this.ironPrice) == 0
     },
     goldPrice () {
       return (this.army.gold || 0)
