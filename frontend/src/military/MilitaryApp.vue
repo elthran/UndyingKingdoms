@@ -9,6 +9,7 @@
         v-if="ready"
         :county="county"
       />
+      <br>
       <military-form
         v-if="ready"
         :form="form"

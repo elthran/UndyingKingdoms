@@ -7,7 +7,15 @@
     @submit.prevent="updatePage"
   >
     <span v-html="form.csrf_token.html" />
-    <table class="top-spacer-1">
+    <military-army
+      v-for="armyName in armyOrdering"
+      :key="armyName"
+      v-model="resources"
+      :army="armies[armyName]"
+      :metadata="metadata"
+      :reset="reset"
+    />
+    <!-- <table class="top-spacer-1">
       <tr>
         <th>Name</th>
         <th>Available</th>
@@ -68,7 +76,7 @@
         <td>-</td>
         <td>-</td>
       </tr>
-    </table>
+    </table> -->
     <military-resources
       id="resources"
       :county="county"
@@ -79,23 +87,25 @@
       type="submit"
       :disabled="disabled"
     >
-      Build
+      Train
     </button>
     <br>
   </form>
 </template>
 
 <script>
-import MilitaryArmyRow from './MilitaryArmyRow.vue'
+import MilitaryArmy from './MilitaryArmy.vue'
+// import MilitaryArmyRow from './MilitaryArmyRow.vue'
 import MilitaryResources from './MilitaryResources.vue'
-import ToolTip from '@/components/ToolTip.vue'
+// import ToolTip from '@/components/ToolTip.vue'
 
 export default {
   name: 'MilitaryForm',
   components: {
-    MilitaryArmyRow,
+    // MilitaryArmyRow,
+    MilitaryArmy,
     MilitaryResources,
-    ToolTip,
+    // ToolTip,
   },
   props: {
     county: Object,
