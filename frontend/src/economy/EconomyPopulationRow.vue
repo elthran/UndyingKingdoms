@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 td:nth-child(2), td:nth-child(3) {
   text-align: center;
 }
@@ -18,7 +18,7 @@ td:nth-child(2), td:nth-child(3) {
       >
     </td>
     <td>
-      <modifier-list 
+      <modifier-list
         :modifier="birth_rate_mod"
         :race="race"
         :background="background"
