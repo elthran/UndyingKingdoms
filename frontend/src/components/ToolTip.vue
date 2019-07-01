@@ -5,7 +5,7 @@
       ref="tooltip"
       class="tooltip"
       :class="'tooltip-' + align + ' ' + 'arrow-box-for-' + align"
-      :style="{ width: tooltipWidth }"
+      :style="{ width: tipWidth }"
     >
       {{ tip }}
     </span>
@@ -27,9 +27,9 @@ export default {
       }
     },
     bounder: HTMLDivElement,
-    tooltipWidth: {
+    tipWidth: {
       type: String,
-      default: 'auto'
+      default: '8em'
     },
   },
   data () {
