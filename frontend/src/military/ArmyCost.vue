@@ -1,6 +1,6 @@
 <template lang="pug">
-  div.container
-    | Cost:
+  div#army-cost
+    | Cost:&nbsp;
     span
       div(v-if="isSummon") N/A
       span(v-else)
@@ -52,7 +52,13 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  min-height: 2em;
+#army-cost {
+  min-height: 2.5em;
+  display: flex;
+  align-items: flex-end;
 }
+
+/*#cost-col {
+  min-width: 8.5em;
+}*/
 </style>
