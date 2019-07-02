@@ -5,11 +5,17 @@
   >
     <prefix-title title="War" />
     <div>
-      <military-strength
+      <!-- <military-strength
         v-if="ready"
         :county="county"
       />
       <br>
+      <military-army-totals
+        v-if="ready"
+        :county="county"
+        :metadata="metadata"
+      />
+      <br> -->
       <military-form
         v-if="ready"
         :form="form"
@@ -29,6 +35,7 @@
 import MilitaryStrength from './MilitaryStrength.vue'
 import MilitaryForm from './MilitaryForm.vue'
 import MilitaryExpeditions from './MilitaryExpeditions.vue'
+import MilitaryArmyTotals from './MilitaryArmyTotals.vue'
 
 export default {
   name: 'MilitaryApp',
@@ -36,6 +43,7 @@ export default {
     MilitaryStrength,
     MilitaryForm,
     MilitaryExpeditions,
+    MilitaryArmyTotals,
   },
   data () {
     return {

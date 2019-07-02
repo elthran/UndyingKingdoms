@@ -3,7 +3,7 @@
     div
       | Available: {{ army.available }}
     div
-      | Training:
+      | Training:&nbsp;
       tool-tip(
         :content="army.currentlyTraining"
         :tip="'Max trainable per day: ' + army.trainablePerDay"
@@ -13,15 +13,41 @@
       | Away: {{ army.traveling }}
     div
       tool-tip(
-        content="Attack:"
+        content="Attack"
         :tip="metadata.attack"
         align="right"
         tip-width="10em"
       )
-      |  {{ army.attack }}
-    div Defence: {{ army.defence }}
+      | : {{ army.attack }}
+    div
+      tool-tip(
+        content="Defence"
+        :tip="metadata.defence"
+        align="right"
+      )
+      | : {{ army.defence }}
+    div
+      tool-tip(
+        content="Health"
+        :tip="metadata.health"
+        align="right"
+      )
+      | :&nbsp;
+      tool-tip(
+        :content="army.health"
+        :tip="'Armour type: ' + army.armourType"
+        align="right"
+        tooltip-width="8em"
+      )
     div Type: {{ army.category }}
     div Description: {{ army.description }}
+      tool-tip(
+        v-if="hasAbility"
+        :content="army.ability"
+        :tip="army.abilityDescription"
+        align="top"
+        tip-width="12em"
+      )
 </template>
 
 <script>
@@ -40,6 +66,11 @@ export default {
     return {
 
     }
-  }
+  },
+  computed: {
+    hasAbility () {
+      return this.army.ability != "None"
+    },
+  },
 }
 </script>

@@ -95,9 +95,6 @@ export default {
       var size = (this.sliderValue || 0) + remaining
       return size
     },
-    hasAbility () {
-      return this.army.ability != "None"
-    },
   },
   watch: {
     sliderValue (val, oldVal) {
