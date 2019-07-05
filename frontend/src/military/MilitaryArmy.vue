@@ -1,19 +1,21 @@
 <template lang="pug">
   collapsible(
-    :title="army.name"
-    )
+    @change="updateCollapseState"
+  )
     template(v-slot:title)
-      strong {{ army.name }}
-      span.right
-        build-selector(
-          v-model.number="sliderValue"
+      div.header
+        strong {{ army.name }}
+        //- @click.stop does nothing at this time.
+        build-input(
+          v-model="numOfUnits"
           :army="army"
           :building="army.building"
-          :slider-size="sliderSize"
+          :max-size="computedMax"
           :is-monster="isMonster"
           :is-summon="isSummon"
+          :hide-bottom="isClosed"
+          @click.stop
         )
-        | {{ sliderValue }}
     army-info(
       :army="army"
       :metadata="metadata"
@@ -25,7 +27,7 @@
 </template>
 
 <script>
-import BuildSelector from '@/components/BuildSelector.vue'
+import BuildInput from '@/components/BuildInput.vue'
 import Collapsible from '@/components/Collapsible.vue'
 import ArmyInfo from './ArmyInfo.vue'
 import ArmyCost from './ArmyCost.vue'
@@ -33,7 +35,7 @@ import ArmyCost from './ArmyCost.vue'
 export default {
   name: 'MilitaryArmy',
   components: {
-    BuildSelector,
+    BuildInput,
     Collapsible,
     ArmyInfo,
     ArmyCost,
@@ -54,9 +56,10 @@ export default {
   },
   data () {
     return {
-      sliderValue: 0,
+      numOfUnits: 0,
       resourcesRemaining: this.resources,
       disabled: false,
+      isClosed: true,
     }
   },
   computed: {
@@ -78,7 +81,7 @@ export default {
     ironPrice () {
       return (this.army.iron || 0)
     },
-    sliderSize () {
+    computedMax () {
       var totalGold = this.resources.gold
       var totalWood = this.resources.wood
       var totalIron = this.resources.iron
@@ -89,20 +92,20 @@ export default {
           (totalWood / this.woodPrice) || 0,
           (totalIron / this.ironPrice) || 0,
           workers,
-          this.army.maxTrainable - (this.sliderValue || 0),
+          this.army.maxTrainable - (this.numOfUnits || 0),
       )), 0)
 
-      var size = (this.sliderValue || 0) + remaining
+      var size = (this.numOfUnits || 0) + remaining
       return size
     },
   },
   watch: {
-    sliderValue (val, oldVal) {
+    numOfUnits (val, oldVal) {
       this.resourcesRemaining = this.calcResourcesRemaining(val, oldVal)
       this.$emit('change', this.resourcesRemaining)
     },
     reset () {
-      this.sliderValue = 0
+      this.numOfUnits = 0
     },
   },
   mounted () {
@@ -117,6 +120,9 @@ export default {
         workers: this.resources.workers - (1 * (val - oldVal))
       }
     },
+    updateCollapseState (val) {
+      this.isClosed = !val
+    },
   },
 }
 </script>
@@ -124,5 +130,11 @@ export default {
 <style scoped>
 .right {
   float: right;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 }
 </style>

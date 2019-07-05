@@ -14,17 +14,25 @@
 <script>
 export default {
   name: "Collapsible",
+  model: {
+    prop: 'open',
+    event: 'change'
+  },
   props: {
-
+    open: {
+      type: Boolean,
+      default: () => false
+    }
   },
   data () {
     return {
-      isOpen: false,
+      isOpen: this.open,
     }
   },
   methods: {
     toggleOpen () {
       this.isOpen = !this.isOpen
+      this.$emit('change', this.isOpen)
     }
   }
 }
@@ -35,7 +43,7 @@ export default {
   margin-top: 0.4em;
   border: 1px solid #ccc;
   box-shadow: outset 0 1px 3px #ddd;
-  padding: 0.6em;
+  padding-left: 0.6em;
   border-radius: 5px;
 }
 
