@@ -5,7 +5,7 @@
   >
     <prefix-title title="War" />
     <div>
-      <!-- <military-strength
+      <military-strength
         v-if="ready"
         :county="county"
       />
@@ -15,7 +15,6 @@
         :county="county"
         :metadata="metadata"
       />
-      <br> -->
       <military-form
         v-if="ready"
         :form="form"
@@ -76,13 +75,20 @@ export default {
   padding-top: 1em;
 }
 
+#military-app {
+  margin-right: 1em;
+}
+
 @media (max-width: 640px) {
   #military-app {
     margin-left: 1em;
-    margin-right: 1em;
   }
 }
 
 @media (min-width: 640px) {
+  #military-app {
+    width: 100%;
+    max-width: 640px;
+  }
 }
 </style>

@@ -1,6 +1,7 @@
 <template lang="pug">
   div
-    div Totals:
+    div
+      strong Unit Totals:
     div Available: {{ county.unitsAvailable }}
     div Training: {{ county.unitsInTraining }}
     div Traveling: {{ county.unitsUnavailable }}
@@ -34,4 +35,7 @@ export default {
 </script>
 
 <style scoped>
+div {
+  margin-bottom: 0.3em;
+}
 </style>

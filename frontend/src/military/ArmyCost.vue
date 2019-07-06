@@ -53,9 +53,10 @@ export default {
 
 <style scoped>
 #army-cost {
-  min-height: 2.5em;
+  min-height: 2em;
   display: flex;
   align-items: flex-end;
+  margin-bottom: 0.6em;
 }
 
 /*#cost-col {

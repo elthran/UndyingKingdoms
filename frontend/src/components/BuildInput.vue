@@ -1,6 +1,5 @@
 <template lang="pug">
   div
-    | {{ army.available }}
     div.unit-input(
       v-if="isSummon"
     ) -
@@ -87,19 +86,16 @@ export default {
     cantTrain () {
       return this.army.maxTrainable == 0
     },
-    // sliderWidth () {
-    //   return Math.min(this.maxSize + 0.8, 10)
-    // },
     isDisabled () {
       return this.maxSize == 0
     },
     monsterCount () {
       return this.army.available + this.army.currentlyTraining + this.currentValue
-    }
+    },
   },
   watch: {
     currentValue (val) {
-      this.$emit('input', val)
+      this.$emit('input', Math.min(val, this.maxSize))
     },
     value (val) {
       this.currentValue = val

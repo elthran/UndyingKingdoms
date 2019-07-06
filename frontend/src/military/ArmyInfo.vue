@@ -41,8 +41,10 @@
       )
     div Type: {{ army.category }}
     div Description: {{ army.description }}
+    div.top-spacer-dot-3(
+      v-if="hasAbility"
+    ) Abilites:&nbsp;
       tool-tip(
-        v-if="hasAbility"
         :content="army.ability"
         :tip="army.abilityDescription"
         align="top"
