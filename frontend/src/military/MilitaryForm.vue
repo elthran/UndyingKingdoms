@@ -1,34 +1,29 @@
-<template>
-  <form
+<template lang="pug">
+  form(
     ref="form"
     method="POST"
     accept-charset="UTF-8"
     action="/api/military/update"
     @submit.prevent="updatePage"
-  >
-    <span v-html="form.csrf_token.html" />
-    <military-army
+  )
+    span(v-html="form.csrf_token.html")
+    military-army(
       v-for="armyName in armyOrdering"
       :key="armyName"
       v-model="resources"
       :army="armies[armyName]"
       :metadata="metadata"
       :reset="reset"
-    />
-    <military-resources
-      id="resources"
+    )
+    military-resources#resources(
       :county="county"
       :costs="costs"
-    />
-    <button
-      id="submitButton"
+    )
+    button#submit-button(
       type="submit"
       :disabled="disabled"
-    >
-      Train
-    </button>
-    <br>
-  </form>
+    ) Train
+    br
 </template>
 
 <script>
@@ -109,6 +104,12 @@ export default {
 #resources {
   margin-top: 1em;
   margin-bottom: 1em;
+}
+
+@media (max-width: 640px) {
+  #submit-button {
+    width: 100%;
+  }
 }
 
 @media (min-width: 640px) {

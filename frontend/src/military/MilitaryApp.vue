@@ -1,31 +1,26 @@
-<template>
-  <div
-    id="military-app"
-    class="invisible"
-  >
-    <prefix-title title="War" />
-    <div>
-      <military-strength
+<template lang="pug">
+  div#military-app.invisible
+    prefix-title(title="War")
+    div
+      military-strength(
         v-if="ready"
         :county="county"
-      />
-      <br>
-      <military-army-totals
+      )
+      br
+      military-army-totals(
         v-if="ready"
         :county="county"
         :metadata="metadata"
-      />
-      <military-form
+      )
+      military-form.bottom-spacer-2(
         v-if="ready"
         :form="form"
         :metadata="metadata"
         :county="county"
         :armies="armies"
         :army-ordering="armyOrdering"
-      />
-      <br><br>
-      <military-expeditions />
-      <br style="margin-bottom: 2em">
+      )
+      military-expeditions.bottom-spacer-2
     </div>
   </div>
 </template>
@@ -73,9 +68,6 @@ export default {
 <style scoped>
 #military-app {
   padding-top: 1em;
-}
-
-#military-app {
   margin-right: 1em;
 }
 
