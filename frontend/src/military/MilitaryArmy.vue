@@ -9,9 +9,7 @@
         build-input(
           v-model="numOfUnits"
           :army="army"
-          :building="army.building"
           :max-size="computedMax"
-          :is-monster="isMonster"
           :is-summon="isSummon"
           :hide-bottom="isClosed"
           @click.stop
@@ -19,6 +17,9 @@
     army-info(
       :army="army"
       :metadata="metadata"
+      :is-monster="isMonster"
+      :units-queued="numOfUnits"
+      :building="army.building"
     )
     army-cost(
       :army="army"

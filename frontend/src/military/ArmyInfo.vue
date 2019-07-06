@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  div#army-info
     div
       | Available: {{ army.available }}
     div
@@ -11,6 +11,17 @@
       )
     div
       | Away: {{ army.traveling }}
+    div(v-if="isMonster")
+      span(
+        v-if="cantTrain"
+        class="negative"
+      ) Requires more<br>{{ building.name }}
+      | Buildable:&nbsp;
+      tool-tip(
+        :content="monsterCount + ' of ' + building.total"
+        :tip="'Build more ' + building.name"
+        align="left"
+      )
     div
       tool-tip(
         content="Attack"
@@ -41,7 +52,7 @@
       )
     div Type: {{ army.category }}
     div Description: {{ army.description }}
-    div.top-spacer-dot-3(
+    div(
       v-if="hasAbility"
     ) Abilites:&nbsp;
       tool-tip(
@@ -63,6 +74,9 @@ export default {
   props: {
     army: Object,
     metadata: Object,
+    isMonster: Boolean,
+    unitsQueued: Number,
+    building: Object,
   },
   data () {
     return {
@@ -73,6 +87,18 @@ export default {
     hasAbility () {
       return this.army.ability != "None"
     },
+    cantTrain () {
+      return this.army.maxTrainable == 0
+    },
+    monsterCount () {
+      return this.army.available + this.army.currentlyTraining + this.unitsQueued
+    },
   },
 }
 </script>
+
+<style scoped>
+#army-info {
+  line-height: 1.3em;
+}
+</style>
