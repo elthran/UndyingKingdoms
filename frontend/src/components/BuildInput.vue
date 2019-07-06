@@ -5,9 +5,10 @@
     ) -
     input.unit-input(
       v-else
-      v-model.number="currentValue"
+      v-model.number="safeValue"
       type="number"
-      min="0"
+      :name="army.key"
+      :min="min"
       :max="maxSize"
       :class="{ hideBottomBorder: hideBottom }"
       :disabled="isDisabled"
@@ -37,16 +38,27 @@ export default {
   data () {
     return {
       currentValue: this.value,
+      min: 0,
     }
   },
   computed: {
     isDisabled () {
       return this.maxSize == 0
     },
+    safeValue: {
+      get () {
+        return this.currentValue
+      },
+      set (val) {
+        this.currentValue = Math.max(
+          Math.min(val, this.maxSize), this.min
+        )
+      },
+    }
   },
   watch: {
     currentValue (val) {
-      this.$emit('input', Math.min(val, this.maxSize))
+      this.$emit('input', this.currentValue)
     },
     value (val) {
       this.currentValue = val

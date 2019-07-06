@@ -20,7 +20,7 @@
       tool-tip(
         :content="monsterCount + ' of ' + building.total"
         :tip="'Build more ' + building.name"
-        align="left"
+        align="right"
       )
     div
       tool-tip(
