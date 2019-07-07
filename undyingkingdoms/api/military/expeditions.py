@@ -24,6 +24,7 @@ class ExpeditionsAPI(MethodView):
                     'gold_gained',
                     'iron_gained',
                     'wood_gained',
+                    'mission',
                 ],
                 troops=troop_sum(expedition),
             )

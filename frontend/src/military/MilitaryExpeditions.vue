@@ -47,16 +47,16 @@ export default {
   },
   computed: {
     unsucessfulExpeditions () {
-      return this.expeditions.filter((e) => { e.sucess == 0 })
+      return this.expeditions.filter((e) => e.sucess == 0)
     },
     attackExpeditions () {
-      return this.expeditions.filter((e) => { e.mission == "Attack" })
+      return this.expeditions.filter((e) => e.mission == "Attack")
     },
     razeExpeditions () {
-      return this.expeditions.filter((e) => { e.mission == "Raze" })
+      return this.expeditions.filter((e) => e.mission == "Raze")
     },
     pillageExpeditions () {
-      return this.expeditions.filter((e) => { e.mission == "Pillage" })
+      return this.expeditions.filter((e) => e.mission == "Pillage")
     },
     noExpeditions () {
       return this.expeditions.length == 0
