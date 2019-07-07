@@ -45,7 +45,7 @@ export default {
       return this.army.wood > 0
     },
     isFree () {
-      return (this.goldPrice + this.woodPrice + this.ironPrice) == 0
+      return (this.army.gold + this.army.wood + this.army.iron) == 0
     },
   },
 }

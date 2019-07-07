@@ -41,16 +41,30 @@ def monsters_buildable(county):
 
 def max_trainable(county, army):
     """Calculate the maximum trainable amount of each unit type."""
+
     try:
-        max_size = min(
-            county.gold // army.gold,
-            county.wood // army.wood,
-            county.iron // army.iron,
-            county.get_available_workers(),
-        )
+        gold_cap = county.gold // army.gold
     except ZeroDivisionError:
-        max_size = 50
-    if army.name == 'monster':
+        gold_cap = float("Inf")
+
+    try:
+        wood_cap = county.wood // army.wood
+    except ZeroDivisionError:
+        wood_cap = float("Inf")
+
+    try:
+        iron_cap = county.iron // army.iron
+    except ZeroDivisionError:
+        iron_cap = float("Inf")
+
+    max_size = min(
+        gold_cap,
+        wood_cap,
+        iron_cap,
+        county.get_available_workers(),
+    )
+
+    if army.type == army.MONSTER:
         return min(
             max_size,
             monsters_buildable(county)
