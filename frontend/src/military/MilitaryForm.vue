@@ -1,101 +1,40 @@
-<template>
-  <form
+<template lang="pug">
+  form(
     ref="form"
     method="POST"
     accept-charset="UTF-8"
     action="/api/military/update"
     @submit.prevent="updatePage"
-  >
-    <span v-html="form.csrf_token.html" />
-    <table class="top-spacer-1">
-      <tr>
-        <th>Name</th>
-        <th>Available</th>
-        <th>Traveling</th>
-        <th>Training</th>
-        <th>Train</th>
-        <th id="cost-col">
-          Cost
-        </th>
-        <th>
-          <tool-tip
-            content="Attack"
-            :tip="metadata.attack"
-            alight="left"
-          />
-        </th>
-        <th>
-          <tool-tip
-            content="Defence"
-            :tip="metadata.defence"
-            alight="left"
-          />
-        </th>
-        <th>
-          <tool-tip
-            content="Health"
-            :tip="metadata.health"
-            alight="left"
-          />
-        </th>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-      <military-army-row
-        v-for="armyName in armyOrdering"
-        :key="armyName"
-        v-model="resources"
-        :army="armies[armyName]"
-        :metadata="metadata"
-        :reset="reset"
-      />
-      <tr class="total-row">
-        <td>Total</td>
-        <td>{{ county.unitsAvailable }}</td>
-        <td>{{ county.unitsUnavailable }}</td>
-        <td>{{ county.unitsInTraining }}</td>
-        <td>-</td>
-        <td>
-          <tool-tip
-            :content="county.upkeepCosts"
-            :tip="metadata.upkeepDaily"
-            align="top"
-          />
-        </td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-      </tr>
-    </table>
-    <military-resources
-      id="resources"
+  )
+    span(v-html="form.csrf_token.html")
+    military-army(
+      v-for="armyName in armyOrdering"
+      :key="armyName"
+      v-model="resources"
+      :army="armies[armyName]"
+      :metadata="metadata"
+      :reset="reset"
+    )
+    military-resources#resources(
       :county="county"
       :costs="costs"
-    />
-    <button
-      id="submitButton"
+    )
+    button#submit-button(
       type="submit"
       :disabled="disabled"
-    >
-      Build
-    </button>
-    <br>
-  </form>
+    ) Train
+    br
 </template>
 
 <script>
-import MilitaryArmyRow from './MilitaryArmyRow.vue'
+import MilitaryArmy from './MilitaryArmy.vue'
 import MilitaryResources from './MilitaryResources.vue'
-import ToolTip from '@/components/ToolTip.vue'
 
 export default {
   name: 'MilitaryForm',
   components: {
-    MilitaryArmyRow,
+    MilitaryArmy,
     MilitaryResources,
-    ToolTip,
   },
   props: {
     county: Object,
@@ -162,13 +101,15 @@ export default {
 </script>
 
 <style scoped>
-#cost-col {
-  min-width: 8.5em;
-}
-
 #resources {
   margin-top: 1em;
   margin-bottom: 1em;
+}
+
+@media (max-width: 640px) {
+  #submit-button {
+    width: 100%;
+  }
 }
 
 @media (min-width: 640px) {
