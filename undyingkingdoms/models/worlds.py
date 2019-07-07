@@ -42,7 +42,7 @@ class World(GameState):
             if season_index == len(seasons):
                 season_index = 0
             self.season = seasons[season_index]
-            
+
     def advance_analytics(self):
         if self.day < 0:
             return
@@ -135,3 +135,7 @@ class World(GameState):
 
     def __repr__(self):
         return '<World %r (%r)>' % ('id:', self.id)
+
+'''
+drop table if exists DAU, army, building, casting, chatroom, diplomacy, economy, espionage, expedition, infiltration, infrastructure, magic, message, military, notification, preferences, scientist, session, technology_to_technology, technology, trade, transaction, wizardry, county;
+'''

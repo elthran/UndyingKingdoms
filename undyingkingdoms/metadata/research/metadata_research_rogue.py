@@ -15,8 +15,8 @@ rogue_technology = {
         name='Spy Network',
         cost=500,
         max_level=3,
-        description='When your thieves are captured, you can retrain new ones twice as quickly.',
-        effects=Add('espionage', duration_multiplier=0.5),
+        description='Your thieves return from all missions 10% more quickly.',
+        effects=Add('espionage', duration_multiplier=-0.1),
         source="Rogue"
     )
 }
