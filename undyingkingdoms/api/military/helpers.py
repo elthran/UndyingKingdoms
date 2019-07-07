@@ -76,7 +76,7 @@ def build_units(county, form):
                                      iron_per_item=county.armies[army].iron)
     transaction.save()
 
-    if county.background == 'Warlord':
+    if total_trained == 0 or county.background == 'Warlord':
         happiness_penalty = 0
     else:
         # You lose 1 happiness for each 0.5% of population you force into military.
