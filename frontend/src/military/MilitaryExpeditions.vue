@@ -1,40 +1,37 @@
-<template>
-  <div>
-    <h2 class="bottom-spacer-dot-3">
-      Expeditions:
-    </h2>
-    <p
+<template lang="pug">
+  div
+    h2.bottom-spacer-dot-3
+      | Expeditions:
+    p(
       v-for="expedition in unsucessfulExpeditions"
       :key="expedition"
-    >
-      Your surviving {{ expedition.troops }} troops will
-      return in {{ expedition.duration }} days after their failed attack.
-    </p>
-    <p
+    )
+      | Your surviving {{ expedition.troops }} troops will
+      |  return in {{ expedition.duration }} days after their failed attack.
+    p(
       v-for="expedition in attackExpeditions"
       :key="expedition"
-    >
-      Your surviving {{ expedition.troops }} troops will
-      return in {{ expedition.duration }} days with {{ expedition.landAcquired }} acres of newly captured land.
-    </p>
-    <p
+    )
+      | Your surviving {{ expedition.troops }} troops will
+      |  return in {{ expedition.duration }} days with
+      |  {{ expedition.landAcquired }} acres of newly captured land.
+    p(
       v-for="expedition in razeExpeditions"
       :key="expedition"
-    >
-      Your surviving {{ expedition.troops }} troops will
-      return in {{ expedition.duration }} days after razing {{ expedition.landRazed }} acres of enemy land.
-    </p>
-    <p
+    )
+      | Your surviving {{ expedition.troops }} troops will
+      |  return in {{ expedition.duration }} days after razing
+      |  {{ expedition.landRazed }} acres of enemy land.
+    p(
       v-for="expedition in razeExpeditions"
       :key="expedition"
-    >
-      Your surviving {{ expedition.troops }} troops will
-      return in {{ expedition.duration }} days with {{ expedition.gold_gained }} gold, {{ expedition.wood_gained }} wood, and {{ expedition.iron_gained }} iron.
-    </p>
-    <p v-if="noExpeditions">
-      You have no troops travelling in foreign lands.
-    </p>
-  </div>
+    )
+      | Your surviving {{ expedition.troops }} troops will
+      |  return in {{ expedition.duration }} days with
+      |  {{ expedition.gold_gained }} gold, {{ expedition.wood_gained }}
+      |  wood, and {{ expedition.iron_gained }} iron.
+    p(v-if="noExpeditions")
+      | You have no troops travelling in foreign lands.
 </template>
 
 <script>
