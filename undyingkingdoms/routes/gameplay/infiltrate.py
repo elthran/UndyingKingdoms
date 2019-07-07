@@ -1,4 +1,5 @@
-from random import randint
+from math import floor
+from random import randint, random
 
 from flask import redirect, url_for, render_template
 from flask_login import login_required, current_user
@@ -9,6 +10,14 @@ from undyingkingdoms.models.exports import Infiltration, County, Notification
 from undyingkingdoms.models.forms.infiltrate import InfiltrateForm
 from undyingkingdoms.routes.helpers import neither_allies_nor_armistices, not_self
 from undyingkingdoms.metadata.metadata import infiltration_missions
+
+
+def probabilistic_round(x):
+    """
+    Takes a number and randomly rounds it up or down based on how close it is to either
+    ie. 4.75 rounds up 75% of the time and down 25% of the time
+    """
+    return int(floor(x + random()))
 
 
 @app.route('/gameplay/infiltrate/<int:county_id>', methods=['GET', 'POST'])
@@ -50,8 +59,8 @@ def infiltrate(template, county_id):
             # End of war code
             report.success = True
             if mission == 'pilfer':
-                gold_stolen = int(
-                    min(randint(12 * form.amount.data, int(20 * form.amount.data * gain_modifier)) * 1.25, target.gold))
+                # Thieves take minimum of 12 gold each
+                gold_stolen = min(target.gold, randint(12 * form.amount.data,  probabilistic_round(20 * form.amount.data * gain_modifier * 1.25)))
                 target.gold -= gold_stolen
                 county.gold += gold_stolen
                 report.pilfer_amount = gold_stolen
@@ -62,7 +71,7 @@ def infiltrate(template, county_id):
                     f"They stole {gold_stolen} gold from our coffers.",
                 )
             elif mission == 'burn crops':
-                crops_burned = min(target.buildings['field'].total, form.amount.data * gain_modifier)
+                crops_burned = min(target.buildings['field'].total, probabilistic_round(form.amount.data * gain_modifier))
                 target.buildings['field'].total -= crops_burned
                 report.crops_burned = crops_burned
                 report.duration = randint(14, 16) * duration_multiplier
@@ -72,7 +81,7 @@ def infiltrate(template, county_id):
                     f"They burned {crops_burned} of our {target.buildings['field'].class_name_plural.title()}."
                 )
             elif mission == 'kill cattle':
-                dairy_destroyed = min(target.buildings['pasture'].total, form.amount.data * gain_modifier)
+                dairy_destroyed = min(target.buildings['pasture'].total, probabilistic_round(form.amount.data * gain_modifier))
                 target.buildings['pasture'].total -= dairy_destroyed
                 report.dairy_destroyed = dairy_destroyed
                 report.duration = randint(14, 16) * duration_multiplier
@@ -83,7 +92,7 @@ def infiltrate(template, county_id):
                     f"{target.buildings['pasture'].class_name_plural.title()}."
                 )
             elif mission == 'sow distrust':
-                happiness_lost = min(target.happiness, form.amount.data * 3 * gain_modifier)
+                happiness_lost = min(target.happiness, probabilistic_round(form.amount.data * 3 * gain_modifier))
                 target.happiness -= happiness_lost
                 report.distrust = happiness_lost
                 report.duration = randint(12, 14) * duration_multiplier
@@ -102,7 +111,7 @@ def infiltrate(template, county_id):
                 )
             elif mission == 'steal research':
                 current_technology = target.research_choice
-                research_stolen = min(current_technology.current, form.amount.data * 10 * gain_modifier)
+                research_stolen = min(current_technology.current, probabilistic_round(form.amount.data * 10 * gain_modifier))
                 current_technology.current -= research_stolen
                 county.research += research_stolen
                 report.research_stolen = research_stolen
