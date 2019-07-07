@@ -1,25 +1,26 @@
-<template>
-  <div
-    id="military-app"
-    class="invisible"
-  >
-    <prefix-title title="War" />
-    <div>
-      <military-strength
+<template lang="pug">
+  div#military-app.invisible
+    prefix-title(title="War")
+    div
+      military-strength(
         v-if="ready"
         :county="county"
-      />
-      <military-form
+      )
+      br
+      military-army-totals(
+        v-if="ready"
+        :county="county"
+        :metadata="metadata"
+      )
+      military-form.bottom-spacer-2(
         v-if="ready"
         :form="form"
         :metadata="metadata"
         :county="county"
         :armies="armies"
         :army-ordering="armyOrdering"
-      />
-      <br><br>
-      <military-expeditions />
-      <br style="margin-bottom: 2em">
+      )
+      military-expeditions#expeditions-spacer
     </div>
   </div>
 </template>
@@ -28,6 +29,7 @@
 import MilitaryStrength from './MilitaryStrength.vue'
 import MilitaryForm from './MilitaryForm.vue'
 import MilitaryExpeditions from './MilitaryExpeditions.vue'
+import MilitaryArmyTotals from './MilitaryArmyTotals.vue'
 
 export default {
   name: 'MilitaryApp',
@@ -35,6 +37,7 @@ export default {
     MilitaryStrength,
     MilitaryForm,
     MilitaryExpeditions,
+    MilitaryArmyTotals,
   },
   data () {
     return {
@@ -65,15 +68,27 @@ export default {
 <style scoped>
 #military-app {
   padding-top: 1em;
+  margin-right: 1em;
 }
 
 @media (max-width: 640px) {
   #military-app {
     margin-left: 1em;
-    margin-right: 1em;
+  }
+
+  #expeditions-spacer {
+    margin-bottom: 1em;
   }
 }
 
 @media (min-width: 640px) {
+  #military-app {
+    width: 100%;
+    max-width: 640px;
+  }
+
+  #expeditions-spacer {
+    margin-bottom: 2em;
+  }
 }
 </style>

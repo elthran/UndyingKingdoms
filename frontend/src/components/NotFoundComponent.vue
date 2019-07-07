@@ -15,7 +15,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #not-found-component {
   position: absolute;
   top: 33%;
