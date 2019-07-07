@@ -20,7 +20,7 @@
         :armies="armies"
         :army-ordering="armyOrdering"
       )
-      military-expeditions.bottom-spacer-2
+      military-expeditions#expeditions-spacer
     </div>
   </div>
 </template>
@@ -75,12 +75,20 @@ export default {
   #military-app {
     margin-left: 1em;
   }
+
+  #expeditions-spacer {
+    margin-bottom: 1em;
+  }
 }
 
 @media (min-width: 640px) {
   #military-app {
     width: 100%;
     max-width: 640px;
+  }
+
+  #expeditions-spacer {
+    margin-bottom: 2em;
   }
 }
 </style>

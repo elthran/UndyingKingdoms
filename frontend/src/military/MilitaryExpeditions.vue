@@ -67,3 +67,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+p {
+  text-indent: 1.3em;
+  margin-bottom: 0.3em;
+}
+</style>
