@@ -31,7 +31,9 @@ def build_testing_objects():
     county.mana = 500
     county.happiness = 80
     kingdom1.leader = county.id
-    county.technologies['spy network'].completed = True
+    county.technologies['basic espionage'].completed = True
+    county.technologies['basic espionage ii'].completed = True
+    county.technologies['basic espionage iii'].completed = True
     # county.technologies['elixir of life'].completed = True
     kingdom1.approval_rating = 60
     # Create Haldon

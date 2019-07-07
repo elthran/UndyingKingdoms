@@ -51,7 +51,7 @@ def infiltrate(template, county_id):
             report.success = True
             if mission == 'pilfer':
                 gold_stolen = int(
-                    min(randint(12 * form.amount.data, 20 * form.amount.data * gain_modifier) * 1.25, target.gold))
+                    min(randint(12 * form.amount.data, int(20 * form.amount.data * gain_modifier)) * 1.25, target.gold))
                 target.gold -= gold_stolen
                 county.gold += gold_stolen
                 report.pilfer_amount = gold_stolen
