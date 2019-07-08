@@ -1,6 +1,6 @@
 import os
-from importlib import import_module
 import typing
+from importlib import import_module
 
 from flask.json import JSONEncoder
 
@@ -48,7 +48,7 @@ def meta_json_encoder_factory(root):
     imported_serializers = {}
     serializer_package_path = os.path.join(root, "serializers")
     for name in os.listdir(serializer_package_path):
-        if name.endswith("_serializer.py") and name != 'base_serializer.py':
+        if name.endswith("_serializer.py"):
             module_name = name.split('.')[0]
             module_path = '.'.join([root, "serializers", module_name])
             module = import_module(module_path)
