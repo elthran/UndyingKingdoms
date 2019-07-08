@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from utilities.helpers import romanize
+from lib.namers import romanize
 
 
 def generate_tech_levels(technologies, requirements):

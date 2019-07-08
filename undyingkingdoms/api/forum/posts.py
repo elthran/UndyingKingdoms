@@ -2,7 +2,7 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
-from undyingkingdoms.api.vue_safe import vue_safe_post, vue_safe_thread
+from undyingkingdoms.serializers.vue_safe import vue_safe_post, vue_safe_thread
 from undyingkingdoms.models.forms.message import MessageForm
 from undyingkingdoms.models.forum import Post, Thread
 

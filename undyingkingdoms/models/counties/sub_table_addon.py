@@ -1,7 +1,7 @@
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from utilities.helpers import strip_leading_underscore, to_var_name
+from lib.namers import to_var_name, strip_leading_underscore
 from ..bases import db
 
 

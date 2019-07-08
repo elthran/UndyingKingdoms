@@ -15,7 +15,7 @@
       >
         <a
           v-if="mindex === 0"
-          :href="message.leaderUrl"
+          :href="message.leaderURL"
           class="badge"
         >
           {{ message.leader }}
