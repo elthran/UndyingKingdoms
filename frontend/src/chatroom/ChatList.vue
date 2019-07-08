@@ -15,7 +15,7 @@
       >
         <a
           v-if="mindex === 0"
-          :href="message.leaderUrl"
+          :href="message.leaderURL"
           class="badge"
         >
           {{ message.leader }}
@@ -55,19 +55,19 @@ export default {
       var group = []
       var groups = []
       this.messages.forEach(
-        function (currentValue, index) {
-          if (speaker !== currentValue.leader) {
-            speaker = currentValue.leader
+        function (message, index) {
+          if (speaker !== message.leaderID) {
+            speaker = message.leaderID
             // only the first time of each set
             if (group.length === 0) {
-              group.push(currentValue)
+              group.push(message)
             } else {
               groups.push(group)
               group = []
-              group.push(currentValue)
+              group.push(message)
             }
           } else {
-            group.push(currentValue)
+            group.push(message)
           }
         }
       )
@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     formatDate (time) {
-      var date = new Date(time + "Z");
+      var date = new Date(time);
       var hours = ("0" + date.getHours()).slice(-2);
       var minutes = ("0" + date.getMinutes()).slice(-2);
       var seconds = ("0" + date.getSeconds()).slice(-2);

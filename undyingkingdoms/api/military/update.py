@@ -7,7 +7,7 @@ from flask_login import login_required, current_user
 from .helpers import build_units, vue_safe_army
 from undyingkingdoms.metadata.metadata import game_descriptions, all_armies
 from undyingkingdoms.models.forms.military import MilitaryForm
-from undyingkingdoms.api.vue_safe import vue_safe_form, generic_vue_safe
+from undyingkingdoms.serializers.vue_safe import vue_safe_form, generic_vue_safe
 
 
 class UpdateAPI(MethodView):

@@ -1,4 +1,4 @@
-from undyingkingdoms.api.vue_safe import generic_vue_safe
+from undyingkingdoms.serializers.vue_safe import generic_vue_safe
 from undyingkingdoms.metadata.metadata import all_armies
 from undyingkingdoms.models.exports import Transaction
 from undyingkingdoms.models.exports import World

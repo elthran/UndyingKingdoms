@@ -5,7 +5,10 @@ from flask import Flask, send_from_directory
 from flask_sslify import SSLify
 from flask_login import LoginManager
 
-from extensions import flask_db, flask_json, flask_csrf, flask_mobility, flask_mail, flask_cors
+from extensions import (
+    flask_db, flask_csrf, flask_mobility, flask_mail, flask_cors,
+    flask_serializer
+)
 from undyingkingdoms.GeoIP import geo_ip
 from undyingkingdoms.blueprints.admin import admin_blueprint
 from undyingkingdoms.blueprints.game_clock import game_clock_blueprint
@@ -17,6 +20,7 @@ app.jinja_env.lstrip_blocks = True
 app.jinja_env.trim_blocks = True
 app.config.from_object('private_config')
 
+# TODO: come up with better test for production mode.
 if 'live' in socket.gethostname():
     app.config.from_object('config.ProductionConfig')
 else:
@@ -27,9 +31,9 @@ sslify = SSLify(app)
 flask_db.init_app(app)
 db = flask_db
 flask_csrf.init_app(app)
-flask_json.init_app(app)
 flask_mobility.init_app(app)
 flask_mail.init_app(app)
+flask_serializer.init_app(app)
 
 if app.config['ENV'] != 'production':
     flask_cors.init_app(app)

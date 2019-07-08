@@ -2,7 +2,7 @@ from flask import jsonify, url_for
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
-from undyingkingdoms.api.vue_safe import vue_safe_form
+from undyingkingdoms.serializers.vue_safe import vue_safe_form
 from undyingkingdoms.models.forms.infrastructure import ExcessProductionForm
 from undyingkingdoms.metadata.metadata import excess_worker_choices, land_to_clear_ratio
 

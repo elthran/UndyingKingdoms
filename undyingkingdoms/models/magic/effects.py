@@ -1,5 +1,5 @@
 from ..notifications import Notification
-from utilities.helpers import to_class_name
+from lib.namers import to_class_name
 from ..interfaces import Command
 
 

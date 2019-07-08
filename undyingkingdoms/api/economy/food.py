@@ -2,7 +2,7 @@ from flask import jsonify
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
-from undyingkingdoms.api.vue_safe import vue_safe_form, vue_safe_metadata_mod
+from undyingkingdoms.serializers.vue_safe import vue_safe_form, vue_safe_metadata_mod
 from undyingkingdoms.models.forms.economy import EconomyForm
 from undyingkingdoms.metadata.metadata import rations_terminology, food_consumed_modifier
 
