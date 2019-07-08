@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     formatDate (time) {
-      var date = new Date(time + "Z");
+      var date = new Date(time);
       var hours = ("0" + date.getHours()).slice(-2);
       var minutes = ("0" + date.getMinutes()).slice(-2);
       var seconds = ("0" + date.getSeconds()).slice(-2);

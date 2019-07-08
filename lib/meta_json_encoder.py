@@ -1,5 +1,6 @@
 import os
 from importlib import import_module
+import typing
 
 from flask.json import JSONEncoder
 
@@ -11,15 +12,21 @@ class MetaJSONEncoder(JSONEncoder):
 
     def default(self, obj):
         try:
+            return super().default(obj)
+        except TypeError:
+            pass
+
+        if isinstance(obj, typing.Iterable):
+            return list(obj)
+
+        try:
             serializer = self.serializers[obj.__class__.__name__]
         except KeyError:
             serializer = None
 
         if serializer is not None:
             serialized_obj = serializer(obj)
-            return serialized_obj.__dict__
-
-        return super().default(obj)
+            return serialized_obj.__json__()
 
 
 def generate_model_name_for_serializer(cls):

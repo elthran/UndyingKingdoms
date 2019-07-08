@@ -7,3 +7,5 @@ class Serializer:
         """Convert Python naming to JS naming conventions."""
         self.__dict__[to_mixed_case(name)] = value
 
+    def __json__(self):
+        return self.__dict__

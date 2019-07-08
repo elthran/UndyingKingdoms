@@ -8,7 +8,6 @@ from flask_cors import CORS
 
 # Initialize database
 flask_db = SQLAlchemy()
-flask_json = FlaskJSON()
 flask_csrf = CSRFProtect()
 # flask_sslify = SSLify()
 flask_mobility = Mobility()
