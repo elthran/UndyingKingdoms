@@ -2,7 +2,7 @@ from flask import current_app
 from markupsafe import Markup
 
 from undyingkingdoms import app
-from undyingkingdoms.api.vue_safe import vue_safe_array
+from undyingkingdoms.serializers.vue_safe import vue_safe_array
 
 ___doc___ = """Add global filters and values to Jinja environment.
 

@@ -12,7 +12,7 @@ export default {
   },
   methods: {
     formatedTime (time) {
-      var msDiff = new Date() - new Date(time + "Z");
+      var msDiff = new Date() - new Date(time);
       var days = Math.floor(msDiff / (1000*60*60*24))
       if (days >= 1) {
         return days + (days > 1 ? " days" : " day")

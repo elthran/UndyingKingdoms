@@ -3,7 +3,7 @@ from flask.views import MethodView
 from flask_login import login_required, current_user
 
 from .helpers import troop_sum
-from ..vue_safe import generic_vue_safe
+from undyingkingdoms.serializers.vue_safe import generic_vue_safe
 
 
 class ExpeditionsAPI(MethodView):

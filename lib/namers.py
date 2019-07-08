@@ -1,9 +1,6 @@
-import operator
 import re
 
 import roman
-
-from tests import bp
 
 
 def to_class_name(name):
@@ -31,15 +28,28 @@ def to_var_name(name):
 
 
 def to_mixed_case(name):
-    """Convert a lower_case_with_underscores to mixedCase naming."""
-    mixed_case = ''.join(name.title().split('_'))
-    try:
-        return mixed_case[0].lower() + mixed_case[1:]
-    except IndexError:
-        return mixed_case
+    """Convert a lower_case_with_underscores to mixedCase naming.
+
+    foo_barCAPS == fooBarCAPS
+    Assumes any grouping of capitals is an acronym and should
+    be left as is.
+    """
+    first_char = (
+        name[0].lower()
+        if len(name) > 1 and not name[1].isupper()
+        else name[0]
+    )
+    mixed_case = (
+        first_char +
+        ''.join([
+            '' if char == '_' else
+            (char.upper() if name[i] == '_' else char)
+            for i, char in enumerate(name[1:])
+        ])
+    )
+    return mixed_case
 
 
-# noinspection SpellCheckingInspection
 def romanize(word, n):
     """Attach a Roman numeral to the given word.
 
@@ -51,10 +61,3 @@ def romanize(word, n):
 
 def strip_leading_underscore(s):
     return s[1:] if s[0] == '_' else s
-
-
-def combine_dicts(a, b, op=operator.add):
-    return dict(
-        tuple(a.items()) + tuple(b.items()) +
-        tuple((k, op(a[k], b[k])) for k in set(b) & set(a))
-    )

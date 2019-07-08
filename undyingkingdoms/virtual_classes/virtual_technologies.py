@@ -1,6 +1,6 @@
 from tests import bp
 from undyingkingdoms.virtual_classes.all_metadata_imports import all_metadata_imports as md
-from utilities.helpers import to_class_name
+from lib.namers import to_class_name
 
 virtual_tech_classes = {}
 for key in md:

@@ -3,9 +3,10 @@ from importlib import import_module
 from flask import Blueprint
 
 from extensions import flask_csrf
-from utilities.helpers import to_class_name
+from lib.namers import to_class_name
 
 api_blueprint = Blueprint('api', __name__, url_prefix='/api')
+# TODO: remove this in production?
 flask_csrf.exempt(api_blueprint)
 
 # import all api endpoints

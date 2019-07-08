@@ -2,7 +2,7 @@ from flask import jsonify
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
-from undyingkingdoms.api.vue_safe import vue_safe_news
+from undyingkingdoms.serializers.vue_safe import vue_safe_news
 
 
 class NewsAPI(MethodView):

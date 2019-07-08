@@ -2,7 +2,7 @@ from copy import deepcopy
 
 from undyingkingdoms.metadata.magic.metadata_magic_all import generic_spells
 from undyingkingdoms.metadata.research.metadata_research_all import generic_technology, generic_requirements
-from utilities.helpers import combine_dicts
+from lib.combiners import combine_dicts
 from undyingkingdoms.virtual_classes.all_metadata_imports import all_metadata_imports as md
 
 
