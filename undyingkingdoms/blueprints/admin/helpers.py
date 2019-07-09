@@ -1,10 +1,9 @@
 from random import choice
 from uuid import uuid4
 
-from flask import jsonify, current_app
+from flask import jsonify, current_app, render_template_string, url_for
 from flask_login import current_user
 
-from tests import bp
 from undyingkingdoms.controler.initialize import initialize_county
 from undyingkingdoms.models.exports import World
 from undyingkingdoms.utilities.convert_metadata import build_race_table, build_modifier_table
@@ -53,10 +52,13 @@ def create_bots(n=1):
 
 
 def create_notification(message):
+    admin_leader = current_user.county.leader
+    admin_pm_url = url_for('enemy_overview', county_id=current_user.id)
+    title = f'Admin Update from <a href="{admin_pm_url}">{admin_leader}</a>'
     for county in County.query.all():
         notification = Notification(
             county,
-            f"Admin Update from {current_user.county.leader}",
+            title,
             message,
             "Admin"
         )

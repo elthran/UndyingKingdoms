@@ -7,7 +7,7 @@
         :key="event.id"
         class="hanging-indent"
       >
-        Day: {{ event.day }} - {{ event.title }}: {{ event.content }}
+        Day: {{ event.day }} - <span v-html="event.title" />: {{ event.content }}
       </li>
     </template>
     <li v-else>
