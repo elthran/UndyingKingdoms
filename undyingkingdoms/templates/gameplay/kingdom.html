@@ -86,7 +86,7 @@
                         {{ form.csrf_token }}
                         <li style="font-style:italic;">
                             {% if kingdom.leader == county.id %}
-                                <div class="tooltip"><img class="resource_icons" src="/static/images/crown_icon.jpg">
+                                <div class="tooltip"><img class="resource_icons" src="/static/dist/images/crown_icon.jpg">
                                     <span class="tooltipText">Approval Rating: {{ kingdom.approval_rating }}</span>
                                 </div>
                             {% endif %}
@@ -101,7 +101,7 @@
                 {% else %}
                     <li>
                         {% if kingdom.leader == county.id %}
-                            <div class="tooltip"><img class="resource_icons" src="/static/images/crown_icon.jpg">
+                            <div class="tooltip"><img class="resource_icons" src="/static/dist/images/crown_icon.jpg">
                                 <span class="tooltipText">Approval Rating: {{ kingdom.approval_rating }}</span>
                             </div>
                         {% endif %}
@@ -122,7 +122,7 @@
             {% endif %}
             {% for county in kingdom.counties %}
                 <li>
-                    {% if kingdom.leader == county.id %}<img class="resource_icons" src="/static/images/crown_icon.jpg">{% endif %}
+                    {% if kingdom.leader == county.id %}<img class="resource_icons" src="/static/dist/images/crown_icon.jpg">{% endif %}
                     <a href="{{ url_for('enemy_overview', county_id=county.id) }}">{{ county.name }}</a> led by the infamous {{ county.leader }} with {{ county.land }} acres of land
                 </li>
             {% endfor %}
