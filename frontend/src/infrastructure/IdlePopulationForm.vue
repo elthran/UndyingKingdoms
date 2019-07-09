@@ -1,6 +1,3 @@
-<style scoped>
-</style>
-
 <template>
   <div>
     <p class="bottom-spacer-dot-3">
@@ -82,3 +79,6 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+</style>

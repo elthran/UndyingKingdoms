@@ -1,41 +1,34 @@
-<template>
-  <div
-    id="infrastructure-app"
-    class="invisible"
-  >
-    <prefix-title title="City Planner" />
-    <resource-header
-      :current-costs="totalCosts"
+<template lang="pug">
+  #infrastructure-app.invisible
+    prefix-title(title="City Planner")
+    resource-header(
       @loaded="loadProgress += 1"
-    >
-      <template v-slot:form>
-        <idle-population-form
-          @loaded="loadProgress += 1"
-        />
-        <div class="bottom-spacer-dot-6" />
-      </template>
-      <template v-slot:buildings>
-        <building-selector
-          v-model="totalCosts"
-          @loaded="loadProgress += 1"
-        />
-      </template>
-    </resource-header>
-    <div class="bottom-spacer-1" />
-  </div>
+    )
+    idle-population-form.bottom-spacer-dot-6(
+      @loaded="loadProgress += 1"
+    )
+    building-selector.bottom-spacer-1(
+      v-model="totalCosts"
+      @loaded="loadProgress += 1"
+    )
+    current-resources(
+      :current-costs="totalCosts"
+    )
 </template>
 
 <script>
 import ResourceHeader from './ResourceHeader.vue'
 import IdlePopulationForm from './IdlePopulationForm.vue'
 import BuildingSelector from './BuildingSelector.vue'
+import CurrentResources from './CurrentResources.vue'
 
 export default {
   name: 'InfrastructureApp',
   components: {
     ResourceHeader,
     IdlePopulationForm,
-    BuildingSelector
+    BuildingSelector,
+    CurrentResources,
   },
   data () {
     return {
