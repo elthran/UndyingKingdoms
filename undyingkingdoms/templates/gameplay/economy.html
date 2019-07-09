@@ -70,7 +70,7 @@ th {
             <td>{{ county.population }}</td>
             <td>
                 <status-number :number="populationChange" />
-                <img class="resource_icons" src="/static/images/population_icon.jpg">
+                <img class="resource_icons" src="/static/dist/images/population_icon.jpg">
             </td>
             <td>
                 <ul>
@@ -108,7 +108,7 @@ th {
             <td>{{ county.gold }}</td>
             <td>
                 <status-number :number="goldChange"></status-number>
-                <img class="resource_icons" src="/static/images/gold_icon.jpg">
+                <img class="resource_icons" src="/static/dist/images/gold_icon.jpg">
             </td>
             <td>
                 <ul>
@@ -162,7 +162,7 @@ th {
             <td>{{ county.grain_stores }}</td>
             <td>
                 <status-number :number="grainStorageChange"></status-number>
-                <img class="resource_icons" src="/static/images/grain_icon.jpg">
+                <img class="resource_icons" src="/static/dist/images/grain_icon.jpg">
             </td>
             <td>
                 <ul>
@@ -185,12 +185,12 @@ th {
             <td>
                 <ul>
                     <li>Fields: + {{ county.get_produced_grain() }} <img class="resource_icons"
-                                                                         src="/static/images/grain_icon.jpg"></li>
+                                                                         src="/static/dist/images/grain_icon.jpg"></li>
                     <li>Pastures: + {{ county.get_produced_dairy() }} <img class="resource_icons"
-                                                                           src="/static/images/dairy_icon.jpg"></li>
+                                                                           src="/static/dist/images/dairy_icon.jpg"></li>
                     {% if county.production_choice == 2 %}
                     <li>Foraging: + {{ county.get_excess_production_value(2) }} <img class="resource_icons"
-                                                                                     src="/static/images/dairy_icon.jpg">
+                                                                                     src="/static/dist/images/dairy_icon.jpg">
                     </li>
                     {% endif %}
                 </ul>
@@ -212,13 +212,13 @@ th {
                 {% else %}
             <td style="color:red;">
                 {% endif %}
-                {{ county.get_wood_income() }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
+                {{ county.get_wood_income() }} <img class="resource_icons" src="/static/dist/images/wood_icon.jpg">
             </td>
             <td>-</td>
             <td>
                 <ul>
                     <li>{{ county.buildings['mill'].class_name_plural.title() }}: + {{ county.get_wood_income() }} <img
-                            class="resource_icons" src="/static/images/wood_icon.jpg">
+                            class="resource_icons" src="/static/dist/images/wood_icon.jpg">
                     </li>
                 </ul>
             </td>
@@ -233,13 +233,13 @@ th {
                 {% else %}
             <td style="color:red;">
                 {% endif %}
-                {{ county.iron_income }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
+                {{ county.iron_income }} <img class="resource_icons" src="/static/dist/images/iron_icon.jpg">
             </td>
             <td>-</td>
             <td>
                 <ul>
                     <li>{{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.iron_income }} <img
-                            class="resource_icons" src="/static/images/iron_icon.jpg">
+                            class="resource_icons" src="/static/dist/images/iron_icon.jpg">
                     </li>
                 </ul>
             </td>
@@ -254,11 +254,11 @@ th {
                 {% else %}
             <td style="color:red;">
                 {% endif %}
-                {{ county.get_stone_income() }} <img class="resource_icons" src="/static/images/stone_icon.jpg">
+                {{ county.get_stone_income() }} <img class="resource_icons" src="/static/dist/images/stone_icon.jpg">
             </td>
             <td>-</td>
             <td>{{ county.buildings['quarry'].class_name_plural.title() }}: + {{ county.get_stone_income() }} <img
-                        class="resource_icons" src="/static/images/stone_icon.jpg">
+                        class="resource_icons" src="/static/dist/images/stone_icon.jpg">
             </td>
             <td>-</td>
             <td>Stone is used to build your most powerful buildings.</td>
@@ -266,7 +266,7 @@ th {
         <tr>
             <td>Mana</td>
             <td>{{ county.mana }} / {{ county.max_mana }}</td>
-            <td>+{{ county.mana_change }} <img class="resource_icons" src="/static/images/mana_icon.jpg"></td>
+            <td>+{{ county.mana_change }} <img class="resource_icons" src="/static/dist/images/mana_icon.jpg"></td>
             <td>-</td>
             <td>-</td>
             <td>-</td>
@@ -278,19 +278,19 @@ th {
             <td>v{ happiness }%</td>
             <td>
                 <status-number :number="happinessChange"></status-number>
-                <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+                <img class="resource_icons" src="/static/dist/images/happiness_icon.jpg">
             </td>
             <td>-</td>
             <td>
                 <ul>
-                    <li>Natural: +7 <img class="resource_icons" src="/static/images/happiness_icon.jpg"></li>
+                    <li>Natural: +7 <img class="resource_icons" src="/static/dist/images/happiness_icon.jpg"></li>
                     {% if county.production_choice == 3 %}
                     <li>Relax: + {{ county.get_excess_production_value(3) }} <img class="resource_icons"
-                                                                                  src="/static/images/happiness_icon.jpg">
+                                                                                  src="/static/dist/images/happiness_icon.jpg">
                     </li>
                     {% endif %}
                     {% if county.technologies["public works"].completed %}
-                    <li>Public Works: +1 <img class="resource_icons" src="/static/images/happiness_icon.jpg"></li>
+                    <li>Public Works: +1 <img class="resource_icons" src="/static/dist/images/happiness_icon.jpg"></li>
                     {% endif %}
                 </ul>
             </td>
@@ -301,10 +301,10 @@ th {
                         <div class="tooltip">{{ happiness_modifier.get(county.race)[0] }}: {{
                             happiness_modifier.get(county.race)[1] }}<span class="tooltipText">Racial Modifier: {{ county.race }}</span>
                         </div>
-                        <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+                        <img class="resource_icons" src="/static/dist/images/happiness_icon.jpg">
                     </li>
                     {% endif %}
-                    <li>Taxes: v{ -selectedTaxRate } <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+                    <li>Taxes: v{ -selectedTaxRate } <img class="resource_icons" src="/static/dist/images/happiness_icon.jpg">
                     </li>
                 </ul>
             </td>
@@ -316,7 +316,7 @@ th {
             <td>{{ county.healthiness }}%</td>
             <td>
                 <status-number :number="healthinessChange"></status-number>
-                <img class="resource_icons" src="/static/images/healthiness_icon.jpg">
+                <img class="resource_icons" src="/static/dist/images/healthiness_icon.jpg">
             </td>
             <td>-</td>
             <td>-</td>

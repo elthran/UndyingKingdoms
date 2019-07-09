@@ -90,7 +90,7 @@ th {
           {% else %}
             <td style="color:red;">
           {% endif %}
-            {{ population_projection }} <img class="resource_icons" src="/static/images/population_icon.jpg">
+            {{ population_projection }} <img class="resource_icons" src="/static/dist/images/population_icon.jpg">
           </td>
         </tr>
         <tr>
@@ -150,7 +150,7 @@ th {
           {% else %}
             <td style="color:red;">{{ county.gold_income }}
           {% endif %}
-            <img class="resource_icons" src="/static/images/gold_icon.jpg"></td>
+            <img class="resource_icons" src="/static/dist/images/gold_icon.jpg"></td>
         </tr>
         <tr>
           <td>Modifiers</td>
@@ -221,7 +221,7 @@ th {
           {% else %}
             <td style="color:red;">
           {% endif %}
-            {{ county.grain_storage_change() | int }} <img class="resource_icons" src="/static/images/grain_icon.jpg">
+            {{ county.grain_storage_change() | int }} <img class="resource_icons" src="/static/dist/images/grain_icon.jpg">
           </td>
         </tr>
         <tr>
@@ -247,14 +247,14 @@ th {
           <td>
             <ul>
               <li>
-                Fields: + {{ county.get_produced_grain() }} <img class="resource_icons" src="/static/images/grain_icon.jpg">
+                Fields: + {{ county.get_produced_grain() }} <img class="resource_icons" src="/static/dist/images/grain_icon.jpg">
               </li>
               <li>
-                Pastures: + {{ county.get_produced_dairy() }} <img class="resource_icons" src="/static/images/dairy_icon.jpg">
+                Pastures: + {{ county.get_produced_dairy() }} <img class="resource_icons" src="/static/dist/images/dairy_icon.jpg">
               </li>
               {% if county.production_choice == 2 %}
                 <li>
-                  Foraging: + {{ county.get_excess_production_value(2) }} <img class="resource_icons" src="/static/images/dairy_icon.jpg">
+                  Foraging: + {{ county.get_excess_production_value(2) }} <img class="resource_icons" src="/static/dist/images/dairy_icon.jpg">
                 </li>
               {% endif %}
             </ul>
@@ -282,7 +282,7 @@ th {
           {% else %}
             <td style="color:red;">
           {% endif %}
-            {{ county.get_wood_income() }} <img class="resource_icons" src="/static/images/wood_icon.jpg"></td>
+            {{ county.get_wood_income() }} <img class="resource_icons" src="/static/dist/images/wood_icon.jpg"></td>
         </tr>
         <tr>
           <td>Modifiers</td>
@@ -291,7 +291,7 @@ th {
         <tr>
           <td>Projected Growth</td>
           <td>
-            {{ county.buildings['mill'].class_name_plural.title() }}: + {{ county.get_wood_income() }} <img class="resource_icons" src="/static/images/wood_icon.jpg">
+            {{ county.buildings['mill'].class_name_plural.title() }}: + {{ county.get_wood_income() }} <img class="resource_icons" src="/static/dist/images/wood_icon.jpg">
           </td>
         </tr>
         <tr>
@@ -316,7 +316,7 @@ th {
           {% else %}
             <td style="color:red;">
           {% endif %}
-            {{ county.iron_income }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></td>
+            {{ county.iron_income }} <img class="resource_icons" src="/static/dist/images/iron_icon.jpg"></td>
         </tr>
         <tr>
           <td>Modifiers</td>
@@ -325,7 +325,7 @@ th {
         <tr>
           <td>Projected Growth</td>
           <td>
-            {{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.iron_income }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
+            {{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.iron_income }} <img class="resource_icons" src="/static/dist/images/iron_icon.jpg">
           </td>
         </tr>
         <tr>
@@ -350,7 +350,7 @@ th {
           {% else %}
             <td style="color:red;">
           {% endif %}
-            {{ county.happiness_change }} <img class="resource_icons" src="/static/images/happiness_icon.jpg"></td>
+            {{ county.happiness_change }} <img class="resource_icons" src="/static/dist/images/happiness_icon.jpg"></td>
         </tr>
         <tr>
           <td>Modifiers</td>
@@ -361,10 +361,10 @@ th {
           <td>
             <ul>
               <li>
-                Natural: +7 <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+                Natural: +7 <img class="resource_icons" src="/static/dist/images/happiness_icon.jpg">
               </li>
               {% if county.production_choice == 3 %}
-                <li>Relax: + {{ county.get_excess_production_value(3) }} <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+                <li>Relax: + {{ county.get_excess_production_value(3) }} <img class="resource_icons" src="/static/dist/images/happiness_icon.jpg">
                 </li>
               {% endif %}
             </ul>
@@ -382,10 +382,10 @@ th {
                       Racial Bonus: {{ county.race }}
                     </span>
                   </span>
-                  <img class="resource_icons" src="/static/images/happiness_icon.jpg">
+                  <img class="resource_icons" src="/static/dist/images/happiness_icon.jpg">
                 </li>
               {% endif %}
-              <li>Taxes: -{{ county.tax_rate }} <img class="resource_icons" src="/static/images/happiness_icon.jpg"></li>
+              <li>Taxes: -{{ county.tax_rate }} <img class="resource_icons" src="/static/dist/images/happiness_icon.jpg"></li>
             </ul>
           </td>
         </tr>

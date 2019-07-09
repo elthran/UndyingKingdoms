@@ -8,18 +8,18 @@
 {% set county = current_user.county %}
 {% set kingdom = county.kingdom %}
 
-<br>Current Mana <img class="resource_icons" src="/static/images/mana_icon.jpg">: {{ county.mana }} / {{ county.max_mana }}
+<br>Current Mana <img class="resource_icons" src="/static/dist/images/mana_icon.jpg">: {{ county.mana }} / {{ county.max_mana }}
 <br>Expected mana growth:
 {% if county.mana_change < 0 %}{% else %}+{% endif %}{{ county.mana_change }}
-<img class="resource_icons" src="/static/images/mana_icon.jpg">
+<img class="resource_icons" src="/static/dist/images/mana_icon.jpg">
 <br><br>
 <p>Chance to successfully disrupt enemy spells against your county: {{ county.chance_to_disrupt_spell() }}%</p>
 
 <h2>Choose Spell to Cast on {{ target.name }}</h2>
 {% for spell in known_spells %}
     {{ spell.display_name }} ({{ spell.source }})
-    <br>Cost: {{ spell.mana_cost }} <img class="resource_icons" src="/static/images/mana_icon.jpg">
-    {% if spell.mana_sustain %} + {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per turn{% endif %}
+    <br>Cost: {{ spell.mana_cost }} <img class="resource_icons" src="/static/dist/images/mana_icon.jpg">
+    {% if spell.mana_sustain %} + {{ spell.mana_sustain }} <img class="resource_icons" src="/static/dist/images/mana_icon.jpg"> per turn{% endif %}
     <br>Type: {{ spell.category.title() }} {% if spell.category == 'timed' %} ({{ spell.duration }} days){% endif %}
     <br>Targets: {{ spell.targets.title() }}
     <br>Description: {{ spell.description }}<br>
@@ -39,7 +39,7 @@
 <ul>
     {% for spell in active_spells %}
     {{ spell.display_name.title() }}
-    {% if spell.mana_sustain %}(Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)
+    {% if spell.mana_sustain %}(Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/dist/images/mana_icon.jpg"> per day)
     {% elif spell.duration %}(Spell ends in {{ spell.duration }} days)
     {% endif %}<br>
     Spell is affecting county id: {{ spell.target_id }}<br>
@@ -56,12 +56,12 @@
     <a href="{{ url_for('enemy_overview', county_id=spell.caster.id) }}">
         {{ spell.caster.name }}
     </a>
-    {% if spell.mana_sustain %}(Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/images/mana_icon.jpg"> per day)
+    {% if spell.mana_sustain %}(Requires {{ spell.mana_sustain }} <img class="resource_icons" src="/static/dist/images/mana_icon.jpg"> per day)
     {% elif spell.duration %}(Spell ends in {{ spell.duration }} days)
     {% endif %}<br>
     <a href="{{ url_for('dispel_spell', spell_id=spell.id) }}">
         <button style="float:left;width:100px;" {% if county.mana < 10 %}disabled{% endif %}>
-        Attempt Dispel (10 <img class="resource_icons" src="/static/images/mana_icon.jpg">)
+        Attempt Dispel (10 <img class="resource_icons" src="/static/dist/images/mana_icon.jpg">)
         </button>
     </a>
     <br>

@@ -109,9 +109,9 @@ strong {
         {% for i in range(army | length) %}
           <ul>
             <li class="top-spacer-1">Name: {{ army.loc[i, 'Class Name'].title() }}</li>
-            <li class="top-spacer-dot-3">Cost: {{ army.Gold[i] }} <img class="resource_icons" src="/static/images/gold_icon.jpg">,
-            {{ army.Wood[i] }} <img class="resource_icons" src="/static/images/wood_icon.jpg">,
-            {{ army.Iron[i] }} <img class="resource_icons" src="/static/images/iron_icon.jpg"></li>
+            <li class="top-spacer-dot-3">Cost: {{ army.Gold[i] }} <img class="resource_icons" src="/static/dist/images/gold_icon.jpg">,
+            {{ army.Wood[i] }} <img class="resource_icons" src="/static/dist/images/wood_icon.jpg">,
+            {{ army.Iron[i] }} <img class="resource_icons" src="/static/dist/images/iron_icon.jpg"></li>
             <li class="top-spacer-dot-3">Attack/Defence/Health: {{ army.Attack[i] }}/{{ army.Defence[i] }}/{{ army.Health[i] }}</li>
           </ul>
         {% endfor %}
