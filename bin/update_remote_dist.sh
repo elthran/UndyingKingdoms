@@ -9,16 +9,14 @@ select yn in "Yes" "No"; do
 	esac
 done
 
-HOST="undyingkingdoms@ssh.pythonanywhere.com"
-ssh $HOST '
-rm -r ~/UndyingKingdoms/undyingkingdoms/static/dist
-rm -r ~/UndyingKingdoms/undyingkingdoms/templates/dist
-exit
-'
-
 UDK="undyingkingdoms"
-scp -rC $UDK/static/dist $HOST:~/UndyingKingdoms/$UDK/static
-scp -rC $UDK/templates/dist $HOST:~/UndyingKingdoms/$UDK/templates
+HOST="$UDK@ssh.pythonanywhere.com"
+SSH_CONFIG="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+
+rsync -avzr -e "$SSH_CONFIG" --progress \
+  $UDK/static/dist $HOST:~/UndyingKingdoms/$UDK/static
+rsync -avzr -e "$SSH_CONFIG" --progress \
+  $UDK/templates/dist $HOST:~/UndyingKingdoms/$UDK/templates
 
 ssh $HOST '
 cd ~/UndyingKingdoms/undyingkingdoms
