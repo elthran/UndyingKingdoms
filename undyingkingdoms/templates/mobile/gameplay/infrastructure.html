@@ -124,9 +124,9 @@ th {
 {% set county = current_user.county %}
 <div class="costDiv">
   Gold Cost: <span class="goldCost">0</span>
-  <img class="resource_icons" src="/static/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/images/gold_icon.jpg"><br>
+  <img class="resource_icons" src="/static/dist/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/dist/images/gold_icon.jpg"><br>
   Wood Cost: <span class="woodCost">0</span>
-  <img class="resource_icons" src="/static/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/images/wood_icon.jpg"><br>
+  <img class="resource_icons" src="/static/dist/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/dist/images/wood_icon.jpg"><br>
   Land Required: <span class="landCost">0</span>&nbsp;/&nbsp;{{ county.get_available_land() }}
   <br><br>
   Each day, up to 3 buildings in your queue will be built.
@@ -153,9 +153,9 @@ th {
     <h2>Current Resources:
       <br>
       <span class="tab">
-      <span id="totalGold">{{ county.gold }}</span> <img class="resource_icons" src="/static/images/gold_icon.jpg">
-      <span id="totalWood">{{ county.wood }}</span> <img class="resource_icons" src="/static/images/wood_icon.jpg">
-      {{ county.iron }} <img class="resource_icons" src="/static/images/iron_icon.jpg">
+      <span id="totalGold">{{ county.gold }}</span> <img class="resource_icons" src="/static/dist/images/gold_icon.jpg">
+      <span id="totalWood">{{ county.wood }}</span> <img class="resource_icons" src="/static/dist/images/wood_icon.jpg">
+      {{ county.iron }} <img class="resource_icons" src="/static/dist/images/iron_icon.jpg">
       </span>
     </h2>
   </div>
@@ -210,8 +210,8 @@ th {
       <tr>
         <td>Cost</td>
         <td>
-          <span class="buildingGoldCost">{{ building.gold_cost }}</span><img class="resource_icons" src="/static/images/gold_icon.jpg">
-          <span class="buildingWoodCost">{{ building.wood_cost }}</span><img class="resource_icons" src="/static/images/wood_icon.jpg">
+          <span class="buildingGoldCost">{{ building.gold_cost }}</span><img class="resource_icons" src="/static/dist/images/gold_icon.jpg">
+          <span class="buildingWoodCost">{{ building.wood_cost }}</span><img class="resource_icons" src="/static/dist/images/wood_icon.jpg">
         </td>
       </tr>
       <tr>
