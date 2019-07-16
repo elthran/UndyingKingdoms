@@ -6,7 +6,7 @@ from sqlalchemy_utils import database_exists, create_database
 import config
 from extensions import flask_db as db
 import app as udk
-import utilities.testing_objects as to
+import utilities.seeds as to
 
 
 def setup_app():
