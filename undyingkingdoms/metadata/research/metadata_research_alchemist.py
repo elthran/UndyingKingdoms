@@ -8,7 +8,7 @@ alchemist_technology = {
         cost=500,
         max_level=3,
         description='Generate an additional +{research_change} research each day.',
-        effects=Add('scientist', research_change=30),
+        effects=Add('Scientist', research_change=30),
         source="Alchemist"
     ),
     Technology(
@@ -16,7 +16,7 @@ alchemist_technology = {
         cost=1000,
         max_level=1,
         description='All non-siege units have +{non_siege_health} health',
-        effects=Add('military', non_siege_health=2),
+        effects=Add('Military', non_siege_health=2),
         source="Alchemist"
     )
 }

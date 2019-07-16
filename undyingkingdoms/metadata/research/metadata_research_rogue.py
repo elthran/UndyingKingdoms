@@ -8,7 +8,7 @@ rogue_technology = {
         cost=500,
         max_level=3,
         description='All thief missions are {gain_modifier:+0.0%} more effective.',
-        effects=Add('espionage', gain_modifier=0.2),
+        effects=Add('Espionage', gain_modifier=0.2),
         source="Rogue"
     ),
     Technology(
@@ -16,7 +16,7 @@ rogue_technology = {
         cost=500,
         max_level=3,
         description='Your thieves return from all missions 10% more quickly.',
-        effects=Add('espionage', duration_multiplier=-0.1),
+        effects=Add('Espionage', duration_multiplier=-0.1),
         source="Rogue"
     )
 }

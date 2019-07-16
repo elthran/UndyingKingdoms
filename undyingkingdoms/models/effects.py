@@ -1,28 +1,27 @@
 import operator
 
 from .interfaces import EffectInterface
+import undyingkingdoms.models as udk_models
+models = lambda: udk_models.exports
 
 
-def relative_lookup(obj, attr):
-    """Look up a sub-table on this object.
+def relative_lookup(cls_name):
+    """Look up a model from the model exports file.
 
     e.g.
-        county.wizardry
-
-    Later I hope to be able to handle multiple "." in the name.
+        'Wizardry' => exports.Wizardry
     """
-    if attr != ".":
-        return getattr(obj, attr)
-    return obj
+
+    return getattr(models(), cls_name)
 
 
 class Effect:
-    def __init__(self, attr=".", **kwargs):
-        self.attr = attr
+    def __init__(self, cls_name="County", **kwargs):
+        self.cls_name = cls_name
         self.kwargs = kwargs
 
-    def general_activate(self, obj, op=operator.add):
-        obj = relative_lookup(obj, self.attr)
+    def general_activate(self, op=operator.add):
+        obj = relative_lookup(self.cls_name)
         for key in self.kwargs:
             try:
                 initial_val = getattr(obj, '_' + key)
@@ -36,7 +35,7 @@ class Effect:
 
     def __repr__(self):
         class_name = self.__class__.__name__
-        attr = self.attr
+        attr = self.cls_name
         kwargs = ', '.join(f'{k}={v}' for k, v in self.kwargs.items())
         return f"{class_name}({attr!r}, {kwargs})"
 
@@ -46,11 +45,12 @@ class Add(Effect, EffectInterface):
 
     Does  obj.x += y
     """
+
     def activate(self, obj):
-        self.general_activate(obj, op=operator.add)
+        self.general_activate(op=operator.add)
 
     def undo(self, obj):
-        minus = Minus(self.attr, **self.kwargs)
+        minus = Minus(self.cls_name, **self.kwargs)
         minus.activate(obj)
 
 
@@ -59,11 +59,12 @@ class Minus(Effect, EffectInterface):
 
     Does  obj.x -= y
     """
+
     def activate(self, obj):
-        self.general_activate(obj, op=operator.sub)
+        self.general_activate(op=operator.sub)
 
     def undo(self, obj):
-        add = Add(self.attr, **self.kwargs)
+        add = Add(self.cls_name, **self.kwargs)
         add.activate(obj)
 
 
@@ -72,11 +73,12 @@ class Times(Effect, EffectInterface):
 
     Does  obj.x *= 1 + y
     """
+
     def activate(self, obj):
-        self.general_activate(obj, op=lambda a, b: a * (1 + b))
+        self.general_activate(op=lambda a, b: a * (1 + b))
 
     def undo(self, obj):
-        divide = Divide(self.attr, **self.kwargs)
+        divide = Divide(self.cls_name, **self.kwargs)
         divide.activate(obj)
 
 
@@ -87,8 +89,8 @@ class Divide(Effect, EffectInterface):
     """
 
     def activate(self, obj):
-        self.general_activate(obj, op=lambda a, b: a / (1 + b))
+        self.general_activate(op=lambda a, b: a / (1 + b))
 
     def undo(self, obj):
-        times = Times(self.attr, **self.kwargs)
+        times = Times(self.cls_name, **self.kwargs)
         times.activate(obj)

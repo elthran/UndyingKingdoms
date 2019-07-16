@@ -8,7 +8,7 @@ warlord_technology = {
         cost=500,
         max_level=1,
         description='Your armies return from battle {speed} days sooner.',
-        effects=Add('military', speed=1),
+        effects=Add('Military', speed=1),
         source="Warlord"
     ),
     Technology(
@@ -16,7 +16,7 @@ warlord_technology = {
         cost=1000,
         max_level=1,
         description='{offensive_modifier:+0.0%} Attack Power bonus to all offensive invasions you perform.',
-        effects=Add('military', offensive_modifier=0.15),
+        effects=Add('Military', offensive_modifier=0.15),
         source="Warlord"
     ),
     Technology(
@@ -25,7 +25,7 @@ warlord_technology = {
         cost=1250,
         max_level=1,
         source="Warlord",
-        effects=Add('military', trainable_per_day_modifier=0.2)
+        effects=Add('Military', trainable_per_day_modifier=0.2)
     )
 }
 

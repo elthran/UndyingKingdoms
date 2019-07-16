@@ -9,7 +9,7 @@ ogre_technology = {
         max_level=1,
         description='Ogre brutes have an additional offense.',
         source="Ogre",
-        effects=Add('military', peasant_attack=1)
+        effects=Add('Military', peasant_attack=1)
     )
 }
 

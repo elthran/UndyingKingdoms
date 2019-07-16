@@ -8,7 +8,7 @@ hierophant_technology = {
         cost=500,
         max_level=1,
         description='All infantry and cavalry units gain +1 attack at the cost of -1 to their health.',
-        effects=Add('military', non_monster_non_siege_health=-1, non_monster_non_siege_attack=1),
+        effects=Add('Military', non_monster_non_siege_health=-1, non_monster_non_siege_attack=1),
         source="Hierophant"
     ),
     Technology(
@@ -16,7 +16,7 @@ hierophant_technology = {
         cost=500,
         max_level=1,
         description='All infantry and cavalry gain +1 defence at the cost of -1 to their health.',
-        effects=Add('military', non_monster_non_siege_health=-1, non_monster_non_siege_defence=1),
+        effects=Add('Military', non_monster_non_siege_health=-1, non_monster_non_siege_defence=1),
         source="Hierophant"
     )
 }

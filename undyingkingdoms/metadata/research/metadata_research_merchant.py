@@ -8,7 +8,7 @@ merchant_technology = {
         cost=500,
         max_level=3,
         description='Increases all gold income by {gold_modifier:+0.0%}.',
-        effects=Add('economy', gold_modifier=0.1),
+        effects=Add('Economy', gold_modifier=0.1),
         source="Merchant"
     ),
     Technology(

@@ -8,7 +8,7 @@ artificer_technology = {
         cost=500,
         max_level=3,
         description="All buildings are {cost_modifier:0.0%} cheaper.",
-        effects=Add('infrastructure', cost_modifier=0.1),
+        effects=Add('Infrastructure', cost_modifier=0.1),
         source="Artificer",
     ),
     Technology(
@@ -16,7 +16,7 @@ artificer_technology = {
         cost=1000,
         max_level=1,
         description="Your forts are {fort_multiplier:+0.0%} more effective",
-        effects=Add('infrastructure', fort_multiplier=2.0),
+        effects=Add('Infrastructure', fort_multiplier=2.0),
         source="Artificer",
     )
 }

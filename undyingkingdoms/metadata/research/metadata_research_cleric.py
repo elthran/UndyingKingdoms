@@ -8,7 +8,7 @@ cleric_technology = {
         cost=750,
         max_level=1,
         description='Your county has {immigration_modifier:+0.0%} immigration rate.',
-        effects=Add('economy', immigration_modifier=0.2),
+        effects=Add('Economy', immigration_modifier=0.2),
         source="Cleric"
     ),
     Technology(
@@ -16,7 +16,7 @@ cleric_technology = {
         cost=1250,
         max_level=1,
         description='Grant +{unit_health} health to all infantry and cavalry units.',
-        effects=Add("military", unit_health=1),
+        effects=Add("Military", unit_health=1),
         source="Cleric"
     )
 }
