@@ -74,5 +74,12 @@ def reset_db():
     print("Database recreated!")
 
 
+# Aliases
+@manager.command
+def reset():
+    """Alias for reset_db."""
+    reset_db()
+
+
 if __name__ == '__main__':
     manager.run()
