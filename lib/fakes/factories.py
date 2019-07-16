@@ -6,8 +6,8 @@ from app.controler.initialize import pick_kingdom
 from app.models.exports import County, Technology
 
 
-from tests.fakes.mixins import SQLAlcMeta
-from tests.fakes.providers import Provider
+from lib.fakes.mixins import SQLAlcMeta
+from lib.fakes.providers import Provider
 
 factory.Faker.add_provider(Provider)
 

@@ -1,4 +1,4 @@
-from tests.fakes.factories import UserFactory, CountyFactory
+from lib.fakes.factories import UserFactory, CountyFactory
 from app.models.counties.specifics import merge_tech_requirements
 from app.models.exports import Preferences, Technology
 
