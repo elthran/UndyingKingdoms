@@ -2,14 +2,14 @@
   #infrastructure-app.invisible
     prefix-title(title="City Planner")
     resource-header(
-      @loaded="loadProgress += 1"
+      @loaded="updateProgress"
     )
     idle-population-form.bottom-spacer-dot-6(
-      @loaded="loadProgress += 1"
+      @loaded="updateProgress"
     )
     building-selector.bottom-spacer-1(
       v-model="totalCosts"
-      @loaded="loadProgress += 1"
+      @loaded="updateProgress"
     )
     current-resources(
       :current-costs="totalCosts"
@@ -47,6 +47,11 @@ export default {
       if (newVal === 0) {
         this.$el.classList.remove('invisible')
       }
+    }
+  },
+  methods: {
+    updateProgress () {
+      this.loadProgress += 1
     }
   },
 }
