@@ -1,9 +1,9 @@
 from config import JACOB_TEMPORARY_EMAIL, JACOB_TEMPORARY_ACCOUNT_PASSWORD, MARLEN_TEMPORARY_EMAIL, \
     MARLEN_TEMPORARY_ACCOUNT_PASSWORD
-from undyingkingdoms.controler.initialize import initialize_county
-from undyingkingdoms.models.exports import World, Kingdom, User
-from undyingkingdoms.models.forum import Forum, Thread
-from undyingkingdoms.metadata.metadata import kingdom_names
+from app.controler.initialize import initialize_county
+from app.models.exports import World, Kingdom, User
+from app.models.forum import Forum, Thread
+from app.metadata.metadata import kingdom_names
 
 
 def build_testing_objects():

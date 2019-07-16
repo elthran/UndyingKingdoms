@@ -1,4 +1,4 @@
-from undyingkingdoms.models.exports import Kingdom
+from app.models.exports import Kingdom
 
 
 def test_war_victory_credit(ctx):

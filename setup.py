@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='undyingkingdoms',
     version='0.1.00',
-    packages=['undyingkingdoms'],
+    packages=['app'],
     include_package_data=True,
     install_requires=[
         'flask',
@@ -36,6 +36,7 @@ setup(
         'factory_boy',
         'roman',
         'ipdb',
+        'flask-shell-ipython'
     ],
 )
 

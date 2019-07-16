@@ -1,0 +1,47 @@
+{% extends "business/layout.html" %}
+{% block content2 %}
+<!--button-->
+<div class='container'>
+    <h3>Test out this fancy JS!</h3>
+    <button id=input>Test</button>
+    <span id="output">Output</span>
+
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+<script type=text/javascript>
+<!--
+var local_button;
+var output;
+var someData = {};
+output = document.getElementById("output");
+local_button = document.getElementById("input");
+// you could build the function right into this section
+// local_button.addEventListener("click", function () {
+//    getJSONViaPOST("/handle_ajax_request", "{{ csrf_token() }}", localCallback);
+// });
+local_button.addEventListener("click", localSend);
+
+// must accept an event as first and only parameter. Doesn't really need to
+// but if you do then you can supress form submission an other things.
+function localSend(event) {
+    "use strict";
+    // preprocess data, you don't need this.
+    someData["pig"] = "dog";
+    // generic script.js function that accepts a app.route url and a crsf token, operates using POST only.
+    getJSONViaPOST("/handle_ajax_request", "{{ csrf_token() }}", localCallback, someData);
+}
+
+// must accept a response as first and only parameter.
+function localCallback(response) {
+    "use strict";
+    // do something with json object that is returned.
+    output.innerHTML = response.data;
+    // you don't need this either, note that the 'ints' remain 'ints'.
+    someData["lastResponse"] = response.data;
+}
+-->
+
+
+</script>
+
+{% endblock %}

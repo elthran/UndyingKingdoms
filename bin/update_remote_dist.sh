@@ -17,7 +17,7 @@ rsync -avzr -e "$SSH_CONFIG" --progress \
   $UDK/templates/dist $HOST:~/UndyingKingdoms/$UDK/templates
 
 ssh $HOST '
-cd ~/UndyingKingdoms/undyingkingdoms
+cd ~/UndyingKingdoms/app
 find static/dist/* -type f > static/dist/dist_files.txt
 find templates/dist/* -type f >> static/dist/dist_files.txt
 exit

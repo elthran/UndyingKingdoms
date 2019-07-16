@@ -1,4 +1,4 @@
-from undyingkingdoms.models.exports import County
+from app.models.exports import County
 
 
 def test_economy_column_hoisting(ctx):

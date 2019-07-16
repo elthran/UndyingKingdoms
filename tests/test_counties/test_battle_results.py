@@ -1,6 +1,6 @@
-from undyingkingdoms.metadata.metadata import attack_types
-from undyingkingdoms.models.exports import County
-from undyingkingdoms.models.exports import User
+from app.metadata.metadata import attack_types
+from app.models.exports import County
+from app.models.exports import User
 
 
 def test_battle_results(ctx):

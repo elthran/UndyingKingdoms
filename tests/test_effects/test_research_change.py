@@ -1,5 +1,5 @@
 from tests import bp
-from undyingkingdoms.models.counties.counties import County
+from app.models.counties.counties import County
 
 
 def test_alchemy_technology_effects(ctx):

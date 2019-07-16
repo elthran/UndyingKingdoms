@@ -1,4 +1,4 @@
-from undyingkingdoms.models.counties.counties import County
+from app.models.counties.counties import County
 
 
 def test_infrastructure_cost_modifier(ctx):

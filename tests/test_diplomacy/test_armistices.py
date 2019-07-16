@@ -1,4 +1,4 @@
-from undyingkingdoms.models.exports import Kingdom, Diplomacy
+from app.models.exports import Kingdom, Diplomacy
 
 
 def test_armistice(ctx):

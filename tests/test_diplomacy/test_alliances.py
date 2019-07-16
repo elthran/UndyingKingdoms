@@ -1,4 +1,4 @@
-from undyingkingdoms.models.exports import Diplomacy, Kingdom
+from app.models.exports import Diplomacy, Kingdom
 
 def test_pending_alliances(ctx):
     faenoth = Kingdom.query.get(1)

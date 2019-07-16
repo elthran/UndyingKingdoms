@@ -4,11 +4,11 @@ import faker
 from faker.providers import BaseProvider
 
 from tests import bp, pp
-from undyingkingdoms.blueprints.admin.metadata import bot_county_prefix, bot_county_suffix, bot_leader_prefix, \
+from app.blueprints.admin.metadata import bot_county_prefix, bot_county_suffix, bot_leader_prefix, \
     bot_leader_suffix
-from undyingkingdoms.calculations.distributions import bell_curvish, normalize, curve_bounds
-from undyingkingdoms.metadata.metadata import metadata_races, metadata_titles, metadata_backgrounds
-from undyingkingdoms.metadata.research.metadata_research_all import generic_technology
+from app.calculations.distributions import bell_curvish, normalize, curve_bounds
+from app.metadata.metadata import metadata_races, metadata_titles, metadata_backgrounds
+from app.metadata.research.metadata_research_all import generic_technology
 from lib.namers import romanize
 
 fake = faker.Faker()

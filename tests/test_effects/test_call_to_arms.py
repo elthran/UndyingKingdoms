@@ -1,7 +1,7 @@
 from copy import deepcopy
 
-from undyingkingdoms.metadata.research.metadata_research_warlord import warlord_technology
-from undyingkingdoms.models.counties.counties import County
+from app.metadata.research.metadata_research_warlord import warlord_technology
+from app.models.counties.counties import County
 
 
 def test_call_to_arms(ctx):

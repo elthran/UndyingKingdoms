@@ -5,7 +5,7 @@ from sqlalchemy_utils import database_exists, create_database
 
 import config
 from extensions import flask_db as db
-import undyingkingdoms as udk
+import app as udk
 import utilities.testing_objects as to
 
 
@@ -57,7 +57,7 @@ def rebuild_after(app):
         db.session.commit()
 
         # The following is temporary for testing.
-        from undyingkingdoms.models.exports import County
+        from app.models.exports import County
         assert County.query.get(1) is not None
 
 

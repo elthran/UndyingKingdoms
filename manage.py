@@ -1,7 +1,7 @@
 from flask_script import Manager, Command, Server
 
 from extensions import flask_db as db
-from undyingkingdoms import app
+from app import app
 
 manager = Manager(app)
 

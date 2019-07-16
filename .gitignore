@@ -7,12 +7,12 @@ venv/
 /undyingkingdoms.egg-info
 /export
 env/
-undyingkingdoms/routes/gameplay/testing_page.py
+app/routes/gameplay/testing_page.py
 *scratchpad*
 .ipynb_checkpoints
 frontend/node_modules
-/undyingkingdoms/static/dist
-/undyingkingdoms/templates/dist
+/app/static/dist
+/app/templates/dist
 package-lock.json
 export/dump.sql
 bin/activate

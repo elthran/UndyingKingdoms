@@ -9,7 +9,7 @@ module.exports = {
   //   ? '/static/dist'
   //   : '/',
   // options
-  outputDir: '../undyingkingdoms/static/dist',
+  outputDir: '../app/static/dist',
   indexPath: '../../templates/dist/index.html',
 
 //  pages: {

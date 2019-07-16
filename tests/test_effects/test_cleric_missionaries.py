@@ -1,7 +1,7 @@
 from copy import deepcopy
 
-from undyingkingdoms.metadata.research.metadata_research_cleric import cleric_technology
-from undyingkingdoms.models.exports import County
+from app.metadata.research.metadata_research_cleric import cleric_technology
+from app.models.exports import County
 
 
 def test_cleric_missionaries(ctx):

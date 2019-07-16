@@ -1,4 +1,4 @@
-from undyingkingdoms.models.counties.counties import County
+from app.models.counties.counties import County
 
 
 def test_elixir_of_life(ctx):

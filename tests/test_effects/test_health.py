@@ -1,7 +1,7 @@
 from copy import deepcopy
 
-from undyingkingdoms.metadata.research.metadata_research_alchemist import alchemist_technology
-from undyingkingdoms.models.counties.counties import County
+from app.metadata.research.metadata_research_alchemist import alchemist_technology
+from app.models.counties.counties import County
 
 
 def test_health_tech(ctx):

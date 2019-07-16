@@ -1,9 +1,9 @@
 import factory
 from factory.alchemy import SQLAlchemyModelFactory
 
-from undyingkingdoms import User
-from undyingkingdoms.controler.initialize import pick_kingdom
-from undyingkingdoms.models.exports import County, Technology
+from app import User
+from app.controler.initialize import pick_kingdom
+from app.models.exports import County, Technology
 
 
 from tests.fakes.mixins import SQLAlcMeta

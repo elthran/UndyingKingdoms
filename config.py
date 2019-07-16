@@ -35,7 +35,7 @@ class BaseConfig:
     CSRF_ENABLED = True
     CSRF_SESSION_KEY = private_config.CSRF_SESSION_KEY
     JWT_ALGORITHM = 'HS256'
-    UPLOAD_FOLDER = 'undyingkingdoms/static/uploads/'
+    UPLOAD_FOLDER = 'app/static/uploads/'
     ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 

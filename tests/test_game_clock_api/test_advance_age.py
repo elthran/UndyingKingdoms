@@ -1,7 +1,7 @@
 import json
 
 from tests.helpers import login
-from undyingkingdoms.models.exports import World, County
+from app.models.exports import World, County
 
 
 def test_advance_age(client, rebuild_after):

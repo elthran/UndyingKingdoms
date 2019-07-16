@@ -1,6 +1,6 @@
 from tests.fakes.factories import UserFactory, CountyFactory
-from undyingkingdoms.models.counties.specifics import merge_tech_requirements
-from undyingkingdoms.models.exports import Preferences, Technology
+from app.models.counties.specifics import merge_tech_requirements
+from app.models.exports import Preferences, Technology
 
 
 def initialize_account():

@@ -1,4 +1,4 @@
-from undyingkingdoms.models.counties.specifics import merge_tech_requirements
+from app.models.counties.specifics import merge_tech_requirements
 
 
 def test_merge_tech_requirements():

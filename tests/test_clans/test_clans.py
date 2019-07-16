@@ -1,8 +1,8 @@
 import pytest
 
-from undyingkingdoms.models.exports import User
-from undyingkingdoms.models.exports import Clan
-from undyingkingdoms.models.exports import Kingdom
+from app.models.exports import User
+from app.models.exports import Clan
+from app.models.exports import Kingdom
 
 def test_clan_creation(ctx):
     user = User.query.get(1)
