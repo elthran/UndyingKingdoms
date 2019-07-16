@@ -9,14 +9,9 @@ select yn in "Yes" "No"; do
 	esac
 done
 
-HOST="undyingkingdoms@ssh.pythonanywhere.com"
-ssh $HOST '
-rm -r ~/tmp/static/dist
-rm -r ~/tmp/templates/dist
-exit
-'
+source ./config.sh
 
-UDK="undyingkingdoms"
-scp -rC $UDK/static/dist $HOST:~/tmp/static
-scp -rC $UDK/templates/dist $HOST:~/tmp/templates
-
+rsync -avzr -e "$SSH_CONFIG" --progress \
+  $UDK/static/dist $HOST:~/tmp/static
+rsync -avzr -e "$SSH_CONFIG" --progress \
+  $UDK/templates/dist $HOST:~/tmp/templates

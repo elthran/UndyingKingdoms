@@ -1,7 +1,7 @@
 from flask_script import Manager, Command, Server
 
 from extensions import flask_db as db
-from undyingkingdoms import app
+from app import app
 
 manager = Manager(app)
 
@@ -49,7 +49,7 @@ def drop_db():
 @manager.command
 def populate_db():
     """Add data to the database."""
-    from utilities.testing_objects import build_testing_objects
+    from utilities.seeds import build_testing_objects
 
     with app.app_context():
         # Create the game world
@@ -72,6 +72,13 @@ def reset_db():
     init_db()
     populate_db()
     print("Database recreated!")
+
+
+# Aliases
+@manager.command
+def reset():
+    """Alias for reset_db."""
+    reset_db()
 
 
 if __name__ == '__main__':

@@ -130,7 +130,7 @@ generate_private_config() {
 clone_dist_files() {
 	udk_site='https://www.undyingkingdoms.com/'
 	dist_file='static/dist/dist_files.txt'
-	cd "undyingkingdoms"
+	cd "app"
 	wget -qO- $udk_site$dist_file | xargs -i wget $udk_site'{}' -x -nH
 	cd ..
 }

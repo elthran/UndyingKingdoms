@@ -9,5 +9,5 @@ select yn in "Yes" "No"; do
 	esac
 done
 
-UDK="undyingkingdoms"
+UDK="app"
 zip -r /tmp/dist.zip $UDK/static/dist $UDK/templates/dist

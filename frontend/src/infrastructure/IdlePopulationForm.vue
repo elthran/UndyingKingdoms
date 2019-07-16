@@ -1,39 +1,28 @@
-<style scoped>
-</style>
-
-<template>
-  <div>
-    <p class="bottom-spacer-dot-3">
+<template lang="pug">
+  div
+    p.bottom-spacer-dot-3.
       You may assign a task to your idle population.
-    </p>
-    <form
+    form(
       ref="form"
       :action="allocateWorkersUrl"
       accept-charset="UTF-8"
-    >
-      <span v-html="form.csrf_token.html" />
-      <select-generator
+    )
+      span(v-html="form.csrf_token.html")
+      select-generator(
         v-model="goal"
         :options="form.goal.choices"
         :selected="goal"
         :id-name="form.goal.id"
-      />
-    </form>
-    <div class="top-spacer-dot-3 bottom-spacer-1">
-      <span v-if="goal == 0">
+      )
+    .top-spacer-dot-3.bottom-spacer-1
+      span(v-if="goal == 0").
         Your idle citizens will be forced to work, earning your county an additional {{ overworking }} gold per day.
-      </span>
-      <span v-if="goal == 1">
+      span(v-if="goal == 1").
         Your idle citizens will be forced to reclaim overgrown land surrounding your county. You are currently {{ landProduced }} / {{ landToClear }} square meters towards reclaiming an acre. You will advance {{ reclaiming }} square meters each day.
-      </span>
-      <span v-if="goal == 2">
+      span(v-if="goal == 2").
         Your idle citizens will be forced to forage for food, gaining enough for {{ foraging }} people each day.
-      </span>
-      <span v-if="goal == 3">
+      span(v-if="goal == 3").
         Your idle citizens will be allowed to relax, gaining {{ relaxing }} happiness per day.
-      </span>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -82,3 +71,6 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+</style>
