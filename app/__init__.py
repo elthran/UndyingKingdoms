@@ -9,7 +9,7 @@ from extensions import (
     flask_db, flask_csrf, flask_mobility, flask_mail, flask_cors,
     flask_serializer
 )
-from app.GeoIP import geo_ip
+from app.blueprints.GeoIP import geo_ip
 from app.blueprints.admin import admin_blueprint
 from app.blueprints.game_clock import game_clock_blueprint
 from app.api import api_blueprint
