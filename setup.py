@@ -26,6 +26,7 @@ setup(
         'maxminddb',
         'SQLAlchemy-Utils',
         'PyJWT',
+        'pytest-xdist',
         'requests',
         'Flask-Script',
         'Flask-Mobility',
