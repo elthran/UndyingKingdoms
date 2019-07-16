@@ -4,7 +4,7 @@ from lib.namers import romanize
 
 
 def generate_tech_levels(technologies, requirements):
-    """Generate each level up tech up to max level.
+    """Generate each level of tech up to max level.
 
     You should now be able to create
     Technology(
