@@ -6,7 +6,7 @@ from sqlalchemy_utils import database_exists, create_database
 import config
 from extensions import flask_db as db
 import app as udk
-import utilities.seeds as to
+import seeds
 
 
 def setup_app():
@@ -22,7 +22,7 @@ def setup_app():
         db.drop_all()
         db.create_all()
         # Create the game world
-        objs = to.build_testing_objects()
+        objs = seeds.build_testing_objects()
         db.session.commit()
 
     yield (app, objs)
@@ -53,7 +53,7 @@ def rebuild_after(app):
         db.create_all()
         # Apparently you shouldn't change the database structure while
         # the app is running. But I'm doing it.
-        to.build_testing_objects()
+        seeds.build_testing_objects()
         db.session.commit()
 
         # The following is temporary for testing.
