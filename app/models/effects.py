@@ -1,18 +1,49 @@
 import operator
 
+from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.orm.exc import NoResultFound
+
+from lib.namers import to_var_name
 from .interfaces import EffectInterface
 import app.models as udk_models
 models = lambda: udk_models.exports
 
 
-def relative_lookup(cls_name):
+def relative_lookup(instance, cls_name):
     """Look up a model from the model exports file.
 
     e.g.
         'Wizardry' => exports.Wizardry
     """
+    cls = getattr(models(), cls_name)
 
-    return getattr(models(), cls_name)
+    # simple join
+    instance_cls_name_as_var = to_var_name(instance.__class__.__name__)
+    instance_as_foreign_key = f'{instance_cls_name_as_var}_id'
+    possible_join = {instance_as_foreign_key: instance.id}
+    try:
+        return cls.query.filter_by(**possible_join).one()
+    except NoResultFound:
+        pass
+    except InvalidRequestError:
+        pass
+
+    # complex join
+    instance_foreign_keys = {key for key in instance.__dict__.keys() if key.endswith('_id')}
+    cls_foreign_keys = {key for key in cls.__dict__.keys() if key.endswith('_id')}
+    intersecting_foreign_keys = instance_foreign_keys & cls_foreign_keys
+    for key in intersecting_foreign_keys:
+        possible_join = {key: getattr(instance, key)}
+        try:
+            return cls.query.filter_by(**possible_join).one()
+        except NoResultFound:
+            pass
+        except InvalidRequestError:
+            pass
+    raise ValueError(
+        f"No connection was found between {instance} and {cls}."
+        " You need to debug Effect activation between these objects."
+    )
 
 
 class Effect:
@@ -20,8 +51,8 @@ class Effect:
         self.cls_name = cls_name
         self.kwargs = kwargs
 
-    def general_activate(self, op=operator.add):
-        obj = relative_lookup(self.cls_name)
+    def general_activate(self, instance, op=operator.add):
+        obj = relative_lookup(instance, self.cls_name)
         for key in self.kwargs:
             try:
                 initial_val = getattr(obj, '_' + key)
@@ -46,12 +77,12 @@ class Add(Effect, EffectInterface):
     Does  obj.x += y
     """
 
-    def activate(self, obj):
-        self.general_activate(op=operator.add)
+    def activate(self, instance):
+        self.general_activate(instance, op=operator.add)
 
-    def undo(self, obj):
+    def undo(self, county):
         minus = Minus(self.cls_name, **self.kwargs)
-        minus.activate(obj)
+        minus.activate(county)
 
 
 class Minus(Effect, EffectInterface):
@@ -60,12 +91,12 @@ class Minus(Effect, EffectInterface):
     Does  obj.x -= y
     """
 
-    def activate(self, obj):
-        self.general_activate(op=operator.sub)
+    def activate(self, county):
+        self.general_activate(county, op=operator.sub)
 
-    def undo(self, obj):
+    def undo(self, county):
         add = Add(self.cls_name, **self.kwargs)
-        add.activate(obj)
+        add.activate(county)
 
 
 class Times(Effect, EffectInterface):
@@ -74,12 +105,12 @@ class Times(Effect, EffectInterface):
     Does  obj.x *= 1 + y
     """
 
-    def activate(self, obj):
-        self.general_activate(op=lambda a, b: a * (1 + b))
+    def activate(self, county):
+        self.general_activate(county, op=lambda a, b: a * (1 + b))
 
-    def undo(self, obj):
+    def undo(self, county):
         divide = Divide(self.cls_name, **self.kwargs)
-        divide.activate(obj)
+        divide.activate(county)
 
 
 class Divide(Effect, EffectInterface):
@@ -88,9 +119,9 @@ class Divide(Effect, EffectInterface):
     Does  obj.x /= 1 + y
     """
 
-    def activate(self, obj):
-        self.general_activate(op=lambda a, b: a / (1 + b))
+    def activate(self, county):
+        self.general_activate(county, op=lambda a, b: a / (1 + b))
 
-    def undo(self, obj):
+    def undo(self, county):
         times = Times(self.cls_name, **self.kwargs)
-        times.activate(obj)
+        times.activate(county)

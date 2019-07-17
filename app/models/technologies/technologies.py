@@ -153,7 +153,7 @@ class Technology(GameEvent):
         # noinspection PyPropertyAccess
         for effect in self.effects:
             try:
-                effect.activate(county)
+                effect.activate(self)
             except TypeError as ex:
                 tech_name = self.name
                 effect_info = repr(effect.kwargs)
