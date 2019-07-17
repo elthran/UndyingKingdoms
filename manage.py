@@ -49,7 +49,7 @@ def drop_db():
 @manager.command
 def populate_db():
     """Add data to the database."""
-    from utilities.seeds import build_testing_objects
+    from seeds import build_testing_objects
 
     with app.app_context():
         # Create the game world
