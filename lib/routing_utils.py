@@ -1,6 +1,31 @@
 from importlib import import_module
 
-from lib.namers import to_class_name
+from lib.namers import to_class_name, to_endpoint_name
+
+
+def attach_controller_routes(blueprint, routes):
+    """Attach routes from a specialized dictionary.
+
+    Format should be:
+    routes = {
+        '/infrastructure': {
+            GET: InfrastructureController.read,
+            PUT: InfrastructureController.update
+        },
+        '/routing/<route>': {
+            GET: RoutingController.read,
+        }
+    }
+    """
+    for route, endpoints in routes.items():
+        for verb, controller in endpoints.items():
+            blueprint.add_url_rule(
+                route,
+                endpoint=to_endpoint_name(controller.__qualname__),
+                view_func=controller,
+                methods=[verb]
+            )
+    return blueprint
 
 
 def import_endpoints(blueprint, mod_name, endpoints):

@@ -1,4 +1,4 @@
-from app.api.helpers import import_endpoints
+from lib.routing_utils import import_endpoints
 from app.api import api_blueprint
 
 import_endpoints(

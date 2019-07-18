@@ -3,6 +3,19 @@ import re
 import roman
 
 
+def romanize(word, n):
+    """Attach a Roman numeral to the given word.
+
+    Do nothing if n is 0.
+    """
+    numeral = roman.toRoman(n)
+    return f'{word} {numeral}' if n > 1 else word
+
+
+def strip_leading_underscore(s):
+    return s[1:] if s[0] == '_' else s
+
+
 def to_class_name(name):
     """Convert spaced or underscored word to title case word.
 
@@ -14,17 +27,10 @@ def to_class_name(name):
     return ''.join(name.title().replace(" ", "_").split('_'))
 
 
-def to_var_name(name):
-    """Convert a upper case class name to a variable name.
-    e.g.
-        FooBar -> foo_bar
-        FooBAR -> foo_b_a_r
-    TODO: make FooBAR => foo_bar ...
-    """
-
-    words = re.sub(r"([A-Z])", r" \1", name).split()
-
-    return '_'.join(words).lower()
+def to_endpoint_name(name):
+    """Converts a qualified name to a lower-cased name."""
+    cls_name, tag = name.split('.')
+    return '_'.join([to_var_name(cls_name), tag])
 
 
 def to_mixed_case(name):
@@ -50,14 +56,14 @@ def to_mixed_case(name):
     return mixed_case
 
 
-def romanize(word, n):
-    """Attach a Roman numeral to the given word.
-
-    Do nothing if n is 0.
+def to_var_name(name):
+    """Convert a upper case class name to a variable name.
+    e.g.
+        FooBar -> foo_bar
+        FooBAR -> foo_b_a_r
+    TODO: make FooBAR => foo_bar ...
     """
-    numeral = roman.toRoman(n)
-    return f'{word} {numeral}' if n > 1 else word
 
+    words = re.sub(r"([A-Z])", r" \1", name).split()
 
-def strip_leading_underscore(s):
-    return s[1:] if s[0] == '_' else s
+    return '_'.join(words).lower()
