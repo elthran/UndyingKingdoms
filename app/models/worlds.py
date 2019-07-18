@@ -78,7 +78,7 @@ class World(GameState):
             kingdom.leader = 0
             kingdom.wars_total_ta = 0
             kingdom.wars_won_ta = 0
-            kingdom.approval_rating = None
+            kingdom.approval_rating = Kingdom.BASE_APPROVAL_RATING
             kingdom.save()
         winning_kingdoms = [sorted(kingdoms, key=lambda x: x.wars_won_ta, reverse=True)[0],
                             sorted(kingdoms, key=lambda x: x.total_land_of_top_three_counties, reverse=True)[0]]

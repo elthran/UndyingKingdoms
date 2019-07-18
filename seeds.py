@@ -35,7 +35,6 @@ def build_testing_objects():
     county.technologies['basic espionage ii'].completed = True
     county.technologies['basic espionage iii'].completed = True
     # county.technologies['elixir of life'].completed = True
-    kingdom1.approval_rating = 60
     # Create Haldon
     kingdom2 = Kingdom.query.get(2)
     user = User("haldon", MARLEN_TEMPORARY_EMAIL, MARLEN_TEMPORARY_ACCOUNT_PASSWORD)

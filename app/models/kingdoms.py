@@ -47,6 +47,8 @@ def armistice_condition(id_join):
 
 
 class Kingdom(GameState):
+    BASE_APPROVAL_RATING = 60
+
     name = db.Column(db.String(128), nullable=False, unique=True)
     world_id = db.Column(db.Integer, db.ForeignKey('world.id'), nullable=False)
     clan = db.Column(db.Boolean)
@@ -167,11 +169,15 @@ class Kingdom(GameState):
         counties = sorted(self.counties, key=lambda x: x.land, reverse=True)
         return sum(county.land for county in counties[:3])
 
+    @property
+    def has_leader(self):
+        return self.leader is not None
+
     def __init__(self, name):
         self.name = name
         self.clan = False
         self.leader = 0
-        self.approval_rating = None
+        self.approval_rating = Kingdom.BASE_APPROVAL_RATING
         self.world_id = 1
         self.wars_total_lt = 0
         self.wars_won_lt = 0
@@ -207,7 +213,7 @@ class Kingdom(GameState):
         preferences = county.preferences
         if preferences.get_votes_for_self() >= self.get_votes_needed():
             self.leader = county.id
-            self.approval_rating = 60
+            self.approval_rating = Kingdom.BASE_APPROVAL_RATING
             achievement = Achievement.query.filter_by(
                 user_id=county.user_id,
                 category="class_leader",
@@ -274,7 +280,7 @@ class Kingdom(GameState):
 
         # TEMP
         self.approval_rating += 25
-        if enemy.approval_rating:
+        if enemy.has_leader:
             enemy.approval_rating -= 10
         armistice = Diplomacy(self, enemy, action=Diplomacy.ARMISTICE, status=Diplomacy.IN_PROGRESS)
         armistice.duration = 24
