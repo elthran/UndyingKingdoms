@@ -40,4 +40,21 @@ def convert_to_view_function(controller):
         result = controller(cls(), *args, **kwargs)
         if isinstance(result[0], Response):
             return result
+        js_friendly_result = jsify_keys(result[0])
+        return (jsonify(**js_friendly_result), *result[1:])
+
     return as_view
+
+
+def jsify_keys(obj):
+    """Recursively convert all dict keys to mixed case for JS."""
+    if not isinstance(obj, dict):
+        return obj
+
+    mixed_case_keyed_dct = {}
+    for key, value in obj.items():
+        mixed_case_key = to_mixed_case(key)
+        jsified_value = jsify_keys(value)
+        mixed_case_keyed_dct[mixed_case_key] = jsified_value
+
+    return mixed_case_keyed_dct

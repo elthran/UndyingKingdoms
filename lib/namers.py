@@ -2,6 +2,13 @@ import re
 
 import roman
 
+ACRONYMS = {
+    'API',
+    # 'URL',
+    'URI',
+    'HTML',
+}
+
 
 def romanize(word, n):
     """Attach a Roman numeral to the given word.
@@ -33,13 +40,21 @@ def to_endpoint_name(name):
     return '_'.join([to_var_name(cls_name), tag])
 
 
-def to_mixed_case(name):
+def to_mixed_case(name, capitalize_acronyms=True):
     """Convert a lower_case_with_underscores to mixedCase naming.
 
     foo_barCAPS == fooBarCAPS
     Assumes any grouping of capitals is an acronym and should
     be left as is.
     """
+    if capitalize_acronyms:
+        words = name.split('_')
+        acronymed_words = [
+            word if word.upper() not in ACRONYMS else word.upper()
+            for word in words
+        ]
+        name = '_'.join(acronymed_words)
+
     first_char = (
         name[0].lower()
         if len(name) > 1 and not name[1].isupper()

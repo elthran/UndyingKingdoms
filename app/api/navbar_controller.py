@@ -1,4 +1,4 @@
-from flask import jsonify, url_for
+from flask import url_for
 from flask_login import current_user, login_required
 
 from lib.base_controller import CRUDMethodView
@@ -12,11 +12,11 @@ class NavbarController(CRUDMethodView):
         preferences = current_user.preferences
 
         user = dict(
-            isAdmin=current_user.is_admin,
-            hasMail=preferences.has_mail(),
-            hasChatMessage=preferences.has_new_townhall_message(),
-            isKing=kingdom.leader != 0,
-            hasClan=current_user.clan is not None,
+            is_admin=current_user.is_admin,
+            has_mail=preferences.has_mail(),
+            has_chat_message=preferences.has_new_townhall_message(),
+            is_king=kingdom.leader != 0,
+            has_clan=current_user.clan is not None,
         )
 
         # the url names on the left here must match the ones
@@ -34,19 +34,19 @@ class NavbarController(CRUDMethodView):
             messages=url_for('messages'),
             chatroom=url_for('chatroom'),
             kingdom=url_for('kingdom', kingdom_id=kingdom.id),
-            royalCourt=url_for('royal_court'),
+            royal_court=url_for('royal_court'),
             achievements=url_for('achievements'),
             forum=url_for('forum', thread_id=0, post_id=0),
             guide=url_for('guide'),
             leaderboard=url_for('leaderboard'),
             profile=url_for('profile', tab='basic'),
-            adminHomeAPI=url_for('admin.home_api'),
+            admin_home_api=url_for('admin.home_api'),
             clan=url_for('generic_clan'),
             logout=url_for('logout'),
         )
 
-        return jsonify(
-            debugMessage="You called on the navbar api.",
+        return dict(
+            debug_message="You called on the navbar api.",
             user=user,
-            urlFor=urls
+            url_for=urls,
         ), 200

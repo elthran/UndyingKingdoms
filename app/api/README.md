@@ -21,7 +21,7 @@ DELETE | Delete | 405 (Method Not Allowed), unless you want to delete the whole 
 To set up the routes you link them as seen in `api/routes.py`
 
 
-```
+```python
 routes = {
     '/infrastructure': {
         GET: InfrastructureController.read,
@@ -30,5 +30,23 @@ routes = {
     '/routing/<route>': {
         GET: RoutingController.read,
     }
+}
+```
+
+Controller class return values now get converted to JavaScript style naming and jsonified if you return a dictionary.
+
+E.g.
+```python
+class NavbarController:
+    def read(self):
+        return dict(
+            admin_home_api='foo'
+        )
+```
+
+And its response will be the JSON object:
+```json
+{
+  "adminHomeAPI": "foo"
 }
 ```

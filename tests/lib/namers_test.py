@@ -7,3 +7,7 @@ def test_to_mixed_case():
     assert to_mixed_case("FooBar") == "fooBar"
     assert to_mixed_case("HTML") == "HTML"
     assert to_mixed_case("M") == 'M'
+
+
+def test_to_mixed_case_with_acronyms():
+    assert to_mixed_case('admin_home_api') == 'adminHomeAPI'
