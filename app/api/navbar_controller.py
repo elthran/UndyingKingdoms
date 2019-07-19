@@ -1,11 +1,12 @@
 from flask import jsonify, url_for
-from flask.views import MethodView
 from flask_login import current_user, login_required
 
+from lib.base_controller import CRUDMethodView
 
-class SidebarAPI(MethodView):
+
+class NavbarController(CRUDMethodView):
     @login_required
-    def get(self):
+    def read(self):
         county = current_user.county
         kingdom = current_user.county.kingdom
         preferences = current_user.preferences
@@ -19,7 +20,7 @@ class SidebarAPI(MethodView):
         )
 
         # the url names on the left here must match the ones
-        # inside the SideBar.vue component.
+        # inside the Navbar.vue component.
         # This probably should just be a list?
         urls = dict(
             overview=url_for('overview'),
@@ -45,7 +46,7 @@ class SidebarAPI(MethodView):
         )
 
         return jsonify(
-            debugMessage="You called on the sidebar api.",
+            debugMessage="You called on the navbar api.",
             user=user,
             urlFor=urls
         ), 200

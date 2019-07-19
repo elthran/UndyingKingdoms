@@ -10,7 +10,7 @@ import App from './App.vue'
 
 // allows this.axios, which is an axios with custom config.
 Vue.use(VueAxios, customAxios)
-// allows this.$hydrate('/api/sidebar')
+// allows this.$hydrate('/api/navbar')
 Vue.use(APIInterfacePlugin)
 
 Vue.component('prefix-title', PrefixTitle)

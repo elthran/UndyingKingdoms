@@ -1,6 +1,6 @@
 <template>
   <nav
-    id="mobile-sidebar"
+    id="mobile-navbar"
     class="invisible"
   >
     <hr class="width-95-percent">
@@ -144,8 +144,8 @@ export default {
   },
   mounted () {
     // if development
-    // url is 'http://localhost:5000/api/sidebar' - happens auto-magically.
-    this.$hydrate('/api/sidebar')
+    // url is 'http://localhost:5000/api/navbar' - happens auto-magically.
+    this.$hydrate('/api/navbar')
     .then(() => {
       this.$el.classList.remove('invisible')
     })
@@ -154,10 +154,10 @@ export default {
 </script>
 
 <style scoped>
-/* The main sidebar which is always visible when logged in */
+/* The main navbar which is always visible when logged in */
 /* Converts to bottom navigation on small screens */
 @media (max-width: 640px) {
-  #mobile-sidebar {
+  #mobile-navbar {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -192,7 +192,7 @@ export default {
 
 /* Make nav bar into a sidebar on larger screens */
 @media (min-width: 640px) {
-  #mobile-sidebar {
+  #mobile-navbar {
     display: flex;
     flex-direction: column;
     align-items: center;
