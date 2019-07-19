@@ -1,6 +1,6 @@
-from functools import wraps
 from importlib import import_module
 
+from lib.controller_utils import convert_to_view_function
 from lib.namers import to_class_name, to_endpoint_name
 
 
@@ -21,7 +21,7 @@ def attach_controller_routes(blueprint, routes):
     for route, endpoints in routes.items():
         for verb, controller in endpoints.items():
             # if 'Navbar' in controller.__qualname__: breakpoint()
-            view_func = build_view_function(controller)
+            view_func = convert_to_view_function(controller)
             blueprint.add_url_rule(
                 route,
                 endpoint=to_endpoint_name(controller.__qualname__),
@@ -29,23 +29,6 @@ def attach_controller_routes(blueprint, routes):
                 methods=[verb]
             )
     return blueprint
-
-
-def build_view_function(controller):
-    """Convert a method into an actual view function for the routing system.
-
-    Internally generates an instance of the class on the fly so as to
-    fill the self parameter.
-    """
-    module = import_module(controller.__module__)
-    cls_name, *_, = controller.__qualname__.split('.')
-    cls = getattr(module, cls_name)
-
-    @wraps(controller)
-    def as_view(*args, **kwargs):
-        return controller(cls(), *args, **kwargs)
-
-    return as_view
 
 
 def import_endpoints(blueprint, mod_name, endpoints):
