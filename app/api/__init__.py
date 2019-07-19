@@ -21,9 +21,6 @@ from . import military
 
 endpoints = {
     'sidebar': None,
-    'routing': {
-        'path_args': '/<route>'
-    },
 }
 
 for endpoint in endpoints:
