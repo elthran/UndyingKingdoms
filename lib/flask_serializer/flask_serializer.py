@@ -1,4 +1,4 @@
-from .commands import serializer_cli
+from .commands import create_cli
 from .encoder_factory import meta_json_encoder_factory
 
 # Convenience import
@@ -13,7 +13,7 @@ class FlaskSerializer(object):
             self.encoder = self.init_app(app)
 
     def init_app(self, app):
-        app.cli.add_command(serializer_cli)
+        app.cli.add_command(create_cli)
         encoder = meta_json_encoder_factory(app.name)
 
         # register extension with app

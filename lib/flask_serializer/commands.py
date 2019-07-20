@@ -15,16 +15,16 @@ class {{ model }}Serializer(Serializer):
 """[1:]  # strips initial newline
 
 
-serializer_cli = AppGroup('serializer', help="Create serializer from template.")
+create_cli = AppGroup('create', help="Create various components from templates.")
 
 
-@serializer_cli.command('create')
+@create_cli.command('serializer')
 @click.argument('name')
-def serializer_create(name):
+def create_serializer(name):
     """Create serializer for model of the given name.
 
     Usage:
-        flask serializer create notification
+        flask create serializer notification
 
     If name starts with a capital it is used as is.
     If it doesn't title case is used.
