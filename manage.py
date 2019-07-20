@@ -1,7 +1,14 @@
+import warnings
+
 from flask_script import Manager, Command, Server
 
 from extensions import flask_db as db
 from app import app
+
+warnings.warn(
+    "Flask manage is being phased out in favor of running `flask` commands.\n\n",
+    DeprecationWarning
+)
 
 manager = Manager(app)
 
