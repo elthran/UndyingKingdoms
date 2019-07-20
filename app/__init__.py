@@ -13,6 +13,7 @@ from app.blueprints.GeoIP import geo_ip
 from app.blueprints.admin import admin_blueprint
 from app.blueprints.game_clock import game_clock_blueprint
 from app.api import api_blueprint
+from commands import db_cli, reset, test, serve
 
 app = Flask(__name__)
 # I can't figure out how to put these in the config file
@@ -43,6 +44,12 @@ app.register_blueprint(geo_ip)
 app.register_blueprint(admin_blueprint)
 app.register_blueprint(game_clock_blueprint)
 app.register_blueprint(api_blueprint)
+
+# add commands
+app.cli.add_command(db_cli)
+app.cli.add_command(reset)
+app.cli.add_command(test)
+app.cli.add_command(serve)
 
 from app.models.exports import User
 
