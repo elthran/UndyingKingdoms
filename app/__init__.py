@@ -113,3 +113,14 @@ def favicon():
         'favicon.ico',
         mimetype='image/vnd.microsoft.icon'
     )
+
+
+@app.shell_context_processor
+def make_shell_context():
+    import app.models.exports as models
+    models_namespace = {
+        k: v
+        for k, v in vars(models).items()
+        if not k.startswith('_')
+    }
+    return {**globals(), **models_namespace}
