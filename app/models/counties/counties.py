@@ -5,7 +5,7 @@ from random import choice, randint
 from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
-from tests import bp
+# from lib.relationship_utils import has_one
 from app.calculations.distributions import get_int_between_0_and_100, get_int_between_n_and_m
 from app.metadata.armies.metadata_armies_updater import update_armies
 from ..magic import Casting
@@ -24,6 +24,8 @@ class County(GameState):
     LAND = 1
     FOOD = 2
     HAPPINESS = 3
+
+    # has_one('Infrastructure')
 
     name = db.Column(db.String(128), nullable=False)
     leader = db.Column(db.String(128))

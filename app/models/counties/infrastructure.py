@@ -1,9 +1,11 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
+# from lib.relationship_utils import belongs_to
 from ..bases import GameState, db
 
 
 class Infrastructure(GameState):
+    # belongs_to('County')
     _cost_modifier = db.Column(db.Float)
     _fort_multiplier = db.Column(db.Float)
 
