@@ -28,6 +28,7 @@ setup(
         'numpy',
         'pandas',
         'pandas',
+        'pluralize',
         'pytest',
         'pytest-xdist',
         'python-Levenshtein',
