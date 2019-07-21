@@ -6,7 +6,7 @@ from random import choice, randint
 from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
-from app.calculations.distributions import get_int_between_0_and_100, get_int_between_n_and_m
+from lib.calculations.distributions import get_int_between_0_and_100, get_int_between_n_and_m
 from lib.relationship_utils import has_one
 from ..magic import Casting
 from ..bases import GameState, db
@@ -982,23 +982,6 @@ class County(GameState):
     def get_expeditions(self):
         expeditions = Expedition.query.filter_by(county_id=self.id).all()
         return [expedition for expedition in expeditions if expedition.duration > 0]
-
-    def get_chance_to_catch_enemy_thieves(self):
-        buffer_time = datetime.utcnow() - timedelta(hours=12)
-        operations_on_target = Infiltration.query.filter_by(target_id=self.id).filter_by(success=True).filter(
-            Infiltration.time_created > buffer_time).all()
-        chance = 0
-        for mission in operations_on_target:  # Each thief who invaded you gives you some protection
-            chance += (mission.amount_of_thieves * 5)
-
-        chance += (self.buildings['tower'].total ** 0.8) * 100 / self.land * self.buildings['tower'].output
-
-        modify_thief_prevention = Casting.query.filter_by(target_id=self.id, name="modify_thief_prevention").filter(
-            (Casting.duration > 0) | (Casting.active == True)).all()
-        for spell in modify_thief_prevention or []:
-            chance += spell.output * self.spell_modifier
-
-        return get_int_between_0_and_100(chance)
 
     def chance_to_disrupt_spell(self):
         chance = 0

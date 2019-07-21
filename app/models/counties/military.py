@@ -1,7 +1,7 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from tests import bp
-from app.calculations.filters import check_filter_match, check_for_filter
+from lib.calculations.filters import check_filter_match, check_for_filter
 from app.metadata.metadata import offensive_power_modifier
 from app.models.armies import Army
 from ..magic import Casting

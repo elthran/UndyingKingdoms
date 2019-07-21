@@ -6,7 +6,7 @@ from faker.providers import BaseProvider
 from tests import bp, pp
 from app.blueprints.admin.metadata import bot_county_prefix, bot_county_suffix, bot_leader_prefix, \
     bot_leader_suffix
-from app.calculations.distributions import bell_curvish, normalize, curve_bounds
+from lib.calculations.distributions import bell_curvish, normalize, curve_bounds
 from app.metadata.metadata import metadata_races, metadata_titles, metadata_backgrounds
 from app.metadata.research.metadata_research_all import generic_technology
 from lib.namers import romanize
