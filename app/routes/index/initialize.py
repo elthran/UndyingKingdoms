@@ -12,7 +12,7 @@ from app.metadata.armies.metadata_armies_elf import elf_armies
 from app.metadata.armies.metadata_armies_goblin import goblin_armies
 from app.metadata.armies.metadata_armies_human import human_armies
 get_forms = lambda: import_module('app.models.forms.initialize')
-get_initialize = lambda: import_module(app.controler.initialize)
+get_initialize = lambda: import_module('app.controler.initialize')
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])

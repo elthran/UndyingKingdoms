@@ -22,6 +22,7 @@ def setup_app():
         db.drop_all()
         db.create_all()
         # Create the game world
+        # objs = None
         objs = seeds.build_testing_objects()
         db.session.commit()
 
