@@ -9,5 +9,6 @@ select yn in "Yes" "No"; do
 	esac
 done
 
-UDK="app"
+source ./config.sh
+
 zip -r /tmp/dist.zip $UDK/static/dist $UDK/templates/dist
