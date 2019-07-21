@@ -66,7 +66,8 @@ def test(args):
 
     args = ('tests',) if not args else args
 
-    click.echo(f"Arguments passed to pytest were: {args}")
+    pretty_args = ', '.join(args)
+    click.echo(f"Running `pytest {pretty_args}`")
     import pytest
     pytest.main(list(args))
 
