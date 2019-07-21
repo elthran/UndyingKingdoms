@@ -59,6 +59,7 @@ class Infiltration(GameEvent):
         self.research_stolen = 0
 
     def get_troop_report(self, county, enemy_county, amount_sent):
+        enemy_infrastructure = enemy_county.infrastructure
         if amount_sent == 1:
             inaccuracy = 1.0
         elif amount_sent == 2:
@@ -72,7 +73,7 @@ class Infiltration(GameEvent):
         besieger_inaccuracy = int(max(enemy_county.armies['besieger'].total * inaccuracy, 2))
         summon_inaccuracy = int(max(enemy_county.armies['summon'].total * inaccuracy, 2))
         elite_inaccuracy = int(max(enemy_county.armies['elite'].total * inaccuracy, 2))
-        fort_inaccuracy = int(max(enemy_county.buildings['fort'].total * inaccuracy, 2))
+        fort_inaccuracy = int(max(enemy_infrastructure.buildings['fort'].total * inaccuracy, 2))
 
         self.peasant = max(enemy_county.armies['peasant'].total + randint(-peasant_inaccuracy, peasant_inaccuracy), 0)
         self.archer = max(enemy_county.armies['archer'].total + randint(-archer_inaccuracy, archer_inaccuracy), 0)
@@ -80,7 +81,7 @@ class Infiltration(GameEvent):
         self.besieger = max(enemy_county.armies['besieger'].total + randint(-besieger_inaccuracy, besieger_inaccuracy), 0)
         self.summon = max(enemy_county.armies['summon'].total + randint(-summon_inaccuracy, summon_inaccuracy), 0)
         self.elite = max(enemy_county.armies['elite'].total + randint(-elite_inaccuracy, elite_inaccuracy), 0)
-        self.fort = max(enemy_county.buildings['fort'].total + randint(-fort_inaccuracy, fort_inaccuracy), 0)
+        self.fort = max(enemy_infrastructure.buildings['fort'].total + randint(-fort_inaccuracy, fort_inaccuracy), 0)
 
     def get_report_age(self, day):
         return day - self.world_day

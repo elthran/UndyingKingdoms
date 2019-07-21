@@ -36,9 +36,10 @@ class InfrastructureForm(FlaskForm):
     def insufficient_gold(self):
         gold_cost = 0
         county = County.query.get(self.county_id.data)
+        infrastructure = county.infrastructure
         for building in [self.house, self.field, self.pasture, self.mill, self.mine, self.quarry, self.fort,
                          self.stables, self.bank, self.tavern, self.tower, self.lab, self.arcane, self.lair]:
-            gold_cost += county.buildings[building.name].gold_cost * building.data
+            gold_cost += infrastructure.buildings[building.name].gold_cost * building.data
         if gold_cost > county.gold:
             self.county_id.errors.append("Not enough gold.")
             return True
@@ -46,9 +47,10 @@ class InfrastructureForm(FlaskForm):
     def insufficient_wood(self):
         wood_cost = 0
         county = County.query.get(self.county_id.data)
+        infrastructure = county.infrastructure
         for building in [self.house, self.field, self.pasture, self.mill, self.mine, self.quarry, self.fort,
                          self.stables, self.bank, self.tavern, self.tower, self.lab, self.arcane, self.lair]:
-            wood_cost += county.buildings[building.name].wood_cost * building.data
+            wood_cost += infrastructure.buildings[building.name].wood_cost * building.data
         if wood_cost > county.wood:
             self.county_id.errors.append("Not enough wood.")
             return True
@@ -56,9 +58,10 @@ class InfrastructureForm(FlaskForm):
     def insufficient_stone(self):
         stone_cost = 0
         county = County.query.filter_by(id=self.county_id.data).first()
+        infrastructure = county.infrastructure
         for building in [self.house, self.field, self.pasture, self.mill, self.mine, self.quarry, self.fort,
                          self.stables, self.bank, self.tavern, self.tower, self.lab, self.arcane, self.lair]:
-            stone_cost += county.buildings[building.name].stone_cost * building.data
+            stone_cost += infrastructure.buildings[building.name].stone_cost * building.data
         if stone_cost > county.stone:
             self.county_id.errors.append("Not enough stone.")
             return True
@@ -66,10 +69,11 @@ class InfrastructureForm(FlaskForm):
     def insufficient_land(self):
         land_cost = 0
         county = County.query.get(self.county_id.data)
+        infrastructure = county.infrastructure
         for building in [self.house, self.field, self.pasture, self.mill, self.mine, self.quarry, self.fort,
                          self.stables, self.bank, self.tavern, self.tower, self.lab, self.arcane, self.lair]:
             land_cost += building.data
-        if land_cost > county.get_available_land():
+        if land_cost > infrastructure.get_available_land():
             self.county_id.errors.append("Not enough land.")
             return True
 

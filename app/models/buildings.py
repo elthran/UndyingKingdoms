@@ -1,8 +1,10 @@
+from lib.relationship_utils import belongs_to
 from .bases import GameState, db
 
 
 class Building(GameState):
-    county_id = db.Column(db.Integer, db.ForeignKey('county.id', ondelete="CASCADE"), nullable=False)
+    belongs_to("Infrastructure", fk_kwargs=dict(ondelete="CASCADE"), nullable=False)
+
     name = db.Column(db.String(64))
     class_name = db.Column(db.String(64))
     class_name_plural = db.Column(db.String(64))

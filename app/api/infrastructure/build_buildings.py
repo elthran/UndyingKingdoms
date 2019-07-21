@@ -15,6 +15,7 @@ class BuildBuildingsAPI(MethodView):
         forms = get_forms()
         models = get_models()
         county = current_user.county
+        infrastructure = county.infrastructure
         world = county.kingdom.world
 
         build_form = forms.InfrastructureForm()
@@ -24,16 +25,16 @@ class BuildBuildingsAPI(MethodView):
             transaction = models.Transaction(county.id, county.day, world.day, "buy")
             for building in all_buildings:
                 if build_form.data[building] > 0:
-                    county.gold -= build_form.data[building] * county.buildings[building].gold_cost
-                    county.wood -= build_form.data[building] * county.buildings[building].wood_cost
-                    county.stone -= build_form.data[building] * county.buildings[building].stone_cost
-                    county.buildings[building].pending += build_form.data[building]
+                    county.gold -= build_form.data[building] * infrastructure.buildings[building].gold_cost
+                    county.wood -= build_form.data[building] * infrastructure.buildings[building].wood_cost
+                    county.stone -= build_form.data[building] * infrastructure.buildings[building].stone_cost
+                    infrastructure.buildings[building].pending += build_form.data[building]
                     transaction.add_purchase(
                         item_name=building,
                         item_amount=build_form.data[building],
-                        gold_per_item=county.buildings[building].gold_cost,
-                        wood_per_item=county.buildings[building].wood_cost,
-                        stone_per_item=county.buildings[building].stone_cost
+                        gold_per_item=infrastructure.buildings[building].gold_cost,
+                        wood_per_item=infrastructure.buildings[building].wood_cost,
+                        stone_per_item=infrastructure.buildings[building].stone_cost
                     )
             transaction.save()
             return jsonify(

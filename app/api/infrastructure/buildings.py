@@ -13,6 +13,7 @@ class BuildingsAPI(MethodView):
     def get(self):
         forms = get_forms()
         county = current_user.county
+        infrastructure = county.infrastructure
 
         build_form = forms.InfrastructureForm()
 
@@ -27,7 +28,7 @@ class BuildingsAPI(MethodView):
         total_built = 0
         total_pending = 0
         total_employed = 0
-        for index, building in enumerate(county.buildings.values()):
+        for index, building in enumerate(infrastructure.buildings.values()):
             name = building.name
             build_order.append(name)
             form_data[name] = 0  # add all fields to form_data

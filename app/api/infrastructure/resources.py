@@ -7,11 +7,12 @@ class ResourcesAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
+        infrastructure = county.infrastructure
 
         return jsonify(
             status="success",
             debugMessage="You called on the resources api.",
-            availableLand=county.get_available_land(),
+            availableLand=infrastructure.get_available_land(),
             availableCitizens=county.get_available_workers(),
             land=county.land,
             population=county.population,

@@ -12,7 +12,8 @@ from app.metadata.metadata import rations_terminology, birth_rate_modifier, inco
 @mobile_template('{mobile/}gameplay/economy.html')
 @login_required
 def economy(template):
-    form = EconomyForm(tax=current_user.county.tax_rate, rations=current_user.county.rations)
+    county = current_user.county
+    form = EconomyForm(tax=county.tax_rate, rations=county.rations)
 
     form.tax.choices = tax_options
     form.rations.choices = rations_terminology
@@ -23,7 +24,9 @@ def economy(template):
         birth_rate_modifier=birth_rate_modifier,
         income_modifier=income_modifier,
         food_consumed_modifier=food_consumed_modifier,
-        happiness_modifier=happiness_modifier)
+        happiness_modifier=happiness_modifier,
+        infrastructure=county.infrastructure
+    )
     # return send_from_directory('static/dist', 'economy.html')
 
 

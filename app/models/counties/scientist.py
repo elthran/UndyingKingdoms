@@ -10,7 +10,11 @@ class Scientist(GameEvent):
     @hybrid_property
     def research_change(self):
         county = self.county
-        building_production = county.buildings['lab'].total * (county.buildings['lab'].output + self.research_multiplier)
+        infrastructure = county.infrastructure
+        building_production = (
+            infrastructure.buildings['lab'].total *
+            (infrastructure.buildings['lab'].output + self.research_multiplier)
+        )
         return building_production + self._research_change
 
     @research_change.setter

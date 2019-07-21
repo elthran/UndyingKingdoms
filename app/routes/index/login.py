@@ -24,7 +24,7 @@ def login(template):
             return redirect(url_for('activate'))
         return redirect(url_for('overview'))
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = models.User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
             if user.county is None:
                 login_user(user)

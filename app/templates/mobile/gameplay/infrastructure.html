@@ -127,7 +127,7 @@ th {
   <img class="resource_icons" src="/static/dist/images/gold_icon.jpg"> / {{ county.gold }} <img class="resource_icons" src="/static/dist/images/gold_icon.jpg"><br>
   Wood Cost: <span class="woodCost">0</span>
   <img class="resource_icons" src="/static/dist/images/wood_icon.jpg"> / {{ county.wood }} <img class="resource_icons" src="/static/dist/images/wood_icon.jpg"><br>
-  Land Required: <span class="landCost">0</span>&nbsp;/&nbsp;{{ county.get_available_land() }}
+  Land Required: <span class="landCost">0</span>&nbsp;/&nbsp;{{ infrastructure.get_available_land() }}
   <br><br>
   Each day, up to 3 buildings in your queue will be built.
   <br>
@@ -148,7 +148,7 @@ th {
 {% set kingdom = county.kingdom %}
 <div id="content">
   <div id="header">
-    <h2>Available Land: <span id="avaiableLand">{{ county.get_available_land() }}</span>&nbsp;/&nbsp;{{ county.land }}</h2>
+    <h2>Available Land: <span id="avaiableLand">{{ infrastructure.get_available_land() }}</span>&nbsp;/&nbsp;{{ county.land }}</h2>
     <h2>Citizens Avaiable: {{ county.get_available_workers() }}&nbsp;/&nbsp;{{ county.population }}</h2>
     <h2>Current Resources:
       <br>
@@ -186,7 +186,7 @@ th {
     {{ build_form.csrf_token }}
     <table id="productionTable">
       <tbody>
-      {% for building in county.buildings.values() %}
+      {% for building in infrastructure.buildings.values() %}
       <tr>
         <th colspan="2">{{ building.class_name.title() }}</th>
       </tr>
@@ -228,11 +228,11 @@ th {
       </tr>
       <tr>
         <td>Owned</td>
-        <td>{{ county.buildings.values()|sum(attribute="total") }}</td>
+        <td>{{ infrastructure.buildings.values()|sum(attribute="total") }}</td>
       </tr>
       <tr>
         <td>Under Construction</td>
-        <td>{{ county.buildings.values()|sum(attribute="pending") }}</td>
+        <td>{{ infrastructure.buildings.values()|sum(attribute="pending") }}</td>
       </tr>
       <tr>
         <td>To Be Built</td>
@@ -240,7 +240,7 @@ th {
       </tr>
       <tr>
         <td>Workers Employed</td>
-        <td style="width:150px;">{{ county.get_employed_workers() }}</td>
+        <td style="width:150px;">{{ infrastructure.get_employed_workers() }}</td>
       </tr>
       </tbody>
     </table>

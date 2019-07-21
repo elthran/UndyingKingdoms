@@ -92,10 +92,11 @@ class Military(GameState):
     @hybrid_property
     def speed_modifier(self):
         county = self.county
+        infrastructure = county.infrastructure
         speed_modifier = self._speed_modifier
         speed_modifier += (
-                (county.buildings['stables'].total ** 0.9) * 100 *
-                county.buildings['stables'].output / county.land
+                (infrastructure.buildings['stables'].total ** 0.9) * 100 *
+                infrastructure.buildings['stables'].output / county.land
         )
         return speed_modifier
 

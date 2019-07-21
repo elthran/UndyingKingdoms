@@ -77,6 +77,7 @@ class DAU(GameEvent):
     def update_self(self, user_id):
         user = User.query.get(user_id)
         county = user.county
+        infrastructure = county.infrastructure
         
         self.world_day = county.kingdom.world.day
         self.county_day = county.day
@@ -119,20 +120,20 @@ class DAU(GameEvent):
         self.maximum_offense = county.get_offensive_strength(scoreboard=True)
         self.maximum_defence = county.get_defensive_strength()
 
-        self.house = county.buildings['house'].total
-        self.field = county.buildings['field'].total
-        self.pasture = county.buildings['pasture'].total
-        self.mill = county.buildings['mill'].total
-        self.mine = county.buildings['mine'].total
-        self.fort = county.buildings['fort'].total
-        self.stables = county.buildings['stables'].total
-        self.bank = county.buildings['bank'].total
-        self.tavern = county.buildings['tavern'].total
-        self.tower = county.buildings['tower'].total
-        self.lab = county.buildings['lab'].total
-        self.arcane = county.buildings['arcane'].total
-        self.quarry = county.buildings['quarry'].total
-        self.lair = county.buildings['lair'].total
+        self.house = infrastructure.buildings['house'].total
+        self.field = infrastructure.buildings['field'].total
+        self.pasture = infrastructure.buildings['pasture'].total
+        self.mill = infrastructure.buildings['mill'].total
+        self.mine = infrastructure.buildings['mine'].total
+        self.fort = infrastructure.buildings['fort'].total
+        self.stables = infrastructure.buildings['stables'].total
+        self.bank = infrastructure.buildings['bank'].total
+        self.tavern = infrastructure.buildings['tavern'].total
+        self.tower = infrastructure.buildings['tower'].total
+        self.lab = infrastructure.buildings['lab'].total
+        self.arcane = infrastructure.buildings['arcane'].total
+        self.quarry = infrastructure.buildings['quarry'].total
+        self.lair = infrastructure.buildings['lair'].total
 
     @staticmethod
     def get_sessions(user_id):

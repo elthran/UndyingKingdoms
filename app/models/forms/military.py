@@ -53,11 +53,12 @@ class MilitaryForm(FlaskForm):
             return True
 
     def insufficient_lairs(self, county):
-        max_monsters = county.buildings['lair'].total * county.buildings['lair'].output
+        infrastructure = county.infrastructure
+        max_monsters = infrastructure.buildings['lair'].total * infrastructure.buildings['lair'].output
         current_monsters = county.armies['monster'].total + county.armies['monster'].currently_training
         available = max_monsters - current_monsters
         if self.monster.data > available and self.monster.data > 0:
-            self.county_id.errors.append(f"Not enough {county.buildings['lair'].class_name}.")
+            self.county_id.errors.append(f"Not enough {infrastructure.buildings['lair'].class_name}.")
             return True
         
     def insufficient_population(self, county):

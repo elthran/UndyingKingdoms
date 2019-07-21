@@ -4,22 +4,28 @@ from app.metadata.magic.metadata_magic_all import generic_spells
 from app.metadata.research.metadata_research_all import generic_technology, generic_requirements
 from lib.combiners import combine_dicts
 from app.virtual_classes.all_metadata_imports import all_metadata_imports as md
+# TODO: refactor this module into a Heritage class. :)
+
+
+def get_racial_buildings(race):
+    race = race.lower()
+    building_mod = md[f'metadata_buildings_{race}']
+    race_buildings = getattr(building_mod, f'{race}_buildings')
+    return deepcopy(race_buildings)
 
 
 def add_racial_data(self):
     # Buildings and Armies extracted from metadata
     race = self.race.lower()
-    building_mod = md[f'metadata_buildings_{race}']
+
     armies_mod = md[f'metadata_armies_{race}']
     magic_mod = md[f'metadata_magic_{race}']
     research_mod = md[f'metadata_research_{race}']
 
-    race_buildings = getattr(building_mod, f'{race}_buildings')
     race_armies = getattr(armies_mod, f'{race}_armies')
     race_spells = getattr(magic_mod, f'{race}_spells')
     race_technology = getattr(research_mod, f'{race}_technology')
 
-    self.buildings = deepcopy(race_buildings)
     self.armies = deepcopy(race_armies)
     self.magic = {**deepcopy(generic_spells), **deepcopy(race_spells)}
     self.technologies = {**deepcopy(generic_technology), **deepcopy(race_technology)}

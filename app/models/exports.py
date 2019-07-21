@@ -1,8 +1,9 @@
 from .users import User
 from .counties.exports import (
-    County, Economy, Infrastructure, Espionage,
+    County, Economy, Espionage,
     Military, Wizardry, Scientist, Event
 )
+from .infrastructure import Infrastructure
 from .buildings import Building
 from .armies import Army
 from .kingdoms import Kingdom

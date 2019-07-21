@@ -139,7 +139,7 @@ th {
             <td>
                 <ul>
                     <li>Taxes: v{ taxIncome }</li>
-                    {% if county.buildings['bank'].total > 0 %}
+                    {% if infrastructure.buildings['bank'].total > 0 %}
                     <li>Banks: {{ county.bank_income }}</li>
                     {% endif %}
                     {% if county.production_choice == 0 %}
@@ -207,17 +207,17 @@ th {
         <tr>
             <td>Lumber</td>
             <td>{{ county.wood }}</td>
-            {% if county.get_wood_income() >= 0 %}
+            {% if infrastructure.get_wood_income() >= 0 %}
             <td style="color:green;">+
                 {% else %}
             <td style="color:red;">
                 {% endif %}
-                {{ county.get_wood_income() }} <img class="resource_icons" src="/static/dist/images/wood_icon.jpg">
+                {{ infrastructure.get_wood_income() }} <img class="resource_icons" src="/static/dist/images/wood_icon.jpg">
             </td>
             <td>-</td>
             <td>
                 <ul>
-                    <li>{{ county.buildings['mill'].class_name_plural.title() }}: + {{ county.get_wood_income() }} <img
+                    <li>{{ infrastructure.buildings['mill'].class_name_plural.title() }}: + {{ infrastructure.get_wood_income() }} <img
                             class="resource_icons" src="/static/dist/images/wood_icon.jpg">
                     </li>
                 </ul>
@@ -238,7 +238,7 @@ th {
             <td>-</td>
             <td>
                 <ul>
-                    <li>{{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.iron_income }} <img
+                    <li>{{ infrastructure.buildings['mine'].class_name_plural.title() }}: + {{ county.iron_income }} <img
                             class="resource_icons" src="/static/dist/images/iron_icon.jpg">
                     </li>
                 </ul>
@@ -249,15 +249,15 @@ th {
         <tr>
             <td>Stone</td>
             <td>{{ county.stone }}</td>
-            {% if county.get_stone_income() >= 0 %}
+            {% if infrastructure.get_stone_income() >= 0 %}
             <td style="color:green;">+
                 {% else %}
             <td style="color:red;">
                 {% endif %}
-                {{ county.get_stone_income() }} <img class="resource_icons" src="/static/dist/images/stone_icon.jpg">
+                {{ infrastructure.get_stone_income() }} <img class="resource_icons" src="/static/dist/images/stone_icon.jpg">
             </td>
             <td>-</td>
-            <td>{{ county.buildings['quarry'].class_name_plural.title() }}: + {{ county.get_stone_income() }} <img
+            <td>{{ infrastructure.buildings['quarry'].class_name_plural.title() }}: + {{ infrastructure.get_stone_income() }} <img
                         class="resource_icons" src="/static/dist/images/stone_icon.jpg">
             </td>
             <td>-</td>

@@ -7,6 +7,7 @@ class WoodAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
+        infrastructure = county.infrastructure
 
         # happinessChange=county.happiness_change,
         # nourishmentChange=county.get_nourishment_change(),
@@ -15,6 +16,6 @@ class WoodAPI(MethodView):
             status='success',
             debugMessage='You called the wood api.',
             wood=county.wood,
-            woodIncome=county.get_wood_income(),
-            mills=county.buildings['mill'].class_name_plural.title(),
+            woodIncome=infrastructure.get_wood_income(),
+            mills=infrastructure.buildings['mill'].class_name_plural.title(),
         )

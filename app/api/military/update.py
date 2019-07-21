@@ -14,11 +14,12 @@ class UpdateAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
+        infrastructure = county.infrastructure
         form = MilitaryForm()
 
         armies = county.armies
         besiegers = armies['besieger']
-        lair = county.buildings['lair']
+        lair = infrastructure.buildings['lair']
 
         military_strength = dict(
             offensiveStrength=county.get_offensive_strength(),

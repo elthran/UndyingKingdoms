@@ -70,6 +70,7 @@ def enemy_overview(template, county_id=0):
     return render_template(
         template,
         target_county=target_county,
+        target_infrastructure=target_county.infrastructure,
         target_kingdom=target_kingdom,
         message_form=message_form,
         trade_form=trade_form

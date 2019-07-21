@@ -7,11 +7,12 @@ class IronAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
+        infrastructure = county.infrastructure
 
         return jsonify(
             status='success',
             debugMessage='You called the iron api.',
             iron=county.iron,
             ironIncome=county.iron_income,
-            mines=county.buildings['mine'].class_name_plural.title(),
+            mines=infrastructure.buildings['mine'].class_name_plural.title(),
         )

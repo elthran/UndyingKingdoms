@@ -42,10 +42,10 @@ class Economy(GameState):
 
     @hybrid_property
     def bank_income(self):
-        county = self.county
-        building_income = county.buildings['bank'].total * (
-                    county.buildings['bank'].output + (self.bank_multiplier or 0))
-        building_income *= county.building_efficiencies()
+        infrastructure = self.county.infrastructure
+        building_income = infrastructure.buildings['bank'].total * (
+                    infrastructure.buildings['bank'].output + (self.bank_multiplier or 0))
+        building_income *= infrastructure.building_efficiencies()
         return ceil(building_income)
 
     @bank_income.setter
@@ -76,8 +76,12 @@ class Economy(GameState):
     @hybrid_property
     def birth_rate_modifier(self):
         county = self.county
+        infrastructure = county.infrastructure
         modifier = self._birth_rate_modifier
-        modifier += (county.buildings['house'].total ** 0.75) / county.land * county.buildings['house'].output
+        modifier += (
+            (infrastructure.buildings['house'].total ** 0.75)
+            / county.land * infrastructure.buildings['house'].output
+        )
         modify_birth_rate = Casting.query.filter_by(target_id=county.id, name="modify_birth_rate").filter(
             (Casting.duration > 0) | Casting.active).all()
         for spell in modify_birth_rate or []:
@@ -109,10 +113,10 @@ class Economy(GameState):
 
     @hybrid_property
     def dairy_produced(self):
-        county = self.county
-        building = county.buildings['pasture']
+        infrastructure = self.county.infrastructure
+        building = infrastructure.buildings['pasture']
         building_production = building.total * building.output
-        building_production *= county.building_efficiencies()
+        building_production *= infrastructure.building_efficiencies()
         # noinspection PyPropertyAccess
         return round(building_production * (1 + self.dairy_modifier))
 
@@ -211,10 +215,10 @@ class Economy(GameState):
 
     @hybrid_property
     def grain_produced(self):
-        county = self.county
-        field = county.buildings['field']
+        infrastructure = self.county.infrastructure
+        field = infrastructure.buildings['field']
         building_production = field.total * field.output
-        building_production *= county.building_efficiencies()
+        building_production *= infrastructure.building_efficiencies()
         # noinspection PyPropertyAccess
         return round((self._grain_produced + building_production) * (1 + self.grain_modifier))
 
@@ -243,10 +247,12 @@ class Economy(GameState):
 
     @hybrid_property
     def iron_income(self):
-        county = self.county
-
-        building_production = county.buildings['mine'].total * (county.buildings['mine'].output + self.iron_multiplier)
-        building_production *= county.building_efficiencies()
+        infrastructure = self.county.infrastructure
+        building_production = (
+                infrastructure.buildings['mine'].total *
+                (infrastructure.buildings['mine'].output + self.iron_multiplier)
+        )
+        building_production *= infrastructure.building_efficiencies()
         return ceil(building_production + self._iron_income)
 
     @iron_income.setter

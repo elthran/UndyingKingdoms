@@ -23,8 +23,9 @@ def build_testing_objects():
     county = initialize_county(user, kingdom1, "Ulthuan", 'Sir', "Elthran", 'Human', 'Rogue')
     county.save()
     county.vote = county.id
-    county.buildings['fort'].total = 10
-    county.buildings['tavern'].total = 10
+    infrastructure = county.infrastructure
+    infrastructure.buildings['fort'].total = 10
+    infrastructure.buildings['tavern'].total = 10
     county.armies['peasant'].total = 5000
     county.armies['monster'].total = 100
     county.armies['summon'].total = 100
@@ -45,16 +46,17 @@ def build_testing_objects():
     county.armies['summon'].total = 100
     county.save()
     county.vote = county.id
-    county.buildings['arcane'].total = 5
+    infrastructure = county.infrastructure
+    infrastructure.buildings['arcane'].total = 5
+    infrastructure.buildings['lair'].total = 1
+    infrastructure.buildings['tavern'].total = 5
     county.technologies['basic agriculture'].completed = True
     # county.technologies['basic agriculture II'].completed = True
     # county.technologies['basic agriculture III'].completed = True
     county.mana = 500
     county.happiness = 80
     county.iron = 200
-    county.buildings['lair'].total = 1
     county.armies['elite'].total = 100
-    county.buildings['tavern'].total = 5
     county.population += 500
     # kingdom2.leader = county.id
     # kingdom2.approval_rating = 60

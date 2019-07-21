@@ -5,7 +5,8 @@ from app.models.exports import County
 
 def test_forts_add_defence(ctx):
     county = County.query.get(1)
-    forts = county.buildings['fort']
+    infrastructure = county.infrastructure
+    forts = infrastructure.buildings['fort']
 
     forts.total = 0
     low_defense = county.get_defensive_strength()

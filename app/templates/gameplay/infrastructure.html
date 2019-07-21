@@ -126,13 +126,13 @@ h2 {
 {% set kingdom = county.kingdom %}
 
 <div id="content">
-  <h2>Available Land: {{ county.get_available_land() }} / {{ county.land }}</h2>
+  <h2>Available Land: {{ infrastructure.get_available_land() }} / {{ county.land }}</h2>
   <h2>Unemployed Citizens : {{ county.get_available_workers() }} / {{ county.population }}</h2>
-  {% if county.get_workers_needed_to_be_efficient() %}
-      <h2 style="color:red;">You need {{ county.get_workers_needed_to_be_efficient() }} more citizens to fully utilize your infrastructure.<br>
+  {% if infrastructure.get_workers_needed_to_be_efficient() %}
+      <h2 style="color:red;">You need {{ infrastructure.get_workers_needed_to_be_efficient() }} more citizens to fully utilize your infrastructure.<br>
   {% else %}
       <h2 style="color:green;">{% endif %}
-        Your buildings are currently {{ (county.building_efficiencies() * 100)|int }}% efficient.</h2>
+        Your buildings are currently {{ (infrastructure.building_efficiencies() * 100)|int }}% efficient.</h2>
   <p class="bottom-spacer-dot-3">You may assign a task to your idle population. </p>
   <form id="goal-form" action="{{ url_for('api.infrastructure_allocate_api') }}" method="POST" accept-charset="UTF-8">
     {{ excess_worker_form.csrf_token(id="allocate-form-csrf-token") }}
@@ -170,7 +170,7 @@ h2 {
         <th style="width:150px;">Workers Employed</th>
         <th>Description</th>
       </tr>
-      {% for building in county.buildings.values() %}
+      {% for building in infrastructure.buildings.values() %}
         {% set slider_size = max_buildable_by_cost(county, building) %}
       <tr>
         <td>{{ building.class_name.title() }}</td>
@@ -194,11 +194,11 @@ h2 {
       {% endfor %}
       <tr style="font-weight:bold;">
         <td style="width:150px;">Total</td>
-        <td>{{ county.buildings.values()|sum(attribute='total') }}</td>
+        <td>{{ infrastructure.buildings.values()|sum(attribute='total') }}</td>
         <td>-</td>
-        <td>{{ county.buildings.values()|sum(attribute='pending') }}</td>
+        <td>{{ infrastructure.buildings.values()|sum(attribute='pending') }}</td>
         <td style="width:150px;">-</td>
-        <td style="width:150px;">{{ county.get_employed_workers() }}</td>
+        <td style="width:150px;">{{ infrastructure.get_employed_workers() }}</td>
         <td>-</td>
       </tr>
     </table>
@@ -218,7 +218,7 @@ h2 {
       <img class="resource_icons" src="/static/dist/images/stone_icon.jpg">
     </div>
     <div class="top-spacer-dot-3">
-      Land Required: <span id="landCost">0</span> / {{ county.get_available_land() }}
+      Land Required: <span id="landCost">0</span> / {{ infrastructure.get_available_land() }}
     </div>
     <br>
     <p>Each day, up to {{ county.build_slots }} buildings in your queue will be built.</p>
@@ -231,7 +231,7 @@ h2 {
   <span id="totalGold">{{ county.gold }}</span>
   <span id="totalWood">{{ county.wood }}</span>
   <span id="totalStone">{{ county.stone }}</span>
-  <span id="totalLand">{{ county.get_available_land() }}</span>
+  <span id="totalLand">{{ infrastructure.get_available_land() }}</span>
   {% for n in range(4) %}
     <span id="goalAmount{{ n }}">{{ county.get_excess_production_value(n) }}</span>
   {% endfor %}

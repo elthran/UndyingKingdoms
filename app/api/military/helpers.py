@@ -35,7 +35,8 @@ def vue_safe_army(county, army):
 
 def monsters_buildable(county):
     """Calculate the number of monsters buildable."""
-    lair = county.buildings['lair']
+    infrastructure = county.infrastructure
+    lair = infrastructure.buildings['lair']
     monster = county.armies['monster']
     return lair.total - monster.total - monster.currently_training
 

@@ -4,8 +4,9 @@ from app.models.counties.counties import County
 
 def test_alchemy_technology_effects(ctx):
     county = County.query.filter_by(leader="Elthran").one()
+    infrastructure = county.infrastructure
     scientist = county.scientist
-    lab = county.buildings['lab']
+    lab = infrastructure.buildings['lab']
 
     # A county with no labs should get 0 research a turn
     lab.total = 0

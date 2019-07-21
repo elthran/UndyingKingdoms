@@ -30,7 +30,8 @@ def infrastructure():
         excess_worker_form=excess_worker_form,
         meta_data=game_descriptions,
         max_buildable_by_cost=max_buildable_by_cost,
-        land_to_clear=county.land * land_to_clear_ratio
+        land_to_clear=county.land * land_to_clear_ratio,
+        infrastructure=county.infrastructure
     )
 
 

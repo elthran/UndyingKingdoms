@@ -15,8 +15,9 @@ class Espionage(GameState):
     @hybrid_property
     def thief_slots(self):
         county = self.county
-        base = county.buildings['tavern'].total
-        output = county.buildings['tavern'].output
+        infrastructure = county.infrastructure
+        base = infrastructure.buildings['tavern'].total
+        output = infrastructure.buildings['tavern'].output
         return base * (output + self.thief_slot_multiplier)
 
     @thief_slots.setter

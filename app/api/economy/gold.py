@@ -11,6 +11,7 @@ class GoldAPI(MethodView):
     @login_required
     def get(self):
         county = current_user.county
+        infrastructure = county.infrastructure
 
         # overwrite and vueify form, probably should be a method.
         form = EconomyForm(tax=county.tax_rate)
@@ -29,7 +30,7 @@ class GoldAPI(MethodView):
             background=county.background,
             taxIncome=county.get_tax_income(),
             bankIncome=county.bank_income,
-            hasBanks=county.buildings['bank'].total > 0,
+            hasBanks=infrastructure.buildings['bank'].total > 0,
             isOverworking=county.production_choice == 0,
             excessProduction=county.get_excess_production_value(0),
             militaryExpenses=county.get_upkeep_costs(),

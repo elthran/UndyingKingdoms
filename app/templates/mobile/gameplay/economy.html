@@ -184,7 +184,7 @@ th {
           <td>
             <ul>
               <li>Taxes: {{ county.get_tax_income() }}</li>
-              {% if county.buildings['bank'].total > 0 %}
+              {% if infrastructure.buildings['bank'].total > 0 %}
                 <li>Banks: {{ county.bank_income }}</li>
               {% endif %}
               {% if county.production_choice == 0 %}
@@ -277,12 +277,12 @@ th {
         </tr>
         <tr>
           <td>Projected Change</td>
-          {% if county.get_wood_income() >= 0 %}
+          {% if infrastructure.get_wood_income() >= 0 %}
             <td style="color:green;">+
           {% else %}
             <td style="color:red;">
           {% endif %}
-            {{ county.get_wood_income() }} <img class="resource_icons" src="/static/dist/images/wood_icon.jpg"></td>
+            {{ infrastructure.get_wood_income() }} <img class="resource_icons" src="/static/dist/images/wood_icon.jpg"></td>
         </tr>
         <tr>
           <td>Modifiers</td>
@@ -291,7 +291,7 @@ th {
         <tr>
           <td>Projected Growth</td>
           <td>
-            {{ county.buildings['mill'].class_name_plural.title() }}: + {{ county.get_wood_income() }} <img class="resource_icons" src="/static/dist/images/wood_icon.jpg">
+            {{ infrastructure.buildings['mill'].class_name_plural.title() }}: + {{ infrastructure.get_wood_income() }} <img class="resource_icons" src="/static/dist/images/wood_icon.jpg">
           </td>
         </tr>
         <tr>
@@ -325,7 +325,7 @@ th {
         <tr>
           <td>Projected Growth</td>
           <td>
-            {{ county.buildings['mine'].class_name_plural.title() }}: + {{ county.iron_income }} <img class="resource_icons" src="/static/dist/images/iron_icon.jpg">
+            {{ infrastructure.buildings['mine'].class_name_plural.title() }}: + {{ county.iron_income }} <img class="resource_icons" src="/static/dist/images/iron_icon.jpg">
           </td>
         </tr>
         <tr>

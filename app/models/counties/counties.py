@@ -6,8 +6,8 @@ from random import choice, randint
 from sqlalchemy import desc
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
-# from lib.relationship_utils import has_one
 from app.calculations.distributions import get_int_between_0_and_100, get_int_between_n_and_m
+from lib.relationship_utils import has_one
 from ..magic import Casting
 from ..bases import GameState, db
 from ..helpers import cached_random, extract_modifiers
@@ -15,6 +15,7 @@ from ..notifications import Notification
 from ..expeditions import Expedition
 from ..infiltrations import Infiltration
 from ..trades import Trade
+get_models = lambda: import_module('app.models.exports')
 get_specifics = lambda: import_module('app.models.counties.specifics')
 get_metadata = lambda: import_module('app.virtual_classes.all_metadata_imports').all_metadata_imports
 
@@ -25,7 +26,7 @@ class County(GameState):
     FOOD = 2
     HAPPINESS = 3
 
-    # has_one('Infrastructure')
+    has_one('Infrastructure')
 
     name = db.Column(db.String(128), nullable=False)
     leader = db.Column(db.String(128))
@@ -63,11 +64,6 @@ class County(GameState):
     expeditions = db.relationship('Expedition', backref='county')
     infiltrations = db.relationship('Infiltration', backref='county', foreign_keys='[Infiltration.county_id]')
 
-    buildings = db.relationship(
-        "Building",
-        collection_class=attribute_mapped_collection('name'),
-        cascade="all, delete, delete-orphan", passive_deletes=True
-    )
     armies = db.relationship(
         "Army",
         collection_class=attribute_mapped_collection('name'),
@@ -83,6 +79,7 @@ class County(GameState):
                                   foreign_keys="Preferences.county_id")
 
     def __init__(self, kingdom_id, name, leader, user, race, title, background):
+        models = get_models()
         specifics = get_specifics()
         md = get_metadata()
         self.name = name
@@ -114,6 +111,8 @@ class County(GameState):
         self.lifetime_research = self._research
         self.lifetime_mana = self._mana
 
+        # additional objects.
+        self.infrastructure = models.Infrastructure(self)
 
         specifics.add_racial_data(self)
         self.armies = md['metadata_armies_updater'].update_armies(self.background, self.armies)
@@ -134,11 +133,12 @@ class County(GameState):
 
     @land.setter
     def land(self, value):
+        infrastructure = self.infrastructure
         difference = value - self._land
         if value <= 0:
             self._land = "YOU LOST THE GAME"
         if difference < 0:
-            self.destroy_buildings(self, abs(difference))
+            infrastructure.destroy_buildings(abs(difference))
         self._land = value
         self.check_incremental_achievement("land", self._land)
 
@@ -312,9 +312,10 @@ class County(GameState):
         Add a WORLD. Tracks day. Has game clock.
         """
         event = self.event
+        infrastructure = self.infrastructure
         self.update_daily_resources()
         self.advance_research()
-        self.produce_pending_buildings()
+        infrastructure.produce_pending_buildings()
         self.produce_pending_armies()
         self.apply_excess_production_value()
         self.update_food()
@@ -396,6 +397,7 @@ class County(GameState):
 
     def temporary_bot_tweaks(self):
         from app.models.exports import User
+        infrastructure = self.infrastructure
 
         friendly_counties = County.query.join(User).filter(County.kingdom_id == self.kingdom_id, ~User.is_bot).all()
         if randint(1, 10) == 10 and self.day > 10:
@@ -410,7 +412,7 @@ class County(GameState):
         self.iron += 1
         if randint(1, 24) == 24 and self.kingdom.leader == 0 and friendly_counties:
             self.cast_vote(choice(friendly_counties))
-        if randint(1, 10) == 10 and self.get_available_land() >= 5:
+        if randint(1, 10) == 10 and infrastructure.get_available_land() >= 5:
             self.buildings['house'].total += 3
             self.buildings['field'].total += 1
             self.buildings['pasture'].total += 1
@@ -447,10 +449,11 @@ class County(GameState):
             trade_offered.save()
 
     def update_daily_resources(self):
+        infrastructure = self.infrastructure
         self.gold += self.gold_income
-        self.wood += self.get_wood_income()
+        self.wood += infrastructure.get_wood_income()
         self.iron += self.iron_income
-        self.stone += self.get_stone_income()
+        self.stone += infrastructure.get_stone_income()
         self.mana += self.mana_change
         self.research += self.research_change
         self.happiness += self.happiness_change
@@ -526,22 +529,6 @@ class County(GameState):
             return int(min(food_delta, self.get_produced_grain()))
         return int(max(food_delta, - self.grain_stores))
 
-    # Land
-    def get_available_land(self):
-        """
-        How much land you have which is empty and can be built upon.
-        """
-        return max(self.land - sum(building.total + building.pending for building in self.buildings.values()), 0)
-
-    # Workers / Population / Soldiers
-    def get_workers_needed_to_be_efficient(self):
-        if self.get_non_military_citizens() < self.get_employed_workers():
-            return self.get_employed_workers() - self.get_non_military_citizens()
-        return 0
-
-    def building_efficiencies(self):
-        return max(round((self.population - self.get_workers_needed_to_be_efficient()) / self.population, 2), 0.25)
-
     def get_army_size(self):
         return sum(army.total + army.currently_training for army in self.armies.values())
 
@@ -557,17 +544,12 @@ class County(GameState):
     def get_non_military_citizens(self):
         return self.population - self.get_army_size()
 
-    def get_employed_workers(self):
-        """
-        Returns the population who are maintaining current buildings.
-        """
-        return sum(building.workers_employed * building.total for building in self.buildings.values())
-
     def get_available_workers(self):
         """
         Returns the population with no current duties.
         """
-        return max(self.population - self.get_employed_workers() - self.get_army_size(), 0)
+        infrastructure = self.infrastructure
+        return max(self.population - infrastructure.get_employed_workers() - self.get_army_size(), 0)
 
     def get_death_rate(self):
         md = get_metadata()
@@ -612,12 +594,6 @@ class County(GameState):
     def get_upkeep_costs(self):
         return sum(unit.upkeep * unit.total for unit in self.armies.values()) // 24
 
-    def get_wood_income(self):
-        return self.buildings['mill'].total * self.buildings['mill'].output
-
-    def get_stone_income(self):
-        return self.buildings['quarry'].total * self.buildings['quarry'].output
-
     def get_excess_production_value(self, value=-1):
         """
         Users the excess production towards completing a task
@@ -650,21 +626,6 @@ class County(GameState):
             self.grain_stores += self.get_excess_production_value()
         if self.production_choice == 3:
             pass  # Already handled in self.happiness_change
-
-    def produce_pending_buildings(self):
-        """
-        Gets a list of all buildings which can be built today. Builds it. Then recalls function.
-        """
-        buildings_to_be_built = self.build_slots
-        while buildings_to_be_built > 0:
-            buildings_to_be_built -= 1
-            queue = [building for building in self.buildings.values() if building.pending > 0]
-            if queue:
-                building = choice(queue)
-                building.pending -= 1
-                building.total += 1
-            else:
-                break
 
     def produce_pending_armies(self):
         """
@@ -699,6 +660,7 @@ class County(GameState):
 
     def get_defensive_strength(self, scoreboard=False):
         md = get_metadata()
+        infrastructure = self.infrastructure
         # First get base strength of citizens
         local_md = md['metadata']
         modifier = 1 + extract_modifiers(
@@ -714,7 +676,13 @@ class County(GameState):
             else:
                 strength += unit.available * unit.defence
         # Lastly, multiply by the defensive building modifier
-        strength *= (self.buildings['fort'].output * self.buildings['fort'].total) / 100 + 1
+        strength *= (
+            (
+                infrastructure.buildings['fort'].output *
+                infrastructure.buildings['fort'].total
+            )
+            / 100 + 1
+        )
         return int(strength)
 
     def update_expedition_sent(self, army, expedition_id):
@@ -785,9 +753,10 @@ class County(GameState):
     def battle_results(self, army, enemy, attack_type):
         kingdom = self.kingdom
         enemy_kingdom = enemy.kingdom
+        enemy_infrastructure = enemy.infrastructure
         military = self.military
         rewards_modifier = 1.00
-        offence_damage = self.get_offensive_strength(army=army, enemy_forts=enemy.buildings["fort"].total)
+        offence_damage = self.get_offensive_strength(army=army, enemy_forts=enemy_infrastructure.buildings["fort"].total)
         defence_damage = enemy.get_defensive_strength()
         expedition = Expedition(self.id, enemy.id, self.kingdom.world.day, self.day, offence_damage, defence_damage,
                                 attack_type)
@@ -886,7 +855,8 @@ class County(GameState):
                     f" and cause -{happiness_impact} happiness to their county."
 
             elif self.armies['monster'].class_name == 'mammoth':
-                enemy.destroy_buildings(enemy, expedition.monster_sent, destroy_all=True)
+                enemy_infrastructure = enemy.infrastructure
+                enemy_infrastructure.destroy_buildings(expedition.monster_sent, destroy_all=True)
                 monster_title = "Mammoths attack"
                 monster_content = f"Your county lost {expedition.monster_sent} " \
                     f"buildings from the charging mammoths."
@@ -975,27 +945,6 @@ class County(GameState):
         notification.save()
 
         return message, expedition.attack_power
-
-    @staticmethod
-    def destroy_buildings(county, land_destroyed, destroy_all=False):
-        # destroy_all means it will always destroy this amount if you have it. Otherwise the amount destroyed is random.
-        if destroy_all:
-            destroyed = 0
-        else:
-            destroyed = randint(0, county.get_available_land())  # The more available land, the less likely building are destroyed
-        need_list = True
-        while destroyed < land_destroyed:
-            if need_list:
-                building_choices = [building for building in county.buildings.keys() if
-                                    county.buildings[building].total > 0]
-                if len(building_choices) == 0:
-                    break
-                need_list = False
-            this_choice = choice(building_choices)
-            county.buildings[this_choice].total -= 1
-            if county.buildings[this_choice].total == 0:
-                need_list = True
-            destroyed += 1
 
     # Achievements
     def check_incremental_achievement(self, name, amount):

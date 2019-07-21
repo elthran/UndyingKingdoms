@@ -4,7 +4,7 @@ from app.models.counties.counties import County
 def test_fort_multiplier(ctx):
     county = County.query.filter_by(leader="Haldon").one()
     infrastructure = county.infrastructure
-    fort = county.buildings['fort']
+    fort = infrastructure.buildings['fort']
     original_output = fort.output
 
     infrastructure.fort_multiplier = 0.5
