@@ -11,3 +11,6 @@ def test_to_mixed_case():
 
 def test_to_mixed_case_with_acronyms():
     assert to_mixed_case('admin_home_api') == 'adminHomeAPI'
+
+    # ignores leading acronyms unless the are the only word.
+    assert to_mixed_case('url_for') == 'urlFor'

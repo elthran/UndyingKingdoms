@@ -4,7 +4,7 @@ import roman
 
 ACRONYMS = {
     'API',
-    # 'URL',
+    'URL',
     'URI',
     'HTML',
 }
@@ -49,10 +49,14 @@ def to_mixed_case(name, capitalize_acronyms=True):
     """
     if capitalize_acronyms:
         words = name.split('_')
-        acronymed_words = [
-            word if word.upper() not in ACRONYMS else word.upper()
-            for word in words
-        ]
+        if len(words) > 1:
+            acronymed_words = [words[0]] + [
+                word if word.upper() not in ACRONYMS else word.upper()
+                for word in words[1:]
+            ]
+        else:
+            word = words[0]
+            acronymed_words = [word if word.upper() not in ACRONYMS else word.upper()]
         name = '_'.join(acronymed_words)
 
     first_char = (
