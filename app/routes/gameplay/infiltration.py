@@ -15,6 +15,7 @@ get_models = lambda: import_module('app.models.exports')
 def infiltration(template):
     models = get_models()
     county = current_user.county
+    espionage = county.espionage
     missions_query = models.Infiltration.query.filter(
         models.Infiltration.county_id == county.id,
         models.Infiltration.duration > 0
@@ -33,5 +34,6 @@ def infiltration(template):
         missions += other_missions
     return render_template(
         template,
-        missions=missions
+        missions=missions,
+        espionage=espionage,
     )

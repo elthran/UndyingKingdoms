@@ -29,6 +29,7 @@ def infiltrate(template, county_id):
     county = current_user.county
     espionage = county.espionage
     target = County.query.get(county_id)
+    target_espionage = target.espionage
 
     form = InfiltrateForm()
     form.county_id.data = county.id
@@ -45,7 +46,10 @@ def infiltrate(template, county_id):
                               county.day, mission, form.amount.data)
         report.save()
 
-        chance_of_success = max(min(100 + form.amount.data - target.get_chance_to_catch_enemy_thieves(), 100), 0)
+        chance_of_success = max(min(
+            100 + form.amount.data -
+            target_espionage.get_chance_to_catch_enemy_thieves()
+            , 100), 0)
 
         gain_modifier = 1 + espionage.gain_modifier
 
