@@ -1,10 +1,12 @@
+from importlib import import_module
+
 from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
 
 from app import app
 from app.api.infrastructure.build_buildings import BuildBuildingsAPI
 from app.api.infrastructure.helpers import max_buildable_by_cost
-from app.models.forms.infrastructure import InfrastructureForm, ExcessProductionForm
+get_forms = lambda: import_module('app.models.forms.exports')
 from app.routes.helpers import mobile_on_vue
 from app.metadata.metadata import game_descriptions, excess_worker_choices, land_to_clear_ratio
 
@@ -13,12 +15,13 @@ from app.metadata.metadata import game_descriptions, excess_worker_choices, land
 @mobile_on_vue
 @login_required
 def infrastructure():
+    forms = get_forms()
     county = current_user.county
 
-    build_form = InfrastructureForm()
+    build_form = forms.InfrastructureForm()
     build_form.county_id.data = county.id
 
-    excess_worker_form = ExcessProductionForm(goal=county.production_choice)
+    excess_worker_form = forms.ExcessProductionForm(goal=county.production_choice)
     excess_worker_form.goal.choices = excess_worker_choices
 
     return render_template(

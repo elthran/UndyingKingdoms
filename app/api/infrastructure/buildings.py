@@ -1,17 +1,20 @@
+from importlib import import_module
+
 from flask import jsonify, url_for
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
 from .helpers import max_buildable_by_cost
-from app.models.forms.infrastructure import InfrastructureForm
+get_forms = lambda: import_module('app.models.forms.infrastructure')
 
 
 class BuildingsAPI(MethodView):
     @login_required
     def get(self):
+        forms = get_forms()
         county = current_user.county
 
-        build_form = InfrastructureForm()
+        build_form = forms.InfrastructureForm()
 
         form_data = dict(
             _action=url_for('api.infrastructure_build_buildings_api'),
@@ -47,9 +50,6 @@ class BuildingsAPI(MethodView):
             total_built += vue_safe_buildings[name]['total']
             total_pending += vue_safe_buildings[name]['pending']
             total_employed += vue_safe_buildings[name]['totalEmployed']
-
-
-
 
         return jsonify(
             status="success",

@@ -1,12 +1,12 @@
 import operator
+from importlib import import_module
 
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 
 from lib.namers import to_var_name
 from .interfaces import EffectInterface
-import app.models as udk_models
-models = lambda: udk_models.exports
+get_models = lambda: import_module('app.models.exports')
 
 
 def relative_lookup(instance, cls_name):
@@ -15,7 +15,7 @@ def relative_lookup(instance, cls_name):
     e.g.
         'Wizardry' => exports.Wizardry
     """
-    cls = getattr(models(), cls_name)
+    cls = getattr(get_models(), cls_name)
 
     # simple join
     instance_cls_name_as_var = to_var_name(instance.__class__.__name__)

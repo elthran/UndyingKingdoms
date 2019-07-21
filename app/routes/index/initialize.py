@@ -1,9 +1,9 @@
+from importlib import import_module
+
 from flask import url_for, redirect, render_template
 from flask_login import current_user, login_required
 
 from app import app
-from app.controler.initialize import initialize_county, pick_kingdom
-from app.models.forms.initialize import InitializeForm
 from app.metadata.armies.metadata_armies_ogre import ogre_armies
 from app.metadata.metadata import metadata_races, metadata_backgrounds, metadata_titles, \
     metadata_background_descriptions
@@ -11,11 +11,15 @@ from app.metadata.armies.metadata_armies_dwarf import dwarf_armies
 from app.metadata.armies.metadata_armies_elf import elf_armies
 from app.metadata.armies.metadata_armies_goblin import goblin_armies
 from app.metadata.armies.metadata_armies_human import human_armies
+get_forms = lambda: import_module('app.models.forms.initialize')
+get_initialize = lambda: import_module(app.controler.initialize)
 
 
 @app.route('/initialize/', methods=['GET', 'POST'])
 @login_required
 def initialize():
+    initialize = get_initialize()
+    forms = get_forms()
     if not current_user.is_verified:
         return redirect(url_for('activate'))
     if current_user.county is not None:
@@ -24,7 +28,7 @@ def initialize():
     players_titles = min(7, len(titles))
     races = ["<Race>"] + metadata_races
     backgrounds = ["<Class>"] + metadata_backgrounds
-    form = InitializeForm()
+    form = forms.InitializeForm()
     form.title.choices = [(i, titles[i]) for i in range(players_titles)]
     form.race.choices = [(i, races[i]) for i in range(len(races))]
     form.background.choices = [(i, backgrounds[i]) for i in range(len(backgrounds))]
@@ -35,14 +39,14 @@ def initialize():
 
     if form.validate_on_submit():
         has_clan = form.clan.data == 1
-        kingdom = pick_kingdom(current_user, has_clan)
+        kingdom = initialize.pick_kingdom(current_user, has_clan)
 
         race = races[form.race.data]
         title = titles[form.title.data]
         background = backgrounds[form.background.data]
         county_name = form.county.data
         leader_name = form.leader.data
-        county = initialize_county(current_user, kingdom, county_name, title, leader_name, race, background)
+        county = initialize.initialize_county(current_user, kingdom, county_name, title, leader_name, race, background)
         return redirect(url_for('overview'))
     return render_template(
         "index/initialize.html",

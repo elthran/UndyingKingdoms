@@ -1,7 +1,8 @@
+from importlib import import_module
+
 from app.serializers.vue_safe import generic_vue_safe
 from app.metadata.metadata import all_armies
-from app.models.exports import Transaction
-from app.models.exports import World
+get_models = lambda: import_module('app.models.exports')
 
 
 def vue_safe_army(county, army):
@@ -73,9 +74,10 @@ def max_trainable(county, army):
 
 
 def build_units(county, form):
-    world = World.query.get(county.kingdom.world_id)
+    models = get_models()
+    world = models.World.query.get(county.kingdom.world_id)
     total_trained = 0
-    transaction = Transaction(county.id, county.day, world.day, "buy")
+    transaction = models.Transaction(county.id, county.day, world.day, "buy")
     for army in all_armies:
         if form.data[army] > 0:
             total_trained += form.data[army]

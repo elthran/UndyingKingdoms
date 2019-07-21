@@ -1,21 +1,20 @@
+from importlib import import_module
 from random import choice
 from uuid import uuid4
 
 from flask import jsonify, current_app, render_template_string, url_for
 from flask_login import current_user
 
-from app.controler.initialize import initialize_county
-from app.models.exports import World
+get_initialize = lambda: import_module('app.controler.initialize')
+get_models = lambda: import_module('app.models.exports')
 from app.utilities.convert_metadata import build_race_table, build_modifier_table
 from .metadata import bot_county_prefix, bot_county_suffix, bot_leader_prefix, bot_leader_suffix
-from app.models.exports import Notification
-from app.models.exports import County
-from app.models.exports import User
-from app.models.exports import Kingdom
 
 
 def create_bots(n=1):
-    kingdoms = Kingdom.query.all()
+    models = get_models()
+    initialize = get_initialize()
+    kingdoms = models.Kingdom.query.all()
     kingdoms = [  # filter out empty kingdoms
         kingdom
         for kingdom in kingdoms
@@ -26,11 +25,11 @@ def create_bots(n=1):
         for i in range(n):
             smallest_kingdom = min(kingdoms, key=lambda x: len(x.counties))
             bot_name = uuid4()
-            user = User(f"bot_{bot_name}",
+            user = models.User(f"bot_{bot_name}",
                         f"bot_{bot_name}@gmail.com",
                         "1234")
             user.is_bot = True
-            county = initialize_county(
+            county = initialize.initialize_county(
                 user, smallest_kingdom,
                 f"{choice(bot_county_prefix)}{choice(bot_county_suffix)}",
                 choice(["Sir", "Lady"]),
@@ -52,11 +51,12 @@ def create_bots(n=1):
 
 
 def create_notification(message):
+    models = get_models()
     admin_leader = current_user.county.leader
     admin_pm_url = url_for('enemy_overview', county_id=current_user.id)
     title = f'Admin Update from <a href="{admin_pm_url}">{admin_leader}</a>'
-    for county in County.query.all():
-        notification = Notification(
+    for county in models.County.query.all():
+        notification = models.Notification(
             county,
             title,
             message,
@@ -87,8 +87,9 @@ def build_comparison_files():
 
 
 def run_advance_day():
+    models = get_models()
     try:
-        world = World.query.first()
+        world = models.World.query.first()
         world.advance_day()
         return jsonify(
             status='success',

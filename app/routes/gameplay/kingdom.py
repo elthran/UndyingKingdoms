@@ -1,18 +1,20 @@
+from importlib import import_module
+
 from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from app import app
-from app.models.counties.counties import County
-from app.models.exports import Kingdom
-from app.models.forms.votes import VoteForm
+get_models = lambda: import_module('app.models.exports')
+get_forms = lambda: import_module('app.models.forms.exports')
 
 
 def kingdom_navigation(direction, current_id):
-    all_kingdoms = Kingdom.query.all()
+    models = get_models()
+    all_kingdoms = models.Kingdom.query.all()
     eligible_kingdoms = [kingdom for kingdom in all_kingdoms if len(kingdom.counties) > 0]
     eligible_kingdoms = sorted(eligible_kingdoms, key=lambda x: x.id)
-    currently_viewing = Kingdom.query.get(current_id)
+    currently_viewing = models.Kingdom.query.get(current_id)
     current_index = eligible_kingdoms.index(currently_viewing)
     if len(eligible_kingdoms) == 1:
         return eligible_kingdoms[0].id
@@ -30,14 +32,16 @@ def kingdom_navigation(direction, current_id):
 @mobile_template('{mobile/}gameplay/kingdom.html')
 @login_required
 def kingdom(template, kingdom_id=0):
+    models = get_models()
+    forms = get_forms()
     county = current_user.county
     preferences = county.preferences
-    kingdom = Kingdom.query.get(kingdom_id)
+    kingdom = models.Kingdom.query.get(kingdom_id)
 
-    form = VoteForm(vote=preferences.vote_id)
+    form = forms.VoteForm(vote=preferences.vote_id)
     form.vote.choices = [(county.id, county.name) for county in county.kingdom.counties]
     if form.validate_on_submit():
-        vote = County.query.get(form.vote.data)
+        vote = models.County.query.get(form.vote.data)
         county.cast_vote(vote)
         return redirect(url_for('kingdom', kingdom_id=kingdom.id))
     return render_template(

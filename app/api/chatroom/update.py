@@ -1,24 +1,29 @@
 from datetime import datetime
 from distutils.util import strtobool
+from importlib import import_module
 
 from flask import jsonify, request
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
-from app.models.exports import Chatroom
-from app.models.forms.message import MessageForm
+get_models = lambda: import_module('app.models.exports')
+get_forms = lambda: import_module('app.models.forms.message')
 
 
 class UpdateAPI(MethodView):
     @login_required
     def get(self):
+        forms = get_forms()
+        models = get_models()
         preferences = current_user.preferences
 
-        form = MessageForm()
+        form = forms.MessageForm()
 
         last_message_id = request.args.get('last_message_id', 0)
         # return all messages, filter in frontend
-        messages = preferences.all_messages_query().filter(Chatroom.id > last_message_id).all()
+        messages = preferences.all_messages_query().filter(
+            models.Chatroom.id > last_message_id
+        ).all()
         preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
         return jsonify(
             debugMessage=f"You called on {__name__}",
@@ -30,9 +35,11 @@ class UpdateAPI(MethodView):
 
     @login_required
     def post(self):
+        forms = get_forms()
+        models = get_models()
         county = current_user.county
         preferences = current_user.preferences
-        form = MessageForm()
+        form = forms.MessageForm()
 
         preferences.last_checked_townhall = datetime.utcnow()  # Update that user has looked at town hall
 
@@ -40,8 +47,8 @@ class UpdateAPI(MethodView):
         preferences.global_chat_on = is_global
 
         if form.validate_on_submit():
-            message = Chatroom(county.kingdom_id, county.id, form.content.data, is_global=is_global)
-            message.save()
+            forms = models.Chatroom(county.kingdom_id, county.id, form.content.data, is_global=is_global)
+            forms.save()
             return jsonify(
                 debugMessage='Your message was saved.',
             ), 201

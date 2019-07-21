@@ -1,11 +1,12 @@
 import functools
 import types
+from importlib import import_module
 
 from flask import url_for, request
 from flask_login import current_user
 from werkzeug.utils import redirect
 
-from app.models.exports import County
+get_models = lambda: import_module('app.models.exports')
 
 
 def admin_required(func):
@@ -55,11 +56,12 @@ def neither_allies_nor_armistices(func):
 
     Requires: county_id parameter in kwargs.
     """
+    models = get_models()
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         try:
-            target = County.query.get(kwargs['county_id'])
+            target = models.County.query.get(kwargs['county_id'])
         except KeyError:
             raise KeyError('You need to add a "county_id" field to this route.')
         kingdom = current_user.county.kingdom

@@ -1,8 +1,11 @@
-from app.models.armies import Army
+from importlib import import_module
+
+get_models = lambda: import_module('app.models.exports')
 
 
 def update_armies(background, armies):
-    armies['summon'] = Army(
+    models = get_models()
+    armies['summon'] = models.Army(
         name='summon',
         class_name='summon',
         class_name_plural='summons',

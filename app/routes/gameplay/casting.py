@@ -1,3 +1,5 @@
+from importlib import import_module
+
 from math import floor
 from random import randint
 
@@ -7,24 +9,23 @@ from flask_mobility.decorators import mobile_template
 from werkzeug.utils import redirect
 
 from app import app
-from app.models.exports import County, Notification
-from app.models.exports import Magic
-from app.models.exports import Casting
+get_models = lambda: import_module('app.models.exports')
 
 
 @app.route('/gameplay/casting/<target_id>', methods=['GET', 'POST'])
 @mobile_template("{mobile/}gameplay/casting.html")
 @login_required
 def casting(template, target_id):
+    models = get_models()
     county = current_user.county
-    target_county = County.query.get(target_id)
+    target_county = models.County.query.get(target_id)
 
-    known_spells = Magic.get_know_spells(county)
-    unknown_spells = Magic.get_unknown_spells(county)
-    active_spells = Casting.get_active_spells(county)
-    enemy_spells = Casting.get_enemy_spells(county)
-    casting_history = Casting.query.filter_by(county_id=county.id).all()
-    sustain_mana_requirement = Casting.get_sustain_mana_requirement(county)
+    known_spells = models.Magic.get_know_spells(county)
+    unknown_spells = models.Magic.get_unknown_spells(county)
+    active_spells = models.Casting.get_active_spells(county)
+    enemy_spells = models.Casting.get_enemy_spells(county)
+    casting_history = models.Casting.query.filter_by(county_id=county.id).all()
+    sustain_mana_requirement = models.Casting.get_sustain_mana_requirement(county)
     return render_template(
         template,
         target=target_county,
@@ -40,9 +41,10 @@ def casting(template, target_id):
 @app.route('/gameplay/cast_spell/<int:spell_id>/<int:target_id>', methods=['GET', 'POST'])
 @login_required
 def cast_spell(spell_id, target_id):
+    models = get_models()
     county = current_user.county
-    target = County.query.get(target_id)
-    spell = Magic.query.get(spell_id)
+    target = models.County.query.get(target_id)
+    spell = models.Magic.query.get(spell_id)
 
     valid_target, target_relation = spell.validate_targeting(county, target)
 
@@ -53,7 +55,7 @@ def cast_spell(spell_id, target_id):
             or not spell.known):
         return redirect(url_for('casting', target_id=target.id))
 
-    cast = Casting(county.id, target.id, spell.id, county.kingdom.world.day,
+    cast = models.Casting(county.id, target.id, spell.id, county.kingdom.world.day,
                    county.day, spell.name, spell.display_name, duration=spell.duration,
                    target_relation=target_relation, output=spell.output)
     cast.save()
@@ -67,8 +69,9 @@ def cast_spell(spell_id, target_id):
 @app.route('/gameplay/cancel_spell/<int:spell_id>', methods=['GET', 'POST'])
 @login_required
 def cancel_spell(spell_id):
+    models = get_models()
     county = current_user.county
-    spell = Casting.query.get(spell_id)
+    spell = models.Casting.query.get(spell_id)
     if spell is None or county.id != spell.county_id:
         return redirect(url_for('casting', target_id=county.id))
     spell.active = False
@@ -79,8 +82,9 @@ def cancel_spell(spell_id):
 @app.route('/gameplay/dispel_spell/<int:spell_id>', methods=['GET', 'POST'])
 @login_required
 def dispel_spell(spell_id):
+    models = get_models()
     county = current_user.county
-    spell = Casting.query.get(spell_id)
+    spell = models.Casting.query.get(spell_id)
     if (spell is None
             or county.mana < 10
             or spell.target_id != county.id):

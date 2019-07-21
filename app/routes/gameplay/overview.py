@@ -1,13 +1,13 @@
+from importlib import import_module
+
 from flask import render_template, url_for, redirect, jsonify, request
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from app import app
-from app.models.exports import County, Message, Notification
-from app.models.forms.message import MessageForm
-from app.models.forms.trade import TradeForm
-from app.models.exports import Trade
 from app.routes.helpers import mobile_on_vue, not_self
+get_models = lambda: import_module('app.models.exports')
+get_forms = lambda: import_module(f'app.models.forms.exports')
 
 """
 Each of these routes could go in their own file
@@ -43,12 +43,14 @@ def overview():
 @mobile_template('{mobile/}gameplay/enemy_overview.html')
 @login_required
 def enemy_overview(template, county_id=0):
+    models = get_models()
+    forms = get_forms()
     county = current_user.county
-    target_county = County.query.get(county_id)
+    target_county = models.County.query.get(county_id)
     target_kingdom = target_county.kingdom
 
-    message_form = MessageForm()
-    trade_form = TradeForm()
+    message_form = forms.MessageForm()
+    trade_form = forms.TradeForm()
 
     # should be able to be moved to form init? And just
     # accept gold, wood and iron?
@@ -77,9 +79,11 @@ def enemy_overview(template, county_id=0):
 @app.route('/gameplay/send_message/<int:county_id>/', methods=['POST'])
 @login_required
 def send_message(county_id):
-    message_form = MessageForm()
+    models = get_models()
+    forms = get_forms()
+    message_form = forms.MessageForm()
     if message_form.validate_on_submit():
-        message = Message(
+        message = models.Message(
             county_id=county_id,
             title=message_form.title.data,
             content=message_form.content.data,

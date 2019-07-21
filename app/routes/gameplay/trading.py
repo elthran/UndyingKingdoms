@@ -1,29 +1,36 @@
+from importlib import import_module
+
 from flask import render_template, jsonify, request, url_for, redirect
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from app import app
-from app.models.exports import County, Notification
-from app.models.exports import Trade
-from app.models.forms.trade import TradeForm
+get_models = lambda: import_module('app.models.exports')
+get_forms = lambda: import_module('app.models.forms.exports')
 
 
 @app.route('/gameplay/trading/', methods=['GET'])
 @mobile_template("{mobile/}gameplay/trading.html")
 @login_required
 def trading(template):
+    models = get_models()
     county = current_user.county
-    trades_offered = Trade.query.filter_by(county_id=county.id).filter(Trade.duration > 0).all()
-    trades_received = Trade.query.filter_by(target_id=county.id).filter(Trade.duration > 0).all()
+    trades_offered = models.Trade.query.filter_by(county_id=county.id).filter(
+        models.Trade.duration > 0
+    ).all()
+    trades_received = models.Trade.query.filter_by(target_id=county.id).filter(
+        models.Trade.duration > 0
+    ).all()
     return render_template(template, trades_offered=trades_offered, trades_received=trades_received)
 
 
 @app.route('/gameplay/trading/<int:trade_id>', methods=['GET'])
 @login_required
 def trading_reply(trade_id):
-    trade = Trade.query.get(trade_id)
-    trade_offerer = County.query.get(trade.county_id)
-    trade_target = County.query.get(trade.target_id)
+    models = get_models()
+    trade = models.Trade.query.get(trade_id)
+    trade_offerer = models.County.query.get(trade.county_id)
+    trade_target = models.County.query.get(trade.target_id)
     your_county = current_user.county  # This will be the current user
     if ("accept" in request.args and
             trade.status == "Pending" and
@@ -31,7 +38,7 @@ def trading_reply(trade_id):
         if resources_are_available(trade, trade_target):
             disburse_trade(trade, trade_offerer, trade_target)
             trade.status = "Accepted"
-            notice = Notification(
+            notice = models.Notification(
                 trade_offerer,
                 "Trade",
                 f"Your trade was accepted by {current_user.county.name}",
@@ -50,7 +57,7 @@ def trading_reply(trade_id):
     elif "reject" in request.args and trade_target == your_county:
         trade.status = "Rejected"
         refund_trade(trade, trade_offerer)
-        notice = Notification(
+        notice = models.Notification(
             trade_offerer,
             "Trade",
             f"Your trade was rejected by {current_user.county.name}",
@@ -79,10 +86,12 @@ def trading_reply(trade_id):
 @app.route('/gameplay/trade/<int:county_id>/', methods=['POST'])
 @login_required
 def trade(county_id):
+    models = get_models()
+    forms = get_forms()
     county = current_user.county
-    target_county = County.query.get(county_id)
+    target_county = models.County.query.get(county_id)
 
-    trade_form = TradeForm()
+    trade_form = forms.TradeForm()
 
     trade_form.offer_gold.choices = [(i * 10, i * 10) for i in range(county.gold // 10 + 1)]
     trade_form.offer_wood.choices = [(i * 10, i * 10) for i in range(county.wood // 10 + 1)]
@@ -99,7 +108,7 @@ def trade(county_id):
 
     if trade_form.validate_on_submit() and county != target_county:
         # Consider just passing in the form object.
-        trade_offered = Trade(
+        trade_offered = models.Trade(
             county,
             target_county,
             current_user.county.kingdom.world.day,
@@ -119,7 +128,7 @@ def trade(county_id):
 
         fund_trade(trade_form, county)
 
-        trade_notice = Notification(
+        trade_notice = models.Notification(
             target_county,
             "You were offered a trade",
             f"{county.name} has offered you a trade. Visit the trading page.",

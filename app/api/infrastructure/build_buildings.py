@@ -1,23 +1,27 @@
+from importlib import import_module
+
 from flask import jsonify
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
-from app.models.exports import Transaction
-from app.models.forms.infrastructure import InfrastructureForm
+get_forms = lambda: import_module('app.models.forms.infrastructure')
+get_models = lambda: import_module('app.models.exports')
 from app.metadata.metadata import all_buildings
 
 
 class BuildBuildingsAPI(MethodView):
     @login_required
     def post(self):
+        forms = get_forms()
+        models = get_models()
         county = current_user.county
         world = county.kingdom.world
 
-        build_form = InfrastructureForm()
+        build_form = forms.InfrastructureForm()
         build_form.county_id.data = county.id
 
         if build_form.validate_on_submit():
-            transaction = Transaction(county.id, county.day, world.day, "buy")
+            transaction = models.Transaction(county.id, county.day, world.day, "buy")
             for building in all_buildings:
                 if build_form.data[building] > 0:
                     county.gold -= build_form.data[building] * county.buildings[building].gold_cost

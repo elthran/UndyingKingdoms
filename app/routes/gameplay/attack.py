@@ -1,10 +1,12 @@
+from importlib import import_module
+
 from flask import render_template
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
 from app import app
-from app.models.exports import County
-from app.models.forms.attack import AttackForm
+get_models = lambda: import_module('app.models.exports')
+get_forms = lambda: import_module('app.models.forms.exports')
 from app.routes.helpers import not_self, neither_allies_nor_armistices
 from app.metadata.metadata import attack_types
 
@@ -15,15 +17,17 @@ from app.metadata.metadata import attack_types
 @neither_allies_nor_armistices
 @login_required
 def attack(template, county_id):
+    models = get_models()
+    forms = get_forms()
     county = current_user.county
     kingdom = county.kingdom
-    enemy = County.query.get(county_id)
+    enemy = models.County.query.get(county_id)
     enemy_kingdom = enemy.kingdom
 
     # This war code is just so the HTML knows if you are at war for points....
     war = kingdom.at_war_with(enemy_kingdom)
 
-    form = AttackForm(county)
+    form = forms.AttackForm(county)
 
     unit_types = (_type for _type in county.armies if _type not in 'archer')
 

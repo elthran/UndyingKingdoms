@@ -1,5 +1,6 @@
 import os
 import socket
+from importlib import import_module
 
 from flask import Flask, send_from_directory
 from flask_sslify import SSLify
@@ -14,6 +15,7 @@ from app.blueprints.admin import admin_blueprint
 from app.blueprints.game_clock import game_clock_blueprint
 from app.api import api_blueprint
 from commands import db_cli, reset, test, serve
+get_models = lambda: import_module('app.models.exports')
 
 app = Flask(__name__)
 # I can't figure out how to put these in the config file
@@ -50,9 +52,6 @@ app.cli.add_command(db_cli)
 app.cli.add_command(reset)
 app.cli.add_command(test)
 app.cli.add_command(serve)
-
-from app.models.exports import User
-
 
 def import_routes():
     import app.routes.errors
@@ -103,7 +102,8 @@ if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
 
 @login_manager.user_loader
 def load_user(this_id):
-    return User.query.get(this_id)
+    models = get_models()
+    return models.User.query.get(this_id)
 
 
 @app.route('/favicon.ico')

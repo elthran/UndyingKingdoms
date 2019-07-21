@@ -1,5 +1,6 @@
 import warnings
 from datetime import datetime, timedelta
+from importlib import import_module
 from random import choice, randint
 
 from sqlalchemy import desc
@@ -7,16 +8,15 @@ from sqlalchemy.orm.collections import attribute_mapped_collection
 
 # from lib.relationship_utils import has_one
 from app.calculations.distributions import get_int_between_0_and_100, get_int_between_n_and_m
-from app.metadata.armies.metadata_armies_updater import update_armies
 from ..magic import Casting
 from ..bases import GameState, db
-from .specifics import add_racial_data, add_background_data
 from ..helpers import cached_random, extract_modifiers
 from ..notifications import Notification
 from ..expeditions import Expedition
 from ..infiltrations import Infiltration
 from ..trades import Trade
-from app.virtual_classes.all_metadata_imports import all_metadata_imports as md
+get_specifics = lambda: import_module('app.models.counties.specifics')
+get_metadata = lambda: import_module('app.virtual_classes.all_metadata_imports').all_metadata_imports
 
 
 class County(GameState):
@@ -83,6 +83,8 @@ class County(GameState):
                                   foreign_keys="Preferences.county_id")
 
     def __init__(self, kingdom_id, name, leader, user, race, title, background):
+        specifics = get_specifics()
+        md = get_metadata()
         self.name = name
         self.leader = leader
         self.user = user
@@ -112,9 +114,10 @@ class County(GameState):
         self.lifetime_research = self._research
         self.lifetime_mana = self._mana
 
-        add_racial_data(self)
-        self.armies = update_armies(self.background, self.armies)
-        add_background_data(self)
+
+        specifics.add_racial_data(self)
+        self.armies = md['metadata_armies_updater'].update_armies(self.background, self.armies)
+        specifics.add_background_data(self)
 
     @property
     def population(self):
@@ -507,6 +510,7 @@ class County(GameState):
             return 0
 
     def get_food_to_be_eaten(self):
+        md = get_metadata()
         local_md = md['metadata']
         modifier = 1 + extract_modifiers(
             local_md.food_consumed_modifier,
@@ -566,6 +570,7 @@ class County(GameState):
         return max(self.population - self.get_employed_workers() - self.get_army_size(), 0)
 
     def get_death_rate(self):
+        md = get_metadata()
         local_md = md['metadata']
         modifier = 1 + extract_modifiers(
             local_md.death_rate_modifier,
@@ -693,6 +698,7 @@ class County(GameState):
         return military_cls.offensive_power.fget(military, army=army, scoreboard=scoreboard, enemy_forts=enemy_forts)
 
     def get_defensive_strength(self, scoreboard=False):
+        md = get_metadata()
         # First get base strength of citizens
         local_md = md['metadata']
         modifier = 1 + extract_modifiers(

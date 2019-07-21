@@ -1,4 +1,5 @@
 from datetime import datetime
+from importlib import import_module
 from random import randint
 
 from flask import url_for, redirect, render_template, flash, jsonify
@@ -7,15 +8,17 @@ from flask_login import current_user
 from flask_login import login_user
 from flask_mobility.decorators import mobile_template
 
-from app import app, User
-from app.models.exports import Notification
-from app.models.forms.login import LoginForm
+from app import app
+get_models = lambda: import_module('app.models.exports')
+get_forms = lambda: import_module('app.models.forms.login')
 
 
 @app.route('/login/', methods=['GET', 'POST'])
 @mobile_template('{mobile/}index/login.html')
 def login(template):
-    form = LoginForm()
+    forms = get_forms()
+    models = get_models()
+    form = forms.LoginForm()
     if current_user.is_authenticated:
         if not current_user.is_verified:
             return redirect(url_for('activate'))
@@ -30,7 +33,7 @@ def login(template):
                     datetime.utcnow() - user.get_last_logout()).total_seconds() // 3600 > 6:
                 gold_reward = min((datetime.utcnow() - user.get_last_logout()).seconds // 3600, 48) * randint(5, 7)
                 user.county.gold += gold_reward
-                notification = Notification(
+                notification = models.Notification(
                     user.county,
                     "Login Reward",
                     f"Your people appreciate your trust in letting them run their own affairs. "
@@ -49,13 +52,16 @@ def login(template):
 
 class LoginAPI(MethodView):
     def get(self):
+        forms = get_forms()
         if current_user.is_authenticated:
             return redirect(url_for('overview'))
-        form = LoginForm()
+        form = forms.LoginForm()
         return render_template("index/login.html", form=form)
 
     def post(self):
-        form = LoginForm()
+        forms = get_forms()
+        models = get_models()
+        form = forms.LoginForm()
         if current_user.is_authenticated:
             return jsonify(
                 status='success',
@@ -63,7 +69,7 @@ class LoginAPI(MethodView):
                 redirect=url_for('overview')
             ), 200
         elif form.validate_on_submit():
-            user = User.query.filter_by(email=form.email.data).first()
+            user = models.User.query.filter_by(email=form.email.data).first()
             if user and user.check_password(form.password.data):
                 login_user(user)
                 if current_user.county is None:

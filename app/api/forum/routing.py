@@ -1,17 +1,19 @@
+from importlib import import_module
+
 from flask import jsonify, url_for, request
 from flask.views import MethodView
-from flask_login import login_required
 
-from app.models.forum import Post, Thread
+get_forum = lambda: import_module('app.models.forum')
 
 
 class RoutingAPI(MethodView):
     def get(self):
+        forum = get_forum()
         post_id = request.args.get('post_id', type=int)
         thread_id = request.args.get('thread_id', type=int)
 
-        post = Post.query.get(post_id)
-        thread = Thread.query.get(thread_id)
+        post = forum.Post.query.get(post_id)
+        thread = forum.Thread.query.get(thread_id)
 
         routingTrail = [dict(
             url=url_for('forum', thread_id=0, post_id=0),

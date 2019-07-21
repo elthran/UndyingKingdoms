@@ -1,15 +1,18 @@
+from importlib import import_module
+
 from flask import jsonify
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
 from app.serializers.vue_safe import vue_safe_form, generic_vue_safe
-from app.models.exports import Technology
-from app.models.forms.technology import TechnologyForm
+get_models = lambda: import_module('app.models.exports')
+get_forms = lambda: import_module('app.models.forms.technology')
 
 
 class UpdateAPI(MethodView):
     @login_required
     def get(self):
+        forms = get_forms()
         county = current_user.county
 
         known_technologies = [
@@ -26,7 +29,7 @@ class UpdateAPI(MethodView):
             for tech in county.unavailable_technologies
         ]
 
-        form = TechnologyForm()
+        form = forms.TechnologyForm()
         form.technology.choices = [
             (tech.id, tech.name)
             for tech in county.available_technologies
@@ -70,8 +73,10 @@ class UpdateAPI(MethodView):
 
     @login_required
     def post(self):
+        models = get_models()
+        forms = get_forms()
         county = current_user.county
-        form = TechnologyForm()
+        form = forms.TechnologyForm()
 
         form.technology.choices = [
             (tech.id, tech.name)
@@ -79,7 +84,7 @@ class UpdateAPI(MethodView):
         ]
 
         if form.validate_on_submit():
-            tech = Technology.query.get(form.technology.data)
+            tech = models.Technology.query.get(form.technology.data)
             # update choice.
             county.research_choice = tech
             return jsonify(

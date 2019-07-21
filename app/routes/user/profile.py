@@ -1,19 +1,24 @@
+from importlib import import_module
+
 from flask import render_template, flash
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
-from app import app, User
-from app.models.forms.profile import ProfileSecurityForm, ProfileEmailForm
+from app import app
+get_models = lambda: import_module('app.models.exports')
+get_forms = lambda: import_module('app.models.forms.profile')
 
 
 @app.route('/user/profile/<tab>', methods=['GET', 'POST'])
 @mobile_template('{mobile/}user/profile.html')
 @login_required
 def profile(template, tab):
+    models = get_models()
+    forms = get_forms()
     user = current_user
 
-    password_form = ProfileSecurityForm()
-    email_form = ProfileEmailForm()
+    password_form = forms.ProfileSecurityForm()
+    email_form = forms.ProfileEmailForm()
 
     if password_form.validate_on_submit():
         if user.check_password(password_form.old_password.data):
@@ -23,7 +28,7 @@ def profile(template, tab):
             flash("Your old password was incorrect")
 
     elif email_form.validate_on_submit():
-        existing_user = User.query.filter_by(email=email_form.email.data).first()
+        existing_user = models.User.query.filter_by(email=email_form.email.data).first()
         if existing_user:
             flash("That email is already taken")
         else:

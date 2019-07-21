@@ -1,5 +1,5 @@
-import hashlib
 import subprocess
+from importlib import import_module
 from random import randint
 
 from flask import render_template
@@ -8,7 +8,8 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
 import private_config
-from app import app, User
+from app import app
+get_models = lambda: import_module('app.models.exports')
 
 error_log_cache = {}
 
@@ -21,6 +22,7 @@ def not_found(error):
 
 @app.errorhandler(500)
 def server_fault(error, admin_id=None):
+    models = get_models()
     error_log = get_error_log()
 
     # TODO hash error log an only send once per error!
@@ -49,7 +51,7 @@ def server_fault(error, admin_id=None):
         user_info = "AnonymousUser"
 
     admin_id_to_message = admin_id or randint(1, 2)
-    admin = User.query.get(admin_id_to_message)
+    admin = models.User.query.get(admin_id_to_message)
     admin_name = admin.username
     admin_email = admin.email
     county_info = f' of {county_name} county' if county and county_name else ''

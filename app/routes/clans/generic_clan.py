@@ -1,30 +1,35 @@
+from importlib import import_module
+
 from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
 from flask_mobility.decorators import mobile_template
 
-from app import app, User
-from app.models.exports import Kingdom
-from app.models.exports import Clan
-from app.models.forms.create_kingdom import CreateKingdomForm
+from app import app
+get_models = lambda: import_module('app.models.exports')
+get_forms = lambda: import_module('app.models.forms.create_kingdom')
 
 
 @app.route('/clans/generic_clan/', methods=['GET', 'POST'])
 @mobile_template('{mobile/}clans/generic_clan.html')
 @login_required
 def generic_clan(template):
+    models = get_models()
+    forms = get_forms()
     user = current_user
-    form = CreateKingdomForm()
+    form = forms.CreateKingdomForm()
     clan = user.clan
 
-    invite = Clan.query.filter_by(user_id=user.id, status="Invited").first()
+    invite = models.Clan.query.filter_by(user_id=user.id, status="Invited").first()
     if invite:
-        invited_clan = Clan.query.get(invite.id)
+        invited_clan = models.Clan.query.get(invite.id)
         return render_template(template, form=form, invited_clan=invited_clan)
 
     if clan:
 
-        kingdom = Kingdom.query.get(clan.kingdom_id)
-        all_users = User.query.filter(User.id != user.id, ~User.is_bot).all()
+        kingdom = models.Kingdom.query.get(clan.kingdom_id)
+        all_users = models.User.query.filter(
+            models.User.id != user.id, ~models.User.is_bot
+        ).all()
         eligible_users = [
             user
             for user in all_users
@@ -36,10 +41,10 @@ def generic_clan(template):
 
     if form.validate_on_submit():
         # user.gems -= 500
-        kingdom = Kingdom(form.name.data)
+        kingdom = models.Kingdom(form.name.data)
         kingdom.clan = True
         kingdom.save()
-        clan = Clan(kingdom.id, user.id, is_owner=True)
+        clan = models.Clan(kingdom.id, user.id, is_owner=True)
         clan.save()
         return redirect(url_for('generic_clan'))
 

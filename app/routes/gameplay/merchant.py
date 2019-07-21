@@ -1,17 +1,19 @@
+from importlib import import_module
+
 from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
 
 from app import app
-from app.models.forms.merchant import MerchantForm
+get_forms = lambda: import_module('app.models.forms.exports')
 
 
 @app.route('/gameplay/merchant', methods=['GET', 'POST'])
 @login_required
 def merchant():
-
+    forms = get_forms()
     county = current_user.county
 
-    form = MerchantForm()
+    form = forms.MerchantForm()
     form.county_id.data = county.id
 
     resources = ['stone', 'iron', 'wood', 'gold', 'food']
