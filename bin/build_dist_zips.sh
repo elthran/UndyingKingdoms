@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 echo "Build a zip of the dist folders (located in /tmp)?"
 echo "Type a number then press enter."
@@ -9,6 +9,6 @@ select yn in "Yes" "No"; do
 	esac
 done
 
-source ./config.sh
+source bin/config.sh
 
 zip -r /tmp/dist.zip $UDK/static/dist $UDK/templates/dist

@@ -1,6 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-ssh -t undyingkingdoms@ssh.pythonanywhere.com '
+source bin/config.sh
+
+ssh -t $HOST '
 cd UndyingKingdoms
 bash -l
 '

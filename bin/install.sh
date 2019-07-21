@@ -153,7 +153,7 @@ install() {
 	set_udk_user_grants
 	generate_private_config
 	clone_dist_files
-	echo "Undyking Kingdoms back-end development environment installed."
+	echo "Undying Kingdoms back-end development environment installed."
 }
 
 # run the actual install script

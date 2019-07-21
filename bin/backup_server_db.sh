@@ -9,7 +9,8 @@ select yn in "Yes" "No"; do
 	esac
 done
 
-HOST="undyingkingdoms@ssh.pythonanywhere.com"
+source bin/config.sh
+
 ssh -t $HOST '
 mysqldump --defaults-extra-file=~/.mysql/mysql.cnf > ~/dump.sql
 exit

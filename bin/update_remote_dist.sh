@@ -9,7 +9,7 @@ select yn in "Yes" "No"; do
 	esac
 done
 
-source ./config.sh
+source bin/config.sh
 
 rsync -avzr -e "$SSH_CONFIG" --progress \
   $UDK/static/dist $HOST:~/UndyingKingdoms/$UDK/static
