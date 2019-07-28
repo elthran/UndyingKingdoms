@@ -38,7 +38,13 @@ def convert_to_view_function(controller):
     @wraps(controller)
     def as_view(*args, **kwargs):
         result = controller(cls(), *args, **kwargs)
+
+        if not isinstance(result, tuple):
+            result = (result,)
+
         if isinstance(result[0], Response):
+            return result
+        elif isinstance(result[0], str):
             return result
         js_friendly_result = jsify_keys(result[0])
         return (jsonify(**js_friendly_result), *result[1:])
