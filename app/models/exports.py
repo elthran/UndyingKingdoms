@@ -25,6 +25,7 @@ from .clans import Clan
 from .preferences import Preferences
 from .technologies import Technology
 from .trades import Trade
+from .tutorial import Tutorial
 
 
 # Allows adding relationships that can't be declared in class

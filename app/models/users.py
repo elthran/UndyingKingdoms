@@ -27,6 +27,8 @@ class User(GameState):
     country = db.Column(db.String(32))
     _in_active_session = db.Column(db.Boolean)
 
+    tutorials = db.relationship('Tutorial', backref='user')
+
     # Achievements
     achievements = db.relationship("Achievement",
                                    collection_class=attribute_mapped_collection('name'),

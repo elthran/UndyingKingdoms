@@ -3,6 +3,7 @@ from config import JACOB_TEMPORARY_EMAIL, JACOB_TEMPORARY_ACCOUNT_PASSWORD, MARL
 from app.controler.initialize import initialize_county
 from app.models.exports import World, Kingdom, User
 from app.models.forum import Forum, Thread
+from app.models.tutorial import Tutorial
 from app.metadata.metadata import kingdom_names
 
 
@@ -20,6 +21,9 @@ def build_testing_objects():
     user.is_admin = True
     user.is_active = True
     user.is_verified = True
+    user.save()
+    tutorial = Tutorial(user.id, "ftue", 2)
+    tutorial.save()
     county = initialize_county(user, kingdom1, "Ulthuan", 'Sir', "Elthran", 'Human', 'Rogue')
     county.save()
     county.vote = county.id
@@ -42,6 +46,9 @@ def build_testing_objects():
     user.is_admin = True
     user.is_active = True
     user.is_verified = True
+    user.save()
+    tutorial = Tutorial(user.id, "ftue", 2)
+    tutorial.save()
     county = initialize_county(user, kingdom2, "Northern Wastes", 'Sir', "Haldon", 'Human', 'Druid')
     county.armies['summon'].total = 100
     county.save()
@@ -62,6 +69,7 @@ def build_testing_objects():
     # kingdom2.approval_rating = 60
     # Create AI1 (He is weak and easier to attack for testing)
     user = User("ai1", "1@gmail.com", "star", is_bot=True)
+    user.save()
     county = initialize_county(user, kingdom1, "Robotica1", 'Lady', "Mr. Roboto1", 'Dwarf', 'Druid')
     county.save()
     county.vote = county.id
@@ -69,6 +77,7 @@ def build_testing_objects():
     county.armies['archer'].amount = 0
     # Create AI2 (He is weak and easier to attack for testing)
     user = User("ai2", "2@gmail.com", "star", is_bot=True)
+    user.save()
     county = initialize_county(user, kingdom2, "Robotica2", 'Lady', "Mr. Roboto2", 'Elf', 'Merchant')
     county.save()
     county.vote = county.id
@@ -76,6 +85,7 @@ def build_testing_objects():
     county.armies['archer'].amount = 0
     # Create AI3 (He is weak and easier to attack for testing)
     user = User("ai3", "3@gmail.com", "star", is_bot=True)
+    user.save()
     county = initialize_county(user, kingdom2, "Robotica3", 'Lady', "Mr. Roboto3", 'Human', 'Hierophant')
     county.save()
     county.vote = county.id

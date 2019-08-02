@@ -39,8 +39,12 @@ def profile(template, tab):
             else:
                 flash("Your password was incorrect")
 
+    tutorials = current_user.tutorials
+    print(tutorials)
+
     return render_template(template,
                            user=current_user,
                            tab=tab,
                            password_form=password_form,
-                           email_form=email_form)
+                           email_form=email_form,
+                           tutorial=tutorials[0])
