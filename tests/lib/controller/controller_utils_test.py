@@ -1,4 +1,5 @@
 import pytest
+from flask import Response
 
 from lib.controller_utils import convert_to_view_function
 from tests.lib.controller.fake_controller import FakeController
@@ -10,24 +11,24 @@ from tests.lib.controller.fake_controller import FakeController
 class TestControllerUtils:
     def test_string_response(self):
         view_function = convert_to_view_function(FakeController.string_response)
-        assert view_function()
+        assert isinstance(view_function(), Response)
 
     def test_string_with_status_response(self):
         view_function = convert_to_view_function(FakeController.string_with_status_response)
-        assert view_function()
+        assert isinstance(view_function(), Response)
 
     def test_dictionary_response(self):
         view_function = convert_to_view_function(FakeController.dictionary_response)
-        assert view_function()
+        assert isinstance(view_function(), Response)
 
     def test_dictionary_with_status_response(self):
         view_function = convert_to_view_function(FakeController.dictionary_with_status_response)
-        assert view_function()
+        assert isinstance(view_function(), Response)
 
     def test_json_response(self):
         view_function = convert_to_view_function(FakeController.json_response)
-        assert view_function()
+        assert isinstance(view_function(), Response)
 
     def test_json_with_status_response(self):
         view_function = convert_to_view_function(FakeController.json_with_status_response)
-        assert view_function()
+        assert isinstance(view_function(), Response)

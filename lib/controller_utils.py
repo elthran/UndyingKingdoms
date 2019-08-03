@@ -2,7 +2,7 @@ from functools import wraps
 from importlib import import_module
 from pkgutil import iter_modules
 
-from flask import Response, jsonify
+from flask import jsonify, make_response
 
 from lib.namers import to_class_name, to_mixed_case
 
@@ -39,15 +39,17 @@ def convert_to_view_function(controller):
     def as_view(*args, **kwargs):
         result = controller(cls(), *args, **kwargs)
 
-        if not isinstance(result, tuple):
-            result = (result,)
+        if isinstance(result, dict):
+            body = result
+            rest = ()
+        elif isinstance(result, tuple) and isinstance(result[0], dict):
+            body = result[0]
+            rest = result[1:] if len(result) > 1 else ()
+        else:
+            return make_response(result)
 
-        if isinstance(result[0], Response):
-            return result
-        elif isinstance(result[0], str):
-            return result
-        js_friendly_result = jsify_keys(result[0])
-        return (jsonify(**js_friendly_result), *result[1:])
+        js_friendly_result = jsify_keys(body)
+        return make_response(jsonify(**js_friendly_result), *rest)
 
     return as_view
 
