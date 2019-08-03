@@ -26,7 +26,7 @@ APIInterface.install = function (Vue, options) {
         // redirect to login
         return this.axios.get('/api/routing/login')
         .then((response) => {
-          window.location.href = response.data.url
+          window.location.href = response.data.URL
           return Promise.resolve(null)
         })
       }
