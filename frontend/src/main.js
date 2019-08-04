@@ -1,9 +1,9 @@
 import Vue from 'vue'
 // eslint-disable-next-line
-import {customAxios, devLogin} from '@/assets/devHelpers.js'  // devLogin runs immediately
+import {customAxios, devLogin} from '@/assets/dev-helpers'  // devLogin runs immediately
 import VueAxios from 'vue-axios'
 import PrefixTitle from '@/components/PrefixTitle.vue'
-import {APIInterfacePlugin} from '@/assets/APIInterfacePlugin.js'
+import {APIInterfacePlugin} from '@/assets/api-interface-plugin'
 import router from '@/assets/router.js'
 
 import App from './App.vue'

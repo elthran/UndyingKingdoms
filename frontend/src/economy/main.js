@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import EconomyApp from './EconomyApp.vue'
 // eslint-disable-next-line
-import {customAxios, devLogin} from '@/assets/devHelpers.js'
+import {customAxios, devLogin} from '@/assets/dev-helpers'
 import VueAxios from 'vue-axios'
 import PrefixTitle from '@/components/PrefixTitle.vue'
-import {APIInterfacePlugin} from '@/assets/APIInterfacePlugin.js'
+import {APIInterfacePlugin} from '@/assets/api-interface-plugin'
 
 Vue.use(VueAxios, customAxios)  // allows this.axios, which is an axios with custom config.
 Vue.use(APIInterfacePlugin)
