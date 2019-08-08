@@ -4,6 +4,7 @@ from random import randint
 
 from flask import render_template
 from flask_login import current_user
+from flask_wtf.csrf import CSRFError
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
@@ -18,6 +19,11 @@ error_log_cache = {}
 def not_found(error):
     print("Error:", error)
     return render_template('404.html', error=error), 404
+
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    return render_template('csrf_error.html', reason=e.description), 400
 
 
 @app.errorhandler(500)
