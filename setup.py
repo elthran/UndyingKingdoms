@@ -37,6 +37,7 @@ setup(
         'roman',
         'sendgrid',
         'sqlalchemy',
+        'watchdog',
         'werkzeug',
         'wtforms',
     ],

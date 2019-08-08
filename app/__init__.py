@@ -10,11 +10,11 @@ from extensions import (
     flask_db, flask_csrf, flask_mobility, flask_mail, flask_cors,
     flask_serializer
 )
+import commands
 from app.blueprints.GeoIP import geo_ip
 from app.blueprints.admin import admin_blueprint
 from app.blueprints.game_clock import game_clock_blueprint
 from app.api import api_blueprint
-from commands import db_cli, reset, test, serve
 get_models = lambda: import_module('app.models.exports')
 
 app = Flask(__name__)
@@ -40,6 +40,7 @@ flask_serializer.init_app(app)
 
 if app.config['ENV'] != 'production':
     flask_cors.init_app(app)
+    print("CORS enabled.")
 
 # Register app blueprints
 app.register_blueprint(geo_ip)
@@ -48,10 +49,11 @@ app.register_blueprint(game_clock_blueprint)
 app.register_blueprint(api_blueprint)
 
 # add commands
-app.cli.add_command(db_cli)
-app.cli.add_command(reset)
-app.cli.add_command(test)
-app.cli.add_command(serve)
+app.cli.add_command(commands.db_cli)
+app.cli.add_command(commands.reset)
+app.cli.add_command(commands.test)
+app.cli.add_command(commands.serve)
+app.cli.add_command(commands.reset_and_serve)
 
 def import_routes():
     import app.routes.errors
