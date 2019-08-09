@@ -98,7 +98,7 @@ def serve(args):
 @with_appcontext
 @pass_context
 def reset_and_serve(ctx):
-    """Alias for 'db reset'."""
+    """Alias for `flask db reset && flask serve`."""
     reset.invoke(ctx)
     serve.invoke(ctx)
 
