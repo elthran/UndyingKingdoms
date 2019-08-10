@@ -22,14 +22,6 @@ APIInterface.install = function (Vue, options) {
     .catch((error) => {
 //      console.log("$hydrate error", error)
       // console.log("status", error.response.status)
-      if (error.response.status === 401) {
-        // redirect to login
-        return this.axios.get('/api/routing/login')
-        .then((response) => {
-          window.location.href = response.data.URL
-          return Promise.resolve(null)
-        })
-      }
       // this.$router.push('/login/')
       console.log("$hydrate errors are:", error, error.response)
       return Promise.reject(error)

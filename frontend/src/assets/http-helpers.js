@@ -20,22 +20,66 @@ const defaultConfig = {
 const http = axios.create(defaultConfig)
 document.cookie = `CSRFToken=`
 
+// csrf header should be auto injected so I don't need a
+// request interceptor function for that.
+http.interceptors.request.use(function (config) {
+  // console.log('intercepting request', config)
+    // Do something before request is sent
+    return config;
+  }, function (error) {
+    // console.log('intercepting request error', error)
+    // Do something with request error
+    return Promise.reject(error);
+  });
+
+
+function handleUnauthorized (status) {
+  if (status === 401) {
+    // redirect to login
+    return http.get('/api/routing/login')
+    .then((response) => {
+      // allow redirection back to this url
+      window.location.href = `${response.data.URL}?q=${window.location.href}`
+      return null
+    })
+  }
+  return Promise.reject(null)
+}
+
+
 // Add a response interceptor
 http.interceptors.response.use(function (response) {
-  // if (response type is document) {
-  if (true) {
+  // console.log('intercepting response', response)
+  const headers = response.headers
+  let csrfToken = ''
+  if (headers['X-CSRFToken']) {
+    csrfToken = headers['X-CSRFToken'] || 'you should have sent a csrf token'
+  } else if (headers["content-type"] == 'document') {
     const data = response.data
     const csrfElement = data.getElementById('csrf_token')
-    const csrfToken = csrfElement.value
-  } else {
-    const headers = response.headers
-    const csrfToken = headers['X-CSRFToken']
+    csrfToken = csrfElement.value || "document doesn't contains a csrf token"
   }
-  document.cookie = `CSRFToken=${csrfToken}`
+
+  if (csrfToken != '') {
+    document.cookie = `CSRFToken=${csrfToken}`
+  }
   return response
 }, function (error) {
-  // Do something with response error
-  return Promise.reject(error)
+  // console.log('intercepting response error', error)
+  // This should be chainable?
+  // Each handleFoo should return a resolve or reject.
+  // resolve is succesfull and would return that instead?
+  // reject would be handled by next handleFoo?
+  // eg, reject means handle method did nothing.
+  const response = handleUnauthorized(error.response.status)
+  // console.log('response handler produced:', response)
+  return response
+    .then((response) => {
+      return Promise.resolve(response)
+    })
+    .catch(() => {
+      return Promise.reject(error)
+    })
 })
 
-export default axios
+export default http
