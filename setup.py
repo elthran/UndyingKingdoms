@@ -28,6 +28,7 @@ setup(
         'numpy',
         'pandas',
         'pandas',
+        'pattern',
         'pluralize',
         'pytest',
         'pytest-xdist',

@@ -88,7 +88,7 @@ def reset(ctx):
 def serve(args):
     """`flask run` but sets environment correctly."""
     if sys.platform == "linux" or sys.platform == "linux2":
-        os.system('clear && reset')
+        os.system('clear')
     os.environ['FLASK_ENV'] = current_app.config['ENV']
     ctx = run_command.make_context('serve', list(args))
     run_command.invoke(ctx)

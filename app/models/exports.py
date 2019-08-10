@@ -25,7 +25,7 @@ from .clans import Clan
 from .preferences import Preferences
 from .technologies import Technology
 from .trades import Trade
-
+from . import forum
 
 # Allows adding relationships that can't be declared in class
 # due to buggy import loop.
@@ -43,6 +43,3 @@ Infiltration.target = db.relationship('County', foreign_keys="[Infiltration.targ
 from .addons.clan_addon import clan_addon
 
 clan_addon(User, Clan, Kingdom)
-
-
-
