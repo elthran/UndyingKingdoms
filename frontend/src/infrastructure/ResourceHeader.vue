@@ -15,23 +15,20 @@
 </template>
 
 <script>
-import apiPaths from '@/assets/api-paths'
-
 export default {
   name: 'ResourceHeader',
   components: {
   },
   props: {
+    landAvailable: Number,
+    citizensAvailable: Number,
+    land: Number,
+    citizens: Number,
+    citizensNeeded: Number,
+    efficiency: Number,
   },
   data () {
-    return {
-      landAvailable: -1,
-      citizensAvailable: -1,
-      land: -1,
-      citizens: -1,
-      citizensNeeded: -1,
-      efficiency: -1,
-    }
+    return {}
   },
   computed: {
     fullEfficiency () {
@@ -41,12 +38,6 @@ export default {
       return Math.floor(this.efficiency * 100)
     }
   },
-  mounted () {
-    this.$hydrate(apiPaths.infrastructure())
-    .then(() => {
-      this.$emit('loaded')
-    })
-  }
 }
 </script>
 
