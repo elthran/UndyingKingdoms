@@ -60,6 +60,8 @@ def vue_safe_form(form):
     I might need to check type to accommodate other forms.
     """
 
+    # TODO: eleminate usages of csrf_token in form data
+    # as I'm now auto-sending it in the header.
     vs_form = {
         'csrf_token': dict(
             value=form.csrf_token.current_token,
@@ -72,7 +74,7 @@ def vue_safe_form(form):
         key = field.name
         try:
             vs_form[key] = dict(
-                    choices = vue_safe_array(field.choices),
+                    choices=vue_safe_array(field.choices),
                     id=key
                 )
         except AttributeError:
