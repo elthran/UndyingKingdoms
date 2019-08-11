@@ -1,11 +1,8 @@
 from datetime import datetime
 
-from flask import url_for, request, jsonify
 from flask_wtf.csrf import generate_csrf
 from flask_login import current_user
 from sqlalchemy.exc import DatabaseError
-from werkzeug.utils import redirect
-from werkzeug.wrappers import Response
 
 from app import app, db
 from app.routes.index.initialize import initialize
