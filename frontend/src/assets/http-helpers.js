@@ -13,12 +13,11 @@ function baseURL () {
 const defaultConfig = {
   baseURL: baseURL(),
   withCredentials: true,
-  xsrfCookieName: 'CSRFToken',
-  xsrfHeaderName: 'X-CSRFToken',
+  xsrfCookieName: 'CSRF-Token',
+  xsrfHeaderName: 'X-CSRF-Token',
 }
 
 const http = axios.create(defaultConfig)
-document.cookie = `CSRFToken=`
 
 // csrf header should be auto injected so I don't need a
 // request interceptor function for that.
@@ -51,9 +50,10 @@ function handleUnauthorized (status) {
 http.interceptors.response.use(function (response) {
   // console.log('intercepting response', response)
   const headers = response.headers
+
   let csrfToken = ''
-  if (headers['X-CSRFToken']) {
-    csrfToken = headers['X-CSRFToken'] || 'you should have sent a csrf token'
+  if (headers['x-csrf-token']) { // token name gets lower-cased by axios
+    csrfToken = headers['x-csrf-token'] || 'you should have sent a csrf token'
   } else if (headers["content-type"] == 'document') {
     const data = response.data
     const csrfElement = data.getElementById('csrf_token')
@@ -61,7 +61,7 @@ http.interceptors.response.use(function (response) {
   }
 
   if (csrfToken != '') {
-    document.cookie = `CSRFToken=${csrfToken}`
+    document.cookie = `CSRF-Token=${csrfToken}`
   }
   return response
 }, function (error) {

@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from flask_wtf.csrf import generate_csrf
 from flask_login import current_user
 from sqlalchemy.exc import DatabaseError
 
@@ -37,9 +36,3 @@ def in_active_session():
             finally:
                 return None
     return None
-
-
-@app.after_request
-def set_csrf_header(response):
-    response.headers['X-CSRFToken'] = generate_csrf()
-    return response

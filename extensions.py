@@ -19,5 +19,8 @@ flask_mail = Mail()
 #     r"/api/*": {"origins": "*"},
 #     r"/login/": {"origins": "*"}
 # }
-flask_cors = CORS(supports_credentials=True)
+flask_cors = CORS(
+    expose_headers="x-csrf-token",
+    supports_credentials=True,
+)
 flask_serializer = FlaskSerializer()

@@ -7,7 +7,6 @@
       :action="allocateWorkersUrl"
       accept-charset="UTF-8"
     )
-      span(v-html="form.csrf_token.html")
       select-generator(
         v-model="goal"
         :options="form.goal.choices"
