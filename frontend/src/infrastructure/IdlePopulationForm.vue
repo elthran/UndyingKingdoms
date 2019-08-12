@@ -4,70 +4,97 @@
       You may assign a task to your idle population.
     form(
       ref="form"
-      :action="allocateWorkersUrl"
+      :action="allocateWorkersURL"
       accept-charset="UTF-8"
     )
       select-generator(
-        v-model="goal"
+        v-model="workingGoal"
         :options="form.goal.choices"
-        :selected="goal"
+        :selected="workingGoal"
         :id-name="form.goal.id"
       )
     .top-spacer-dot-3.bottom-spacer-1
-      span(v-if="goal == 0").
+      span(v-if="isOverworking").
         Your idle citizens will be forced to work, earning your county an additional {{ overworking }} gold per day.
-      span(v-if="goal == 1").
+      span(v-if="isProducingLand").
         Your idle citizens will be forced to reclaim overgrown land surrounding your county. You are currently {{ landProduced }} / {{ landToClear }} square meters towards reclaiming an acre. You will advance {{ reclaiming }} square meters each day.
-      span(v-if="goal == 2").
+      span(v-if="isForaging").
         Your idle citizens will be forced to forage for food, gaining enough for {{ foraging }} people each day.
-      span(v-if="goal == 3").
+      span(v-if="isRelaxing").
         Your idle citizens will be allowed to relax, gaining {{ relaxing }} happiness per day.
 </template>
 
 <script>
+import http from '@/assets/http-helpers'
+import apiPaths from '@/assets/api-paths'
+
 import SelectGenerator from "@/components/SelectGenerator.vue"
 
 export default {
   name: "IdlePopulationForm",
   components: {
-    'select-generator': SelectGenerator
+    SelectGenerator
+  },
+  props: {
+    goal: Number,
+    allocateWorkersURL: String,
+    overworking: Number,
+    landProduced: Number,
+    reclaiming: Number,
+    landToClear: Number,
+    foraging: Number,
+    relaxing: Number,
+    form: {
+      type: Object,
+      goal: {
+        type: Object,
+        choices: Array,
+        id: String
+      },
+      default () { // required to prevent JS complaining.
+        return {
+          goal: {
+            choices: [],
+            id: '',
+          },
+        }
+      },
+    },
   },
   data () {
     return {
-      goal: -1,
-      allocateWorkersUrl: "",
-      overworking: -1,
-      landProduced: -1,
-      reclaiming: -1,
-      landToClear: -1,
-      foraging: -1,
-      relaxing: -1,
-      form: {
-        type: Object,
-        csrf_token: Object,
-        goal: {
-          choices: [Array],  // for some reason using default args this way fixes the linting bug.
-          id: ""
-        }
-      },
-      errors: Object
+      workingGoal: -1,  // set in 'goal' watcher ..
     }
+  },
+  computed: {
+    isOverworking () {
+      return this.workingGoal == 0
+    },
+    isProducingLand () {
+      return this.workingGoal == 1
+    },
+    isForaging () {
+      return this.workingGoal == 2
+    },
+    isRelaxing () {
+      return this.workingGoal == 3
+    },
   },
   watch: {
     goal (newVal, oldVal) {
+      this.workingGoal = newVal
+    },
+    workingGoal (val, oldVal) {
       if (oldVal != -1) {  // ignore watcher until after loading initial data.
-        this.$sendForm(this.$refs.form, () => {
-          this.$hydrate('/api/infrastructure/idle_population')
+        const formData = new FormData(this.$refs.form)
+        http.put(apiPaths.infrastructure(), formData)
+        //   this.$hydrate('/api/infrastructure/idle_population')
+        .then(() => {
+          console.log('saving the idle population worked!')
         })
       }
     }
   },
-  mounted () {
-    this.$hydrate('/api/infrastructure/idle_population')
-    .then(() => {
-      this.$emit('loaded')
-    })
-  }
 }
 </script>
 
