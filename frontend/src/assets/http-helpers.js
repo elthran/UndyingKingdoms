@@ -22,11 +22,9 @@ const http = axios.create(defaultConfig)
 // csrf header should be auto injected so I don't need a
 // request interceptor function for that.
 http.interceptors.request.use(function (config) {
-  // console.log('intercepting request', config)
     // Do something before request is sent
     return config;
   }, function (error) {
-    // console.log('intercepting request error', error)
     // Do something with request error
     return Promise.reject(error);
   });
@@ -48,7 +46,6 @@ function handleUnauthorized (status) {
 
 // Add a response interceptor
 http.interceptors.response.use(function (response) {
-  // console.log('intercepting response', response)
   const headers = response.headers
 
   let csrfToken = ''
