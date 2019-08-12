@@ -5,7 +5,6 @@ import_endpoints(
     api_blueprint,
     __name__,
     [
-        'allocate',
         'buildings',
         'build_buildings'
     ]
