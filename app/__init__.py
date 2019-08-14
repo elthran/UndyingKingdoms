@@ -63,6 +63,7 @@ def import_routes():
     import app.routes.index.activate
 
     import app.routes.gameplay.overview
+    import app.routes.gameplay.generic
     import app.routes.gameplay.economy
     import app.routes.gameplay.merchant
     import app.routes.gameplay.infrastructure

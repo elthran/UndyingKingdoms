@@ -23,7 +23,7 @@ def register(template):
     if form.validate_on_submit():
         user = models.User(form.username.data, form.email.data, form.password.data)
         user.save()
-        tutorial = Tutorial(user.id, "ftue", 2)
+        tutorial = Tutorial(user.id, "ftue", "Economics", 4)
         tutorial.save()
         login_user(user)
         return redirect(url_for('initialize'))

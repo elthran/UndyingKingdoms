@@ -107,17 +107,6 @@ input {
 <li><a href="{{ url_for('profile', tab='email') }}">Email</a></li>
 <li><a href="{{ url_for('profile', tab='security') }}">Security</a></li>
 
-<br><br><br>
-<h1>Tutorial Progress:</h1>
-<h2>Name: {{ tutorial.name }}</h2>
-<h2>Description: {{ tutorial.get_step_description() }}</h2>
-<h2>{% if tutorial.current_step < tutorial.total_steps %}
-      Progress: {{ tutorial.current_step }} / {{ tutorial.total_steps }}
-    {% else %}
-      Progress: Completed
-    {% endif %}
-</h2>
-<h2>Cancelled: {{ tutorial.cancelled }}</h2>
 
 {% endblock %}
 

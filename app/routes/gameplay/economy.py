@@ -12,6 +12,8 @@ from app.metadata.metadata import rations_terminology, birth_rate_modifier, inco
 @mobile_template('{mobile/}gameplay/economy.html')
 @login_required
 def economy(template):
+    if current_user.tutorials[0].name == "ftue" and current_user.tutorials[0].current_step == 2:
+        current_user.tutorials[0].advance_step(2)
     county = current_user.county
     form = EconomyForm(tax=county.tax_rate, rations=county.rations)
 
@@ -46,6 +48,8 @@ def update_economy():
     form.rations.choices = rations_terminology
 
     if form.validate_on_submit():
+        if current_user.tutorials[0].name == "ftue" and current_user.tutorials[0].current_step == 3 and form.tax.data <= 7:
+            current_user.tutorials[0].advance_step(3)
         county.tax_rate = form.tax.data
         county.rations = form.rations.data
 

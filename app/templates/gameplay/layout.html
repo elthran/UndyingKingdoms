@@ -62,6 +62,23 @@
     </ul>
   </div>
   <div id="layout-content">
+
+        {% set tutorial = user.tutorials[0] %}
+        {% if tutorial.completed == False %}
+        <div id="tutorial" style="position:absolute;top:30px;right:0px;width:350px;border:solid;">
+          <div style="text-align:center;"><img src="/static/dist/images/{{ tutorial.advisor }}_advisor.jpg">
+            <h2>{{ tutorial.advisor }} Advisor</h2>
+          </div>
+          <h2>{{ tutorial.get_step_description() }}</h2>
+          {% if tutorial.get_step_description(get_click=True) %}
+            <a href="{{ url_for('click_next_tutorial_step', tutorial_name=tutorial.name, current_step=tutorial.current_step) }}">
+              <button style="float:left;width:100px;">Next</button>
+            </a>
+          {% endif %}
+        </div>
+        {% endif %}
+
+
     {% block content2 %}
     {% endblock %}
   </div>

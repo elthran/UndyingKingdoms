@@ -22,7 +22,7 @@ def build_testing_objects():
     user.is_active = True
     user.is_verified = True
     user.save()
-    tutorial = Tutorial(user.id, "ftue", 2)
+    tutorial = Tutorial(user.id, "ftue", "Economics", 4)
     tutorial.save()
     county = initialize_county(user, kingdom1, "Ulthuan", 'Sir', "Elthran", 'Human', 'Rogue')
     county.save()
@@ -47,7 +47,7 @@ def build_testing_objects():
     user.is_active = True
     user.is_verified = True
     user.save()
-    tutorial = Tutorial(user.id, "ftue", 2)
+    tutorial = Tutorial(user.id, "ftue", "Economics", 4)
     tutorial.save()
     county = initialize_county(user, kingdom2, "Northern Wastes", 'Sir', "Haldon", 'Human', 'Druid')
     county.armies['summon'].total = 100
