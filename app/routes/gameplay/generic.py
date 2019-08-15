@@ -1,10 +1,4 @@
-from datetime import time
-from importlib import import_module
-
-from math import floor
-from random import randint
-
-from flask import request
+from flask import request, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import redirect
 
@@ -17,6 +11,7 @@ def click_next_tutorial_step(tutorial_name, current_step):
     """
     Make sure the url is only passing in a current tutorial and that the current step can be skipped.
     """
+
     user = current_user
     tutorial = None
     for each_tutorial in user.tutorials:
@@ -24,8 +19,17 @@ def click_next_tutorial_step(tutorial_name, current_step):
             tutorial = each_tutorial
             break
     if tutorial:
-        if tutorial.current_step == current_step and tutorial.get_step_description(get_click=True):
+        if tutorial.current_step == current_step and tutorial.is_clickable_step():
             tutorial.advance_step(current_step)
-            
-    return redirect(request.url)
 
+    path = request.headers["Referer"].rsplit('/', maxsplit=1)[0]
+    return redirect(f"{path}/{tutorial.current_step}")
+
+
+@app.route("/gameplay/tutorial/current")
+@login_required
+def tutorial_current():
+    tutorial = current_user.tutorials[0]
+    return jsonify(
+        tutorial=tutorial
+    )

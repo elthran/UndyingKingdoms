@@ -1,21 +1,21 @@
-<template>
-  <div id="app">
-    <prefix-title title="Debug" />
-    <router-view
-      ref="content"
-    />
-    <nav-bar />
-  </div>
+<template lang="pug">
+  div#app
+    prefix-title(title="Debug")
+    tutorial-interface
+    router-view(ref="content")
+    nav-bar
 </template>
 
 <script>
-import NavBar from '@/components/NavBar.vue'
+import NavBar from '@/components/NavBar'
+import TutorialInterface from '@/tutorial/TutorialInterface'
 // import LoadingComponent from '@/components/LoadingComponent.vue'
 
 export default {
   name: 'App',
   components: {
     NavBar,
+    TutorialInterface,
     // LoadingComponent,
   },
   data () {
