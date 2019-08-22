@@ -1,6 +1,6 @@
 // vue.config.js
 
-const webpackConfig = require('./webpack.config')
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 module.exports = {
   // using dev public path of "/" fixes async components.
@@ -29,5 +29,15 @@ module.exports = {
 //      filename: 'overview.html'
 //    }
 //  },
-  configureWebpack: webpackConfig,
+  configureWebpack: {
+    module: {
+      rules: [
+        { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+        { test: /\.pug$/, loader: 'pug-plain-loader' },
+      ],
+    },
+    plugins: [
+      // new analyzer.BundleAnalyzerPlugin()
+    ],
+  },
 }
