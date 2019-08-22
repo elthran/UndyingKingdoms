@@ -87,10 +87,9 @@ export default {
     workingGoal (val, oldVal) {
       if (oldVal != -1) {  // ignore watcher until after loading initial data.
         const formData = new FormData(this.$refs.form)
-        http.put(apiPaths.infrastructure(), formData)
-        //   this.$hydrate('/api/infrastructure/idle_population')
+        http.put(apiPaths.infrastructureAllocate(), formData)
         .then(() => {
-          console.log('saving the idle population worked!')
+          // console.log('saving the idle population worked!')
         })
       }
     }

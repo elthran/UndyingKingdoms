@@ -30,7 +30,7 @@ class InfrastructureController(CRUDMethodView):
         # after I fix my controller_utils implementation.
         # CONSIDER: moving all county code to a county controller?
         return dict(
-            allocate_workers_url=url_for('api.infrastructure_controller_update'),
+            allocate_workers_url=url_for('api.infrastructure_controller_allocate'),
             citizens=county.population,
             citizens_available=county.get_available_workers(),
             citizens_needed=infrastructure.get_workers_needed_to_be_efficient(),

@@ -2,4 +2,5 @@
 
 export default {
     infrastructure: (id) => '/api/infrastructure',
+    infrastructureAllocate: (id) => '/api/infrastructure/allocate',
 }
