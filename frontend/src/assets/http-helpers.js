@@ -63,6 +63,10 @@ http.interceptors.response.use(function (response) {
   return response
 }, function (error) {
   // console.log('intercepting response error', error)
+  if (typeof error == 'undefined') {
+    console.log('Probably the server is crashing.')
+    return Promise.resolve(null)
+  }
   // This should be chainable?
   // Each handleFoo should return a resolve or reject.
   // resolve is succesfull and would return that instead?
