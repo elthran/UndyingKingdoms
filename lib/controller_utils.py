@@ -46,6 +46,9 @@ def convert_to_view_function(controller):
             body = result[0]
             rest = result[1:] if len(result) > 1 else ()
         else:
+            if result is None:
+                raise Exception("Your controller function probably needs to "
+                                "return something instead of Nothing ...")
             return make_response(result)
 
         js_friendly_result = jsify_keys(body)

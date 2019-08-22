@@ -32,3 +32,7 @@ class TestControllerUtils:
     def test_json_with_status_response(self):
         view_function = convert_to_view_function(FakeController.json_with_status_response)
         assert isinstance(view_function(), Response)
+
+    def test_null_response(self):
+        view_function = convert_to_view_function(FakeController.null_response)
+        assert isinstance(view_function(), Response)

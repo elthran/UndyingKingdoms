@@ -21,3 +21,6 @@ class FakeController(CRUDMethodView):
 
     def json_with_status_response(self):
         return jsonify(bar='bar'), 201
+
+    def null_response(self):
+        pass
