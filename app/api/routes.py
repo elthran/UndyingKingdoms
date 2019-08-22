@@ -12,7 +12,9 @@ add_all_controllers_in_package_to_namespace(api, globals())
 routes = {
     '/infrastructure': {
         GET: InfrastructureController.read,
-        PUT: InfrastructureController.update,
+    },
+    '/infrastructure/allocate': {
+        PUT: InfrastructureController.allocate,
     },
     '/navbar': {
         GET: NavbarController.read,

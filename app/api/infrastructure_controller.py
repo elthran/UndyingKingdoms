@@ -48,7 +48,7 @@ class InfrastructureController(CRUDMethodView):
         ), 200
 
     @login_required
-    def update(self):
+    def allocate(self):
         county = self.county
         goal = self.excess_worker_form.goal
 
