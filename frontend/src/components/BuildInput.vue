@@ -1,9 +1,9 @@
 <template lang="pug">
   div
-    div.unit-input(
+    div.buildable-input(
       v-if="isSummon"
     ) -
-    input.unit-input(
+    input.buildable-input(
       v-else
       v-model.number="safeValue"
       type="number"
@@ -73,7 +73,7 @@ export default {
 </script>
 
 <style scoped>
-.unit-input {
+.buildable-input {
   padding: 0.3em;
   width: 3.3em;
   border-top: none;
