@@ -8,7 +8,7 @@
         //- @click.stop does nothing at this time.
         build-input(
           v-model="numOfUnits"
-          :army="army"
+          :buildable="army"
           :max-size="computedMax"
           :is-summon="isSummon"
           :hide-bottom="isClosed"

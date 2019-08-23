@@ -7,7 +7,7 @@
       v-else
       v-model.number="safeValue"
       type="number"
-      :name="army.key"
+      :name="buildable.key"
       :min="min"
       :max="maxSize"
       :class="{ hideBottomBorder: hideBottom }"
@@ -29,10 +29,15 @@ export default {
   //   event: 'input',
   // },
   props: {
-    army: Object,
-    isSummon: Boolean,
-    maxSize: Number,
+    buildable: Object,
+    isSummon: {
+      type: Boolean,
+      default () {
+        return false
+      }
+    },
     hideBottom: Boolean,
+    maxSize: Number,
     value: Number,
   },
   data () {
