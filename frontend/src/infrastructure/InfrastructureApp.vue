@@ -7,10 +7,9 @@
     idle-population-form.bottom-spacer-dot-6(
       v-bind="infrastructure"
     )
-    //- building-selector.bottom-spacer-1(
-    //-   v-model="totalCosts"
-    //-   @loaded="updateProgress"
-    //- )
+    building-selector.bottom-spacer-1(
+      v-model="totalCosts"
+    )
     //- current-resources(
     //-   :current-costs="totalCosts"
     //- )
@@ -22,7 +21,7 @@ import http from '@/assets/http-helpers'
 
 import ResourceHeader from './ResourceHeader.vue'
 import IdlePopulationForm from './IdlePopulationForm.vue'
-// import BuildingSelector from './BuildingSelector.vue'
+import BuildingSelector from './BuildingSelector.vue'
 // import CurrentResources from './CurrentResources.vue'
 
 export default {
@@ -30,19 +29,19 @@ export default {
   components: {
     ResourceHeader,
     IdlePopulationForm,
-    // BuildingSelector,
+    BuildingSelector,
     // CurrentResources,
   },
   data () {
     return {
       infrastructure: {},
-      // totalCosts: {
-      //   goldCost: 0,
-      //   woodCost: 0,
-      //   stoneCost: 0,
-      //   landCost: 0,
-      //   workersEmployed: 0
-      // },
+      totalCosts: {
+        goldCost: 0,
+        woodCost: 0,
+        stoneCost: 0,
+        landCost: 0,
+        workersEmployed: 0
+      },
     }
   },
   watch: {
