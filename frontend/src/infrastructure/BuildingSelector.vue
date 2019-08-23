@@ -1,75 +1,71 @@
-<template>
-  <div
-    id="body"
+<template lang="pug">
+  div#body(
     :value="totalCosts"
     @input="$emit('input', computeTotalCosts())"
-  >
-    <div
+  )
+    //- using open by default during testing?
+    collapsible(
       v-for="(key, index) in buildOrder"
       :key="index"
+      :open="true"
       class="top-spacer-1 striped"
-    >
-      <div>
-        Name: {{ buildings[key].name }}
-      </div>
-      <div class="top-spacer-dot-6">
-        To Be Built:
-        <select-generator
+    )
+      div
+        | Name: {{ buildings[key].name }}
+      div.top-spacer-dot-6
+        | To Be Built:
+        select-generator(
           v-model="buildings[key].amount"
           :options="buildings[key].buildChoices"
           selected="0"
           :id-name="'amount-' + key"
           :disabled="buildings[key].buildChoices.length===1"
           :max="buildings[key].max"
-        /><!-- max is not yet implemented -->
-      </div>
-      <div class="top-spacer-dot-6">
-        Owned: {{ buildings[key].total }}
-      </div>
-      <div>Under Construction: {{ buildings[key].pending }}</div>
-      <div>
-        Cost: {{ buildings[key].goldCost }}
-        <img
+        )
+        //- max is not yet implemented
+      div.top-spacer-dot-6
+        | Owned: {{ buildings[key].total }}
+      div Under Construction: {{ buildings[key].pending }}
+      div
+        | Cost: {{ buildings[key].goldCost }}
+        img(
           class="resource_icons"
           src="/static/dist/images/gold_icon.jpg"
-        >
-        / {{ buildings[key].woodCost }}
-        <img
+        )
+        | / {{ buildings[key].woodCost }}
+        img(
           class="resource_icons"
           src="/static/dist/images/wood_icon.jpg"
-        >
-        / {{ buildings[key].stoneCost }}
-        <img
+        )
+        | / {{ buildings[key].stoneCost }}
+        img(
           class="resource_icons"
           src="/static/dist/images/stone_icon.jpg"
-        >
-      </div>
-      <div>Workers Employed: {{ buildings[key].totalEmployed }} ({{ buildings[key].workersEmployed }} each)</div>
-      <div>Description: {{ buildings[key].description }}</div>
-    </div>
-    <button
+        )
+      div Workers Employed: {{ buildings[key].totalEmployed }} ({{ buildings[key].workersEmployed }} each)
+      div Description: {{ buildings[key].description }}
+    button(
       id="submit-button"
       ref="submitButton"
       class="top-spacer-dot-6 width-100-percent"
       @click="submitForm"
-    >
-      Build
-    </button>
-    <div class="top-spacer-1">
-      Total Buildings: {{ totalBuilt }}
-    </div>
-    <div>Total Under Construction: {{ totalPending }}</div>
-    <div>Total Workers Employed: {{ totalEmployed }}</div>
-  </div>
+    )
+      | Build
+    div.top-spacer-1
+      | Total Buildings: {{ totalBuilt }}
+    div Total Under Construction: {{ totalPending }}
+    div Total Workers Employed: {{ totalEmployed }}
 </template>
 
 <script>
-import SelectGenerator from '@/components/SelectGenerator.vue'
+import Collapsible from '@/components/Collapsible'
+import SelectGenerator from '@/components/SelectGenerator'
 
 export default {
   name: 'BuildingSelector',
   components: {
-    'select-generator': SelectGenerator
+    SelectGenerator,
+    Collapsible,
   },
   props: {
     totalCosts: Object
