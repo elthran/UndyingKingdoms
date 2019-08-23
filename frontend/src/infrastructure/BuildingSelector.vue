@@ -152,24 +152,27 @@ export default {
 </script>
 
 <style scoped>
-#body {
-    max-width: 19em;
-    margin: auto;
+@media (max-width: 640px) {
+  #body {
+      max-width: 19em;
+      margin: auto;
+  }
+
+  #submit-button {
+    margin-left: auto;
+    margin-right: auto;
+    position: sticky;
+    bottom: 0.2em;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
 }
 
 .tab {
   margin-left: 1em;
 }
 
-#submit-button {
-  margin-left: auto;
-  margin-right: auto;
-  position: sticky;
-  bottom: 0.2em;
-  left: 0;
-  right: 0;
-  z-index: 100;
-}
 
 .striped:nth-child(odd) {
   background-color: #f2f2f2;
