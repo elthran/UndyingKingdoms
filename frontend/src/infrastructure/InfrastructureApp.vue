@@ -7,7 +7,7 @@
     idle-population-form.bottom-spacer-dot-6(
       v-bind="infrastructure"
     )
-    building-selector.bottom-spacer-1(
+    buildings-manager.bottom-spacer-1(
       v-model="totalCosts"
     )
     //- current-resources(
@@ -19,9 +19,9 @@
 import apiPaths from '@/assets/api-paths'
 import http from '@/assets/http-helpers'
 
-import ResourceHeader from './ResourceHeader.vue'
-import IdlePopulationForm from './IdlePopulationForm.vue'
-import BuildingSelector from './BuildingSelector.vue'
+import ResourceHeader from './ResourceHeader'
+import IdlePopulationForm from './IdlePopulationForm'
+import BuildingsManager from './BuildingsManager'
 // import CurrentResources from './CurrentResources.vue'
 
 export default {
@@ -29,7 +29,7 @@ export default {
   components: {
     ResourceHeader,
     IdlePopulationForm,
-    BuildingSelector,
+    BuildingsManager,
     // CurrentResources,
   },
   data () {

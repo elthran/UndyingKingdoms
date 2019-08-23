@@ -3,47 +3,12 @@
     :value="totalCosts"
     @input="$emit('input', computeTotalCosts())"
   )
-    //- using open by default during testing?
-    collapsible(
-      v-for="(key, index) in buildOrder"
-      :key="index"
-      :open="true"
-      class="top-spacer-1 striped"
+    building-panel(
+      v-for="buildingName in buildOrder"
+      :key="buildingName"
+      :building="buildings[buildingName]"
+      v-model="resources"
     )
-      div
-        | Name: {{ buildings[key].name }}
-      div.top-spacer-dot-6
-        | To Be Built:
-        select-generator(
-          v-model="buildings[key].amount"
-          :options="buildings[key].buildChoices"
-          selected="0"
-          :id-name="'amount-' + key"
-          :disabled="buildings[key].buildChoices.length===1"
-          :max="buildings[key].max"
-        )
-        //- max is not yet implemented
-      div.top-spacer-dot-6
-        | Owned: {{ buildings[key].total }}
-      div Under Construction: {{ buildings[key].pending }}
-      div
-        | Cost: {{ buildings[key].goldCost }}
-        img(
-          class="resource_icons"
-          src="/static/dist/images/gold_icon.jpg"
-        )
-        | / {{ buildings[key].woodCost }}
-        img(
-          class="resource_icons"
-          src="/static/dist/images/wood_icon.jpg"
-        )
-        | / {{ buildings[key].stoneCost }}
-        img(
-          class="resource_icons"
-          src="/static/dist/images/stone_icon.jpg"
-        )
-      div Workers Employed: {{ buildings[key].totalEmployed }} ({{ buildings[key].workersEmployed }} each)
-      div Description: {{ buildings[key].description }}
     button(
       id="submit-button"
       ref="submitButton"
@@ -58,14 +23,12 @@
 </template>
 
 <script>
-import Collapsible from '@/components/Collapsible'
-import SelectGenerator from '@/components/SelectGenerator'
+import BuildingPanel from './BuildingPanel'
 
 export default {
-  name: 'BuildingSelector',
+  name: 'BuildingsManager',
   components: {
-    SelectGenerator,
-    Collapsible,
+    BuildingPanel,
   },
   props: {
     totalCosts: Object
@@ -81,11 +44,16 @@ export default {
           amount: 0
         }
       },
+      resources: {
+        gold: 0, // this.county.gold,
+        wood: 0, // this.county.wood,
+        iron: 0, // this.county.iron,
+        workers: 0, // this.county.availableWorkers,
+      },
       totalBuilt: -1,
       totalEmployed: -1,
       totalPending: -1,
       formData: Object,
-      errors: Object
     }
   },
   mounted () {
@@ -146,7 +114,7 @@ export default {
         workersEmployed: 0
       })
       return this.formData
-    }
+    },
   }
 }
 </script>
@@ -169,14 +137,10 @@ export default {
   }
 }
 
-.tab {
-  margin-left: 1em;
-}
-
-
-.striped:nth-child(odd) {
-  background-color: #f2f2f2;
-  padding: 1em;
-  border-radius: 1em;
+@media (min-width: 640px) {
+  .top-bottom-padder-dot-6 {
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
+  }
 }
 </style>
