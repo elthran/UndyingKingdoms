@@ -43,7 +43,7 @@ MarkupSafe==1.1.1
 maxminddb==1.4.1
 more-itertools==7.0.0
 mysqlclient==1.4.2.post1
-nltk==3.4.4
+nltk==3.6.3
 numpy==1.16.4
 pandas==0.24.2
 parso==0.4.0
