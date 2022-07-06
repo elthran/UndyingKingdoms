@@ -37,7 +37,7 @@ itsdangerous==1.1.0
 jaraco.functools==2.0
 jedi==0.13.3
 Jinja2==2.10.1
-lxml==4.3.4
+lxml==4.9.1
 Markdown==3.1.1
 MarkupSafe==1.1.1
 maxminddb==1.4.1
